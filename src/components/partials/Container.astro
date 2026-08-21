@@ -1,0 +1,25 @@
+---
+import { cn } from "@/utils/lib/cn";
+
+export interface Props {
+	class?: string;
+	/** Растянуть содержимое на всю ширину вьюпорта. */
+	containerOff?: boolean;
+	/** Убрать внутреннюю вертикальную колонку с отступами. */
+	innerSetOff?: boolean;
+	/** Переопределить зазор внутренней колонки, например `gap-6`. */
+	gap?: string;
+}
+
+const { class: className, containerOff, innerSetOff, gap } = Astro.props;
+---
+
+<div
+	class={containerOff
+		? cn("no-container", className)
+		: cn("container mx-auto my-18 max-w-6xl flex-1 px-5", className)}
+>
+	<div class={innerSetOff ? undefined : cn("flex flex-col gap-12", gap)}>
+		<slot />
+	</div>
+</div>

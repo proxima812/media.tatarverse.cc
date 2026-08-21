@@ -1,0 +1,14 @@
+---
+import { defaultLocale, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+const t = useTranslations(defaultLocale);
+---
+
+<Layout
+	title={t("notFound.title")}
+	description={t("notFound.description")}
+	indexRobots={false}
+>
+	<h1 class="text-4xl text-center font-bold">{t("notFound.heading")}</h1>
+</Layout>

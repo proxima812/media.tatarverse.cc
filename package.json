@@ -1,0 +1,45 @@
+{
+	"name": "starter-astro",
+	"type": "module",
+	"version": "0.0.1",
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"scripts": {
+		"predev": "bun scripts/generate-favicons.mjs",
+		"dev": "astro dev",
+		"generate:favicons": "bun scripts/generate-favicons.mjs",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"check": "astro check",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"validate:seo": "node scripts/validate-seo.mjs",
+		"check:seo": "bun run build && bun run validate:seo",
+		"verify": "bun run lint && bun run check && bun run check:seo"
+	},
+	"dependencies": {
+		"@astrojs/mdx": "^7.0.7",
+		"@astrojs/sitemap": "^3.7.3",
+		"@dualmark/astro": "^0.10.0",
+		"@dualmark/converters": "^0.10.0",
+		"@dualmark/core": "^0.10.0",
+		"@tailwindcss/vite": "^4.3.3",
+		"astro": "^7.2.4",
+		"astro-icon": "^1.2.0",
+		"clsx": "^2.1.1",
+		"schema-dts": "^2.0.0",
+		"tailwind-merge": "^3.6.0",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^6.0.2"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.10",
+		"@biomejs/biome": "^2.5.9",
+		"@iconify-json/mdi": "^1.2.3",
+		"@tailwindcss/typography": "^0.5.20",
+		"@toolwind/corner-shape": "^0.0.8-3"
+	}
+}

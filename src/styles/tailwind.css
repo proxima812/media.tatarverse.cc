@@ -1,0 +1,61 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "@toolwind/corner-shape";
+
+/*
+ * Семантические токены. Правило одно: цвета ходят парами
+ * «поверхность + текст на ней», и в разметке используется пара целиком.
+ *
+ *   bg-background  → text-foreground          (страница)
+ *   bg-primary     → text-primary-foreground  (акценты, кнопки)
+ *   bg-secondary   → text-secondary-foreground
+ *   bg-muted       → text-muted-foreground    (карточки, вторичный UI)
+ *
+ * Перекрасить проект = поменять значения здесь. Хардкодить цвета
+ * (`bg-[#111]`, `text-zinc-900`) в компонентах не нужно.
+ */
+@theme {
+	--font-sans:
+		ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol", "Noto Color Emoji";
+
+	/* Страница */
+	--color-background: oklch(0.98 0 0);
+	--color-foreground: oklch(0.17 0 0);
+
+	/* Основной брендовый цвет: кнопки, ссылки, ключевые акценты */
+	--color-primary: oklch(0.17 0 0);
+	--color-primary-foreground: oklch(0.98 0 0);
+
+	/* Вторичные действия */
+	--color-secondary: oklch(0.9 0 0);
+	--color-secondary-foreground: oklch(0.17 0 0);
+
+	/* Приглушённые поверхности: карточки, disabled, вторичный UI */
+	--color-muted: oklch(0.92 0 0);
+	--color-muted-foreground: oklch(0.45 0 0);
+
+	/* Границы и focus ring */
+	--color-border: oklch(0.87 0 0);
+}
+
+/*
+ * Preflight Tailwind v4 уже делает reset (box-sizing, margin/padding, border,
+ * text-size-adjust, font-family). Дублировать его не нужно — здесь только то,
+ * чего в Preflight нет.
+ */
+@layer base {
+	html {
+		tab-size: 4;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	html,
+	body {
+		@apply flex min-h-screen min-w-80 flex-col bg-background font-sans text-foreground antialiased md:subpixel-antialiased;
+	}
+}
+
+@utility no-container {
+	@apply relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw];
+}
