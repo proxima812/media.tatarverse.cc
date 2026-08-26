@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import SaveButton from "@/components/Catalog/SaveButton.astro";
+import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+	card: CollectionEntry<"cards">;
+	locale: LocaleCode;
+}
+
+const { card, locale } = Astro.props;
+const { name, description, facts, url, logo, tags, peoples } = card.data;
+const t = useTranslations(locale);
+---
+
+<article
+	class="rounded-4xl corner-squircle bg-background p-6 shadow-xs sm:p-10"
+	data-pagefind-body
+>
+	<div class="flex flex-col items-center gap-4 text-center">
+		<div class="rounded-full corner-squircle bg-background shadow-sm">
+			<CardLogo name={name} logo={logo} size="xl" priority />
+		</div>
+
+		<div class="flex flex-wrap justify-center gap-1.5">
+			{tags.map((tag) => (
+					<span class="inline-block rounded-full px-2.5 py-0.5 text-muted-foreground text-xs">
+						{tagLabel(locale, tag)}
+					</span>
+				))}
+		</div>
+
+		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
+			{name}
+		</h1>
+		<p class="max-w-xl text-muted-foreground text-balance">{description}</p>
+
+		<ul class="flex flex-wrap justify-center gap-3 divide-x divide-border/60">
+			{peoples.map((people) => (
+					<li class="pl-3 text-muted-foreground text-xs first:pl-0">
+						{peopleLabel(locale, people)}
+					</li>
+				))}
+		</ul>
+
+		<div class="flex items-center gap-4 pt-2">
+			<PrimitiveButton href={url} preset="outline" external>
+				{t("card.visit")}
+			</PrimitiveButton>
+
+			<a
+				href={getRelativeLocaleUrl(locale, "catalog")}
+				class="text-muted-foreground text-sm underline underline-offset-4 hover:text-foreground"
+			>
+				{t("card.back")}
+			</a>
+
+			<SaveButton cardId={card.id} locale={locale} size="md" />
+		</div>
+	</div>
+
+	<ol class="mx-auto mt-10 grid w-full max-w-3xl divide-y divide-border/60">
+		{facts.map((fact, index) => (
+				<li class="flex items-center gap-4 py-4 text-sm">
+					<span
+						class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted font-semibold text-xs"
+						aria-hidden="true"
+					>
+						{index + 1}
+					</span>
+					{fact}
+				</li>
+			))}
+	</ol>
+</article>

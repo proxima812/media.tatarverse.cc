@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import Catalog from "@/components/Catalog/Catalog.astro";
+import { tagLabel } from "@/components/Catalog/labels";
+import { localizeCards } from "@/components/Catalog/localize";
+import { cardsByTag, getAllTags } from "@/components/Catalog/tags";
+import Footer from "@/components/partials/Footer.astro";
+import Header from "@/components/partials/Header.astro";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	const cards = await localizeCards(await getCollection("cards"), "en");
+	const tags = getAllTags(cards);
+
+	return tags.map((tag) => ({
+		params: { tag },
+		props: { tag, cards, tags },
+	}));
+}
+
+const { tag, cards, tags } = Astro.props;
+const t = useTranslations("en");
+const filtered = cardsByTag(cards, tag);
+
+/** "Cards by {tag} (count)" — заголовок и `<title>` в одном месте. */
+const heading = `${t("catalog.byTagPrefix")} ${tagLabel("en", tag)} (${filtered.length})`;
+---
+
+<Layout
+	title={heading}
+	htmlLang="en"
+	locale="en-US"
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+	<Header locale="en" />
+	<h1 class="text-center font-bold text-3xl text-balance sm:text-4xl">
+		{heading}
+	</h1>
+	<Catalog locale="en" cards={filtered} tags={tags} activeTag={tag} />
+	<Footer locale="en" />
+</Layout>

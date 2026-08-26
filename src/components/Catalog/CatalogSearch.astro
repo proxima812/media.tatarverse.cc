@@ -1,0 +1,84 @@
+---
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+interface Props {
+	locale: LocaleCode;
+	class?: string;
+}
+
+const { locale, class: className } = Astro.props;
+const t = useTranslations(locale);
+
+/*
+ * Поле поиска по каталогу. Это не полнотекстовый поиск по сайту, а фильтр
+ * алфавитного списка: весь каталог уже лежит в DOM страницы, и фильтрация
+ * идёт на месте — записи, которые не подошли, просто скрываются
+ * (см. скрипт в `CatalogGlossary.astro`).
+ *
+ * Раньше здесь стоял Pagefind. Он отвечает на другой вопрос — «найди
+ * страницу по индексу и покажи выдачу», — и его выпадающий список
+ * подменял бы собой сам список каталога вместо того, чтобы его сужать.
+ *
+ * Размеры пилюли (727×68, радиус 20, иконка 20px на отступе 40px)
+ * повторяют оригинал, по которому её просили сделать.
+ */
+---
+
+<search class={cn("w-full", className)}>
+	<div class="relative mx-auto w-full max-w-[727px]">
+		<label class="sr-only" for="catalog-search">
+			{t("catalog.search.placeholder")}
+		</label>
+
+		<svg
+			class="pointer-events-none absolute top-1/2 left-6 size-5 -translate-y-1/2 text-background/65 sm:left-10"
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			aria-hidden="true"
+		>
+			<circle cx="11" cy="11" r="7"></circle>
+			<path d="M20 20l-3.5-3.5"></path>
+		</svg>
+
+		<input
+			id="catalog-search"
+			data-glossary-search
+			type="search"
+			autocomplete="off"
+			spellcheck="false"
+			placeholder={t("catalog.search.placeholder")}
+			class="h-14 w-full rounded-[20px] bg-foreground/88 pr-12 pl-14 text-background text-base leading-normal outline-none backdrop-blur-sm transition placeholder:text-background/65 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:h-17 sm:pr-14 sm:pl-17 sm:text-xl [&::-webkit-search-cancel-button]:appearance-none"
+		>
+
+		<!-- Кнопка очистки поверх поля: нативный крестик `type="search"`
+		     выключен выше — он есть только в WebKit и красится системно,
+		     а не под тёмную пилюлю. -->
+		<button
+			type="button"
+			data-glossary-search-clear
+			hidden
+			aria-label={t("search.clear")}
+			class="-translate-y-1/2 absolute top-1/2 right-4 flex size-8 cursor-pointer items-center justify-center rounded-full text-background/65 transition hover:bg-background/10 hover:text-background sm:right-6"
+		>
+			<svg
+				width="16"
+				height="16"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				aria-hidden="true"
+			>
+				<path d="M6 6l12 12M18 6L6 18"></path>
+			</svg>
+		</button>
+	</div>
+</search>

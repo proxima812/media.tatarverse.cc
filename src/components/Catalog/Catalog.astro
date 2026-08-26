@@ -1,0 +1,72 @@
+---
+import type { CollectionEntry } from "astro:content";
+import CatalogGrid from "@/components/Catalog/CatalogGrid.astro";
+import CatalogList from "@/components/Catalog/CatalogList.astro";
+import CatalogToolbar from "@/components/Catalog/CatalogToolbar.astro";
+import type { Tag } from "@/components/Catalog/tags";
+import type { LocaleCode } from "@/config/types";
+
+interface Props {
+	locale: LocaleCode;
+	/** Карточки для показа — уже отфильтрованные вызывающей страницей. */
+	cards: CollectionEntry<"cards">[];
+	/** Все теги каталога — тулбару нужны они целиком, а не только у видимых карточек. */
+	tags: Tag[];
+	/** Тег текущей страницы, для подсветки вкладки в тулбаре. */
+	activeTag?: Tag | undefined;
+}
+
+const { locale, cards, tags, activeTag } = Astro.props;
+
+/*
+ * Обе раскладки рендерятся в HTML, переключение — атрибутом `data-view`
+ * на корне (Tailwind-варианты `group-data-[view=...]`). Так вид работает без
+ * пересборки DOM и без реактивного фреймворка, а страница остаётся
+ * полностью статичной. Фильтр по тегам раньше жил тут же — теперь это
+ * отдельные страницы (`/catalog/<tag>`), см. `CatalogToolbar`.
+ */
+---
+
+<section class="group/catalog" data-catalog data-view="grid">
+	<CatalogToolbar locale={locale} tags={tags} activeTag={activeTag} />
+	<CatalogGrid cards={cards} />
+	<CatalogList cards={cards} />
+</section>
+
+<script>
+const VIEW_STORAGE_KEY = "catalog:view";
+
+function isView(value: string | null): value is "grid" | "list" {
+	return value === "grid" || value === "list";
+}
+
+function setupCatalog(root: HTMLElement) {
+	const viewButtons =
+		root.querySelectorAll<HTMLButtonElement>("[data-view-button]");
+
+	const applyView = (view: "grid" | "list") => {
+		root.dataset.view = view;
+		for (const button of viewButtons) {
+			button.setAttribute(
+				"aria-pressed",
+				String(button.dataset.viewButton === view),
+			);
+		}
+		localStorage.setItem(VIEW_STORAGE_KEY, view);
+	};
+
+	for (const button of viewButtons) {
+		button.addEventListener("click", () => {
+			const view = button.dataset.viewButton;
+			if (isView(view ?? null)) applyView(view as "grid" | "list");
+		});
+	}
+
+	const stored = localStorage.getItem(VIEW_STORAGE_KEY);
+	if (isView(stored) && stored !== root.dataset.view) applyView(stored);
+}
+
+for (const root of document.querySelectorAll<HTMLElement>("[data-catalog]")) {
+	setupCatalog(root);
+}
+</script>

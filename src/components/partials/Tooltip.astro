@@ -1,0 +1,36 @@
+---
+import { cn } from "@/utils/lib/cn";
+
+/*
+ * Всплывающая подпись у элемента без видимого текста (иконка, логотип,
+ * переключатель). Родитель обязан быть `group relative` — подпись
+ * позиционируется от него и показывается по `group-hover`/`group-focus-visible`.
+ *
+ * `aria-hidden`: у самого элемента уже есть `aria-label` или `sr-only`-текст,
+ * иначе скринридер прочитал бы имя дважды. Подпись — только для зрячих
+ * с мышью и с клавиатуры, поэтому она не заменяет доступное имя, а дублирует.
+ *
+ * `pointer-events-none`: подпись висит впритык к элементу, и без этого
+ * курсор мог бы «наехать» на неё и увести hover с самого элемента.
+ */
+interface Props {
+	/** Текст подписи. Обычно тот же, что в `aria-label` родителя. */
+	label: string;
+	/** По умолчанию — снизу. Сверху нужно там, где под элементом нет места. */
+	placement?: "top" | "bottom";
+	class?: string;
+}
+
+const { label, placement = "bottom", class: className } = Astro.props;
+---
+
+<span
+	aria-hidden="true"
+	class={cn(
+		"pointer-events-none absolute left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg bg-foreground px-2 py-1 font-medium text-background text-xs opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100",
+		placement === "bottom" ? "top-full mt-2" : "bottom-full mb-2",
+		className,
+	)}
+>
+	{label}
+</span>

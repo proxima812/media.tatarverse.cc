@@ -1,9 +1,67 @@
 ---
-import { getRelativeLocaleUrl } from "astro:i18n";
+import { getCollection } from "astro:content";
+import { localizeCards } from "@/components/Catalog/localize";
+import CatalogStats from "@/components/CatalogStats/CatalogStats.astro";
+import MainTitle from "@/components/MainTitle.astro";
+import FAQ from "@/components/partials/FAQ.astro";
+import Features from "@/components/partials/Features.astro";
+import Footer from "@/components/partials/Footer.astro";
+import Header from "@/components/partials/Header.astro";
+import LogoMarquee from "@/components/partials/LogoMarquee.astro";
+import LogoStack from "@/components/partials/LogoStack.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 const t = useTranslations("en");
+const cards = await localizeCards(await getCollection("cards"), "en");
+
+/** У `FAQ` дефолты только на русском — на английской версии передаём свои. */
+const faqItems = [
+	{
+		question: "What is media.tatarverse?",
+		answer:
+			"An open catalog of projects about the Tatar, Bashkir, and Crimean Tatar languages and cultures: language apps, channels, media outlets, courses, and graphic design work in one place.",
+	},
+	{
+		question: "How do I add my project to the catalog?",
+		answer:
+			"Via a pull request in the open GitHub repository — fill in a card following the existing examples and submit it for review.",
+	},
+	{
+		question: "Is it free?",
+		answer:
+			"Yes. The catalog shows no ads and doesn't sell access — the source code is open, with no commercial model.",
+	},
+	{
+		question: "Who owns the logos in the cards?",
+		answer:
+			'The respective project owners — we use them only for identification. See the "Sources" page for details.',
+	},
+	{
+		question: "Found an error in a card — where do I report it?",
+		answer:
+			"Open an issue in the GitHub repository — we try to respond quickly.",
+	},
+];
+
+/** У `Features` дефолты только на русском — на английской версии передаём свои. */
+const featuresItems = [
+	{
+		title: "Browse the whole catalog",
+		description:
+			"224 projects about the Tatar, Bashkir, and Crimean Tatar languages and cultures — with filters by type and language.",
+	},
+	{
+		title: "Open a project card",
+		description:
+			"Facts, a link to the site, and a logo — a short summary of each project, without the extra text.",
+	},
+	{
+		title: "Add your own project",
+		description:
+			"Via a pull request on GitHub — fill in a card following the existing examples and submit it for review.",
+	},
+];
 ---
 
 <Layout
@@ -14,21 +72,21 @@ const t = useTranslations("en");
 	alternates={buildAlternates(Astro.url.pathname)}
 	markdownURL="/en.md"
 >
-	<h1 class="text-4xl font-bold text-balance">{t("home.heading")}</h1>
+	<Header locale="en" />
+	<LogoStack />
 
-	<p class="text-muted-foreground">
-		{t("home.leadBefore")}
-		<code class="rounded bg-muted px-1.5 py-0.5 text-foreground"
-			>main.config.ts</code
-		>{t("home.leadAfter")}
-	</p>
+	<MainTitle locale="en" />
 
-	<p>
-		<a
-			class="underline underline-offset-4"
-			href={getRelativeLocaleUrl("ru", "")}
-		>
-			{t("home.switcher")}
-		</a>
-	</p>
+	<LogoMarquee locale="en" cards={cards} />
+
+	<Features
+		heading="One catalog — three ways to use it."
+		items={featuresItems}
+	/>
+
+	<CatalogStats locale="en" cards={cards} />
+
+	<FAQ title="Frequently asked questions" items={faqItems} />
+
+	<Footer locale="en" />
 </Layout>

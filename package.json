@@ -18,7 +18,8 @@
 		"format": "biome format --write .",
 		"validate:seo": "node scripts/validate-seo.mjs",
 		"check:seo": "bun run build && bun run validate:seo",
-		"verify": "bun run lint && bun run check && bun run check:seo"
+		"check:i18n": "node scripts/validate-cards-i18n.mjs",
+		"verify": "bun run lint && bun run check && bun run check:seo && bun run check:i18n"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^7.0.7",
@@ -29,6 +30,7 @@
 		"@tailwindcss/vite": "^4.3.3",
 		"astro": "^7.2.4",
 		"astro-icon": "^1.2.0",
+		"astro-pagefind": "^2.0.1",
 		"clsx": "^2.1.1",
 		"schema-dts": "^2.0.0",
 		"tailwind-merge": "^3.6.0",

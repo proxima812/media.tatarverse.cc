@@ -1,0 +1,65 @@
+---
+import { meshGradient } from "@/utils/lib/meshGradient";
+
+interface Props {
+	quote?: string;
+	name?: string;
+	/**
+	 * Должность/роль автора цитаты. Не `role` — это имя коллидирует с
+	 * ARIA-атрибутом `role` у HTML-элементов, и линтер по доступности читает
+	 * `role="Founder at ..."` как невалидное значение ARIA-роли на теге.
+	 */
+	role?: string;
+}
+
+/*
+ * Заглушка по умолчанию: lorem ipsum, имя и должность-плейсхолдер — реальную
+ * цитату сюда никто не подставлял, чтобы на сайте не оказался вымышленный
+ * отзыв за подписью настоящего (или похожего на настоящего) человека.
+ * Компонент готов к использованию — содержимое передаётся пропами, когда
+ * появится настоящая цитата.
+ */
+const {
+	quote = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut enim ad minim veniam.",
+	name = "Имя Фамилия",
+	role = "Должность, компания",
+} = Astro.props;
+---
+
+<figure class="mx-auto max-w-4xl px-5 py-16 text-center">
+	<blockquote>
+		<p class="text-balance font-extrabold text-3xl leading-tight sm:text-4xl lg:text-5xl">
+			“{quote}”
+		</p>
+	</blockquote>
+
+	<figcaption class="mt-10 flex flex-col items-center gap-4">
+		<div class="relative">
+			<!-- Фоллбэк-аватар без фото — тот же приём, что у карточек без логотипа. -->
+			<div
+				class="size-16 rounded-full corner-squircle"
+				style={meshGradient(name)}
+				aria-hidden="true"
+			>
+			</div>
+
+			<div
+				class="-right-1 -bottom-1 absolute flex size-7 items-center justify-center rounded-xl corner-squircle bg-primary ring-4 ring-background"
+				aria-hidden="true"
+			>
+				<img
+					src="/media-tatarverse.svg"
+					alt=""
+					width="16"
+					height="16"
+					class="size-4 brightness-0 invert"
+				/>
+			</div>
+		</div>
+
+		<div>
+			<p class="font-semibold text-foreground">{name}</p>
+			<p class="text-muted-foreground text-sm">{role}</p>
+		</div>
+	</figcaption>
+</figure>

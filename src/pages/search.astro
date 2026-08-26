@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import CatalogGlossary from "@/components/Catalog/CatalogGlossary.astro";
+import CatalogSearch from "@/components/Catalog/CatalogSearch.astro";
+import Footer from "@/components/partials/Footer.astro";
+import Header from "@/components/partials/Header.astro";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+const t = useTranslations("ru");
+const cards = await getCollection("cards");
+---
+
+<Layout
+	title={t("nav.search")}
+	htmlLang="ru"
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+	<Header locale="ru" />
+
+	<!-- Плашка с гигантской «Аә» и пилюлей поиска поверх неё — раскладка
+	     и размеры взяты с оригинала: панель 400px, буквы прижаты к центру,
+	     поле 727px по центру панели. -->
+	<section
+		class="relative flex h-60 items-center justify-center overflow-hidden rounded-3xl bg-foreground/[0.06] px-5 sm:h-100"
+	>
+		<h1 class="sr-only">{t("search.title")}</h1>
+
+		<span
+			aria-hidden="true"
+			class="pointer-events-none absolute select-none text-[140px] text-foreground leading-none tracking-[-0.6px] sm:text-[260px] lg:text-[388px]"
+		>
+			Аә
+		</span>
+
+		<CatalogSearch locale="ru" class="relative z-10" />
+	</section>
+
+	<CatalogGlossary locale="ru" cards={cards} />
+
+	<Footer locale="ru" />
+</Layout>

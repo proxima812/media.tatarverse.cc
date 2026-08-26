@@ -1,0 +1,219 @@
+---
+interface Item {
+	question: string;
+	answer: string;
+}
+
+interface Props {
+	title?: string;
+	items?: Item[];
+	/** Индекс пункта, открытого при загрузке страницы — без JS, чистым HTML. */
+	defaultOpenIndex?: number;
+}
+
+/*
+ * Контент по умолчанию — не lorem ipsum: в формате «вопрос/ответ» бессмысленный
+ * текст в ответе выглядит как баг, а не как заглушка. Вместо этого — реальные
+ * вопросы про сам каталог, которые можно оставить как есть или заменить.
+ */
+const {
+	title = "Часто задаваемые вопросы",
+	items = [
+		{
+			question: "Что такое media.tatarverse?",
+			answer:
+				"Открытый каталог проектов о татарском, башкирском и крымскотатарском языках и культуре: языковые приложения, каналы, СМИ, курсы и графика — в одном месте.",
+		},
+		{
+			question: "Как добавить свой проект в каталог?",
+			answer:
+				"Через pull request в открытом репозитории на GitHub — заполните карточку по образцу уже существующих и отправьте на ревью.",
+		},
+		{
+			question: "Это бесплатно?",
+			answer:
+				"Да. Каталог не показывает рекламу и не продаёт доступ — исходный код открыт, коммерческой модели нет.",
+		},
+		{
+			question: "Кому принадлежат логотипы в карточках?",
+			answer:
+				"Правообладателям перечисленных проектов — мы используем их только для идентификации. Подробности на странице «Источники».",
+		},
+		{
+			question: "Нашли ошибку в карточке — куда писать?",
+			answer:
+				"Откройте issue в репозитории на GitHub — мы стараемся отвечать быстро.",
+		},
+	],
+	defaultOpenIndex,
+} = Astro.props;
+
+/** Свой префикс на инстанс: несколько `FAQ` на одной странице не столкнутся id. */
+const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<section class="mx-auto max-w-3xl px-5 py-16">
+	<h2 class="text-center font-black text-3xl text-balance sm:text-4xl">
+		{title}
+	</h2>
+
+	<div class="mt-10 space-y-3" data-faq>
+		{items.map((item, index) => {
+				const isOpen = index === defaultOpenIndex;
+				const buttonId = `${idPrefix}-trigger-${index}`;
+				const panelId = `${idPrefix}-panel-${index}`;
+
+				return (
+					<div
+						class="faq-item overflow-hidden rounded-3xl corner-squircle odd:bg-muted/60 even:bg-muted"
+						data-faq-item
+						data-open={isOpen ? "true" : "false"}
+					>
+						<h3>
+							<button
+								type="button"
+								id={buttonId}
+								aria-expanded={isOpen}
+								aria-controls={panelId}
+								data-faq-trigger
+								class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-foreground sm:px-8 sm:py-6"
+							>
+								{item.question}
+								<svg
+									class="faq-chevron shrink-0 text-foreground"
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									aria-hidden="true"
+								>
+									<path d="M6 9l6 6 6-6" />
+								</svg>
+							</button>
+						</h3>
+
+						<section class="faq-panel" id={panelId} aria-labelledby={buttonId}>
+							<div class="faq-panel-inner">
+								<p class="faq-answer px-6 pb-6 text-muted-foreground sm:px-8 sm:pb-8">
+									{item.answer}
+								</p>
+							</div>
+						</section>
+					</div>
+				);
+			})}
+	</div>
+</section>
+
+<style>
+/*
+	 * Высота — через `grid-template-rows: 0fr → 1fr`, а не `max-height` с
+	 * произвольным большим числом и не JS-замер `scrollHeight`: анимируется
+	 * сама раскладка, конечная высота всегда точна независимо от длины ответа,
+	 * и не нужно пересчитывать её при ресайзе.
+	 */
+.faq-panel {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-faq-item][data-open="true"] .faq-panel {
+	grid-template-rows: 1fr;
+}
+
+.faq-panel-inner {
+	overflow: hidden;
+	min-height: 0;
+}
+
+/*
+	 * Текст проявляется отдельно от высоты: старт анимации текста чуть
+	 * запаздывает (`transition-delay`), чтобы блюр с прозрачностью
+	 * успевали проявляться уже в раскрывшейся строке, а не наезжали на
+	 * ещё сжатую — иначе эффект читается как дёрганый, а не плавный.
+	 */
+.faq-answer {
+	opacity: 0;
+	filter: blur(6px);
+	transform: translateY(-4px);
+	transition:
+		opacity 320ms ease,
+		filter 320ms ease,
+		transform 320ms ease;
+}
+
+[data-faq-item][data-open="true"] .faq-answer {
+	opacity: 1;
+	filter: blur(0);
+	transform: translateY(0);
+	transition-delay: 120ms;
+}
+
+.faq-chevron {
+	transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-faq-item][data-open="true"] .faq-chevron {
+	transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.faq-panel,
+	.faq-answer,
+	.faq-chevron {
+		transition: none;
+	}
+
+	.faq-answer {
+		filter: none;
+		transform: none;
+	}
+}
+</style>
+
+<script>
+function setupFAQ(root: HTMLElement) {
+	const items = Array.from(
+		root.querySelectorAll<HTMLElement>("[data-faq-item]"),
+	);
+
+	const close = (item: HTMLElement) => {
+		item.dataset.open = "false";
+		item
+			.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+			?.setAttribute("aria-expanded", "false");
+	};
+
+	const open = (item: HTMLElement) => {
+		item.dataset.open = "true";
+		item
+			.querySelector<HTMLButtonElement>("[data-faq-trigger]")
+			?.setAttribute("aria-expanded", "true");
+	};
+
+	for (const item of items) {
+		const trigger = item.querySelector<HTMLButtonElement>("[data-faq-trigger]");
+		trigger?.addEventListener("click", () => {
+			const isOpen = item.dataset.open === "true";
+
+			// Один открытый пункт за раз — так же ведёт себя референс: открытие
+			// нового вопроса закрывает предыдущий, а не копит длинную ленту.
+			for (const other of items) {
+				if (other !== item) close(other);
+			}
+
+			if (isOpen) close(item);
+			else open(item);
+		});
+	}
+}
+
+for (const root of document.querySelectorAll<HTMLElement>("[data-faq]")) {
+	setupFAQ(root);
+}
+</script>

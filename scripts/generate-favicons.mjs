@@ -11,38 +11,43 @@ import path from "node:path";
 import process from "node:process";
 
 const publicDir = path.resolve(process.cwd(), "public");
-const sourceCandidates = [
-	path.join(publicDir, "favicon-180x180.svg"),
-	path.join(publicDir, "favicon.svg"),
-];
+const svgSourcePath = path.join(publicDir, "media-tatarverse.svg");
+const pngSourcePath = path.join(publicDir, "media-512x512.png");
 
-const sourcePath = await findFirstExisting(sourceCandidates);
-
-if (!sourcePath) {
-	console.log("[favicons] Skip: source SVG not found in public/");
+if (!(await bothExist(svgSourcePath, pngSourcePath))) {
+	console.log(
+		"[favicons] Skip: media-tatarverse.svg or media-512x512.png not found in public/",
+	);
 	process.exit(0);
 }
 
 const pngTargets = [
 	{ size: 16, filename: "favicon-16x16.png" },
 	{ size: 32, filename: "favicon-32x32.png" },
-	{ size: 180, filename: "apple-touch-icon.png" },
 	{ size: 48, filename: "favicon-48x48.png", internalOnly: true },
+	{ size: 180, filename: "apple-touch-icon.png" },
+	{ size: 192, filename: "android-chrome-192x192.png" },
 ];
 
-const copiedSvgTarget = path.join(publicDir, "favicon.svg");
+const svgTarget = path.join(publicDir, "favicon.svg");
 const icoTarget = path.join(publicDir, "favicon.ico");
+const androidMaxTarget = path.join(publicDir, "android-chrome-512x512.png");
+
 const trackedOutputs = [
 	...pngTargets.map((target) => path.join(publicDir, target.filename)),
-	copiedSvgTarget,
+	svgTarget,
 	icoTarget,
+	androidMaxTarget,
 ];
 
-const sourceStats = await stat(sourcePath);
-const isFresh = await areOutputsFresh(trackedOutputs, sourceStats.mtimeMs);
+const [svgStats, pngStats] = await Promise.all([
+	stat(svgSourcePath),
+	stat(pngSourcePath),
+]);
+const newestSourceMtime = Math.max(svgStats.mtimeMs, pngStats.mtimeMs);
 
-if (isFresh) {
-	console.log(`[favicons] Up to date: ${path.basename(sourcePath)}`);
+if (await areOutputsFresh(trackedOutputs, newestSourceMtime)) {
+	console.log("[favicons] Up to date");
 	process.exit(0);
 }
 
@@ -50,15 +55,14 @@ await mkdir(publicDir, { recursive: true });
 
 for (const target of pngTargets) {
 	await renderPng(
-		sourcePath,
+		pngSourcePath,
 		path.join(publicDir, target.filename),
 		target.size,
 	);
 }
 
-if (sourcePath !== copiedSvgTarget) {
-	await copyFile(sourcePath, copiedSvgTarget);
-}
+await copyFile(pngSourcePath, androidMaxTarget);
+await copyFile(svgSourcePath, svgTarget);
 
 const icoBuffers = await Promise.all(
 	[16, 32, 48].map((size) =>
@@ -67,17 +71,20 @@ const icoBuffers = await Promise.all(
 );
 
 await writeFile(icoTarget, createIco(icoBuffers));
-console.log(`[favicons] Generated from ${path.basename(sourcePath)}`);
+console.log(
+	"[favicons] Generated from media-tatarverse.svg + media-512x512.png",
+);
 
-async function findFirstExisting(paths) {
+async function bothExist(...paths) {
 	for (const candidate of paths) {
 		try {
 			await access(candidate, fsConstants.F_OK);
-			return candidate;
-		} catch {}
+		} catch {
+			return false;
+		}
 	}
 
-	return null;
+	return true;
 }
 
 async function areOutputsFresh(paths, sourceMtimeMs) {

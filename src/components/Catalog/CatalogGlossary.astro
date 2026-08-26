@@ -1,0 +1,375 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import { searchHaystack } from "@/components/Catalog/searchText";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+	locale: LocaleCode;
+	cards: CollectionEntry<"cards">[];
+}
+
+const { locale, cards } = Astro.props;
+const t = useTranslations(locale);
+
+/*
+ * Алфавитный указатель каталога, снятый с глоссария Mobbin: колонка
+ * содержимого 727px по центру, слева от каждой группы — крупная буква,
+ * справа у края экрана — липкий рельс A–Z для прыжков по секциям.
+ *
+ * Размеры (150px под букву, 62/66 у самой буквы, 32/36 у названия,
+ * 18/26 у описания, зазор 48px между группами и записями, рельс 24×32)
+ * взяты с оригинальной страницы, а не подобраны на глаз.
+ *
+ * Всё считается на сборке: карточек пара сотен, и группировка в браузере
+ * дала бы только пустой экран до гидрации.
+ */
+const collator = new Intl.Collator(locale, { sensitivity: "base" });
+
+/*
+ * Буква группы. Кавычки и скобки в начале названия («Газета «Акчарлак»»)
+ * отбрасываются — иначе половина каталога собралась бы в группе ««».
+ * Всё, что начинается не с буквы (цифры, символы), уходит в «#».
+ *
+ * Буква определяется по регистру, а не регуляркой с `\p{L}`: парсер biome
+ * не разбирает unicode-property-escape во фронтматтере `.astro` и роняет
+ * весь файл в ошибку разбора. Для алфавитов с регистром (кириллица,
+ * латиница) проверка эквивалентна.
+ */
+const isLetter = (char: string) =>
+	char.toLocaleLowerCase(locale) !== char.toLocaleUpperCase(locale);
+
+const isDigit = (char: string) => char >= "0" && char <= "9";
+
+function groupKey(name: string): string {
+	const first = [...name].find((char) => isLetter(char) || isDigit(char));
+	if (!first) return "#";
+	return isLetter(first) ? first.toLocaleUpperCase(locale) : "#";
+}
+
+const sorted = [...cards].sort((a, b) =>
+	collator.compare(a.data.name, b.data.name),
+);
+
+const groups = new Map<string, CollectionEntry<"cards">[]>();
+for (const card of sorted) {
+	const key = groupKey(card.data.name);
+	const bucket = groups.get(key);
+	if (bucket) bucket.push(card);
+	else groups.set(key, [card]);
+}
+
+/*
+ * В рельс попадают только занятые буквы — как в оригинале, где ряд букв
+ * равен списку секций. Пустых позиций там нет, и это важно именно у нас:
+ * каталог двуязычный, в русских названиях встречается и латиница
+ * («Apertium Tatar»), и башкирские буквы (Ә, Ҡ, Ғ), так что полный
+ * алфавит локали занял бы рельс мёртвыми буквами.
+ */
+const letters = [...groups.keys()]
+	.filter((letter) => letter !== "#")
+	.sort(collator.compare);
+
+if (groups.has("#")) letters.push("#");
+
+/*
+ * Строка, по которой фильтрует поле поиска. Собирается на сборке и лежит
+ * в `data-`атрибуте записи: искать по `textContent` пришлось бы с учётом
+ * переносов и вложенной разметки, а теги и народы в разметку записи не
+ * попадают вовсе — но искать по ним нужно («канал», «башкиры»).
+ *
+ * Регистр, диакритика и башкирские буквы складываются к базовым — теми же
+ * правилами, что применяются к запросу в браузере (`searchText.ts`).
+ */
+function searchIndex(card: CollectionEntry<"cards">): string {
+	const { name, description, tags, peoples } = card.data;
+
+	const parts = [
+		name,
+		description,
+		...tags.map((tag) => tagLabel(locale, tag)),
+		...peoples.map((people) => peopleLabel(locale, people)),
+	];
+
+	return searchHaystack(parts.join(" "));
+}
+
+/** Якорь секции — по индексу, а не по самой букве: `#А` в href пришлось бы кодировать. */
+const anchorOf = (letter: string) => `glossary-${letters.indexOf(letter)}`;
+---
+
+<!-- На самом `[data-glossary]` нет класса раскладки: список скрывается
+     атрибутом `hidden` из `CatalogSearch`, а любой `display`-класс Tailwind
+     перебил бы UA-правило `[hidden] { display: none }`. -->
+<div data-glossary>
+	<div class="relative">
+		<h2 class="sr-only">{t("search.browse")}</h2>
+
+		<!-- Лента букв для узкого экрана: рельса у правого края там нет —
+		     он занял бы половину ширины текста. -->
+		<nav
+			aria-label={t("search.index")}
+			class="-mx-5 sticky top-24 z-30 mb-8 bg-background/85 px-5 py-2 backdrop-blur-md lg:hidden"
+		>
+			<ul class="flex items-center gap-0.5 overflow-x-auto">
+				{letters.map((letter) => (
+						<li data-glossary-jump={letter}>
+							<a
+								href={`#${anchorOf(letter)}`}
+								class="flex size-8 shrink-0 items-center justify-center rounded-lg font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground"
+							>
+								{letter}
+							</a>
+						</li>
+					))}
+			</ul>
+		</nav>
+
+		<div class="mx-auto flex w-full max-w-[727px] flex-col gap-12">
+			{letters.map((letter) => (
+					<section
+						id={anchorOf(letter)}
+						data-glossary-section={letter}
+						aria-labelledby={`${anchorOf(letter)}-title`}
+						class="scroll-mt-32 grid gap-x-0 gap-y-6 pb-8 [&[hidden]]:hidden sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-y-0"
+					>
+						<h3
+							id={`${anchorOf(letter)}-title`}
+							class="font-medium text-5xl text-foreground leading-none tracking-tight sm:text-[62px] sm:leading-[66px]"
+						>
+							{letter}
+						</h3>
+
+						<ul class="flex flex-col gap-12">
+							{groups.get(letter)?.map((card) => (
+									<li data-glossary-item data-search={searchIndex(card)}>
+										<a
+											href={getRelativeLocaleUrl(locale, `projects/${card.id}`)}
+											class="group block"
+										>
+											<h4 class="font-medium text-2xl text-foreground leading-tight tracking-tight transition group-hover:text-primary sm:text-[32px] sm:leading-9">
+												{card.data.name}
+											</h4>
+											<p class="mt-4 line-clamp-2 font-light text-base text-foreground/80 leading-relaxed sm:text-lg sm:leading-[26px]">
+												{card.data.description}
+											</p>
+										</a>
+									</li>
+								))}
+						</ul>
+					</section>
+				))}
+		</div>
+
+		<p
+			data-glossary-empty
+			hidden
+			class="mx-auto w-full max-w-[727px] py-16 text-center text-lg text-muted-foreground"
+		>
+			{t("search.empty")}
+		</p>
+
+		<!-- Рельс букв у правого края: липнет под шапкой и подсвечивает букву
+		     секции, которая сейчас на экране (скрипт ниже). `pointer-events`
+		     снят с колонки и возвращён списку — пустая полоса во всю высоту
+		     страницы иначе перехватывала бы клики по тексту рядом.
+
+		     В оригинале алфавит один и целиком помещается в экран; у нас в
+		     названиях и кириллица, и латиница, и башкирские буквы — сорок с
+		     лишним позиций. Поэтому рельс прокручивается внутри себя (полоса
+		     скрыта, к активной букве его подкручивает скрипт), а не сжимается
+		     в нечитаемый столбик. -->
+		<nav
+			aria-label={t("search.index")}
+			class="pointer-events-none absolute inset-y-0 right-0 hidden w-14 lg:block"
+		>
+			<ul
+				data-glossary-rail
+				class="pointer-events-auto sticky top-32 flex max-h-[calc(100vh-12rem)] flex-col overflow-y-auto pl-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+			>
+				{letters.map((letter) => (
+						<li data-glossary-jump={letter}>
+							<a
+								href={`#${anchorOf(letter)}`}
+								data-glossary-rail-link={letter}
+								class="flex h-8 w-6 items-center border-transparent border-r font-medium text-base text-muted-foreground/70 transition aria-[current=true]:border-foreground aria-[current=true]:text-foreground hover:text-foreground"
+							>
+								{letter}
+							</a>
+						</li>
+					))}
+			</ul>
+		</nav>
+	</div>
+</div>
+
+<script>
+/*
+ * Запрос складывается к базовым буквам той же функцией, что и строка
+ * записи на сборке (`data-search`): «агидел» должно находить «Ағиҙел».
+ */
+import { foldSearchText } from "@/components/Catalog/searchText";
+
+/*
+ * Страница делает две вещи с одним и тем же списком: фильтрует его полем
+ * поиска и подсвечивает букву текущей секции в рельсе. Обе живут здесь, а
+ * не в компоненте поля: данные — в разметке списка, а подсветке нужен
+ * пересчёт позиций после каждой фильтрации.
+ */
+const sections = [
+	...document.querySelectorAll<HTMLElement>("[data-glossary-section]"),
+];
+const items = [
+	...document.querySelectorAll<HTMLElement>("[data-glossary-item]"),
+];
+const jumps = [
+	...document.querySelectorAll<HTMLElement>("[data-glossary-jump]"),
+];
+const railLinks = new Map(
+	[
+		...document.querySelectorAll<HTMLAnchorElement>(
+			"[data-glossary-rail-link]",
+		),
+	].map((link) => [link.dataset.glossaryRailLink ?? "", link]),
+);
+const empty = document.querySelector<HTMLElement>("[data-glossary-empty]");
+const input = document.querySelector<HTMLInputElement>(
+	"[data-glossary-search]",
+);
+const clearButton = document.querySelector<HTMLButtonElement>(
+	"[data-glossary-search-clear]",
+);
+
+/** Линия отсчёта для активной буквы — сразу под фиксированной шапкой. */
+const HEADER_OFFSET = 160;
+
+const rail = document.querySelector<HTMLElement>("[data-glossary-rail]");
+let current = "";
+let offsets: Array<{ letter: string; top: number }> = [];
+
+/*
+ * Позиции секций снимаются от начала документа и пересчитываются только
+ * когда раскладка поменялась (фильтр, resize): на скролл остаётся
+ * сравнение чисел, без единого обращения к геометрии.
+ */
+const measure = () => {
+	offsets = sections
+		.filter((section) => !section.hidden)
+		.map((section) => {
+			let top = 0;
+			let node: HTMLElement | null = section;
+			while (node) {
+				top += node.offsetTop;
+				node = node.offsetParent as HTMLElement | null;
+			}
+			return { letter: section.dataset.glossarySection ?? "", top };
+		});
+};
+
+const setCurrent = (letter: string) => {
+	if (letter === current) return;
+	railLinks.get(current)?.removeAttribute("aria-current");
+
+	const link = railLinks.get(letter);
+	link?.setAttribute("aria-current", "true");
+	current = letter;
+
+	/*
+	 * Активная буква может уехать за пределы прокручиваемого рельса.
+	 * `scrollIntoView` тут не годится: он тянет за собой и саму страницу,
+	 * то есть скролл начал бы управлять скроллом. Считаем смещение
+	 * вручную и двигаем только рельс.
+	 */
+	if (!rail || !link || rail.scrollHeight <= rail.clientHeight) return;
+	const offset = link.offsetTop - rail.clientHeight / 2 + link.offsetHeight / 2;
+	rail.scrollTo({ top: offset, behavior: "smooth" });
+};
+
+const updateCurrent = () => {
+	const line = window.scrollY + HEADER_OFFSET;
+
+	let letter = offsets[0]?.letter ?? "";
+	for (const entry of offsets) {
+		if (entry.top > line) break;
+		letter = entry.letter;
+	}
+
+	if (letter) setCurrent(letter);
+};
+
+/*
+ * Фильтр по подстрокам: запрос бьётся на слова, и запись остаётся, если
+ * содержит их все. Так «татар канал» находит татарские каналы, а не всё,
+ * где встретилось хотя бы одно из слов.
+ */
+const applyQuery = (raw: string) => {
+	const tokens = foldSearchText(raw).split(/\s+/).filter(Boolean);
+
+	for (const item of items) {
+		const haystack = item.dataset.search ?? "";
+		item.hidden = !tokens.every((token) => haystack.includes(token));
+	}
+
+	const shown = new Set<string>();
+	for (const section of sections) {
+		const visible = section.querySelector("[data-glossary-item]:not([hidden])");
+		section.hidden = !visible;
+		if (visible) shown.add(section.dataset.glossarySection ?? "");
+	}
+
+	/* Буквы без совпадений уходят и из рельса, и из ленты на узком экране. */
+	for (const jump of jumps) {
+		jump.hidden = !shown.has(jump.dataset.glossaryJump ?? "");
+	}
+
+	if (empty) empty.hidden = shown.size > 0;
+	if (clearButton) clearButton.hidden = tokens.length === 0;
+
+	measure();
+	updateCurrent();
+};
+
+/** Одно обновление на кадр: событий скролла приходит заметно больше. */
+let scheduled = false;
+const onScroll = () => {
+	if (scheduled) return;
+	scheduled = true;
+	requestAnimationFrame(() => {
+		scheduled = false;
+		updateCurrent();
+	});
+};
+
+measure();
+updateCurrent();
+
+document.addEventListener("scroll", onScroll, { passive: true });
+window.addEventListener("resize", () => {
+	measure();
+	updateCurrent();
+});
+
+if (input) {
+	/*
+	 * Поле не сбрасывается при возврате «назад» — браузер восстанавливает
+	 * введённый текст, но список к этому моменту уже отрисован целиком.
+	 */
+	if (input.value) applyQuery(input.value);
+
+	input.addEventListener("input", () => applyQuery(input.value));
+	input.addEventListener("keydown", (event) => {
+		if (event.key !== "Escape" || !input.value) return;
+		input.value = "";
+		applyQuery("");
+	});
+}
+
+clearButton?.addEventListener("click", () => {
+	if (!input) return;
+	input.value = "";
+	applyQuery("");
+	input.focus();
+});
+</script>

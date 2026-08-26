@@ -1,0 +1,48 @@
+---
+import { useTranslations } from "@/i18n";
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const title = t("catalog.title");
+/**
+ * Заголовок — это утверждение и призыв через тире («Есть что сказать —
+ * скажи.» / «Got something to say — say it.»): вторая часть выделяется
+ * курсивом в обеих локалях, а не только у русского «скажи» — разбор по
+ * тому же тире, что уже есть в обоих словарях, а не по номеру слова.
+ */
+const dashIndex = title.indexOf(" — ");
+const lead = dashIndex === -1 ? title : title.slice(0, dashIndex + 3);
+const emphasis = dashIndex === -1 ? "" : title.slice(dashIndex + 3);
+---
+
+<div class="space-y-4">
+	<h1 class="text-center font-black text-5xl text-balance">
+		<span class="chroma-reveal" data-chroma-reveal>
+			{lead}{emphasis && <em class="italic">{emphasis}</em>}
+		</span>
+	</h1>
+	<p class="text-center text-primary/40 font-medium text-4xl text-balance">
+		{t("catalog.lead")}
+	</p>
+</div>
+
+<script>
+/**
+ * После однократного прохода снимаем градиентную заливку совсем — иначе
+ * заголовок навсегда остаётся `background-clip: text` с прозрачным цветом,
+ * который лишь визуально совпадает с чёрным, а не обычным текстом.
+ * `prefers-reduced-motion` обрабатывается чистым CSS выше — animationend там
+ * не наступит, поэтому скрипт не нужен для этого случая, а анимации нет с
+ * самого начала.
+ */
+for (const el of document.querySelectorAll<HTMLElement>(
+	"[data-chroma-reveal]",
+)) {
+	el.addEventListener(
+		"animationend",
+		() => el.classList.remove("chroma-reveal"),
+		{ once: true },
+	);
+}
+</script>

@@ -100,10 +100,13 @@ const siteName = name || config.site.og.siteName || config.site.og.title;
 
 const mainTitle =
 	title && config.site.og.title && title !== config.site.og.title
-		? `${title} ${config.site.og.titleSeparator} ${config.site.og.title}`
+		? `${config.site.og.title} ${config.site.og.titleSeparator} ${title}`
 		: title || config.site.og.title;
 
-const mainDescription = description || config.site.og.description;
+const baseDescription = description || config.site.og.description;
+const mainDescription = config.site.og.title
+	? `${baseDescription.replace(/[.\s]+$/, "")}. ${config.site.og.title}`
+	: baseDescription;
 
 const mainAuthor = author || config.site.og.author || siteName;
 const mainOGImage = socialImageURL || config.site.og.defaultImage;
@@ -162,7 +165,7 @@ const enabledVerifications = config.site.verifications.filter(
 ---
 
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 
 <meta name="generator" content={Astro.generator}>
 

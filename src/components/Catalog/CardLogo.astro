@@ -1,0 +1,51 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { meshGradient } from "@/utils/lib/meshGradient";
+
+interface Props {
+	name: string;
+	logo?: CollectionEntry<"cards">["data"]["logo"];
+	size?: "md" | "lg" | "xl";
+	/** Логотип над сгибом (страница проекта) — грузим сразу, он и есть LCP. */
+	priority?: boolean;
+}
+
+const { name, logo, size = "lg", priority = false } = Astro.props;
+
+const sizeClasses = {
+	md: "w-10 h-10",
+	lg: "w-14 h-14",
+	xl: "w-24 h-24",
+} satisfies Record<NonNullable<Props["size"]>, string>;
+
+const pixels = {
+	md: 40,
+	lg: 56,
+	xl: 96,
+} satisfies Record<NonNullable<Props["size"]>, number>;
+
+const sizeClass = sizeClasses[size];
+const pixelSize = pixels[size];
+---
+
+{logo ? (
+		<Image
+			src={logo}
+			alt=""
+			width={pixelSize}
+			height={pixelSize}
+			densities={[1, 2]}
+			format="webp"
+			loading={priority ? "eager" : "lazy"}
+			decoding="async"
+			fetchpriority={priority ? "high" : "auto"}
+			class={`rounded-full corner-squircle object-cover ${sizeClass}`}
+		/>
+	) : (
+		<div
+			class={`rounded-full corner-squircle ${sizeClass}`}
+			style={meshGradient(name)}
+			aria-hidden="true"
+		/>
+	)}

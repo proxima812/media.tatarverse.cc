@@ -1,0 +1,16 @@
+---
+import type { CollectionEntry } from "astro:content";
+import CatalogRow from "@/components/Catalog/CatalogRow.astro";
+
+interface Props {
+	cards: CollectionEntry<"cards">[];
+}
+
+const { cards } = Astro.props;
+---
+
+<div
+	class="mx-auto w-full max-w-6xl border-border border-t px-5 group-data-[view=grid]/catalog:hidden"
+>
+	{cards.map((card) => <CatalogRow card={card} />)}
+</div>

@@ -1,0 +1,163 @@
+---
+import type { CollectionEntry } from "astro:content";
+import CatalogCard from "@/components/Catalog/CatalogCard.astro";
+
+interface Props {
+	cards: CollectionEntry<"cards">[];
+	/** Сколько карточек попадает в DOM сразу. Остальные — порциями по скроллу. */
+	initial?: number;
+	/** Размер порции, которая подгружается при подходе к концу списка. */
+	chunk?: number;
+}
+
+const { cards, initial = 12, chunk = 12 } = Astro.props;
+
+/*
+ * Каталог — это две сотни карточек, и каждая из них это ~25 узлов DOM плюс
+ * логотип. Рендерить их все сразу дорого: браузер парсит разметку и красит
+ * то, что никто не увидит.
+ *
+ * Поэтому в поток попадает только первая порция, а хвост уезжает в
+ * `<template>` — разметка приходит тем же HTML (её не надо доставать
+ * запросом), но браузер её не парсит в дерево, не размечает и не красит,
+ * пока скрипт не вставит нужный кусок. Порции добавляются по одной, когда
+ * сентинел под сеткой подходит к экрану.
+ *
+ * Ссылки на все проекты при этом остаются в настоящем DOM — их держит
+ * списочный вид (`CatalogList`), он рендерится целиком и лишь скрыт
+ * `display:none`. Так обход краулером и клавиатурная навигация не зависят
+ * от JS, а стоимость первой отрисовки падает пропорционально числу порций.
+ */
+const head = cards.slice(0, initial);
+const rest = cards.slice(initial);
+
+const chunks: CollectionEntry<"cards">[][] = [];
+for (let i = 0; i < rest.length; i += chunk) {
+	chunks.push(rest.slice(i, i + chunk));
+}
+
+/**
+ * Пороги для `MasonryGrid` — под брейкпоинты Tailwind (`sm` = 640px,
+ * `lg` = 1024px): 1 колонка уже, 2 — начиная с `sm`, 3 — начиная с `lg`.
+ */
+const MASONRY_BREAKPOINTS = { default: 3, 1023: 2, 639: 1 };
+---
+
+<div data-catalog-lazy class="group-data-[view=list]/catalog:hidden">
+	<div
+		data-catalog-items
+		data-masonry-breakpoints={JSON.stringify(MASONRY_BREAKPOINTS)}
+		class="flex items-start gap-8 px-5"
+	>
+		{head.map((card) => (
+				<div>
+					<CatalogCard card={card} />
+				</div>
+			))}
+	</div>
+
+	{chunks.map((group) => (
+			<template data-catalog-chunk>
+				{group.map((card) => (
+						<div>
+							<CatalogCard card={card} />
+						</div>
+					))}
+			</template>
+		))}
+
+	{chunks.length > 0 && (
+			<div data-catalog-sentinel aria-hidden="true" class="h-px w-full"></div>
+		)}
+</div>
+
+<script>
+import { type MasonryBreakpoints, MasonryGrid } from "@/utils/lib/masonry";
+
+/*
+ * Порог `rootMargin` намеренно большой: порция должна успеть появиться до
+ * того, как пользователь доскроллит до конца, иначе видно пустоту.
+ */
+const PRELOAD_MARGIN = "1200px";
+
+function setupCatalogGrid(root: HTMLElement) {
+	const container = root.querySelector<HTMLElement>("[data-catalog-items]");
+	const sentinel = root.querySelector<HTMLElement>("[data-catalog-sentinel]");
+	if (!container) return;
+
+	/*
+	 * Карточки приходят в DOM плоским списком (порядок из `cards`) — колонки
+	 * появляются только в браузере, их создаёт `MasonryGrid`. Ссылки на
+	 * исходные узлы снимаются до конструктора: он сразу очищает контейнер
+	 * под свои колонки, а без сохранённых ссылок начальную порцию было бы
+	 * нечем в них раскладывать.
+	 */
+	const initialItems = Array.from(container.children) as HTMLElement[];
+
+	// Разметка из `MASONRY_BREAKPOINTS` приходит тем же HTML в data-атрибуте —
+	// без отдельного запроса и без риска рассинхронизации с версткой.
+	const breakpoints = JSON.parse(
+		container.dataset.masonryBreakpoints ?? "{}",
+	) as MasonryBreakpoints;
+
+	const masonry = new MasonryGrid(container, breakpoints);
+	for (const item of initialItems) masonry.addItem(item);
+
+	if (!sentinel) return;
+
+	const chunks = [
+		...root.querySelectorAll<HTMLTemplateElement>("[data-catalog-chunk]"),
+	];
+	let next = 0;
+
+	const revealNext = () => {
+		const template = chunks[next];
+		if (!template) return false;
+		next += 1;
+
+		const items = Array.from(template.content.children) as HTMLElement[];
+		template.remove();
+		for (const item of items) masonry.addItem(item);
+		return true;
+	};
+
+	if (!("IntersectionObserver" in window)) {
+		while (revealNext()) {
+			// Без наблюдателя частичная загрузка невозможна — отдаём всё сразу.
+		}
+		sentinel.remove();
+		return;
+	}
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			if (!entries.some((entry) => entry.isIntersecting)) return;
+
+			if (!revealNext()) {
+				observer.disconnect();
+				sentinel.remove();
+				return;
+			}
+
+			/*
+			 * Одна порция за срабатывание — но сентинел после вставки может
+			 * остаться внутри `rootMargin`, а непрерывное пересечение второго
+			 * колбэка не даёт. Перевешиваем наблюдатель: это принудительно
+			 * запускает новую проверку, и порции доезжают до тех пор, пока
+			 * сентинел не уйдёт за порог.
+			 */
+			observer.unobserve(sentinel);
+			observer.observe(sentinel);
+		},
+		{ rootMargin: PRELOAD_MARGIN },
+	);
+
+	observer.observe(sentinel);
+}
+
+for (const root of document.querySelectorAll<HTMLElement>(
+	"[data-catalog-lazy]",
+)) {
+	setupCatalogGrid(root);
+}
+</script>

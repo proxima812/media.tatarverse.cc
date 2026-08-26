@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Catalog from "@/components/Catalog/Catalog.astro";
+import { tagLabel } from "@/components/Catalog/labels";
+import { tagIcon } from "@/components/Catalog/tagIcons";
+import { cardsByTag, getAllTags } from "@/components/Catalog/tags";
+import Footer from "@/components/partials/Footer.astro";
+import Header from "@/components/partials/Header.astro";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	const cards = await getCollection("cards");
+	const tags = getAllTags(cards);
+
+	return tags.map((tag) => ({
+		params: { tag },
+		props: { tag, cards, tags },
+	}));
+}
+
+const { tag, cards, tags } = Astro.props;
+const t = useTranslations("ru");
+const filtered = cardsByTag(cards, tag);
+
+/** "Карточки по {тег} ({count})" — заголовок и `<title>` в одном месте. */
+const heading = `${t("catalog.byTagPrefix")} ${tagLabel("ru", tag)} (${filtered.length})`;
+---
+
+<Layout
+	title={heading}
+	htmlLang="ru"
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+	<Header locale="ru" />
+	<div class="px-6 flex justify-between items-center">
+		<div class="flex space-x-6 items-center">
+			<h1 class="font-bold text-3xl text-balance sm:text-4xl">
+				{t("catalog.byTagPrefix")}
+			</h1>
+			<div
+				class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-muted/60 text-muted-foreground"
+			>
+				<Icon
+					name={tagIcon(tag)}
+					class="size-4.5 text-muted-foreground"
+					aria-hidden="true"
+				/>
+				<span class="chroma-reveal text-muted-foreground"
+					>{tagLabel("ru", tag)}</span
+				>
+			</div>
+		</div>
+		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
+			<Icon
+				name="mdi:card-multiple-outline"
+				class="size-4.5"
+				aria-hidden="true"
+			/>
+			<span>{filtered.length}</span>
+		</div>
+	</div>
+
+	<Catalog locale="ru" cards={filtered} tags={tags} activeTag={tag} />
+	<Footer locale="ru" />
+</Layout>

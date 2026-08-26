@@ -1,0 +1,104 @@
+---
+import { Icon } from "astro-icon/components";
+import Tooltip from "@/components/partials/Tooltip.astro";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+	cardId: string;
+	locale: LocaleCode;
+	size?: "sm" | "md";
+}
+
+const { cardId, locale, size = "sm" } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<button
+	type="button"
+	data-save-button
+	data-card-id={cardId}
+	aria-pressed="false"
+	aria-label={t("saved.add")}
+	class={`group relative inline-flex cursor-pointer shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground shadow-sm ring-1 ring-border/50 transition hover:text-foreground size-10`}
+>
+	<Icon
+		name="mdi:heart-outline"
+		class={`size-5 group-aria-pressed:hidden`}
+		aria-hidden="true"
+	/>
+	<Icon
+		name="mdi:cards-heart"
+		class={`hidden text-red-500 size-5 group-aria-pressed:block`}
+		aria-hidden="true"
+	/>
+
+	<!-- Две подписи вместо одной: текст зависит от состояния кнопки, а состояние
+	     переключает клиентский скрипт через `aria-pressed` — так подпись меняется
+	     без участия JS. -->
+	<Tooltip label={t("saved.add")} class="group-aria-pressed:hidden" />
+	<Tooltip label={t("saved.remove")} class="hidden group-aria-pressed:block" />
+</button>
+
+<script>
+	/*
+	 * Закладки — только в localStorage: сайт статический, аккаунтов нет.
+	 * Формат — плоский массив id карточек, тот же приём, что у `catalog:view`
+	 * в `Catalog.astro`. Кнопка сама переключает своё состояние и все свои
+	 * копии на странице (одна и та же карточка может стоять и в каталоге,
+	 * и на странице проекта одновременно — оба места должны быть в courant).
+	 *
+	 * `catalog:saved-change` — кастомное событие для страницы `/saved`: она
+	 * не может держать собственный список карточек синхронно с localStorage
+	 * без него, а перезагружать страницу ради снятия одной закладки не нужно.
+	 */
+	const STORAGE_KEY = "catalog:saved";
+
+	function getSaved(): string[] {
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			const parsed = raw ? JSON.parse(raw) : [];
+			return Array.isArray(parsed) ? parsed : [];
+		} catch {
+			return [];
+		}
+	}
+
+	function setSaved(ids: string[]) {
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+	}
+
+	function applyState(button: HTMLButtonElement, saved: string[]) {
+		button.setAttribute("aria-pressed", String(saved.includes(button.dataset.cardId ?? "")));
+	}
+
+	function toggle(button: HTMLButtonElement) {
+		const id = button.dataset.cardId;
+		if (!id) return;
+
+		const saved = getSaved();
+		const index = saved.indexOf(id);
+		const nowSaved = index === -1;
+		if (nowSaved) saved.push(id);
+		else saved.splice(index, 1);
+		setSaved(saved);
+
+		for (const match of document.querySelectorAll<HTMLButtonElement>(
+			`[data-save-button][data-card-id="${CSS.escape(id)}"]`,
+		)) {
+			applyState(match, saved);
+		}
+
+		window.dispatchEvent(
+			new CustomEvent("catalog:saved-change", {
+				detail: { id, saved: nowSaved },
+			}),
+		);
+	}
+
+	const saved = getSaved();
+	for (const button of document.querySelectorAll<HTMLButtonElement>("[data-save-button]")) {
+		applyState(button, saved);
+		button.addEventListener("click", () => toggle(button));
+	}
+</script>

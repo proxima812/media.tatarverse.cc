@@ -3,8 +3,9 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import dualmark from "@dualmark/astro";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import icon from "astro-icon";
+import pagefind from "astro-pagefind";
 import { config } from "./main.config";
 import { assertValidConfig } from "./src/config/validate";
 import en from "./src/i18n/locales/en";
@@ -76,6 +77,37 @@ export default defineConfig({
 		prefetchAll: true,
 	},
 
+	// Inter — единственный шрифт сайта (--font-inter → --font-sans в
+	// tailwind.css). Каталог собирает проекты о татарах, башкирах и
+	// крымских татарах, поэтому cyrillic-ext обязателен: в нём лежат
+	// татарские Әә Өө Үү Җҗ Ңң Һһ и башкирские Ғғ Ҙҙ Ҡҡ Ҫҫ — без этого
+	// подсета браузер покажет tofu вместо этих букв.
+	fonts: [
+		{
+			provider: fontProviders.fontsource(),
+			name: "Inter",
+			cssVariable: "--font-inter",
+			weights: ["100 900"],
+			styles: ["normal", "italic"],
+			subsets: ["cyrillic", "cyrillic-ext", "latin"],
+			fallbacks: [
+				"ui-sans-serif",
+				"system-ui",
+				"sans-serif",
+				"Apple Color Emoji",
+				"Segoe UI Emoji",
+				"Segoe UI Symbol",
+				"Noto Color Emoji",
+			],
+		},
+	],
+
+	// Логотипы карточек иногда приходят в виде SVG — растеризуем их наравне
+	// с остальными форматами, чтобы `<Image>` мог сгенерировать webp-миниатюры.
+	image: {
+		dangerouslyProcessSVG: true,
+	},
+
 	vite: {
 		plugins: [tailwindcss()],
 		ssr: {
@@ -100,6 +132,7 @@ export default defineConfig({
 			},
 		}),
 		icon({ include: {} }),
+		pagefind(),
 
 		// Каждая интеграция получает конфигурацию явно, аргументами.
 		// Артефакты генерируются на `astro:build:done` → смотреть в `dist/`.

@@ -15,24 +15,23 @@
  * (`bg-[#111]`, `text-zinc-900`) в компонентах не нужно.
  */
 @theme {
-	--font-sans:
-		ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-		"Segoe UI Symbol", "Noto Color Emoji";
+	/* Шрифт и fallback-стек объявлены один раз в astro.config.mjs (fonts). */
+	--font-sans: var(--font-inter);
 
 	/* Страница */
-	--color-background: oklch(0.98 0 0);
-	--color-foreground: oklch(0.17 0 0);
+	--color-background: oklch(0.99 0 0);
+	--color-foreground: oklch(0.21 0 0);
 
 	/* Основной брендовый цвет: кнопки, ссылки, ключевые акценты */
-	--color-primary: oklch(0.17 0 0);
+	--color-primary: oklch(0.21 0 0);
 	--color-primary-foreground: oklch(0.98 0 0);
 
 	/* Вторичные действия */
-	--color-secondary: oklch(0.9 0 0);
+	--color-secondary: oklch(0.91 0 0);
 	--color-secondary-foreground: oklch(0.17 0 0);
 
 	/* Приглушённые поверхности: карточки, disabled, вторичный UI */
-	--color-muted: oklch(0.92 0 0);
+	--color-muted: oklch(0.94 0 0);
 	--color-muted-foreground: oklch(0.45 0 0);
 
 	/* Границы и focus ring */
@@ -48,6 +47,8 @@
 	html {
 		tab-size: 4;
 		-webkit-tap-highlight-color: transparent;
+		/* Запрет масштабирования жестами: только тап и скролл. */
+		touch-action: pan-x pan-y;
 	}
 
 	html,
@@ -56,6 +57,83 @@
 	}
 }
 
+/*
+ * Пропуск отрисовки того, что за экраном. Браузер не размечает и не красит
+ * такой элемент, пока он далеко от вьюпорта, но элемент остаётся в DOM —
+ * поиск по странице, якоря и обход краулером работают как обычно.
+ * `contain-intrinsic-size` обязателен: без него у пропущенного элемента
+ * нулевая высота и скроллбар прыгает.
+ */
+@utility content-auto {
+	content-visibility: auto;
+}
+
 @utility no-container {
 	@apply relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw];
+}
+
+.chroma-reveal {
+	display: inline-block;
+	background-image: linear-gradient(
+		90deg,
+		#111827 0,
+		#111827 33.33%,
+		#c679c4 40%,
+		#fa3d1d 45%,
+		#ffb005 50%,
+		#e1e1fe 55%,
+		#0358f7 60%,
+		transparent 66.67%,
+		transparent 100%
+	);
+	background-size: 300% 100%;
+	background-position: 100% 0;
+	background-clip: text;
+	-webkit-background-clip: text;
+	color: transparent;
+	filter: blur(2px);
+	will-change: background-position, filter;
+	animation: chroma-reveal-sweep 3010ms ease-in-out 180ms 1 forwards;
+}
+
+@keyframes chroma-reveal-sweep {
+	to {
+		background-position: 0 0;
+		filter: blur(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.chroma-reveal {
+		animation: none;
+		background-image: none;
+		-webkit-text-fill-color: currentColor;
+		color: inherit;
+		filter: none;
+	}
+}
+
+/*
+ * Pagefind рисует свой поиск через веб-компоненты со своими CSS-переменными
+ * (`--pf-*`), а не Tailwind-классами — перекрашиваем его под токены проекта
+ * здесь, а не переопределяем `.pf-*` классы (они специфичнее наших правил).
+ * `html:root` вместо `:root` — гарантирует победу над дефолтами пакета
+ * независимо от порядка подключения стилей.
+ */
+html:root {
+	--pf-text: var(--color-foreground);
+	--pf-text-secondary: var(--color-muted-foreground);
+	--pf-text-muted: var(--color-muted-foreground);
+	--pf-background: var(--color-background);
+	--pf-border: var(--color-border);
+	--pf-border-focus: var(--color-foreground);
+	--pf-hover: var(--color-muted);
+	--pf-mark: var(--color-primary);
+	--pf-outline-focus: var(--color-primary);
+	--pf-font: var(--font-sans);
+	--pf-border-radius: 0.75rem;
+}
+
+.pagefind-search {
+	--pf-searchbox-max-width: 100%;
 }

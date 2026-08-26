@@ -1,0 +1,256 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Tooltip from "@/components/partials/Tooltip.astro";
+import type { LocaleCode } from "@/config/types";
+import { locales, stripLocalePrefix, useTranslations } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+interface Props {
+	locale: LocaleCode;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const path = stripLocalePrefix(Astro.url.pathname);
+
+interface NavLink {
+	readonly href: string;
+	readonly label: string;
+	/**
+	 * Есть иконка — от `sm` пункт уезжает из строки ссылок в компактную
+	 * группу перед переключателем локали. В выпадающем меню на узком экране
+	 * порядок остаётся исходным, поэтому список тут один.
+	 */
+	readonly icon?: string;
+}
+
+const navLinks: readonly NavLink[] = [
+	{ href: getRelativeLocaleUrl(locale, "catalog"), label: t("nav.catalog") },
+	{
+		href: getRelativeLocaleUrl(locale, "search"),
+		label: t("nav.search"),
+		icon: "mdi:magnify",
+	},
+	{
+		href: getRelativeLocaleUrl(locale, "saved"),
+		label: t("nav.saved"),
+		icon: "mdi:bookmark-multiple-outline",
+	},
+	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
+	{ href: getRelativeLocaleUrl(locale, "add"), label: t("nav.add") },
+];
+
+const textLinks = navLinks.filter((link) => !link.icon);
+const iconLinks = navLinks.filter((link): link is NavLink & { icon: string } =>
+	Boolean(link.icon),
+);
+
+const navLinkClass =
+	"whitespace-nowrap text-sm font-medium text-muted-foreground transition hover:text-foreground";
+
+const menuNavLinkClass =
+	"flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground";
+
+const localeOptions = locales.map((code) => ({
+	code,
+	href: getRelativeLocaleUrl(code, path),
+	label: code.toUpperCase(),
+	/** Подпись под переключателем — название языка целиком, а не код. */
+	title: t(`locale.${code}`),
+}));
+---
+
+<!-- От `sm` ширина шапки — по содержимому (`w-fit`), а не фиксированные 620px:
+     добавили или переименовали пункт меню — пилюля подстроилась сама, и по краям
+     не остаётся пустоты. `max-w` держит её в пределах экрана: если ссылки всё же
+     не влезли, шапка упирается в границу, а прокручивает их `overflow-x-auto`
+     на внутренней обёртке.
+
+     Центрирование — `inset-x-0` + `mx-auto`, а не `left-1/2` со сдвигом на
+     половину ширины. С `left: 50%` у элемента в потоке `fixed` остаётся
+     доступной только правая половина экрана, и ширина «по содержимому»
+     считается от неё: шапка выходила уже нужного и резала последние пункты
+     меню даже там, где места вокруг было в избытке.
+
+     Ниже `sm` ссылки скрыты и живут в выпадающей панели, поэтому там шапка
+     остаётся во всю ширину — иначе от неё осталась бы пилюля с логотипом
+     и бургером, а панель (`inset-x-0`) сжалась бы вместе с ней. -->
+<header
+	data-header
+	class="corner-squircle fixed inset-x-0 top-4 z-50 mx-auto flex h-[60px] w-[calc(100%-2rem)] items-center justify-between gap-4 rounded-full border border-border bg-background/90 px-5 shadow-lg shadow-black/5 backdrop-blur-md sm:w-fit sm:max-w-[calc(100%-2rem)]"
+>
+	<a
+		href={getRelativeLocaleUrl(locale, "")}
+		aria-label="media.tatarverse"
+		class="group relative flex shrink-0 items-center"
+	>
+		<img
+			src="/media-tatarverse.svg"
+			alt=""
+			width="28"
+			height="28"
+			class="size-6"
+		>
+		<Tooltip label={t("nav.home")} />
+	</a>
+
+	<!-- ≥sm: ссылки в строке. На узком экране им не хватает места — там их
+	     прячет `data-menu-panel` ниже. Прокрутка нужна на промежуточных
+	     ширинах, где шапка уже упёрлась в край экрана, а ссылки ещё не
+	     ушли в бургер. -->
+	<div class="hidden min-w-0 items-center overflow-x-auto sm:flex">
+		<nav class="flex items-center gap-4 sm:gap-6">
+			{textLinks.map((link) => (
+					<a href={link.href} class={navLinkClass}>
+						{link.label}
+					</a>
+				))}
+		</nav>
+	</div>
+
+	<!-- Поиск и сохранённое — иконками: это не разделы для чтения, а действия,
+	     и в строке они соседствуют с переключателем локали, а не с ссылками.
+	     Подпись показывается по наведению и с клавиатуры, а `aria-label` даёт
+	     ссылке имя для скринридера — сама подпись поэтому `aria-hidden`, иначе
+	     имя прочиталось бы дважды.
+
+	     Группа лежит вне обёртки с `overflow-x-auto`: прокрутка по горизонтали
+	     обрезает и по вертикали тоже, а подпись всплывает под шапкой. -->
+	<div class="hidden shrink-0 items-center gap-1 sm:flex">
+		{iconLinks.map((link) => (
+				<a
+					href={link.href}
+					aria-label={link.label}
+					class="group relative flex size-9 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
+				>
+					<Icon name={link.icon} class="size-5" aria-hidden="true" />
+					<Tooltip label={link.label} />
+				</a>
+			))}
+	</div>
+
+	<div
+		class="hidden shrink-0 items-center gap-0.5 rounded-full bg-muted p-1 sm:flex"
+	>
+		{localeOptions.map((option) => (
+				<a
+					href={option.href}
+					aria-current={option.code === locale ? "true" : undefined}
+					class={cn(
+						"group relative rounded-full px-3 py-1 font-semibold text-xs transition",
+						option.code === locale
+							? "bg-background text-foreground shadow-sm"
+							: "text-muted-foreground hover:text-foreground",
+					)}
+				>
+					{option.label}
+					<Tooltip label={option.title} class="mt-3.5" />
+				</a>
+			))}
+	</div>
+
+	<PrimitiveButton
+		preset="ghost"
+		size="icon"
+		data-menu-button
+		aria-expanded="false"
+		aria-controls="header-menu"
+		class="sm:hidden"
+	>
+		<span class="sr-only">{t("nav.menu")}</span>
+		<svg
+			width="20"
+			height="20"
+			viewBox="0 0 24 24"
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			aria-hidden="true"
+		>
+			<path d="M4 7h16M4 12h16M4 17h16"></path>
+		</svg>
+	</PrimitiveButton>
+
+	<!-- `sm:hidden` остаётся всегда: кнопка, которая открывает панель, сама
+	     `sm:hidden`, но если окно расширили с открытой панелью — этот класс
+	     закроет её принудительно, а не JS-состояние `hidden`, до которого
+	     resize не достучится. -->
+	<div
+		id="header-menu"
+		data-menu-panel
+		class="absolute inset-x-0 top-full mt-2 hidden space-y-3 rounded-3xl border border-border bg-background/95 p-3 shadow-lg shadow-black/5 backdrop-blur-md sm:hidden"
+	>
+		<nav class="flex flex-col">
+			{navLinks.map((link) => (
+					<a href={link.href} class={menuNavLinkClass}>
+						{link.icon && (
+							<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
+						)}
+						{link.label}
+					</a>
+				))}
+		</nav>
+
+		<div class="flex items-center gap-0.5 rounded-full bg-muted p-1">
+			{localeOptions.map((option) => (
+					<a
+						href={option.href}
+						aria-current={option.code === locale ? "true" : undefined}
+						class={cn(
+							"flex-1 rounded-full px-3 py-1.5 text-center text-xs font-semibold transition",
+							option.code === locale
+								? "bg-background text-foreground shadow-sm"
+								: "text-muted-foreground hover:text-foreground",
+						)}
+					>
+						{option.label}
+					</a>
+				))}
+		</div>
+	</div>
+</header>
+
+<div class="h-24" aria-hidden="true"></div>
+
+<script>
+function setupMenu(header: HTMLElement) {
+	const button = header.querySelector<HTMLButtonElement>("[data-menu-button]");
+	const panel = header.querySelector<HTMLElement>("[data-menu-panel]");
+	if (!button || !panel) return;
+
+	const isOpen = () => !panel.classList.contains("hidden");
+
+	const close = () => {
+		panel.classList.add("hidden");
+		button.setAttribute("aria-expanded", "false");
+	};
+
+	const open = () => {
+		panel.classList.remove("hidden");
+		button.setAttribute("aria-expanded", "true");
+	};
+
+	button.addEventListener("click", () => (isOpen() ? close() : open()));
+
+	document.addEventListener("click", (event) => {
+		if (
+			isOpen() &&
+			event.target instanceof Node &&
+			!header.contains(event.target)
+		) {
+			close();
+		}
+	});
+
+	document.addEventListener("keydown", (event) => {
+		if (event.key === "Escape" && isOpen()) close();
+	});
+}
+
+for (const header of document.querySelectorAll<HTMLElement>("[data-header]")) {
+	setupMenu(header);
+}
+</script>

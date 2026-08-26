@@ -1,0 +1,37 @@
+---
+// import presentVideo from "@/assets/video/present.mp4";
+import presentImage from "@/assets/images/main/present.png";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+import { Image } from "astro:assets";
+
+interface Props {
+	locale: LocaleCode;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<!-- <section
+	aria-label={t("videoShowcase.label")}
+	class="px-20 pt-20 rounded-4xl corner-squircle bg-muted/70 my-6"
+>
+
+	<video
+		src={presentVideo}
+		class="block h-150 w-full rounded-t-4xl object-cover"
+		loop
+		muted
+		playsinline
+		autoplay
+		preload="auto"
+		aria-hidden="true"></video>
+  </section> -->
+<Image
+	class="w-full h-full py-6 select-none pointer-events-none object-cover rounded-4xl corner-squircle"
+	aria-label={t("videoShowcase.label")}
+	title={t("videoShowcase.label")}
+	src={presentImage}
+	alt={t("videoShowcase.label")}
+/>

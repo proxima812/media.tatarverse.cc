@@ -34,6 +34,14 @@ export function useTranslations(locale: LocaleCode) {
 	return (key: string) => dict?.[key] ?? key;
 }
 
+/** Путь без локального префикса: `/en/projects/foo` → `projects/foo`. */
+export function stripLocalePrefix(pathname: string): string {
+	const segments = pathname.split("/").filter(Boolean);
+	return isLocale(segments[0])
+		? segments.slice(1).join("/")
+		: segments.join("/");
+}
+
 /**
  * hreflang-альтернативы для `<SEO alternates>`: по одной ссылке на каждую
  * локаль плюс `x-default` на дефолтную. `pathname` — без учёта текущей
@@ -42,10 +50,7 @@ export function useTranslations(locale: LocaleCode) {
 export function buildAlternates(
 	pathname: string,
 ): Array<{ hreflang: string; href: string }> {
-	const segments = pathname.split("/").filter(Boolean);
-	const relativePath = isLocale(segments[0])
-		? segments.slice(1).join("/")
-		: segments.join("/");
+	const relativePath = stripLocalePrefix(pathname);
 
 	const links = locales.map((locale) => ({
 		hreflang: locale,
@@ -59,4 +64,18 @@ export function buildAlternates(
 			href: getRelativeLocaleUrl(defaultLocale, relativePath),
 		},
 	];
+}
+
+/**
+ * Форма слова под число: к ключу добавляется категория `Intl.PluralRules`
+ * (`stats.projects` + `few` → `stats.projects.few`). Категории зависят от
+ * языка — в русском их четыре, в английском две, — поэтому склонения лежат
+ * в словарях, а не в коде компонента. Нет нужной формы — берётся `.other`.
+ */
+export function usePlural(locale: LocaleCode) {
+	const dict = dictionaries[locale] ?? dictionaries[defaultLocale];
+	const rules = new Intl.PluralRules(locale);
+
+	return (key: string, count: number) =>
+		dict?.[`${key}.${rules.select(count)}`] ?? dict?.[`${key}.other`] ?? key;
 }

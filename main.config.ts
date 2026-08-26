@@ -10,7 +10,7 @@
 import type { AppConfig, SiteVerification } from "./src/config/types";
 
 const siteUrl = "https://site.kz/" as const;
-const siteName = "site.kz" as const;
+const siteName = "media.tatarverse" as const;
 const siteLocale = "ru-KZ" as const;
 const siteHost = new URL(siteUrl).hostname.replace(/^www\./, "");
 
@@ -68,7 +68,7 @@ export const config: AppConfig = {
 			defaultImage: "default-ogImage.jpg",
 			imageAlt: `Превью страницы ${siteHost}`,
 			keywords: "",
-			titleSeparator: "•",
+			titleSeparator: "|",
 			twitterCard: "summary_large_image",
 			twitterSite: "",
 			twitterCreator: "",

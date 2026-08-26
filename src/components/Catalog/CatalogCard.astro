@@ -1,0 +1,115 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import SaveButton from "@/components/Catalog/SaveButton.astro";
+import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import { useTranslations } from "@/i18n";
+import { meshGradient } from "@/utils/lib/meshGradient";
+
+interface Props {
+	card: CollectionEntry<"cards">;
+}
+
+const { card } = Astro.props;
+const { name, facts, logo, url, tags, peoples } = card.data;
+
+const locale = Astro.currentLocale ?? "ru";
+const t = useTranslations(locale);
+const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
+
+/** Домен вместо полного URL: на карточке важен источник, а не путь. */
+const domain = new URL(url).hostname.replace(/^www\./, "");
+
+/*
+ * Раскладка по макету: шапка (лого + пилюля с названием) и кнопка «подробнее»
+ * выступают за края корпуса. Вынос сделан отрицательными отступами в потоке,
+ * а не absolute, — высота карточки остаётся равной содержимому.
+ *
+ * Глубина набирается мягкими тенями и тонким `ring` (не `border` — он не
+ * съедает раскладку соседним контентом), а не сплошными границами: подложка
+ * (мэш-градиент лого, размытый) → корпус → плашка контента, каждый слой
+ * светлее и мягче предыдущего.
+ */
+const glow = meshGradient(name);
+---
+
+<article class="group relative flex flex-col">
+	<div
+		class="-z-10 absolute inset-4 rounded-3xl opacity-30 blur-2xl"
+		style={glow}
+		aria-hidden="true"
+	></div>
+
+	<div class="relative z-20 flex h-16 items-center gap-3 px-5">
+		<div
+			class="shrink-0 rounded-full corner-squircle bg-background shadow-sm ring-1 ring-border/50"
+		>
+			<CardLogo size="lg" name={name} logo={logo} />
+		</div>
+
+		<h2
+			class="flex min-w-0 text-sm flex-1 items-center rounded-2xl bg-background px-4 py-2 font-medium text-foreground shadow-sm ring-1 ring-border/50"
+		>
+			<span class="truncate">{name}</span>
+		</h2>
+
+		<SaveButton cardId={card.id} locale={locale} />
+	</div>
+
+	<div class="-mt-8 relative">
+		<div
+			class="flex flex-col gap-4 rounded-3xl bg-background p-2.5 pt-9 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
+		>
+			<div
+				class="flex flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-7 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
+			>
+				<div class="flex flex-wrap items-center gap-1.5">
+					{tags.map((tag) => (
+							<span class="rounded-lg bg-muted px-2 py-0.5 font-medium text-secondary-foreground text-xs">
+								{tagLabel(locale, tag)}
+							</span>
+						))}
+
+					{peoples.map((people) => (
+							<span class="rounded-lg bg-muted px-2 py-0.5 text-muted-foreground text-xs">
+								{peopleLabel(locale, people)}
+							</span>
+						))}
+				</div>
+
+				<ul class="space-y-2 text-muted-foreground text-sm">
+					{facts.map((fact) => (
+							<li class="flex gap-2.5">
+								<span
+									class="mt-2 h-1 w-1 shrink-0 rounded-full bg-border"
+									aria-hidden="true"
+								/>
+								{fact}
+							</li>
+						))}
+				</ul>
+
+				<div class="mt-auto border-border border-t pt-3">
+					<a
+						href={url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="block truncate text-muted-foreground text-xs underline-offset-4 hover:text-foreground hover:underline"
+					>
+						{domain}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<PrimitiveButton
+		href={href}
+		preset="solid"
+		class="-mt-6 relative z-20 mx-auto shadow-md"
+	>
+		{t("card.more")}
+	</PrimitiveButton>
+</article>

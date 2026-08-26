@@ -1,0 +1,257 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+type Card = CollectionEntry<"cards">;
+
+interface Props {
+	locale: LocaleCode;
+	cards: Card[];
+}
+
+/** Одна плитка ленты. */
+interface Tile {
+	/** id карточки — имя файла в `src/data/cards/` без расширения. */
+	readonly id: string;
+	/**
+	 * Подпись в ленте. Отдельно от `name` карточки: в каталоге имя полное,
+	 * а в ленте плитка должна быть короткой — длинная подпись растягивает
+	 * строку и ускоряет её (см. про длительность ниже).
+	 *
+	 * Подпись одна на обе локали и перекрывает перевод из `cards-en/`,
+	 * поэтому сокращать стоит так, чтобы читалось и на `/en/`.
+	 */
+	readonly title: string;
+}
+
+/*
+ * Состав ленты задан руками, а не выборкой по данным: лента стоит на главной,
+ * и в ней должны быть узнаваемые проекты всех трёх народов, а не то, что
+ * последним попало в каталог.
+ *
+ * Суммарная длина подписей по строкам должна быть примерно равна, и это не
+ * косметика: `--marquee-duration` у строки фиксирована, а дорожка за цикл
+ * проезжает половину своей ширины — значит строка с более длинными подписями
+ * едет заметно быстрее соседних.
+ */
+const PROJECTS: readonly (readonly Tile[])[] = [
+	// Строка 1
+	[
+		{ id: "intertat-media", title: "Интертат" },
+		{ id: "tamyr-channel-channel", title: "Тамыр" },
+		{ id: "atr-channel-channel", title: "Телеканал ATR" },
+		{ id: "tataria-online-media", title: "Tataria Online" },
+		{ id: "azatliq-radiosy-media", title: "Азатлык Радиосы" },
+		{ id: "qha-media", title: "QHA — Qırım Haber Ajansı" },
+		{ id: "media-tatarverse-media", title: "media.tatarverse.cc" },
+	],
+	// Строка 2
+	[
+		{ id: "canli-radio-media", title: "CANLI" },
+		{ id: "tatartelem-school-lessons", title: "TatarTelem" },
+		{ id: "idel-realii-media", title: "Idel.Реалии" },
+		{ id: "tatarlar-info-media", title: "Татарлар.Инфо" },
+		{ id: "qaradeniz-production-channel", title: "QARADENIZ PRODUCTION" },
+		{ id: "bashlang-language", title: "Интерактивный башкирский" },
+	],
+	// Строка 3
+	[
+		{ id: "bulbul-lessons", title: "BÜLBÜL" },
+		{ id: "qirim-news-media", title: "QIRIM.Media" },
+		{ id: "kazan-utlary-media", title: "Казан утлары" },
+		{ id: "tatar-radiosy-media", title: "Татар Радиосы" },
+		{ id: "bashkir-video-channel", title: "BASHKIR VIDEO" },
+		{ id: "vsemirny-kongress-tatar-media", title: "Всемирный конгресс татар" },
+		{ id: "tatarverse-community", title: "tatarverse.cc" },
+	],
+];
+
+/*
+ * Три строки, направления чередуются: влево → вправо → влево. Разные
+ * длительности у соседних строк обязательны — при одинаковых лента читается
+ * как одна плита, ползущая туда-сюда, а не как три независимых потока.
+ */
+const ROWS = [
+	{ direction: "left", duration: 96 },
+	{ direction: "right", duration: 108 },
+	{ direction: "left", duration: 102 },
+] as const;
+
+const { locale, cards } = Astro.props;
+const t = useTranslations(locale);
+
+const cardsById = new Map(cards.map((card) => [card.id, card]));
+
+/*
+ * Опечатка в id или карточка без логотипа роняют сборку. Тихо пропущенная
+ * плитка — это дырка в ленте, которую заметишь только глазами на проде, а
+ * логотип обязателен: без него на его месте была бы монограмма, в ленте это шум.
+ */
+const rows = ROWS.map((row, rowIndex) => {
+	const tiles = PROJECTS[rowIndex];
+	if (!tiles) {
+		throw new Error(
+			`LogoMarquee: в PROJECTS нет строки ${rowIndex + 1} — строк должно быть ${ROWS.length}`,
+		);
+	}
+
+	return {
+		...row,
+		items: tiles.map((tile) => {
+			const card = cardsById.get(tile.id);
+			if (!card) {
+				throw new Error(
+					`LogoMarquee: карточки «${tile.id}» нет в src/data/cards/`,
+				);
+			}
+			if (!card.data.logo) {
+				throw new Error(`LogoMarquee: у карточки «${tile.id}» нет логотипа`);
+			}
+
+			return { id: tile.id, title: tile.title, logo: card.data.logo };
+		}),
+	};
+});
+
+/** Максимальный css-размер плитки — от него считается исходник растра. */
+const LOGO_PX = 120;
+---
+
+<section class="mx-auto max-w-2xl px-5 py-16 text-center">
+	<h2 class="font-black text-4xl text-balance sm:text-5xl">
+		{t("marquee.cta.title")}
+	</h2>
+
+	<p class="mt-5 text-balance text-lg text-muted-foreground">
+		{t("marquee.cta.description")}
+	</p>
+
+	<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+		<PrimitiveButton
+			href={getRelativeLocaleUrl(locale, "catalog")}
+			preset="solid"
+			size="lg"
+		>
+			{t("marquee.cta.catalog")}
+		</PrimitiveButton>
+		<PrimitiveButton
+			href={getRelativeLocaleUrl(locale, "add")}
+			preset="outline"
+			size="lg"
+		>
+			{t("marquee.cta.add")}
+		</PrimitiveButton>
+	</div>
+</section>
+
+<!--
+	`no-container` вынимает секцию из колонки `Container`: лента должна уезжать
+	за край экрана, а не упираться в `max-w-6xl` — обрезанная по ширине колонки,
+	она читается как список с многоточием, а не как бесконечный поток.
+-->
+<section
+	aria-label={t("marquee.label")}
+	class="no-container overflow-hidden py-6"
+>
+	<div class="flex flex-col gap-4">
+		{rows.map((row) => (
+				<div
+					class="marquee"
+					data-direction={row.direction}
+					style={`--marquee-duration:${row.duration}s`}
+				>
+					<div class="marquee__track">
+						{/*
+						 * Две одинаковые копии подряд: анимация сдвигает дорожку ровно
+						 * на 50% её ширины, и в момент возврата в начало кадр совпадает
+						 * с предыдущим — стык не виден. Копия — `aria-hidden`, чтобы
+						 * скринридер не читал каталог дважды.
+						 */}
+						{[false, true].map((isClone) => (
+							<div class="marquee__group" aria-hidden={isClone ? "true" : undefined}>
+								{row.items.map((tile) => (
+									<a
+										href={getRelativeLocaleUrl(locale, `projects/${tile.id}`)}
+										class="flex shrink-0 items-center gap-3 rounded-2xl px-2 py-1 transition hover:bg-muted/60"
+										tabindex={isClone ? -1 : undefined}
+									>
+										<Image
+											src={tile.logo}
+											alt={tile.title}
+											width={LOGO_PX}
+											height={LOGO_PX}
+											densities={[1, 2]}
+											format="webp"
+											loading="lazy"
+											decoding="async"
+											class="corner-squircle shrink-0 rounded-full border border-border bg-background object-cover size-20"
+										/>
+										<span class="whitespace-nowrap font-semibold text-foreground text-2xl tracking-tight">
+											{tile.title}
+										</span>
+									</a>
+								))}
+							</div>
+						))}
+					</div>
+				</div>
+			))}
+	</div>
+</section>
+
+<style>
+.marquee {
+	--marquee-gap: 2.5rem;
+	overflow: hidden;
+}
+
+.marquee__track {
+	display: flex;
+	width: max-content;
+	animation: marquee var(--marquee-duration) linear infinite;
+	will-change: transform;
+}
+
+/*
+ * Зазор живёт внутри группы (`gap` + завершающий `padding`), а между группами
+ * его нет. Будь `gap` на самой дорожке, её половина отличалась бы от ширины
+ * одной группы ровно на половину зазора — и на каждом обороте лента дёргалась
+ * бы на этот остаток.
+ */
+.marquee__group {
+	display: flex;
+	align-items: center;
+	gap: var(--marquee-gap);
+	padding-inline-end: var(--marquee-gap);
+}
+
+.marquee[data-direction="right"] .marquee__track {
+	animation-direction: reverse;
+}
+
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+	animation-play-state: paused;
+}
+
+@keyframes marquee {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.marquee__track {
+		animation: none;
+	}
+
+	/* Без движения вторая копия — просто дубликат за краем экрана. */
+	.marquee__group[aria-hidden="true"] {
+		display: none;
+	}
+}
+</style>

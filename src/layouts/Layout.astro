@@ -1,12 +1,14 @@
 ---
+import { Font } from "astro:assets";
 import type { Props as ContainerProps } from "@/components/partials/Container.astro";
 import Container from "@/components/partials/Container.astro";
 import GoogleTagManager from "@/components/SEO/Analytics/GoogleTagManager.astro";
 import YandexMetrika from "@/components/SEO/Analytics/YandexMetrika.astro";
 import SEO from "@/components/SEO/SEO.astro";
-import "@/styles/tailwind.css";
-import { config } from "main.config";
 import type { SeoKeywords, SeoPageType } from "@/config/types";
+import "@/styles/tailwind.css";
+import { ClientRouter } from "astro:transitions";
+import { config } from "main.config";
 
 interface Props {
 	title?: string;
@@ -80,14 +82,69 @@ const containerAttrs = {
 
 <html lang={htmlLang} class="scroll-smooth subpixel-antialiased">
 	<head>
-		{config.site.analytics.googleTagManager.enabled && (
+		<Font cssVariable="--font-inter" preload />
+		{
+			config.site.analytics.googleTagManager.enabled && (
 				<GoogleTagManager gtmId={config.site.analytics.googleTagManager.id} />
-			)}
+			)
+		}
 
-		{config.site.analytics.yandexMetrika.enabled && (
+		{
+			config.site.analytics.yandexMetrika.enabled && (
 				<YandexMetrika counterId={config.site.analytics.yandexMetrika.id} />
-			)}
+			)
+		}
 		<SEO {...seoProps} />
+		<!-- <ClientRouter /> -->
+		<script is:inline>
+			// Блокировка зума: pinch/двойной тап на тач-устройствах,
+			// Ctrl/Cmd + колесо и Ctrl/Cmd + "+/-/0" на десктопе.
+			(() => {
+				const stop = (event) => {
+					event.preventDefault();
+				};
+
+				for (const type of ["gesturestart", "gesturechange", "gestureend"]) {
+					document.addEventListener(type, stop, { passive: false });
+				}
+
+				document.addEventListener(
+					"wheel",
+					(event) => {
+						if (event.ctrlKey || event.metaKey) stop(event);
+					},
+					{ passive: false },
+				);
+
+				document.addEventListener(
+					"keydown",
+					(event) => {
+						if (!(event.ctrlKey || event.metaKey)) return;
+						if (["+", "=", "-", "_", "0"].includes(event.key)) stop(event);
+					},
+					{ passive: false },
+				);
+
+				document.addEventListener(
+					"touchstart",
+					(event) => {
+						if (event.touches.length > 1) stop(event);
+					},
+					{ passive: false },
+				);
+
+				let lastTouchEnd = 0;
+				document.addEventListener(
+					"touchend",
+					(event) => {
+						const now = performance.now();
+						if (now - lastTouchEnd < 300) stop(event);
+						lastTouchEnd = now;
+					},
+					{ passive: false },
+				);
+			})();
+		</script>
 	</head>
 	<body>
 		<Container {...containerAttrs}>

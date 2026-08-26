@@ -1,0 +1,161 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import BigWordBottom from "@/components/partials/BigWordBottom.astro";
+import Tooltip from "@/components/partials/Tooltip.astro";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+interface Props {
+	locale: LocaleCode;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+/** Колонка навигации по сайту — тот же набор, что в шапке. */
+const navLinks = [
+	{ href: getRelativeLocaleUrl(locale, "catalog"), label: t("nav.catalog") },
+	{ href: getRelativeLocaleUrl(locale, "search"), label: t("nav.search") },
+	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
+	{ href: getRelativeLocaleUrl(locale, "add"), label: t("nav.add") },
+];
+
+/*
+ * Вторая колонка — наружу. Раньше это были два абзаца прозы («часть
+ * tatarverse.cc», «откройте pull request в репозитории»); ссылка в колонке
+ * ведёт туда же, но её видно с одного взгляда, а не после чтения предложения.
+ *
+ * Подпись репозитория — «Открытый исходный код», а не «GitHub»: посетителю
+ * важно, что код открыт и его можно проверить/форкнуть, а не то, на какой
+ * именно площадке он лежит.
+ */
+const externalLinks = [
+	{ href: "https://tatarverse.cc", label: "tatarverse.cc" },
+	{
+		href: "https://github.com/proxima812/media.tatarverse.cc",
+		label: t("footer.openSource"),
+		icon: "mdi:github",
+	},
+	{
+		href: "https://vk.ru/the_tatarverse",
+		label: "VK",
+		icon: "mdi:vk",
+	},
+	{
+		href: "https://instagram.com/the_tatarverse",
+		label: "Instagram",
+		icon: "mdi:instagram",
+	},
+	{
+		href: "https://t.me/the_tatarverse",
+		label: "Telegram",
+		icon: "mdi:telegram",
+	},
+];
+
+/**
+ * Правовые страницы — тут вместо статичной строки «Все права защищены»:
+ * текст ничего не даёт посетителю, а ссылка на реальный документ даёт.
+ */
+const legalLinks = [
+	{ href: getRelativeLocaleUrl(locale, "privacy"), label: t("nav.privacy") },
+	{ href: getRelativeLocaleUrl(locale, "terms"), label: t("nav.terms") },
+	{ href: getRelativeLocaleUrl(locale, "sources"), label: t("nav.sources") },
+];
+
+/** Год — на билде, не в браузере: страница статическая, значение одно для всех. */
+const year = new Date().getFullYear();
+
+const linkClass =
+	"text-primary-foreground/70 transition hover:text-primary-foreground";
+---
+
+<footer
+	class="mt-24 no-container overflow-hidden rounded-t-[2rem] bg-primary pt-16 text-base text-primary-foreground sm:rounded-t-[2.5rem] sm:pt-20"
+>
+	<div class="container mx-auto max-w-6xl px-5 sm:px-8">
+		<div
+			class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:gap-24"
+		>
+			<div class="max-w-sm space-y-5">
+				<a
+					href={getRelativeLocaleUrl(locale, "")}
+					class="group relative inline-block"
+					aria-label="media.tatarverse"
+				>
+					<img
+						src="/media-tatarverse.svg"
+						alt=""
+						width="48"
+						height="48"
+						class="size-12 brightness-0 invert"
+					>
+					<Tooltip label={t("nav.home")} />
+				</a>
+				<p class="text-primary-foreground/60 text-sm">
+					{t("meta.description")}
+				</p>
+			</div>
+
+			<nav aria-label={t("footer.nav")} class="lg:min-w-44">
+				<ul class="space-y-3">
+					{navLinks.map((link) => (
+							<li>
+								<a href={link.href} class={linkClass}>
+									{link.label}
+								</a>
+							</li>
+						))}
+				</ul>
+			</nav>
+
+			<nav aria-label={t("footer.external")} class="lg:min-w-44">
+				<ul class="space-y-3">
+					{externalLinks.map((link) => (
+							<li>
+								<a
+									href={link.href}
+									class={cn("flex items-center gap-2", linkClass)}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{link.icon && (
+										<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
+									)}
+									{link.label}
+								</a>
+							</li>
+						))}
+				</ul>
+			</nav>
+		</div>
+
+		<div
+			class="mt-20 flex flex-col gap-2 border-primary-foreground/15 border-t pt-6 pb-12 text-primary-foreground/50 text-sm sm:flex-row sm:items-center sm:justify-between"
+		>
+			<p>© {year} media.tatarverse</p>
+			<nav aria-label={t("footer.legal")}>
+				<ul class="flex flex-wrap gap-x-6 gap-y-2">
+					{legalLinks.map((link) => (
+							<li>
+								<a href={link.href} class={linkClass}>
+									{link.label}
+								</a>
+							</li>
+						))}
+				</ul>
+			</nav>
+		</div>
+	</div>
+</footer>
+
+<div class="no-container -mt-12 -mb-18 bg-primary">
+	<BigWordBottom
+		text="Муэллиф"
+		color1="from-primary-foreground"
+		color2="to-primary-foreground/25"
+		fade="after:to-primary"
+	/>
+</div>

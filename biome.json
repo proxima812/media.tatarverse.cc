@@ -11,7 +11,8 @@
 			"!!**/dist",
 			"!**/src/components/SEO/Analytics",
 			"!**/public",
-			"!**/*.md"
+			"!**/*.md",
+			"!**/docs/ui/xima-ui"
 		]
 	},
 	"formatter": {
