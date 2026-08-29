@@ -40,6 +40,7 @@ export default {
 	"footer.nav": "Footer navigation",
 	"footer.sections": "Sections",
 	"footer.social": "Social",
+	"footer.material": "Material",
 	"footer.email": "Email",
 	"footer.external": "External links",
 	"footer.legal": "Legal",

@@ -46,6 +46,7 @@ export default {
 	"footer.nav": "Дополнительная навигация",
 	"footer.sections": "Разделы",
 	"footer.social": "Социальные сети",
+	"footer.material": "Материал",
 	"footer.email": "Почта",
 	"footer.external": "Внешние ссылки",
 	"footer.legal": "Правовая информация",

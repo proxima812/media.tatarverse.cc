@@ -51,11 +51,6 @@ const socialLinks = [
 		icon: "mdi:at",
 	},
 	{
-		href: "https://github.com/proxima812/media.tatarverse.cc",
-		label: t("footer.openSource"),
-		icon: "mdi:github",
-	},
-	{
 		href: "mailto:kamil.mirikhan@gmail.com",
 		label: t("footer.email"),
 		icon: "mdi:email",
@@ -64,6 +59,19 @@ const socialLinks = [
 		href: "https://tatarverse.cc",
 		label: "tatarverse.cc",
 		icon: "mdi:link-variant",
+	},
+];
+
+/*
+ * «Материал» - про сам сайт как источник, а не про связь с редакцией:
+ * исходный код проверяют и форкают, а не подписываются на него, поэтому
+ * ему не место в колонке соцсетей.
+ */
+const materialLinks = [
+	{
+		href: "https://github.com/proxima812/media.tatarverse.cc",
+		label: t("footer.openSource"),
+		icon: "mdi:github",
 	},
 ];
 
@@ -93,7 +101,7 @@ const headingClass =
 >
 	<div class="container mx-auto max-w-6xl px-5 sm:px-8">
 		<div
-			class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:gap-24"
+			class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto] lg:gap-20"
 		>
 			<div class="max-w-sm space-y-5">
 				<a
@@ -138,6 +146,25 @@ const headingClass =
 									class={cn("flex items-center gap-2", linkClass)}
 									target={link.href.startsWith("mailto:") ? undefined : "_blank"}
 									rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+								>
+									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
+									{link.label}
+								</a>
+							</li>
+						))}
+				</ul>
+			</nav>
+
+			<nav aria-label={t("footer.material")} class="lg:min-w-44">
+				<h2 class={headingClass}>{t("footer.material")}</h2>
+				<ul class="space-y-3">
+					{materialLinks.map((link) => (
+							<li>
+								<a
+									href={link.href}
+									class={cn("flex items-center gap-2", linkClass)}
+									target="_blank"
+									rel="noopener noreferrer"
 								>
 									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
 									{link.label}
