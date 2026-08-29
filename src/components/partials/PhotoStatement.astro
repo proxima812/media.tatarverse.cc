@@ -52,7 +52,7 @@ const slides = photos.map((photo, index) => ({
 const PHOTO_WIDTH = 420;
 
 /** Сколько один кадр держится на экране, включая перекрестное затухание. */
-const SLIDE_SECONDS = 5;
+const SLIDE_SECONDS = 6;
 const total = slides.length * SLIDE_SECONDS;
 
 /*
@@ -67,15 +67,29 @@ const total = slides.length * SLIDE_SECONDS;
  * CSS пришлось бы пересчитывать вручную - о чем никто не вспомнит.
  */
 const share = 100 / Math.max(slides.length, 1);
-/** Доля цикла на саму шторку. Остальное кадр просто стоит. */
-const reveal = Math.min(share * 0.35, 12);
+/**
+ * Доля цикла на саму шторку. Половина смены: чем короче переход, тем резче
+ * он читается - на 10-12% кадр не выезжает, а вздрагивает.
+ */
+const reveal = share * 0.5;
 /** На сколько содержимое кадра сдвинуто в момент входа и выхода, как в оригинале. */
 const SHIFT_PX = 30;
+
+/*
+ * Плавность задана внутри keyframes, а не на самой анимации: общий
+ * `ease-in-out` растягивается на весь цикл, включая участки, где кадр просто
+ * стоит - и переход то разгоняется, то тормозит без причины. Здесь разгон и
+ * торможение живут ровно в своем сегменте.
+ *
+ * Кривая - easeOutQuint: резкий старт и долгий выход, за счет чего движение
+ * успокаивается, а не упирается в конец.
+ */
+const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const pct = (value: number) => `${value.toFixed(2)}%`;
 
 const keyframes = `@keyframes photo-statement-reveal {
-	0% { z-index: 2; clip-path: inset(100% 0 0 0) }
+	0% { z-index: 2; clip-path: inset(100% 0 0 0); animation-timing-function: ${EASE} }
 	${pct(reveal)} { z-index: 2; clip-path: inset(0) }
 	${pct(share)} { z-index: 1; clip-path: inset(0) }
 	100% { z-index: 0; clip-path: inset(0) }
@@ -85,11 +99,14 @@ const keyframes = `@keyframes photo-statement-reveal {
  * Контр-ход содержимого: пока шторка идет вверх, кадр внутри догоняет ее
  * снизу, а уходя - сдвигается вверх и освобождает место следующему. Без
  * этого шторка читается как жалюзи, а не как смена кадра.
+ *
+ * Разрыв между последним кадром (-30px) и первым (+30px) на стыке цикла
+ * не виден: в этот момент слайд закрыт шторкой наглухо.
  */
 @keyframes photo-statement-shift {
-	0% { transform: translate3d(0, ${SHIFT_PX}px, 0) }
-	${pct(reveal)} { transform: translate3d(0, 0, 0) }
-	${pct(share)} { transform: translate3d(0, 0, 0) }
+	0% { transform: translate3d(0, ${SHIFT_PX}px, 0); animation-timing-function: ${EASE} }
+	${pct(reveal)} { transform: translate3d(0, 0, 0); animation-timing-function: ${EASE} }
+	${pct(share)} { transform: translate3d(0, 0, 0); animation-timing-function: ${EASE} }
 	${pct(share + reveal)} { transform: translate3d(0, -${SHIFT_PX}px, 0) }
 	100% { transform: translate3d(0, -${SHIFT_PX}px, 0) }
 }`;
@@ -174,7 +191,7 @@ const keyframes = `@keyframes photo-statement-reveal {
 	 * друг на друге и до первой смены виден только последний.
 	 */
 	.photo-statement__slide {
-		animation: photo-statement-reveal var(--slide-total) ease-in-out infinite
+		animation: photo-statement-reveal var(--slide-total) linear infinite
 			backwards;
 		animation-delay: var(--slide-delay);
 		will-change: clip-path;
@@ -182,7 +199,7 @@ const keyframes = `@keyframes photo-statement-reveal {
 
 	/* Картинка и подпись едут одинаково, каждая своим узлом. */
 	.photo-statement__shift {
-		animation: photo-statement-shift var(--slide-total) ease-in-out infinite
+		animation: photo-statement-shift var(--slide-total) linear infinite
 			backwards;
 		animation-delay: var(--slide-delay);
 		will-change: transform;
