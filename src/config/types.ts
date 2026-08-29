@@ -1,12 +1,12 @@
 /**
  * Типы конфигурации стартера.
  *
- * Значения живут в `main.config.ts` — это единственный файл, который правят
+ * Значения живут в `main.config.ts` - это единственный файл, который правят
  * под новый проект. Здесь только контракт.
  *
  * Принцип: невалидное состояние должно быть невыразимо в типах.
  * Поэтому фичи, которым нужны креды (analytics, IndexNow), описаны
- * discriminated union'ами — включить их без ID/ключа нельзя.
+ * discriminated union'ами - включить их без ID/ключа нельзя.
  */
 
 /** Абсолютный URL сайта с завершающим слэшем: `https://example.com/` */
@@ -16,8 +16,8 @@ export type SiteUrl = `https://${string}/`;
 export type Locale = `${string}-${string}`;
 
 /**
- * Короткий код маршрутизации i18n: `ru`, `en`. Не путать с {@link Locale} —
- * тот полный BCP-47 для `site.language`/`og.locale`, этот — сегмент URL и
+ * Короткий код маршрутизации i18n: `ru`, `en`. Не путать с {@link Locale} -
+ * тот полный BCP-47 для `site.language`/`og.locale`, этот - сегмент URL и
  * ключ словаря в `src/i18n/locales/`.
  */
 export type LocaleCode = string;
@@ -28,7 +28,7 @@ export type HexColor = `#${string}`;
 /** Container ID Google Tag Manager: `GTM-XXXXXXX` */
 export type GtmId = `GTM-${string}`;
 
-/** Ключ IndexNow: 8–128 символов `[A-Za-z0-9-]` */
+/** Ключ IndexNow: 8-128 символов `[A-Za-z0-9-]` */
 export type IndexNowKey = string;
 
 export type SeoPageType = "website" | "article";
@@ -36,8 +36,8 @@ export type SeoKeywords = string | string[];
 export type TwitterCard = "summary" | "summary_large_image";
 
 /**
- * Фичи, которым не нужны дополнительные данные — только вкл/выкл.
- * Всё, что требует ключей, вынесено в отдельные union-блоки ниже.
+ * Фичи, которым не нужны дополнительные данные - только вкл/выкл.
+ * Все, что требует ключей, вынесено в отдельные union-блоки ниже.
  */
 export interface FeatureFlags {
 	/** `/site.webmanifest` + `<link rel="manifest">` */
@@ -48,7 +48,7 @@ export interface FeatureFlags {
 	readonly llms: boolean;
 }
 
-/** Провайдер аналитики: включённый вариант обязан нести свой ID. */
+/** Провайдер аналитики: включенный вариант обязан нести свой ID. */
 export type AnalyticsProvider<TId> =
 	| { readonly enabled: false }
 	| { readonly enabled: true; readonly id: TId };
@@ -62,7 +62,7 @@ export interface AnalyticsConfig {
 }
 
 /**
- * IndexNow. Включённый вариант обязан нести ключ — стартер сам отдаст
+ * IndexNow. Включенный вариант обязан нести ключ - стартер сам отдаст
  * `/<key>.txt` для верификации, руками файл создавать не нужно.
  *
  * Ключ получают тут: https://www.bing.com/indexnow/getstarted
@@ -79,7 +79,7 @@ export type IndexNowConfig =
 /**
  * Маршрутизация i18n. `defaultLocale` обязан входить в `locales`.
  * Дефолтная локаль не получает префикс в URL (`prefixDefaultLocale: false` в
- * `astro.config.mjs`) — `/about`, а не `/ru/about`; остальные — `/en/about`.
+ * `astro.config.mjs`) - `/about`, а не `/ru/about`; остальные - `/en/about`.
  */
 export interface I18nConfig {
 	readonly defaultLocale: LocaleCode;
@@ -118,6 +118,19 @@ export interface ThemeColors {
 	readonly background: HexColor;
 }
 
+/**
+ * Цитата автора на главной. Текст лежит в конфиге, а не в разметке страницы,
+ * чтобы правка отзыва не требовала лезть в `src/pages/index.astro`.
+ * Фото остается импортом ассета в самой странице - `astro:assets` обязан
+ * видеть импорт статически, из строки в конфиге он картинку не соберет.
+ */
+export interface QuoteConfig {
+	readonly text: string;
+	readonly name: string;
+	/** Именно `position`, а не `role` - см. пропсы `Quote.astro`. */
+	readonly position: string;
+}
+
 export interface SiteConfig {
 	readonly url: SiteUrl;
 	readonly language: Locale;
@@ -125,6 +138,7 @@ export interface SiteConfig {
 	readonly theme: { readonly colors: ThemeColors };
 	readonly verifications: readonly SiteVerification[];
 	readonly analytics: AnalyticsConfig;
+	readonly quote: QuoteConfig;
 }
 
 export interface AppConfig {

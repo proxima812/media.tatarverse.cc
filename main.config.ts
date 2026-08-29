@@ -4,7 +4,7 @@
  * Контракт и типы: `src/config/types.ts`
  * Проверки на билде: `src/config/validate.ts`
  *
- * Всё, что помечено `enabled: true`, обязано нести свои данные — TypeScript
+ * Все, что помечено `enabled: true`, обязано нести свои данные - TypeScript
  * не даст включить аналитику без ID или IndexNow без ключа.
  */
 import type { AppConfig, SiteVerification } from "./src/config/types";
@@ -41,13 +41,13 @@ export const config: AppConfig = {
 
 	// ── IndexNow ──────────────────────────────────────────────────────
 	// Ключ: https://www.bing.com/indexnow/getstarted
-	// Файл верификации `/<key>.txt` стартер отдаёт сам.
+	// Файл верификации `/<key>.txt` стартер отдает сам.
 	// Включение: { enabled: true, key: "ваш-ключ" }
 	indexNow: { enabled: false },
 
 	// ── i18n ──────────────────────────────────────────────────────────
 	// `defaultLocale` не получает префикс в URL: `/about`, а не `/ru/about`.
-	// Остальные локали — `/en/about`. Словари — в `src/i18n/locales/`.
+	// Остальные локали - `/en/about`. Словари - в `src/i18n/locales/`.
 	i18n: {
 		defaultLocale: "ru",
 		locales: ["ru", "en"],
@@ -91,6 +91,15 @@ export const config: AppConfig = {
 		analytics: {
 			googleTagManager: { enabled: false },
 			yandexMetrika: { enabled: false },
+		},
+
+		// ── Цитата автора на главной ────────────────────────────────────
+		// Фото - импорт ассета в `src/pages/index.astro`, здесь только текст.
+		quote: {
+			text:
+				"Не люблю искать долго. Проектов по татарскому, башкирскому и крымскотатарскому много, но они разбросаны по сети - половину находишь случайно. Здесь они в одном месте, и нужное находится быстро и сразу.",
+			name: "Камиль М. И.",
+			position: "Разрабочик, автор проекта",
 		},
 	},
 };

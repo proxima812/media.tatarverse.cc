@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import authorPhoto from "@/assets/author.jpg";
 import CatalogStats from "@/components/CatalogStats/CatalogStats.astro";
 import MainTitle from "@/components/MainTitle.astro";
 import FAQ from "@/components/partials/FAQ.astro";
@@ -9,9 +9,11 @@ import Header from "@/components/partials/Header.astro";
 import LogoMarquee from "@/components/partials/LogoMarquee.astro";
 import LogoStack from "@/components/partials/LogoStack.astro";
 import Quote from "@/components/partials/Quote.astro";
-import VideoShowcase from "@/components/partials/VideoShowcase.astro";
+import ImageShowcase from "@/components/partials/ImageShowcase.astro";
+import { config } from "main.config";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
+import { getCollection } from "astro:content";
 
 const t = useTranslations("ru");
 const cards = await getCollection("cards");
@@ -27,13 +29,14 @@ const cards = await getCollection("cards");
 	<Header locale="ru" />
 	<LogoStack />
 	<MainTitle locale="ru" />
-	<VideoShowcase locale="ru" />
+	<ImageShowcase locale="ru" />
 	<LogoMarquee locale="ru" cards={cards} />
 	<Features />
 	<Quote
-		quote="Being able to pull Mobbin's patterns, knowledge, and images directly into my brainstorming sessions with Claude is incredible. It's something I've always had to do manually until now."
-		name="Имя автора"
-		role="Должность, компания"
+		photo={authorPhoto}
+		quote={config.site.quote.text}
+		name={config.site.quote.name}
+		position={config.site.quote.position}
 	/>
 	<CatalogStats locale="ru" cards={cards} />
 	<FAQ />
