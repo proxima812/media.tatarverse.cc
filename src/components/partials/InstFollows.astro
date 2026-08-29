@@ -19,7 +19,16 @@ const { title = "Спасибо Вам за поддержку." } = Astro.props
  * Нечетная длина округляется вверх, иначе лишний хендл выпал бы молча.
  */
 const perRow = Math.ceil(followers.length / 2);
-const rows = [followers.slice(0, perRow), followers.slice(perRow)];
+
+/*
+ * Направления встречные: одинаковые превратили бы две строки в одну плиту,
+ * ползущую вбок. Длительности тоже разные - при равных строки идут синхронно
+ * и связь между соседними хендлами читается как постоянная.
+ */
+const rows = [
+	{ items: followers.slice(0, perRow), direction: "left", duration: 64 },
+	{ items: followers.slice(perRow), direction: "right", duration: 72 },
+] as const;
 ---
 
 <section class="py-16 sm:py-24">
@@ -30,9 +39,9 @@ const rows = [followers.slice(0, perRow), followers.slice(perRow)];
 	</h2>
 
 	<!--
-		Строки не переносятся и уезжают за край колонки: маска гасит их по
-		краям, и обрезанный хендл читается как «список продолжается», а не как
-		случайно обрубленное имя.
+		Строки едут навстречу друг другу, маска гасит их по краям колонки:
+		обрезанный хендл читается как «список продолжается», а не как случайно
+		обрубленное имя.
 
 		`select-none` + `pointer-events-none`: это витрина, а не навигация -
 		хендлы не кликаются и не выделяются, курсор проходит сквозь них.
@@ -41,21 +50,84 @@ const rows = [followers.slice(0, perRow), followers.slice(perRow)];
 		class="mt-10 select-none space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
 	>
 		{rows.map((row) => (
-			<ul
-				class="pointer-events-none flex flex-nowrap justify-center gap-x-8 px-5 sm:gap-x-12"
+			<div
+				class="marquee"
+				data-direction={row.direction}
+				style={`--marquee-duration:${row.duration}s`}
 				aria-hidden="true"
 			>
-				{row.map((follower) => (
-					<li class="flex shrink-0 items-center gap-2 text-muted-foreground">
-						<Icon
-							name="tabler:brand-instagram"
-							class="size-5 shrink-0"
-							aria-hidden="true"
-						/>
-						<span class="font-medium text-sm sm:text-base">{follower.handle}</span>
-					</li>
-				))}
-			</ul>
+				<div class="marquee__track pointer-events-none">
+					{/*
+					 * Две одинаковые копии подряд: анимация сдвигает дорожку ровно
+					 * на 50% ее ширины, и в момент возврата в начало кадр совпадает
+					 * с предыдущим - стык не виден.
+					 */}
+					{[false, true].map(() => (
+						<ul class="marquee__group">
+							{row.items.map((follower) => (
+								<li class="flex shrink-0 items-center gap-2 text-muted-foreground">
+									<Icon
+										name="tabler:brand-instagram"
+										class="size-5 shrink-0"
+										aria-hidden="true"
+									/>
+									<span class="font-medium text-sm sm:text-base">
+										{follower.handle}
+									</span>
+								</li>
+							))}
+						</ul>
+					))}
+				</div>
+			</div>
 		))}
 	</div>
 </section>
+
+<style>
+.marquee {
+	--marquee-gap: 2rem;
+	overflow: hidden;
+}
+
+.marquee__track {
+	display: flex;
+	width: max-content;
+	animation: inst-follows var(--marquee-duration) linear infinite;
+	will-change: transform;
+}
+
+/*
+ * Зазор живет внутри группы (`gap` + завершающий `padding`), а между группами
+ * его нет. Будь `gap` на самой дорожке, ее половина отличалась бы от ширины
+ * одной группы ровно на половину зазора - и на каждом обороте лента дергалась
+ * бы на этот остаток.
+ */
+.marquee__group {
+	display: flex;
+	align-items: center;
+	gap: var(--marquee-gap);
+	padding-inline-end: var(--marquee-gap);
+}
+
+.marquee[data-direction="right"] .marquee__track {
+	animation-direction: reverse;
+}
+
+@keyframes inst-follows {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.marquee__track {
+		animation: none;
+	}
+
+	/* Без движения вторая копия - просто дубликат за краем экрана. */
+	.marquee__group:last-child {
+		display: none;
+	}
+}
+</style>
