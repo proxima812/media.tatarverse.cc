@@ -1,0 +1,96 @@
+---
+import { Image } from "astro:assets";
+import { meshGradient } from "@/utils/lib/meshGradient";
+
+/**
+ * Заголовок - снимок - пояснение в одну строку. Смысл раскладки в том, что
+ * снимок стоит между двумя текстами и читается как то, о чем они говорят:
+ * слева утверждение, справа расшифровка, между ними сам предмет разговора.
+ */
+interface Props {
+	title?: string;
+	description?: string;
+	/**
+	 * Снимок - импортированный ассет, а не путь строкой: так `astro:assets`
+	 * сам сделает webp и версии под плотность экрана. Нет снимка - рисуется
+	 * мэш-градиент, как у карточек без логотипа и у `Quote.astro`.
+	 */
+	photo?: ImageMetadata;
+	/** Подпись поверх снимка; `captionAuthor` - выделенная пилюля в ее конце. */
+	caption?: string;
+	captionAuthor?: string;
+}
+
+/*
+ * Дефолты - заглушка, как в `Quote.astro`: реальный снимок и текст
+ * подставляются пропами, но компонент должен выглядеть готовым и без них.
+ */
+const {
+	photo,
+	title = "Know what you're looking at.",
+	description = "Cosmos researches images - surfacing the artist, source, and story.",
+	caption = "Editorial photography by",
+	captionAuthor = "Guiri",
+} = Astro.props;
+
+/** Ширина снимка в css-пикселях - от нее считается исходник растра. */
+const PHOTO_WIDTH = 420;
+---
+
+<section class="px-5 py-16 sm:py-24">
+	<!--
+		Колонки текста - `1fr` каждая, снимок - `auto`: так он остается ровно
+		по центру секции независимо от того, что заголовок длиннее описания.
+		Текст прижат к снимку с обеих сторон (`text-right` / `text-left`),
+		иначе между ним и фотографией повисает случайная дыра.
+	-->
+	<div
+		class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-12"
+	>
+		<h2
+			class="text-balance font-black text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-right lg:text-6xl"
+		>
+			{title}
+		</h2>
+
+		<figure class="relative mx-auto w-full max-w-[420px]">
+			{photo ? (
+				<Image
+					src={photo}
+					alt=""
+					width={PHOTO_WIDTH}
+					height={PHOTO_WIDTH * 1.4}
+					densities={[1, 2]}
+					format="webp"
+					class="aspect-[3/4] w-full rounded-2xl corner-squircle object-cover"
+				/>
+			) : (
+				<div
+					class="aspect-[3/4] w-full rounded-2xl corner-squircle"
+					style={meshGradient(captionAuthor)}
+					aria-hidden="true"
+				/>
+			)}
+
+			<!--
+				Подпись лежит поверх снимка по центру. `drop-shadow` вместо
+				подложки на всю строку: затемнять кадр целиком ради одной
+				строки текста - терять сам снимок, а тень читается на любом фоне.
+			-->
+			<figcaption
+				class="absolute inset-x-4 top-1/2 flex -translate-y-1/2 flex-wrap items-center justify-center gap-2 text-center font-medium text-sm text-white drop-shadow-[0_1px_6px_rgb(0_0_0/0.6)] sm:text-base"
+			>
+				{caption}
+				<span class="rounded-full bg-white/25 px-3 py-1 backdrop-blur-sm">
+					{captionAuthor}
+				</span>
+			</figcaption>
+		</figure>
+
+		<p
+			class="text-balance text-lg text-muted-foreground leading-snug sm:text-xl lg:text-2xl"
+		>
+			{description}
+		</p>
+	</div>
+</section>
