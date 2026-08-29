@@ -14,50 +14,12 @@ interface Props {
 const { title = "Спасибо Вам за поддержку." } = Astro.props;
 
 /*
- * Состав отобран руками, а не срезом списка: в строку помещается короткий
- * хендл, а длинный пришлось бы обрезать многоточием - и вместо благодарности
- * получился бы список огрызков. Порядок = порядок в строках.
+ * Состав и порядок живут в данных, а не здесь: список короткий и ручной,
+ * его правят целиком - компоненту остается только разложить его надвое.
+ * Нечетная длина округляется вверх, иначе лишний хендл выпал бы молча.
  */
-const PICKED = [
-	// Строка 1
-	"@altyn.urda",
-	"@tatar.mosaics",
-	"@tartarrica",
-	"@torikbodin",
-	"@bulat.shams",
-	"@kursainov",
-	"@gumus.sozluk",
-	"@const_proxima",
-	"@mr_beart",
-	"@xrenat",
-	// Строка 2
-	"@tatary_almaty",
-	"@volga_ural_tatar",
-	"@ilnur.mirikhan",
-	"@tatarstan.kz",
-	"@nv_notes",
-	"@djin_grin",
-	"@silkwaykzn",
-	"@tatartalkbot",
-	"@malina.visual",
-	"@lilyrouz",
-] as const;
-
-/*
- * Хендл сверяется с данными: опечатка тут - это благодарность
- * несуществующему аккаунту, и заметить ее можно только глазами на проде.
- */
-const known = new Set(followers.map((follower) => follower.handle));
-for (const handle of PICKED) {
-	if (!known.has(handle)) {
-		throw new Error(
-			`InstFollows: «${handle}» нет в src/data/inst_follows.ts`,
-		);
-	}
-}
-
-const perRow = PICKED.length / 2;
-const rows = [PICKED.slice(0, perRow), PICKED.slice(perRow)];
+const perRow = Math.ceil(followers.length / 2);
+const rows = [followers.slice(0, perRow), followers.slice(perRow)];
 ---
 
 <section class="py-16 sm:py-24">
@@ -84,14 +46,14 @@ const rows = [PICKED.slice(0, perRow), PICKED.slice(perRow)];
 				class="pointer-events-none flex flex-nowrap justify-center gap-x-8 px-5 sm:gap-x-12"
 				aria-hidden="true"
 			>
-				{row.map((handle) => (
+				{row.map((follower) => (
 					<li class="flex shrink-0 items-center gap-2 text-muted-foreground">
 						<Icon
 							name="tabler:brand-instagram"
 							class="size-5 shrink-0"
 							aria-hidden="true"
 						/>
-						<span class="font-medium text-sm sm:text-base">{handle}</span>
+						<span class="font-medium text-sm sm:text-base">{follower.handle}</span>
 					</li>
 				))}
 			</ul>
