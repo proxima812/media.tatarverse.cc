@@ -89,7 +89,16 @@ const containerAttrs = {
 } satisfies ContainerProps;
 ---
 
-<html lang={htmlLang ?? currentLocale} class="scroll-smooth subpixel-antialiased">
+<!--
+	`[touch-action:pan-x_pan-y]` вместо скрипта: одна декларация убирает
+	и pinch-zoom, и зум по двойному тапу. Готового класса нет - `touch-manipulation`
+	гасит только двойной тап, а `touch-pan-x touch-pan-y` конфликтуют между собой
+	(обе пишут `touch-action`, побеждает последняя).
+-->
+<html
+	lang={htmlLang ?? currentLocale}
+	class="scroll-smooth subpixel-antialiased [touch-action:pan-x_pan-y]"
+>
 	<head>
 		<Font cssVariable="--font-inter" preload />
 		{
@@ -105,55 +114,6 @@ const containerAttrs = {
 		}
 		<SEO {...seoProps} />
 		<!-- <ClientRouter /> -->
-		<script is:inline>
-			// Блокировка зума: pinch/двойной тап на тач-устройствах,
-			// Ctrl/Cmd + колесо и Ctrl/Cmd + "+/-/0" на десктопе.
-			(() => {
-				const stop = (event) => {
-					event.preventDefault();
-				};
-
-				for (const type of ["gesturestart", "gesturechange", "gestureend"]) {
-					document.addEventListener(type, stop, { passive: false });
-				}
-
-				document.addEventListener(
-					"wheel",
-					(event) => {
-						if (event.ctrlKey || event.metaKey) stop(event);
-					},
-					{ passive: false },
-				);
-
-				document.addEventListener(
-					"keydown",
-					(event) => {
-						if (!(event.ctrlKey || event.metaKey)) return;
-						if (["+", "=", "-", "_", "0"].includes(event.key)) stop(event);
-					},
-					{ passive: false },
-				);
-
-				document.addEventListener(
-					"touchstart",
-					(event) => {
-						if (event.touches.length > 1) stop(event);
-					},
-					{ passive: false },
-				);
-
-				let lastTouchEnd = 0;
-				document.addEventListener(
-					"touchend",
-					(event) => {
-						const now = performance.now();
-						if (now - lastTouchEnd < 300) stop(event);
-						lastTouchEnd = now;
-					},
-					{ passive: false },
-				);
-			})();
-		</script>
 	</head>
 	<body>
 		<Header locale={currentLocale} />
