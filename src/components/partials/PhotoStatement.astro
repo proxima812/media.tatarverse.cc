@@ -74,24 +74,24 @@ const keyframes = `@keyframes photo-statement {
 }`;
 ---
 
-<section class="px-5 py-16 sm:py-24">
+<section>
 	<!--
-		Колонки текста - `1fr` каждая, снимок - `auto`: так он остается ровно
-		по центру секции независимо от того, что заголовок длиннее описания.
-		Текст прижат к снимку с обеих сторон (`text-right` / `text-left`),
-		иначе между ним и фотографией повисает случайная дыра.
+		Раскладка снята с оригинала (cosmos.so): на узком экране колонка -
+		текст, снимок, текст, на `lg` строка по центру. `justify-center`, а не
+		распорка колонок: тексты жмутся к снимку, иначе между ним и фразой
+		повисает случайная дыра.
 	-->
 	<div
-		class="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_auto_1fr] lg:gap-12"
+		class="mx-auto mt-50 flex w-full max-w-[1300px] flex-col items-center gap-5 px-4 lg:mt-30 lg:flex-row lg:justify-center lg:gap-12 lg:px-0 xl:mt-50 xl:gap-[30px]"
 	>
 		<h2
-			class="text-balance font-black text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-right lg:text-6xl"
+			class="max-w-md text-balance text-center font-black text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-right lg:text-6xl"
 		>
 			{title}
 		</h2>
 
 		<figure
-			class="photo-statement relative mx-auto aspect-[3/4] w-full max-w-[420px]"
+			class="photo-statement relative aspect-[3/4] w-full max-w-[420px] shrink-0"
 			style={`--slide-total:${total}s`}
 		>
 			{slides.map((slide, index) => (
@@ -128,7 +128,7 @@ const keyframes = `@keyframes photo-statement {
 		</figure>
 
 		<p
-			class="text-balance text-lg text-muted-foreground leading-snug sm:text-xl lg:text-2xl"
+			class="max-w-xs text-balance text-center text-lg text-muted-foreground leading-snug sm:text-xl lg:text-left lg:text-2xl"
 		>
 			{description}
 		</p>
