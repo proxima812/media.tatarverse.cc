@@ -14,44 +14,56 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-/** Колонка навигации по сайту - тот же набор, что в шапке. */
-const navLinks = [
+/*
+ * «Разделы» - полная карта сайта, а не сокращенный набор из шапки: подвал
+ * читают именно тогда, когда нужного пункта в шапке не нашлось, и обрезанный
+ * список там бесполезен. Правовые страницы живут отдельной строкой внизу.
+ */
+const sectionLinks = [
+	{ href: getRelativeLocaleUrl(locale, ""), label: t("nav.home") },
 	{ href: getRelativeLocaleUrl(locale, "catalog"), label: t("nav.catalog") },
 	{ href: getRelativeLocaleUrl(locale, "search"), label: t("nav.search") },
+	{ href: getRelativeLocaleUrl(locale, "saved"), label: t("nav.saved") },
 	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
 	{ href: getRelativeLocaleUrl(locale, "add"), label: t("nav.add") },
 ];
 
 /*
- * Вторая колонка - наружу. Раньше это были два абзаца прозы («часть
- * tatarverse.cc», «откройте pull request в репозитории»); ссылка в колонке
- * ведет туда же, но ее видно с одного взгляда, а не после чтения предложения.
- *
- * Подпись репозитория - «Открытый исходный код», а не «GitHub»: посетителю
- * важно, что код открыт и его можно проверить/форкнуть, а не то, на какой
- * именно площадке он лежит.
+ * Соцсети и связь - те же аккаунты, что в подвале tatarverse.cc: у проектов
+ * одна редакция, и разводить их по разным аккаунтам значит терять читателя
+ * на переходе между сайтами. Иконки Threads в наборе mdi нет, поэтому `at`.
  */
-const externalLinks = [
-	{ href: "https://tatarverse.cc", label: "tatarverse.cc" },
+const socialLinks = [
 	{
-		href: "https://github.com/proxima812/media.tatarverse.cc",
-		label: t("footer.openSource"),
-		icon: "mdi:github",
-	},
-	{
-		href: "https://vk.ru/the_tatarverse",
-		label: "VK",
-		icon: "mdi:vk",
+		href: "https://t.me/the_tatarverse",
+		label: "Telegram",
+		icon: "mdi:telegram",
 	},
 	{
 		href: "https://instagram.com/the_tatarverse",
 		label: "Instagram",
 		icon: "mdi:instagram",
 	},
+	{ href: "https://vk.ru/the_tatarverse", label: "VK", icon: "mdi:vk" },
 	{
-		href: "https://t.me/the_tatarverse",
-		label: "Telegram",
-		icon: "mdi:telegram",
+		href: "https://www.threads.com/@the_tatarverse",
+		label: "Threads",
+		icon: "mdi:at",
+	},
+	{
+		href: "https://github.com/proxima812/media.tatarverse.cc",
+		label: t("footer.openSource"),
+		icon: "mdi:github",
+	},
+	{
+		href: "mailto:kamil.mirikhan@gmail.com",
+		label: t("footer.email"),
+		icon: "mdi:email",
+	},
+	{
+		href: "https://tatarverse.cc",
+		label: "tatarverse.cc",
+		icon: "mdi:link-variant",
 	},
 ];
 
@@ -70,6 +82,10 @@ const year = new Date().getFullYear();
 
 const linkClass =
 	"text-primary-foreground/70 transition hover:text-primary-foreground";
+
+/** Заголовок колонки: приглушен и разряжен, чтобы не спорить со ссылками. */
+const headingClass =
+	"mb-4 font-semibold text-primary-foreground/50 text-xs uppercase tracking-wider";
 ---
 
 <footer
@@ -99,9 +115,10 @@ const linkClass =
 				</p>
 			</div>
 
-			<nav aria-label={t("footer.nav")} class="lg:min-w-44">
+			<nav aria-label={t("footer.sections")} class="lg:min-w-44">
+				<h2 class={headingClass}>{t("footer.sections")}</h2>
 				<ul class="space-y-3">
-					{navLinks.map((link) => (
+					{sectionLinks.map((link) => (
 							<li>
 								<a href={link.href} class={linkClass}>
 									{link.label}
@@ -111,19 +128,18 @@ const linkClass =
 				</ul>
 			</nav>
 
-			<nav aria-label={t("footer.external")} class="lg:min-w-44">
+			<nav aria-label={t("footer.social")} class="lg:min-w-44">
+				<h2 class={headingClass}>{t("footer.social")}</h2>
 				<ul class="space-y-3">
-					{externalLinks.map((link) => (
+					{socialLinks.map((link) => (
 							<li>
 								<a
 									href={link.href}
 									class={cn("flex items-center gap-2", linkClass)}
-									target="_blank"
-									rel="noopener noreferrer"
+									target={link.href.startsWith("mailto:") ? undefined : "_blank"}
+									rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
 								>
-									{link.icon && (
-										<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
-									)}
+									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
 									{link.label}
 								</a>
 							</li>
