@@ -41,6 +41,7 @@ export default {
 	"footer.sections": "Sections",
 	"footer.social": "Social",
 	"footer.contact": "Contact",
+	"footer.material": "Material",
 	"footer.ecosystem": "Ecosystem",
 	"footer.email": "Email",
 	"footer.external": "External links",

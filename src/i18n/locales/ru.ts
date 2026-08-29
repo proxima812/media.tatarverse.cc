@@ -47,6 +47,7 @@ export default {
 	"footer.sections": "Разделы",
 	"footer.social": "Социальные сети",
 	"footer.contact": "Связь",
+	"footer.material": "Материал",
 	"footer.ecosystem": "Экосистема",
 	"footer.email": "Почта",
 	"footer.external": "Внешние ссылки",
