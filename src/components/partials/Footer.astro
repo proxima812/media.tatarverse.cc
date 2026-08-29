@@ -32,31 +32,45 @@ const sectionLinks = [
  * Соцсети и связь - те же аккаунты, что в подвале tatarverse.cc: у проектов
  * одна редакция, и разводить их по разным аккаунтам значит терять читателя
  * на переходе между сайтами. Иконки Threads в наборе mdi нет, поэтому `at`.
+ *
+ * Видимая подпись - точный хендл, а не имя площадки: его копируют и ищут
+ * по нему. Площадку показывает иконка, а для скринридера она уходит в
+ * `aria-label` - иначе он прочитает четыре одинаковых «эт-the_tatarverse».
  */
 const socialLinks = [
 	{
 		href: "https://t.me/the_tatarverse",
-		label: "Telegram",
+		network: "Telegram",
+		label: "@the_tatarverse",
 		icon: "mdi:telegram",
 	},
 	{
 		href: "https://instagram.com/the_tatarverse",
-		label: "Instagram",
+		network: "Instagram",
+		label: "@the_tatarverse",
 		icon: "mdi:instagram",
 	},
-	{ href: "https://vk.ru/the_tatarverse", label: "VK", icon: "mdi:vk" },
+	{
+		href: "https://vk.ru/the_tatarverse",
+		network: "VK",
+		label: "@the_tatarverse",
+		icon: "mdi:vk",
+	},
 	{
 		href: "https://www.threads.com/@the_tatarverse",
-		label: "Threads",
+		network: "Threads",
+		label: "@the_tatarverse",
 		icon: "mdi:at",
 	},
 	{
 		href: "mailto:kamil.mirikhan@gmail.com",
-		label: t("footer.email"),
+		network: t("footer.email"),
+		label: "kamil.mirikhan@gmail.com",
 		icon: "mdi:email",
 	},
 	{
 		href: "https://tatarverse.cc",
+		network: "tatarverse.cc",
 		label: "tatarverse.cc",
 		icon: "mdi:link-variant",
 	},
@@ -144,6 +158,7 @@ const headingClass =
 								<a
 									href={link.href}
 									class={cn("flex items-center gap-2", linkClass)}
+									aria-label={`${link.network}: ${link.label}`}
 									target={link.href.startsWith("mailto:") ? undefined : "_blank"}
 									rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
 								>
