@@ -31,8 +31,9 @@ const sectionLinks = [
 /*
  * Соцсети и связь - те же аккаунты, что в подвале tatarverse.cc: у проектов
  * одна редакция, и разводить их по разным аккаунтам значит терять читателя
- * на переходе между сайтами. Логотипа Threads в mdi нет - он один берется
- * из `tabler`.
+ * на переходе между сайтами. Иконки - один набор `tabler`: у mdi
+ * логотипы соцсетей нарисованы заливкой, у tabler - контуром, и вперемешку
+ * колонка читается как собранная из двух разных подвалов.
  *
  * Видимая подпись - точный хендл, а не имя площадки: его копируют и ищут
  * по нему. Площадку показывает иконка, а для скринридера она уходит в
@@ -43,19 +44,19 @@ const socialLinks = [
 		href: "https://t.me/the_tatarverse",
 		network: "Telegram",
 		label: "the_tatarverse",
-		icon: "mdi:telegram",
+		icon: "tabler:brand-telegram",
 	},
 	{
 		href: "https://vk.ru/the_tatarverse",
 		network: "VK",
 		label: "the_tatarverse",
-		icon: "mdi:vk",
+		icon: "tabler:brand-vk",
 	},
 	{
 		href: "https://instagram.com/the_tatarverse",
 		network: "Instagram",
 		label: "@the_tatarverse",
-		icon: "mdi:instagram",
+		icon: "tabler:brand-instagram",
 	},
 	{
 		href: "https://www.threads.com/@the_tatarverse",
@@ -67,13 +68,13 @@ const socialLinks = [
 		href: "mailto:kamil.mirikhan@gmail.com",
 		network: t("footer.email"),
 		label: "kamil.mirikhan@gmail.com",
-		icon: "mdi:email",
+		icon: "tabler:mail",
 	},
 	{
 		href: "https://tatarverse.cc",
 		network: "tatarverse.cc",
 		label: "tatarverse.cc",
-		icon: "mdi:link-variant",
+		icon: "tabler:world",
 	},
 ];
 
@@ -86,7 +87,7 @@ const materialLinks = [
 	{
 		href: "https://github.com/proxima812/media.tatarverse.cc",
 		label: t("footer.openSource"),
-		icon: "mdi:github",
+		icon: "tabler:brand-github",
 	},
 ];
 
