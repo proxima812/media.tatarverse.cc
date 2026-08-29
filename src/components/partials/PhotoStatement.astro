@@ -56,32 +56,42 @@ const SLIDE_SECONDS = 5;
 const total = slides.length * SLIDE_SECONDS;
 
 /*
+ * Смена кадров устроена как в оригинале (cosmos.so) и это не затухание:
+ * новый кадр наезжает шторкой снизу вверх - `clip-path: inset()` открывает
+ * его полосой, а картинка и подпись внутри едут навстречу. Так кадр не
+ * «просвечивает» сквозь соседний, чего при кроссфейде двух фотографий
+ * не избежать.
+ *
  * Keyframes собираются строкой, а не пишутся руками: доля одного кадра
  * зависит от их числа, и при добавлении файла в папку проценты в статичном
  * CSS пришлось бы пересчитывать вручную - о чем никто не вспомнит.
- *
- * `fade` - доля цикла на перекрестное затухание. Дальше кадр держится
- * непрозрачным до своей границы и уходит в ноль, где его подхватывает следующий.
  */
 const share = 100 / Math.max(slides.length, 1);
-const fade = Math.min(share / 2, 3);
-const keyframes = `@keyframes photo-statement {
-	0% { opacity: 0 }
-	${fade.toFixed(2)}% { opacity: 1 }
-	${(share - fade).toFixed(2)}% { opacity: 1 }
-	${share.toFixed(2)}% { opacity: 0 }
-	100% { opacity: 0 }
+/** Доля цикла на саму шторку. Остальное кадр просто стоит. */
+const reveal = Math.min(share * 0.35, 12);
+/** На сколько содержимое кадра сдвинуто в момент входа и выхода, как в оригинале. */
+const SHIFT_PX = 30;
+
+const pct = (value: number) => `${value.toFixed(2)}%`;
+
+const keyframes = `@keyframes photo-statement-reveal {
+	0% { z-index: 2; clip-path: inset(100% 0 0 0) }
+	${pct(reveal)} { z-index: 2; clip-path: inset(0) }
+	${pct(share)} { z-index: 1; clip-path: inset(0) }
+	100% { z-index: 0; clip-path: inset(0) }
 }
 
 /*
- * Кадр приезжает укрупненным и снизу, за свою смену успокаивается до 1:1 и
- * уходит чуть вверх. Движение отдельной анимацией, а не в общей с прозрачностью:
- * гасить кадр надо быстро (доли процента цикла), а вести - всю смену.
+ * Контр-ход содержимого: пока шторка идет вверх, кадр внутри догоняет ее
+ * снизу, а уходя - сдвигается вверх и освобождает место следующему. Без
+ * этого шторка читается как жалюзи, а не как смена кадра.
  */
-@keyframes photo-statement-drift {
-	0% { transform: translateY(1.5%) scale(1.1) }
-	${share.toFixed(2)}% { transform: translateY(-1.5%) scale(1) }
-	100% { transform: translateY(-1.5%) scale(1) }
+@keyframes photo-statement-shift {
+	0% { transform: translate3d(0, ${SHIFT_PX}px, 0) }
+	${pct(reveal)} { transform: translate3d(0, 0, 0) }
+	${pct(share)} { transform: translate3d(0, 0, 0) }
+	${pct(share + reveal)} { transform: translate3d(0, -${SHIFT_PX}px, 0) }
+	100% { transform: translate3d(0, -${SHIFT_PX}px, 0) }
 }`;
 ---
 
@@ -95,8 +105,13 @@ const keyframes = `@keyframes photo-statement {
 			{title}
 		</h2>
 
+		<!--
+			Скругление и обрезка - на самой `figure`: шторка каждого кадра
+			ездит внутри нее, и держи ее слайды - на углах вылезали бы
+			прямоугольные края в момент перехода.
+		-->
 		<figure
-			class="photo-statement relative aspect-[21/32] w-full max-w-[420px] shrink-0"
+			class="photo-statement relative aspect-[21/32] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[14px]"
 			style={`--slide-total:${total}s`}
 		>
 			{
@@ -105,7 +120,7 @@ const keyframes = `@keyframes photo-statement {
 						class="photo-statement__slide absolute inset-0"
 						style={`--slide-delay:${index * SLIDE_SECONDS}s`}
 					>
-						<div class="size-full overflow-hidden rounded-[14px]">
+						<div class="photo-statement__shift size-full">
 							<Image
 								src={slide.photo}
 								alt=""
@@ -114,15 +129,24 @@ const keyframes = `@keyframes photo-statement {
 								densities={[1, 2]}
 								format="webp"
 								loading={index === 0 ? "eager" : "lazy"}
-								class="photo-statement__image size-full object-cover"
+								class="size-full object-cover"
 							/>
 						</div>
 
-						<figcaption class="text-black absolute inset-x-4 top-1/2 flex -translate-y-1/2 flex-col justify-center items-center gap-y-3 text-center ">
-							{slide.caption}
-							<span class="bg-muted-foreground/10 rounded-full px-2 py-1 text-sm font-medium text-muted-foreground backdrop-blur-3xl">
-								{slide.author}
-							</span>
+						{/*
+						 * Центрирование и ход подписи разнесены по двум узлам:
+						 * `-translate-y-1/2` и анимация - оба `transform`, и на
+						 * одном элементе анимация просто затерла бы центрирование.
+						 */}
+						<figcaption class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
+							<div class="photo-statement__shift flex flex-wrap items-center justify-center gap-1 px-6 text-[18px] text-white">
+								<p class="whitespace-nowrap leading-[16px] tracking-[-0.18px]">
+									{slide.caption}
+								</p>
+								<p class="rounded-[11px] bg-white/25 px-[11px] py-[9px] leading-[16px] tracking-[-0.18px] backdrop-blur-[10px]">
+									{slide.author}
+								</p>
+							</div>
 						</figcaption>
 					</div>
 				))
@@ -141,47 +165,44 @@ const keyframes = `@keyframes photo-statement {
 
 <style>
 	/*
- * Кадры лежат стопкой и по очереди проявляются. Высоту задает сама `figure`
- * (`aspect-[21/32]`), поэтому слайды могут быть `absolute` все до одного -
- * без «первый в потоке, остальные поверх» и вызванного этим скачка раскладки.
- */
+	 * Кадры лежат стопкой. Высоту задает сама `figure` (`aspect-[21/32]`),
+	 * поэтому слайды могут быть `absolute` все до одного - без «первый в
+	 * потоке, остальные поверх» и вызванного этим скачка раскладки.
+	 *
+	 * `backwards` обязателен: до своей очереди слайд обязан стоять закрытым
+	 * (кадр `0%`), иначе во время `animation-delay` все три висят раскрытыми
+	 * друг на друге и до первой смены виден только последний.
+	 */
 	.photo-statement__slide {
-		opacity: 0;
-		animation: photo-statement var(--slide-total) linear infinite;
+		animation: photo-statement-reveal var(--slide-total) ease-in-out infinite
+			backwards;
 		animation-delay: var(--slide-delay);
-		will-change: opacity;
+		will-change: clip-path;
 	}
 
-	/*
-	 * Ход кадра - на самой картинке, а не на слайде: подпись лежит поверх и
-	 * ездить вместе с фотографией не должна, иначе текст плывет под пальцем.
-	 * `ease-out` - движение выдыхается к концу смены, а не тянется равномерно.
-	 */
-	.photo-statement__image {
-		animation: photo-statement-drift var(--slide-total) ease-out infinite;
+	/* Картинка и подпись едут одинаково, каждая своим узлом. */
+	.photo-statement__shift {
+		animation: photo-statement-shift var(--slide-total) ease-in-out infinite
+			backwards;
 		animation-delay: var(--slide-delay);
 		will-change: transform;
 	}
 
-	/* Один кадр - анимировать нечего, он и так на экране. */
-	.photo-statement__slide:only-child {
-		opacity: 1;
-		animation: none;
-	}
-
-	.photo-statement__slide:only-child .photo-statement__image {
+	/* Один кадр - двигать нечего, он и так на экране. */
+	.photo-statement__slide:only-child,
+	.photo-statement__slide:only-child .photo-statement__shift {
 		animation: none;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.photo-statement__slide,
-		.photo-statement__image {
+		.photo-statement__shift {
 			animation: none;
 		}
 
-		/* Без перелистывания показываем первый кадр, остальные не мигают. */
-		.photo-statement__slide:first-child {
-			opacity: 1;
+		/* Без перелистывания виден первый кадр, остальные лежат под ним. */
+		.photo-statement__slide:not(:first-child) {
+			clip-path: inset(100% 0 0 0);
 		}
 	}
 </style>
