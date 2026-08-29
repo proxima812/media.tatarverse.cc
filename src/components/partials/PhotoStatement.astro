@@ -56,16 +56,20 @@ const SLIDE_SECONDS = 6;
 const total = slides.length * SLIDE_SECONDS;
 
 /*
- * Кадры сменяются горизонтальным слайдом: следующий приходит слева и
- * выталкивает текущий вправо. Ничего, кроме `transform`, не анимируется -
- * браузер везет такую смену на композиторе, без перерисовки кадра.
+ * Кадры сменяются сверху вниз: следующий наезжает поверх текущего и остается
+ * лежать на нем, пока его самого не накроет очередной. Текущий никуда не
+ * уходит - его просто закрывают, поэтому в момент смены под движущимся
+ * кадром всегда есть картинка, а не дырка.
+ *
+ * Ничего, кроме `transform` и `z-index`, не анимируется - браузер везет
+ * такую смену на композиторе, без перерисовки кадра.
  *
  * Keyframes собираются строкой, а не пишутся руками: доля одного кадра
  * зависит от их числа, и при добавлении файла в папку проценты в статичном
  * CSS пришлось бы пересчитывать вручную - о чем никто не вспомнит.
  */
 const share = 100 / Math.max(slides.length, 1);
-/** Доля цикла на сам проезд. Половина смены едет, половина стоит. */
+/** Доля цикла на сам наезд. Половина смены едет, половина лежит. */
 const reveal = share * 0.5;
 
 /*
@@ -81,16 +85,19 @@ const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 const pct = (value: number) => `${value.toFixed(2)}%`;
 
 /*
- * За кадром слайд стоит слева (`-100%`), свою смену проезжает в ноль, потом
- * уходит вправо и ждет там до конца цикла. Разрыв между `100%` и `0%` на
- * стыке не виден - в этот момент слайд за пределами `figure`.
+ * До своей очереди слайд ждет над верхним краем (`-100%`), свою смену
+ * съезжает в ноль и дальше просто лежит, опускаясь по `z-index` под тех, кто
+ * приедет после. Возврат к `-100%` на стыке цикла не виден: к этому моменту
+ * кадр накрыт следующим наглухо.
+ *
+ * `z-index` анимируется дискретно, шагами - это и есть переупорядочивание
+ * стопки: у приезжающего он старше, чем у всех лежащих.
  */
 const keyframes = `@keyframes photo-statement-slide {
-	0% { transform: translate3d(-100%, 0, 0); animation-timing-function: ${EASE} }
-	${pct(reveal)} { transform: translate3d(0, 0, 0) }
-	${pct(share)} { transform: translate3d(0, 0, 0); animation-timing-function: ${EASE} }
-	${pct(share + reveal)} { transform: translate3d(100%, 0, 0) }
-	100% { transform: translate3d(100%, 0, 0) }
+	0% { z-index: 2; transform: translate3d(0, -100%, 0); animation-timing-function: ${EASE} }
+	${pct(reveal)} { z-index: 2; transform: translate3d(0, 0, 0) }
+	${pct(share)} { z-index: 1; transform: translate3d(0, 0, 0) }
+	100% { z-index: 0; transform: translate3d(0, 0, 0) }
 }`;
 ---
 
@@ -105,8 +112,8 @@ const keyframes = `@keyframes photo-statement-slide {
 		</h2>
 
 		<!--
-			Обрезка и скругление - на самой `figure`: слайды заезжают и уезжают
-			за ее край, и без `overflow-hidden` они ехали бы поверх текста.
+			Обрезка и скругление - на самой `figure`: слайды ждут над ее верхним
+			краем, и без `overflow-hidden` они висели бы поверх заголовка.
 		-->
 		<figure
 			class="photo-statement relative aspect-[21/32] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[14px]"
@@ -162,18 +169,18 @@ const keyframes = `@keyframes photo-statement-slide {
 	 * поэтому слайды могут быть `absolute` все до одного - без «первый в
 	 * потоке, остальные поверх» и вызванного этим скачка раскладки.
 	 *
-	 * `backwards` обязателен: до своей очереди слайд обязан стоять за левым
-	 * краем (кадр `0%`), иначе во время `animation-delay` все три висят по
+	 * `backwards` обязателен: до своей очереди слайд обязан ждать над верхним
+	 * краем (кадр `0%`), иначе во время `animation-delay` все три лежат по
 	 * центру друг на друге и до первой смены виден только последний.
 	 */
 	.photo-statement__slide {
 		animation: photo-statement-slide var(--slide-total) linear infinite
 			backwards;
 		animation-delay: var(--slide-delay);
-		will-change: transform;
+		will-change: transform, z-index;
 	}
 
-	/* Один кадр - ехать некуда, он и так на экране. */
+	/* Один кадр - наезжать нечему, он и так на экране. */
 	.photo-statement__slide:only-child {
 		animation: none;
 	}
@@ -183,9 +190,9 @@ const keyframes = `@keyframes photo-statement-slide {
 			animation: none;
 		}
 
-		/* Без проезда виден первый кадр, остальные стоят за краем. */
+		/* Без наезда виден первый кадр, остальные ждут над краем. */
 		.photo-statement__slide:not(:first-child) {
-			transform: translate3d(-100%, 0, 0);
+			transform: translate3d(0, -100%, 0);
 		}
 	}
 </style>
