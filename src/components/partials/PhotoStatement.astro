@@ -39,8 +39,8 @@ const photos = Object.entries(modules)
  */
 const CAPTIONS = [
 	{ caption: "Editorial photography by", author: "Guiri" },
-	{ caption: "Из архива проекта", author: "tatarverse" },
-	{ caption: "Кадр из каталога", author: "media.tatarverse" },
+	{ caption: "Photograph from Unformen der Kunst", author: "Karl Blossfeldt" },
+	{ caption: "The OOAA Arquitectura Studio. Designed by", author: "Iker Ochotorena" },
 ] as const;
 
 const slides = photos.map((photo, index) => ({
@@ -52,7 +52,7 @@ const slides = photos.map((photo, index) => ({
 const PHOTO_WIDTH = 420;
 
 /** Сколько один кадр держится на экране, включая перекрестное затухание. */
-const SLIDE_SECONDS = 4;
+const SLIDE_SECONDS = 5;
 const total = slides.length * SLIDE_SECONDS;
 
 /*
@@ -80,18 +80,21 @@ const keyframes = `@keyframes photo-statement {
 		текст, снимок, текст, на `lg` строка по центру. `justify-center`, а не
 		распорка колонок: тексты жмутся к снимку, иначе между ним и фразой
 		повисает случайная дыра.
+
+		Своей ширины и горизонтальных отступов у секции нет - она живет в
+		колонке `Container` (`max-w-7xl px-5`), как остальные блоки главной.
 	-->
 	<div
-		class="mx-auto mt-50 flex w-full max-w-[1300px] flex-col items-center gap-5 px-4 lg:mt-30 lg:flex-row lg:justify-center lg:gap-12 lg:px-0 xl:mt-50 xl:gap-[30px]"
+		class="mx-auto flex w-full flex-col items-center gap-5 py-16 sm:py-24 lg:flex-row lg:justify-center lg:gap-12 xl:gap-[30px]"
 	>
 		<h2
-			class="max-w-md text-balance text-center font-black text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-right lg:text-6xl"
+			class="max-w-[10ch] text-balance text-center font-medium text-[40px] leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-right lg:text-[68px]"
 		>
 			{title}
 		</h2>
 
 		<figure
-			class="photo-statement relative aspect-[3/4] w-full max-w-[420px] shrink-0"
+			class="photo-statement relative aspect-[21/32] w-full max-w-[420px] shrink-0"
 			style={`--slide-total:${total}s`}
 		>
 			{slides.map((slide, index) => (
@@ -103,11 +106,11 @@ const keyframes = `@keyframes photo-statement {
 						src={slide.photo}
 						alt=""
 						width={PHOTO_WIDTH}
-						height={PHOTO_WIDTH * 1.4}
+						height={Math.round((PHOTO_WIDTH * 32) / 21)}
 						densities={[1, 2]}
 						format="webp"
 						loading={index === 0 ? "eager" : "lazy"}
-						class="size-full rounded-2xl corner-squircle object-cover"
+						class="size-full rounded-[14px] object-cover"
 					/>
 
 					<!--
@@ -116,10 +119,10 @@ const keyframes = `@keyframes photo-statement {
 						строки текста - терять сам снимок, а тень читается на любом фоне.
 					-->
 					<figcaption
-						class="absolute inset-x-4 top-1/2 flex -translate-y-1/2 flex-wrap items-center justify-center gap-2 text-center font-medium text-sm text-white drop-shadow-[0_1px_6px_rgb(0_0_0/0.6)] sm:text-base"
+						class="absolute inset-x-4 top-1/2 flex -translate-y-1/2 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center font-medium text-[15px] text-white drop-shadow-[0_1px_8px_rgb(0_0_0/0.45)] sm:text-base"
 					>
 						{slide.caption}
-						<span class="rounded-full bg-white/25 px-3 py-1 backdrop-blur-sm">
+						<span class="rounded-full bg-white/20 px-3 py-1 backdrop-blur-md">
 							{slide.author}
 						</span>
 					</figcaption>
@@ -128,7 +131,7 @@ const keyframes = `@keyframes photo-statement {
 		</figure>
 
 		<p
-			class="max-w-xs text-balance text-center text-lg text-muted-foreground leading-snug sm:text-xl lg:text-left lg:text-2xl"
+			class="max-w-[22ch] text-center text-lg text-muted-foreground leading-[1.25] tracking-[-0.01em] sm:text-xl lg:text-left lg:text-[26px]"
 		>
 			{description}
 		</p>
@@ -140,7 +143,7 @@ const keyframes = `@keyframes photo-statement {
 <style>
 /*
  * Кадры лежат стопкой и по очереди проявляются. Высоту задает сама `figure`
- * (`aspect-[3/4]`), поэтому слайды могут быть `absolute` все до одного -
+ * (`aspect-[21/32]`), поэтому слайды могут быть `absolute` все до одного -
  * без «первый в потоке, остальные поверх» и вызванного этим скачка раскладки.
  */
 .photo-statement__slide {
