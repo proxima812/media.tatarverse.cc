@@ -1,0 +1,71 @@
+---
+import { Icon } from "astro-icon/components";
+import { followers } from "@/data/inst_follows";
+
+/**
+ * Стена подписчиков: две строки по десять аккаунтов под заголовком - тот же
+ * прием, что у полос с логотипами клиентов. Показывает, что за каталогом
+ * стоят живые люди, не превращаясь в список на весь экран.
+ */
+interface Props {
+	title?: string;
+	/** Сколько аккаунтов в одной строке. Строк всегда две. */
+	perRow?: number;
+}
+
+const { title = "Спасибо Вам за поддержку.", perRow = 10 } = Astro.props;
+
+/*
+ * Берем начало списка, а не случайную выборку: случайная давала бы новый
+ * состав на каждой пересборке, и diff артефактов шумел бы без причины.
+ */
+const rows = [
+	followers.slice(0, perRow),
+	followers.slice(perRow, perRow * 2),
+];
+
+const instagramUrl = (handle: string) =>
+	`https://instagram.com/${handle.replace(/^@/, "")}`;
+---
+
+<section class="py-16 sm:py-24">
+	<h2
+		class="mx-auto max-w-3xl text-balance px-5 text-center font-bold text-3xl tracking-tight sm:text-4xl"
+	>
+		{title}
+	</h2>
+
+	<!--
+		Строки не переносятся и уезжают за край: маска гасит их к краям экрана,
+		и обрезанный аккаунт читается как «список продолжается», а не как
+		случайно обрубленное имя. Отсюда же `no-container` - в колонке
+		`max-w-6xl` край пришелся бы на пустое поле, и гасить было бы нечего.
+	-->
+	<div
+		class="no-container mt-10 space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+	>
+		{rows.map((row) => (
+			<ul class="flex flex-nowrap justify-center gap-x-8 gap-y-4 px-5 sm:gap-x-12">
+				{row.map((follower) => (
+					<li class="shrink-0">
+						<a
+							href={instagramUrl(follower.handle)}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="flex items-center gap-2 text-muted-foreground transition hover:text-foreground"
+						>
+							<Icon
+								name="tabler:brand-instagram"
+								class="size-5 shrink-0"
+								aria-hidden="true"
+							/>
+							<span class="max-w-40 truncate font-medium text-sm sm:text-base">
+								{follower.name ?? follower.handle}
+							</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		))}
+	</div>
+</section>
