@@ -5,6 +5,7 @@ export default {
 	"meta.description":
 		"A catalog of Tatar, Bashkir and Crimean Tatar projects: language projects, channels, authors, lessons and graphic design.",
 	"nav.catalog": "Catalog",
+	"catalog.pageTitle": "Full catalog",
 	"nav.search": "Search",
 	"nav.about": "About",
 	"nav.add": "Add project",
@@ -26,7 +27,7 @@ export default {
 	"catalog.search.placeholder": "Search projects",
 	"search.title": "Every project in the catalog",
 	"search.clear": "Clear search",
-	"search.empty": "Nothing matched — try another word.",
+	"search.empty": "Nothing matched - try another word.",
 	"search.index": "Alphabetical index",
 	"search.browse": "The whole catalog, A to Z",
 	"stats.label": "A growing library of",
@@ -43,7 +44,7 @@ export default {
 	"marquee.label": "Catalog projects",
 	"marquee.cta.title": "Always something new to discover.",
 	"marquee.cta.description":
-		"Browse the whole catalog of Tatar, Bashkir, and Crimean Tatar projects — or add your own in a couple of minutes.",
+		"Browse the whole catalog of Tatar, Bashkir, and Crimean Tatar projects - or add your own in a couple of minutes.",
 	"marquee.cta.catalog": "Catalog",
 	"marquee.cta.add": "Add project",
 	"videoShowcase.label": "Catalog showcase",

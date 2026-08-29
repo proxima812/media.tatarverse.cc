@@ -4,7 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
 import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
 
@@ -24,7 +24,7 @@ const t = useTranslations(locale);
 >
 	<div class="flex flex-col items-center gap-4 text-center">
 		<div class="rounded-full corner-squircle bg-background shadow-sm">
-			<CardLogo name={name} logo={logo} size="xl" priority />
+			<CardLogo name={name} logo={logo} peoples={peoples} size="xl" priority />
 		</div>
 
 		<div class="flex flex-wrap justify-center gap-1.5">
@@ -49,9 +49,9 @@ const t = useTranslations(locale);
 		</ul>
 
 		<div class="flex items-center gap-4 pt-2">
-			<PrimitiveButton href={url} preset="outline" external>
+			<Button href={url} preset="outline" external>
 				{t("card.visit")}
-			</PrimitiveButton>
+			</Button>
 
 			<a
 				href={getRelativeLocaleUrl(locale, "catalog")}

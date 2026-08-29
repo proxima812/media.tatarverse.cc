@@ -1,7 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import Tooltip from "@/components/partials/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
 import { locales, stripLocalePrefix, useTranslations } from "@/i18n";
@@ -19,11 +19,13 @@ interface NavLink {
 	readonly href: string;
 	readonly label: string;
 	/**
-	 * Есть иконка — от `sm` пункт уезжает из строки ссылок в компактную
+	 * Есть иконка - от `sm` пункт уезжает из строки ссылок в компактную
 	 * группу перед переключателем локали. В выпадающем меню на узком экране
-	 * порядок остаётся исходным, поэтому список тут один.
+	 * порядок остается исходным, поэтому список тут один.
 	 */
 	readonly icon?: string;
+	/** Показывать на иконке число сохраненных проектов. */
+	readonly counter?: boolean;
 }
 
 const navLinks: readonly NavLink[] = [
@@ -37,6 +39,7 @@ const navLinks: readonly NavLink[] = [
 		href: getRelativeLocaleUrl(locale, "saved"),
 		label: t("nav.saved"),
 		icon: "mdi:bookmark-multiple-outline",
+		counter: true,
 	},
 	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
 	{ href: getRelativeLocaleUrl(locale, "add"), label: t("nav.add") },
@@ -57,25 +60,25 @@ const localeOptions = locales.map((code) => ({
 	code,
 	href: getRelativeLocaleUrl(code, path),
 	label: code.toUpperCase(),
-	/** Подпись под переключателем — название языка целиком, а не код. */
+	/** Подпись под переключателем - название языка целиком, а не код. */
 	title: t(`locale.${code}`),
 }));
 ---
 
-<!-- От `sm` ширина шапки — по содержимому (`w-fit`), а не фиксированные 620px:
-     добавили или переименовали пункт меню — пилюля подстроилась сама, и по краям
-     не остаётся пустоты. `max-w` держит её в пределах экрана: если ссылки всё же
+<!-- От `sm` ширина шапки - по содержимому (`w-fit`), а не фиксированные 620px:
+     добавили или переименовали пункт меню - пилюля подстроилась сама, и по краям
+     не остается пустоты. `max-w` держит ее в пределах экрана: если ссылки все же
      не влезли, шапка упирается в границу, а прокручивает их `overflow-x-auto`
-     на внутренней обёртке.
+     на внутренней обертке.
 
-     Центрирование — `inset-x-0` + `mx-auto`, а не `left-1/2` со сдвигом на
-     половину ширины. С `left: 50%` у элемента в потоке `fixed` остаётся
+     Центрирование - `inset-x-0` + `mx-auto`, а не `left-1/2` со сдвигом на
+     половину ширины. С `left: 50%` у элемента в потоке `fixed` остается
      доступной только правая половина экрана, и ширина «по содержимому»
-     считается от неё: шапка выходила уже нужного и резала последние пункты
+     считается от нее: шапка выходила уже нужного и резала последние пункты
      меню даже там, где места вокруг было в избытке.
 
      Ниже `sm` ссылки скрыты и живут в выпадающей панели, поэтому там шапка
-     остаётся во всю ширину — иначе от неё осталась бы пилюля с логотипом
+     остается во всю ширину - иначе от нее осталась бы пилюля с логотипом
      и бургером, а панель (`inset-x-0`) сжалась бы вместе с ней. -->
 <header
 	data-header
@@ -96,9 +99,9 @@ const localeOptions = locales.map((code) => ({
 		<Tooltip label={t("nav.home")} />
 	</a>
 
-	<!-- ≥sm: ссылки в строке. На узком экране им не хватает места — там их
+	<!-- ≥sm: ссылки в строке. На узком экране им не хватает места - там их
 	     прячет `data-menu-panel` ниже. Прокрутка нужна на промежуточных
-	     ширинах, где шапка уже упёрлась в край экрана, а ссылки ещё не
+	     ширинах, где шапка уже уперлась в край экрана, а ссылки еще не
 	     ушли в бургер. -->
 	<div class="hidden min-w-0 items-center overflow-x-auto sm:flex">
 		<nav class="flex items-center gap-4 sm:gap-6">
@@ -110,13 +113,13 @@ const localeOptions = locales.map((code) => ({
 		</nav>
 	</div>
 
-	<!-- Поиск и сохранённое — иконками: это не разделы для чтения, а действия,
+	<!-- Поиск и сохраненное - иконками: это не разделы для чтения, а действия,
 	     и в строке они соседствуют с переключателем локали, а не с ссылками.
-	     Подпись показывается по наведению и с клавиатуры, а `aria-label` даёт
-	     ссылке имя для скринридера — сама подпись поэтому `aria-hidden`, иначе
+	     Подпись показывается по наведению и с клавиатуры, а `aria-label` дает
+	     ссылке имя для скринридера - сама подпись поэтому `aria-hidden`, иначе
 	     имя прочиталось бы дважды.
 
-	     Группа лежит вне обёртки с `overflow-x-auto`: прокрутка по горизонтали
+	     Группа лежит вне обертки с `overflow-x-auto`: прокрутка по горизонтали
 	     обрезает и по вертикали тоже, а подпись всплывает под шапкой. -->
 	<div class="hidden shrink-0 items-center gap-1 sm:flex">
 		{iconLinks.map((link) => (
@@ -126,6 +129,15 @@ const localeOptions = locales.map((code) => ({
 					class="group relative flex size-9 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground"
 				>
 					<Icon name={link.icon} class="size-5" aria-hidden="true" />
+
+					{link.counter && (
+						<span
+							data-saved-count
+							hidden
+							class="-top-0.5 -right-0.5 absolute flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-semibold text-[10px] text-background leading-none ring-2 ring-background"
+						/>
+					)}
+
 					<Tooltip label={link.label} />
 				</a>
 			))}
@@ -151,7 +163,7 @@ const localeOptions = locales.map((code) => ({
 			))}
 	</div>
 
-	<PrimitiveButton
+	<Button
 		preset="ghost"
 		size="icon"
 		data-menu-button
@@ -172,11 +184,11 @@ const localeOptions = locales.map((code) => ({
 		>
 			<path d="M4 7h16M4 12h16M4 17h16"></path>
 		</svg>
-	</PrimitiveButton>
+	</Button>
 
-	<!-- `sm:hidden` остаётся всегда: кнопка, которая открывает панель, сама
-	     `sm:hidden`, но если окно расширили с открытой панелью — этот класс
-	     закроет её принудительно, а не JS-состояние `hidden`, до которого
+	<!-- `sm:hidden` остается всегда: кнопка, которая открывает панель, сама
+	     `sm:hidden`, но если окно расширили с открытой панелью - этот класс
+	     закроет ее принудительно, а не JS-состояние `hidden`, до которого
 	     resize не достучится. -->
 	<div
 		id="header-menu"
@@ -190,6 +202,14 @@ const localeOptions = locales.map((code) => ({
 							<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
 						)}
 						{link.label}
+
+						{link.counter && (
+							<span
+								data-saved-count
+								hidden
+								class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground px-1.5 font-semibold text-[11px] text-background leading-none"
+							/>
+						)}
 					</a>
 				))}
 		</nav>
@@ -216,6 +236,47 @@ const localeOptions = locales.map((code) => ({
 <div class="h-24" aria-hidden="true"></div>
 
 <script>
+/*
+ * Счетчик сохраненного на иконке в шапке. Число живет в том же
+ * `localStorage`, что и сами закладки (`SaveButton.astro`), поэтому шапка
+ * его только читает: своего состояния у нее нет и рассинхронизироваться
+ * ей не с чем.
+ *
+ * Три источника обновления: загрузка страницы, `catalog:saved-change`
+ * (клик по сердечку в этой же вкладке) и `storage` - если закладку сняли
+ * в соседней вкладке, шапка здесь не должна показывать старое число.
+ *
+ * Ноль не показывается: пустой бейдж - это шум, а не информация.
+ */
+const SAVED_KEY = "catalog:saved";
+
+function readSavedCount(): number {
+	try {
+		const raw = localStorage.getItem(SAVED_KEY);
+		const parsed = raw ? JSON.parse(raw) : [];
+		return Array.isArray(parsed) ? parsed.length : 0;
+	} catch {
+		return 0;
+	}
+}
+
+function renderSavedCount() {
+	const count = readSavedCount();
+
+	for (const badge of document.querySelectorAll<HTMLElement>(
+		"[data-saved-count]",
+	)) {
+		badge.textContent = String(count);
+		badge.hidden = count === 0;
+	}
+}
+
+renderSavedCount();
+window.addEventListener("catalog:saved-change", renderSavedCount);
+window.addEventListener("storage", (event) => {
+	if (event.key === null || event.key === SAVED_KEY) renderSavedCount();
+});
+
 function setupMenu(header: HTMLElement) {
 	const button = header.querySelector<HTMLButtonElement>("[data-menu-button]");
 	const panel = header.querySelector<HTMLElement>("[data-menu-panel]");

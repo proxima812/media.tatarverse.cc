@@ -1,18 +1,18 @@
-# Track 4 — Deep Discovery / Graph Traversal / Developer Verification
+# Track 4 - Deep Discovery / Graph Traversal / Developer Verification
 
-Дата прохода: 2026-08-22. Владелец трека: Agent 4. Этот файл — исследовательский артефакт, не готовые карточки.
+Дата прохода: 2026-08-22. Владелец трека: Agent 4. Этот файл - исследовательский артефакт, не готовые карточки.
 
 ## Метод и границы
 
 - Начальные узлы: существующие карточки `Neurotatarlar`, `Bashkir Corpus`, `Apertium tat-bak`, `Qırımtatar TTS Datasets`, `Qırımtatar Tili`, `Lugat`, проекты Qirimca и языковые карточки каталога.
 - Реальные ребра traversal: GitHub organization/owner → соседние репозитории; README/homepage → demo/dataset/model; corpus/tool → upstream Apertium, GiellaLT, DraCor, Hugging Face; каталог ресурсов → отдельный ресурс.
-- Проверка: официальный GitHub API и страница primary repository; для части проектов — официальный demo/homepage или Hugging Face как вторичный источник. `pushed` ниже — значение GitHub API на дату прохода, а не обещание регулярной поддержки.
+- Проверка: официальный GitHub API и страница primary repository; для части проектов - официальный demo/homepage или Hugging Face как вторичный источник. `pushed` ниже - значение GitHub API на дату прохода, а не обещание регулярной поддержки.
 - В каталог допускаются только самостоятельные `language`, `lessons`, `media`, `channel`, `author`, `graphics`. Организации, фестивали и форумы использованы только как источники графа.
-- География — место команды/институции, если оно очевидно из официального источника; иначе `online / not asserted`. Неподтвержденные города не выведены из домена или языка.
+- География - место команды/институции, если оно очевидно из официального источника; иначе `online / not asserted`. Неподтвержденные города не выведены из домена или языка.
 
 ## Проверенные кандидаты
 
-Обозначения: **Q** — qualified (можно нормализовать в карточку после финального dedup); **R** — review (хороший узел, но требуется ручная проверка продукта/описания); **W** — watchlist (самостоятельность или актуальность слабее). Все 40 URL ответили через GitHub API; ни один репозиторий не был помечен `archived`.
+Обозначения: **Q** - qualified (можно нормализовать в карточку после финального dedup); **R** - review (хороший узел, но требуется ручная проверка продукта/описания); **W** - watchlist (самостоятельность или актуальность слабее). Все 40 URL ответили через GitHub API; ни один репозиторий не был помечен `archived`.
 
 | # | graph path | proposed slug / name | evidence-based description | 3 факта | URL / category / peoples | geography / languages | evidence | confidence / status / dedup |
 |---:|---|---|---|---|---|---|---|---|
@@ -32,9 +32,9 @@
 | 14 | Bashkir resources → GiellaLT | `giellalt-bashkir-language` / GiellaLT Bashkir | Анализаторы, grammar checker/proofing resources и языковые данные для башкирского. | finite-state; Constraint Grammar; Text repo; pushed 2026-08-21 | https://github.com/giellalt/lang-bak · language · bashkir | international/online / bak | [repo](https://github.com/giellalt/lang-bak); [docs](https://giellalt.github.io/lang-bak) | high · Q · самостоятельный language package |
 | 15 | GiellaLT owner → sibling language | `giellalt-tatar-language` / GiellaLT Tatar | Анализаторы и инструменты проверки текста для татарского языка. | finite-state; Constraint Grammar; Text repo; pushed 2026-08-21 | https://github.com/giellalt/lang-tat · language · tatar | international/online / tat | [repo](https://github.com/giellalt/lang-tat); [docs](https://giellalt.github.io/lang-tat) | high · Q · не найден в dataset |
 | 16 | existing Apertium tat-bak → language packages | `apertium-tatar-language` / Apertium Tatar | Открытые морфологические данные Apertium для татарского. | monolingual package; GPL-3.0; Python; pushed 2021-07-20 | https://github.com/apertium/apertium-tat · language · tatar | international/online / tat | [repo](https://github.com/apertium/apertium-tat); [history](https://github.com/apertium/apertium-tat/commits/master/) | high · Q · компонент отличается от tat-bak pair |
-| 17 | Apertium Tatar → pair graph | `apertium-tat-rus-language` / Apertium Tatar–Russian | Открытая пара машинного перевода между татарским и русским. | bilingual dictionary/rules; GPL-3.0; XML; pushed 2022-05-08 | https://github.com/apertium/apertium-tat-rus · language · tatar | international/online / tat,rus | [repo](https://github.com/apertium/apertium-tat-rus); [history](https://github.com/apertium/apertium-tat-rus/commits/master/) | high · Q · не дубль tat-bak |
+| 17 | Apertium Tatar → pair graph | `apertium-tat-rus-language` / Apertium Tatar-Russian | Открытая пара машинного перевода между татарским и русским. | bilingual dictionary/rules; GPL-3.0; XML; pushed 2022-05-08 | https://github.com/apertium/apertium-tat-rus · language · tatar | international/online / tat,rus | [repo](https://github.com/apertium/apertium-tat-rus); [history](https://github.com/apertium/apertium-tat-rus/commits/master/) | high · Q · не дубль tat-bak |
 | 18 | Apertium graph → Crimean Tatar package | `apertium-crh-language` / Apertium Crimean Tatar | Открытые лингвистические данные Apertium для крымскотатарского. | monolingual package; GPL-3.0; Makefile; pushed 2023-05-31 | https://github.com/apertium/apertium-crh · language · crimean-tatar | international/online / crh | [repo](https://github.com/apertium/apertium-crh); [history](https://github.com/apertium/apertium-crh/commits/master/) | high · Q · отдельный базовый package |
-| 19 | Apertium crh → pair graph | `apertium-crh-tur-language` / Apertium Crimean Tatar–Turkish | Двунаправленная rule-based пара перевода крымскотатарского и турецкого. | bilingual dictionary; transfer rules; GPL-3.0; XML | https://github.com/apertium/apertium-crh-tur · language · crimean-tatar | international/online / crh,tur | [repo](https://github.com/apertium/apertium-crh-tur); [README](https://github.com/apertium/apertium-crh-tur#readme) | high · Q · pushed 2021, завершенный ресурс |
+| 19 | Apertium crh → pair graph | `apertium-crh-tur-language` / Apertium Crimean Tatar-Turkish | Двунаправленная rule-based пара перевода крымскотатарского и турецкого. | bilingual dictionary; transfer rules; GPL-3.0; XML | https://github.com/apertium/apertium-crh-tur · language · crimean-tatar | international/online / crh,tur | [repo](https://github.com/apertium/apertium-crh-tur); [README](https://github.com/apertium/apertium-crh-tur#readme) | high · Q · pushed 2021, завершенный ресурс |
 | 20 | Qirimca owner repos | `qirimca-pos-dictionary-language` / Qirimca POS Dictionary | Машиночитаемый словарь крымскотатарского языка. | отдельный repository; dictionary data; created/pushed 2023-11-02; не archived | https://github.com/qirimca/pos_dict · language · crimean-tatar | online / crh | [repo](https://github.com/qirimca/pos_dict); [tree](https://github.com/qirimca/pos_dict/tree/main) | medium · R · проверить объем и лицензию |
 | 21 | Qırımtatar TTS model → deployment formats | `crimean-tatar-tts-onnx-language` / Crimean Tatar TTS Model ONNX | ONNX-конверсия крымскотатарской TTS-модели Meta MMS для локального inference. | ONNX; исходная MMS model; created 2024; pushed 2024-09-04 | https://github.com/Leonidius20/CrimeanTatarTTSModelOnnx · language · crimean-tatar | online / crh | [repo](https://github.com/Leonidius20/CrimeanTatarTTSModelOnnx); [commits](https://github.com/Leonidius20/CrimeanTatarTTSModelOnnx/commits/main/) | medium · R · проверить лицензию модели |
 | 22 | Romania corpus org → sibling repositories | `crimean-tatar-dictionary-corpus-language` / Crimean Tatar Dictionary | TypeScript-проект словаря, связанный с инициативой Tatar Tili Tilsizgasi Surasi. | TypeScript; created 2025; pushed 2025-11-08; отдельный repo | https://github.com/Tatar-Tili-Tilsizgasi-Surasi/crimean-tatar-dictionary · language · crimean-tatar | Romania/online / crh | [repo](https://github.com/Tatar-Tili-Tilsizgasi-Surasi/crimean-tatar-dictionary); [org](https://github.com/Tatar-Tili-Tilsizgasi-Surasi) | medium · R · проверить UI/объем; не дубль corpus |
@@ -65,7 +65,7 @@
 | `pohebeyy/TatarstanLanguage`, многочисленные student repos | related repository search | Прототипы без подтвержденного продукта, контента и поддержки. |
 | `tseyt/yalta-nyc` | Crimean Tatar topic | Ghost kitchen; не подходит ни под одну допустимую категорию. |
 | `altayberk/crimean_tatars_flag_canvas` | Crimean Tatar repositories | Кодовый canvas-эксперимент, не самостоятельный graphics-проект. |
-| `IslamHouse-API/...` | dataset backlinks | Огромный агрегат религиозных данных; крымскотатарский — малая часть, проект не тематический. |
+| `IslamHouse-API/...` | dataset backlinks | Огромный агрегат религиозных данных; крымскотатарский - малая часть, проект не тематический. |
 | `jonorthwash/*Presentation`, `nguyenbinh1612/crh` | Apertium/paper graph | Презентации и учебный write-up, не самостоятельные проекты для карточек. |
 | `masha2015/Crimean-Tatar-Language` | topic graph | Пустой/неописанный старый repo; недостаточно evidence. |
 | `qirimtatar-embedding-crawlers` generated outputs | corpus graph | Не создавать отдельную карточку для каждого crawler: это один проект #27. |
@@ -96,13 +96,13 @@
 
 - реально использованы в запросах/источниках: **русский, английский, татарский, крымскотатарский, башкирский, турецкий, украинский** (7);
 - языки, реально встретившиеся в проверенных продуктах/метаданных: дополнительно казахский, кыргызский, азербайджанский, чувашский, саха, уйгурский, узбекский, туркменский;
-- Tier 2–7 массовый географический поиск сознательно не имитировался: это зона других research tracks, а данный трек шел по связям и developer artifacts.
+- Tier 2-7 массовый географический поиск сознательно не имитировался: это зона других research tracks, а данный трек шел по связям и developer artifacts.
 
 ## Coverage gaps / handoff
 
 1. Перед переносом **R**-кандидатов открыть README/demo и подтвердить размер данных, лицензию, релиз и точную поддержку tat/bak/crh.
 2. Для #5, #8, #23, #24 проверить старые HTTP-homepages браузером: GitHub API подтверждает repo, но не гарантирует здоровье внешнего сайта.
-3. Проверить функциональный overlap #4/#25/#31/#38/#39: одинаковая задача транслитерации не обязательно дубль проекта, но каталог может выбрать 1–2 лучших продукта.
+3. Проверить функциональный overlap #4/#25/#31/#38/#39: одинаковая задача транслитерации не обязательно дубль проекта, но каталог может выбрать 1-2 лучших продукта.
 4. Проверить, считает ли редакционная политика Siberian Tatar частью `peoples: [tatar]`; schema отдельного народа не имеет.
 5. `geography` и `languages` не являются полями текущей schema: они собраны для research handoff и не должны попасть во frontmatter без изменения source of truth.
-6. Итог трека: **40 проверенных кандидатов** (24 Q, 13 R, 3 W), 12 групп отклонений. Цель 40–70 достигнута по нижней границе без искусственного дробления.
+6. Итог трека: **40 проверенных кандидатов** (24 Q, 13 R, 3 W), 12 групп отклонений. Цель 40-70 достигнута по нижней границе без искусственного дробления.

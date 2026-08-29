@@ -145,7 +145,7 @@ async function validatePage(filePath) {
 }
 
 if (!(await exists(distDir))) {
-	console.error("[seo] dist/ not found — run `bun run build` first");
+	console.error("[seo] dist/ not found - run `bun run build` first");
 	process.exit(1);
 }
 
@@ -171,7 +171,7 @@ for (const message of warnings) console.warn(`  warn  ${message}`);
 for (const message of errors) console.error(`  error ${message}`);
 
 console.log(
-	`\n[seo] ${pages.length} page(s) checked — ${errors.length} error(s), ${warnings.length} warning(s)`,
+	`\n[seo] ${pages.length} page(s) checked - ${errors.length} error(s), ${warnings.length} warning(s)`,
 );
 
 process.exit(errors.length ? 1 : 0);

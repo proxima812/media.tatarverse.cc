@@ -4,7 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
 import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import { useTranslations } from "@/i18n";
 import { meshGradient } from "@/utils/lib/meshGradient";
 
@@ -25,9 +25,9 @@ const domain = new URL(url).hostname.replace(/^www\./, "");
 /*
  * Раскладка по макету: шапка (лого + пилюля с названием) и кнопка «подробнее»
  * выступают за края корпуса. Вынос сделан отрицательными отступами в потоке,
- * а не absolute, — высота карточки остаётся равной содержимому.
+ * а не absolute, - высота карточки остается равной содержимому.
  *
- * Глубина набирается мягкими тенями и тонким `ring` (не `border` — он не
+ * Глубина набирается мягкими тенями и тонким `ring` (не `border` - он не
  * съедает раскладку соседним контентом), а не сплошными границами: подложка
  * (мэш-градиент лого, размытый) → корпус → плашка контента, каждый слой
  * светлее и мягче предыдущего.
@@ -46,7 +46,7 @@ const glow = meshGradient(name);
 		<div
 			class="shrink-0 rounded-full corner-squircle bg-background shadow-sm ring-1 ring-border/50"
 		>
-			<CardLogo size="lg" name={name} logo={logo} />
+			<CardLogo size="lg" name={name} logo={logo} peoples={peoples} />
 		</div>
 
 		<h2
@@ -105,11 +105,11 @@ const glow = meshGradient(name);
 		</div>
 	</div>
 
-	<PrimitiveButton
+	<Button
 		href={href}
 		preset="solid"
 		class="-mt-6 relative z-20 mx-auto shadow-md"
 	>
 		{t("card.more")}
-	</PrimitiveButton>
+	</Button>
 </article>

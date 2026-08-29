@@ -2,64 +2,60 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import mediaTatarverse from "@/assets/images/logo/media-tatarverse.png";
-import tatariaOnlineMedia from "@/assets/images/logo/tataria-online-media.jpg";
-import tatarlarInfoMedia from "@/assets/images/logo/tatarlar-info-media.png";
-import tatarsInPolandPodcastMedia from "@/assets/images/logo/tatars-in-poland-podcast-media.jpg";
-import tatartelemSchoolLessons from "@/assets/images/logo/tatartelem-school-lessons.jpg";
+
+import tatarsInPolandPodcastMedia from "@/assets/images/logo/tatars-in-poland-podcast-media.png";
+import tatartelemSchoolLessons from "@/assets/images/logo/tatartelem-school-lessons.png";
 import tatarverse from "@/assets/images/logo/tatarverse.png";
 import tiptopCrimeanTatarLessons from "@/assets/images/logo/tiptop-crimean-tatar-lessons.png";
 import vatanFmChannel from "@/assets/images/logo/vatan-fm-channel.png";
-import vsemirnyKongressTatarMedia from "@/assets/images/logo/vsemirny-kongress-tatar-media.png";
-import wikimediaTatarLanguageGroupLanguage from "@/assets/images/logo/wikimedia-tatar-language-group-language.png";
+import crimeanTatarMemriseLanguage from "@/assets/images/logo/crimean-tatar-memrise-language.png";
 
 interface LogoSlot {
 	readonly src: ImageMetadata;
 	readonly alt: string;
 }
 
-/** Фиксированный подбор логотипов для стопки на главной — не выборка по данным. */
+/** Фиксированный подбор логотипов для стопки на главной - не выборка по данным. */
 export const LOGOS: readonly LogoSlot[] = [
+	{ src: tatarverse, alt: "tatarverse.cc" },
 	{ src: tatartelemSchoolLessons, alt: "TatarTelem" },
-	{
-		src: wikimediaTatarLanguageGroupLanguage,
-		alt: "Wikimedia Community of Tatar Language User Group",
-	},
-	{ src: vsemirnyKongressTatarMedia, alt: "Всемирный конгресс татар" },
+	{ src: crimeanTatarMemriseLanguage, alt: "Memrise - курсы крымскотатарского языка" },
+	// {
+	// 	src: wikimediaTatarLanguageGroupLanguage,
+	// 	alt: "Wikimedia Community of Tatar Language User Group",
+	// },
 	{ src: vatanFmChannel, alt: "Радио «Ватан седасы»" },
 	{
 		src: tiptopCrimeanTatarLessons,
-		alt: "TIP-TOP — курсы крымскотатарского языка",
+		alt: "TIP-TOP - курсы крымскотатарского языка",
 	},
 	{
 		src: tatarsInPolandPodcastMedia,
 		alt: "Tatars in Poland: Adopted Homeland",
 	},
-	{ src: tatarlarInfoMedia, alt: "Татарлар.Инфо" },
-	{ src: tatariaOnlineMedia, alt: "Tataria Online" },
-	{ src: tatarverse, alt: "tatarverse.cc" },
+	// { src: tatarlarInfoMedia, alt: "Татарлар.Инфо" },
+	// { src: tatariaOnlineMedia, alt: "Tataria Online" },
 	{ src: mediaTatarverse, alt: "media.tatarverse.cc" },
 ];
 ---
 
-<div class="flex justify-center py-10">
+<div class="flex justify-center">
 	<div class="logo-stack relative h-22 w-22">
 		<span
 			class="logo-stack__shim absolute inset-0 rounded-full corner-squircle"
 			data-depth="3"
-			aria-hidden="true"
-		></span>
+			aria-hidden="true"></span>
 		<span
 			class="logo-stack__shim absolute inset-0 rounded-full corner-squircle"
 			data-depth="2"
-			aria-hidden="true"
-		></span>
+			aria-hidden="true"></span>
 		<span
 			class="logo-stack__shim absolute inset-0 rounded-full corner-squircle"
 			data-depth="1"
-			aria-hidden="true"
-		></span>
+			aria-hidden="true"></span>
 
-		{LOGOS.map((logo, index) => (
+		{
+			LOGOS.map((logo, index) => (
 				<div
 					class="logo-stack__item absolute inset-0 overflow-hidden rounded-full border border-border bg-muted corner-squircle shadow-lg"
 					data-state={index === 0 ? "active" : "idle"}
@@ -74,222 +70,213 @@ export const LOGOS: readonly LogoSlot[] = [
 						class="h-full w-full object-cover"
 					/>
 				</div>
-			))}
+			))
+		}
 	</div>
 </div>
 
 <style>
-/*
- * Геометрия стопки: каждый шаг в глубину — сдвиг вверх на `--shim-shift`
+	/*
+ * Геометрия стопки: каждый шаг в глубину - сдвиг вверх на `--shim-shift`
  * и уменьшение на `--shim-scale`. Сдвиг задан долей от стороны карточки
  * (16px при 88px), поэтому пропорции стопки не поедут, если поменять
  * размер контейнера.
  */
-.logo-stack {
-	--shim-shift: 16px;
-	--shim-scale: 0.1875;
-	--swap-duration: 250ms;
-	--swap-ease: cubic-bezier(0.5, 0.3, 0.55, 0.65);
-}
+	.logo-stack {
+		--shim-shift: 16px;
+		--shim-scale: 0.1875;
+		--swap-duration: 250ms;
+		--swap-ease: cubic-bezier(0.5, 0.3, 0.55, 0.65);
+	}
 
-/*
- * Серые подложки — очередь: на каждой смене вся очередь делает шаг вперёд,
+	/*
+ * Серые подложки - очередь: на каждой смене вся очередь делает шаг вперед,
  * дошедшая до переднего ряда гаснет под новым логотипом и мгновенно уходит
- * в хвост. Поэтому подложка ничего не знает о своём месте: и позиция, и цвет,
+ * в хвост. Поэтому подложка ничего не знает о своем месте: и позиция, и цвет,
  * и порядок наложения заданы `data-depth`, а не самим элементом.
  *
- * Глубин четыре, а подложек три: нулевая глубина — это передний ряд, который
+ * Глубин четыре, а подложек три: нулевая глубина - это передний ряд, который
  * подложка занимает только на время перехода.
  */
-.logo-stack__shim {
-	pointer-events: none;
-	transition:
-		transform var(--swap-duration) var(--swap-ease),
-		opacity var(--swap-duration) var(--swap-ease),
-		background-color var(--swap-duration) var(--swap-ease);
-}
+	.logo-stack__shim {
+		pointer-events: none;
+		transition:
+			transform var(--swap-duration) var(--swap-ease),
+			opacity var(--swap-duration) var(--swap-ease),
+			background-color var(--swap-duration) var(--swap-ease);
+	}
 
-.logo-stack__shim[data-depth="0"] {
-	transform: none;
-	background-color: var(--color-border);
-	opacity: 0;
-	z-index: 4;
-}
+	.logo-stack__shim[data-depth="0"] {
+		transform: none;
+		background-color: var(--color-border);
+		opacity: 0;
+		z-index: 4;
+	}
 
-.logo-stack__shim[data-depth="1"] {
-	transform: translateY(calc(var(--shim-shift) * -1))
-		scale(calc(1 - var(--shim-scale)));
-	background-color: var(--color-border);
-	opacity: 1;
-	z-index: 3;
-}
+	.logo-stack__shim[data-depth="1"] {
+		transform: translateY(calc(var(--shim-shift) * -1)) scale(calc(1 - var(--shim-scale)));
+		background-color: var(--color-border);
+		opacity: 1;
+		z-index: 3;
+	}
 
-.logo-stack__shim[data-depth="2"] {
-	transform: translateY(calc(var(--shim-shift) * -2))
-		scale(calc(1 - var(--shim-scale) * 2));
-	background-color: var(--color-muted);
-	opacity: 1;
-	z-index: 2;
-}
+	.logo-stack__shim[data-depth="2"] {
+		transform: translateY(calc(var(--shim-shift) * -2)) scale(calc(1 - var(--shim-scale) * 2));
+		background-color: var(--color-muted);
+		opacity: 1;
+		z-index: 2;
+	}
 
-/*
- * Хвост очереди — за кадром: подложка возвращается сюда мгновенно, поэтому
- * `transition: none`. Переход отсюда вперёд уже анимируется: правила читаются
+	/*
+ * Хвост очереди - за кадром: подложка возвращается сюда мгновенно, поэтому
+ * `transition: none`. Переход отсюда вперед уже анимируется: правила читаются
  * из состояния, в которое элемент приходит.
  */
-.logo-stack__shim[data-depth="3"] {
-	transform: translateY(calc(var(--shim-shift) * -3))
-		scale(calc(1 - var(--shim-scale) * 3));
-	background-color: var(--color-muted);
-	opacity: 0;
-	z-index: 1;
-	transition: none;
-}
-
-/*
- * Три состояния карточки логотипа:
- *
- *   idle    — ждёт своей очереди в позиции ближней подложки, невидима,
- *             без перехода (в это состояние возвращаются мгновенно);
- *   active  — едет из позиции подложки в передний ряд и проявляется;
- *   leaving — остаётся на месте и гаснет, пока новая карточка наезжает
- *             поверх неё.
- *
- * Уходящая карточка не двигается: в переходе есть только одно движение —
- * приезд новой. Поэтому `transform` у `active` и `leaving` одинаковый.
- */
-.logo-stack__item {
-	transform: translateY(calc(var(--shim-shift) * -1))
-		scale(calc(1 - var(--shim-scale)));
-	opacity: 0;
-	z-index: 0;
-	pointer-events: none;
-}
-
-.logo-stack__item[data-state="active"] {
-	transform: none;
-	opacity: 1;
-	z-index: 6;
-	pointer-events: auto;
-	transition:
-		transform var(--swap-duration) var(--swap-ease),
-		opacity var(--swap-duration) var(--swap-ease);
-}
-
-.logo-stack__item[data-state="leaving"] {
-	transform: none;
-	opacity: 0;
-	z-index: 5;
-	transition: opacity var(--swap-duration) var(--swap-ease);
-}
-
-/*
- * Селекторы состояний повторены целиком: у `[data-state=...]` специфичность
- * выше, чем у одного класса, и правило `.logo-stack__item { transition: none }`
- * их бы не перебило — медиазапрос на специфичность не влияет.
- */
-@media (prefers-reduced-motion: reduce) {
-	.logo-stack__shim,
-	.logo-stack__shim[data-depth="0"],
-	.logo-stack__shim[data-depth="1"],
-	.logo-stack__shim[data-depth="2"],
-	.logo-stack__item,
-	.logo-stack__item[data-state="active"],
-	.logo-stack__item[data-state="leaving"] {
+	.logo-stack__shim[data-depth="3"] {
+		transform: translateY(calc(var(--shim-shift) * -3)) scale(calc(1 - var(--shim-scale) * 3));
+		background-color: var(--color-muted);
+		opacity: 0;
+		z-index: 1;
 		transition: none;
 	}
-}
+
+	/*
+ * Три состояния карточки логотипа:
+ *
+ *   idle    - ждет своей очереди в позиции ближней подложки, невидима,
+ *             без перехода (в это состояние возвращаются мгновенно);
+ *   active  - едет из позиции подложки в передний ряд и проявляется;
+ *   leaving - остается на месте и гаснет, пока новая карточка наезжает
+ *             поверх нее.
+ *
+ * Уходящая карточка не двигается: в переходе есть только одно движение -
+ * приезд новой. Поэтому `transform` у `active` и `leaving` одинаковый.
+ */
+	.logo-stack__item {
+		transform: translateY(calc(var(--shim-shift) * -1)) scale(calc(1 - var(--shim-scale)));
+		opacity: 0;
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	.logo-stack__item[data-state="active"] {
+		transform: none;
+		opacity: 1;
+		z-index: 6;
+		pointer-events: auto;
+		transition:
+			transform var(--swap-duration) var(--swap-ease),
+			opacity var(--swap-duration) var(--swap-ease);
+	}
+
+	.logo-stack__item[data-state="leaving"] {
+		transform: none;
+		opacity: 0;
+		z-index: 5;
+		transition: opacity var(--swap-duration) var(--swap-ease);
+	}
+
+	/*
+ * Селекторы состояний повторены целиком: у `[data-state=...]` специфичность
+ * выше, чем у одного класса, и правило `.logo-stack__item { transition: none }`
+ * их бы не перебило - медиазапрос на специфичность не влияет.
+ */
+	@media (prefers-reduced-motion: reduce) {
+		.logo-stack__shim,
+		.logo-stack__shim[data-depth="0"],
+		.logo-stack__shim[data-depth="1"],
+		.logo-stack__shim[data-depth="2"],
+		.logo-stack__item,
+		.logo-stack__item[data-state="active"],
+		.logo-stack__item[data-state="leaving"] {
+			transition: none;
+		}
+	}
 </style>
 
 <script>
-/** Пауза между сменами логотипов и длительность самой смены. */
-const CYCLE_MS = 2000;
-const SWAP_MS = 250;
+	/** Пауза между сменами логотипов и длительность самой смены. */
+	const CYCLE_MS = 2000;
+	const SWAP_MS = 250;
 
-/** Глубина за кадром, куда подложка возвращается, дойдя до переднего ряда. */
-const QUEUE_TAIL_DEPTH = 3;
+	/** Глубина за кадром, куда подложка возвращается, дойдя до переднего ряда. */
+	const QUEUE_TAIL_DEPTH = 3;
 
-/**
- * При `prefers-reduced-motion` переходы выключены чистым CSS выше, но сама
- * смена остаётся: мгновенные подмены раз в две секунды мельтешат, поэтому
- * пауза между ними растягивается.
- */
-const REDUCED_MOTION_CYCLE_MS = 6000;
+	/**
+	 * При `prefers-reduced-motion` переходы выключены чистым CSS выше, но сама
+	 * смена остается: мгновенные подмены раз в две секунды мельтешат, поэтому
+	 * пауза между ними растягивается.
+	 */
+	const REDUCED_MOTION_CYCLE_MS = 6000;
 
-/**
- * Шаг очереди подложек: каждая уезжает на одну глубину вперёд. Дошедшая до
- * переднего ряда уходит в хвост прямо здесь — обычно это уже сделал таймер
- * `recycleShims`, но в фоновой вкладке таймеры схлопываются, и без этого
- * запаса подложка ушла бы на глубину, для которой нет правила.
- */
-function advanceShims(shims: HTMLElement[]) {
-	for (const shim of shims) {
-		const depth = Number(shim.dataset.depth);
-		shim.dataset.depth = String(depth > 0 ? depth - 1 : QUEUE_TAIL_DEPTH);
-	}
-}
-
-/** Возврат дошедшей до переднего ряда подложки в хвост — уже без перехода. */
-function recycleShims(shims: HTMLElement[]) {
-	for (const shim of shims) {
-		if (shim.dataset.depth === "0") {
-			shim.dataset.depth = String(QUEUE_TAIL_DEPTH);
+	/**
+	 * Шаг очереди подложек: каждая уезжает на одну глубину вперед. Дошедшая до
+	 * переднего ряда уходит в хвост прямо здесь - обычно это уже сделал таймер
+	 * `recycleShims`, но в фоновой вкладке таймеры схлопываются, и без этого
+	 * запаса подложка ушла бы на глубину, для которой нет правила.
+	 */
+	function advanceShims(shims: HTMLElement[]) {
+		for (const shim of shims) {
+			const depth = Number(shim.dataset.depth);
+			shim.dataset.depth = String(depth > 0 ? depth - 1 : QUEUE_TAIL_DEPTH);
 		}
 	}
-}
 
-function startLogoStack(stack: HTMLElement) {
-	const items = Array.from(
-		stack.querySelectorAll<HTMLElement>(".logo-stack__item"),
-	);
-	if (items.length < 2) return;
-
-	const shims = Array.from(
-		stack.querySelectorAll<HTMLElement>(".logo-stack__shim"),
-	);
-
-	const reducedMotion = window.matchMedia(
-		"(prefers-reduced-motion: reduce)",
-	).matches;
-
-	let activeIndex = 0;
-
-	setInterval(
-		() => {
-			const leaving = items[activeIndex];
-			activeIndex = (activeIndex + 1) % items.length;
-			const entering = items[activeIndex];
-			if (!leaving || !entering) return;
-
-			leaving.dataset.state = "leaving";
-			entering.dataset.state = "active";
-			advanceShims(shims);
-
-			/*
-			 * Возврат в `idle` возвращает карточку в позицию подложки. Делать
-			 * это можно только после того, как она догасла: иначе прыжок вверх
-			 * был бы виден. Тем же таймером в хвост уходит и подложка.
-			 */
-			setTimeout(() => {
-				if (leaving.dataset.state === "leaving") {
-					leaving.dataset.state = "idle";
-				}
-				recycleShims(shims);
-			}, SWAP_MS);
-		},
-		reducedMotion ? REDUCED_MOTION_CYCLE_MS : CYCLE_MS,
-	);
-}
-
-function initLogoStacks() {
-	for (const stack of document.querySelectorAll<HTMLElement>(".logo-stack")) {
-		startLogoStack(stack);
+	/** Возврат дошедшей до переднего ряда подложки в хвост - уже без перехода. */
+	function recycleShims(shims: HTMLElement[]) {
+		for (const shim of shims) {
+			if (shim.dataset.depth === "0") {
+				shim.dataset.depth = String(QUEUE_TAIL_DEPTH);
+			}
+		}
 	}
-}
 
-if (document.readyState === "loading") {
-	document.addEventListener("DOMContentLoaded", initLogoStacks);
-} else {
-	initLogoStacks();
-}
+	function startLogoStack(stack: HTMLElement) {
+		const items = Array.from(stack.querySelectorAll<HTMLElement>(".logo-stack__item"));
+		if (items.length < 2) return;
+
+		const shims = Array.from(stack.querySelectorAll<HTMLElement>(".logo-stack__shim"));
+
+		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		let activeIndex = 0;
+
+		setInterval(
+			() => {
+				const leaving = items[activeIndex];
+				activeIndex = (activeIndex + 1) % items.length;
+				const entering = items[activeIndex];
+				if (!leaving || !entering) return;
+
+				leaving.dataset.state = "leaving";
+				entering.dataset.state = "active";
+				advanceShims(shims);
+
+				/*
+				 * Возврат в `idle` возвращает карточку в позицию подложки. Делать
+				 * это можно только после того, как она догасла: иначе прыжок вверх
+				 * был бы виден. Тем же таймером в хвост уходит и подложка.
+				 */
+				setTimeout(() => {
+					if (leaving.dataset.state === "leaving") {
+						leaving.dataset.state = "idle";
+					}
+					recycleShims(shims);
+				}, SWAP_MS);
+			},
+			reducedMotion ? REDUCED_MOTION_CYCLE_MS : CYCLE_MS,
+		);
+	}
+
+	function initLogoStacks() {
+		for (const stack of document.querySelectorAll<HTMLElement>(".logo-stack")) {
+			startLogoStack(stack);
+		}
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initLogoStacks);
+	} else {
+		initLogoStacks();
+	}
 </script>

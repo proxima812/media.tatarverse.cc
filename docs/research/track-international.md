@@ -1,11 +1,11 @@
-# Track 2 — International / Diaspora Discovery
+# Track 2 - International / Diaspora Discovery
 
 Research date: 2026-08-22. This is a discovery artifact, not import-ready card data. No `data/cards/**` files were changed.
 
 ## Method and dataset guardrails
 
 - Existing dataset checked: 123 cards; names and slugs were compared case-insensitively.
-- Source-of-truth schema checked in `src/content.config.ts`: only `channel`, `author`, `media`, `language`, `lessons`, `graphics`; peoples only `tatar`, `bashkir`, `crimean-tatar`; every eventual card needs 3–4 facts.
+- Source-of-truth schema checked in `src/content.config.ts`: only `channel`, `author`, `media`, `language`, `lessons`, `graphics`; peoples only `tatar`, `bashkir`, `crimean-tatar`; every eventual card needs 3-4 facts.
 - An association is **not** included merely because it exists. A candidate below is its distinct public editorial, teaching, publishing, archive, or creator surface that can honestly use one of the six categories.
 - “Verified” means the primary URL and the core claims were confirmed in an official/first-party page or an authoritative institutional source during this pass. “Review” means relevant and likely usable, but the final importer should re-check activity, canonical URL, and whether the surface is sufficiently independent for a card.
 - URLs shown as evidence were reachable/indexed during research; social-platform pages may still require an interactive-browser check before import.
@@ -13,7 +13,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 ## High-confidence candidates
 
 ### 1. `american-turko-tatar-association-channel`
-- **Name:** American Turko-Tatar Association — cultural channel
+- **Name:** American Turko-Tatar Association - cultural channel
 - **Description:** California diaspora site publishing the history, events, and cultural life of the American Turko-Tatar community.
 - **Facts:** established in 1960; based in Burlingame/San Francisco Bay Area; founded by immigrants from Tatar communities in China, Japan, Korea, and Turkey; explicitly works to preserve Tatar culture and religious traditions.
 - **Primary URL:** https://www.attasf.org/
@@ -55,7 +55,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 ### 5. `forum-of-european-tatars-channel`
 - **Name:** Forum of European Tatars
 - **Description:** Multilingual European diaspora platform publishing a programme and resources on language, education, media, and cooperation among Tatars in Europe.
-- **Facts:** first announced forum is in Frankfurt, 25–27 September 2026; working languages are Tatar and English; programme includes diaspora education and media; explicitly aims to establish recurring European coordination.
+- **Facts:** first announced forum is in Frankfurt, 25-27 September 2026; working languages are Tatar and English; programme includes diaspora education and media; explicitly aims to establish recurring European coordination.
 - **Primary URL:** https://www.tatarforum.eu/
 - **Category / people:** `channel` / `tatar`
 - **Geography / languages:** Germany / Europe; Tatar, English.
@@ -63,7 +63,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** high / verified; event-platform candidate, reassess longevity after September 2026.
 
 ### 6. `suomen-islam-seurakunta-tatar-courses`
-- **Name:** Suomen Islam-seurakunta — Tatar language courses
+- **Name:** Suomen Islam-seurakunta - Tatar language courses
 - **Description:** Long-running Finnish Tatar community teaching programme for language, culture, religion, and history.
 - **Facts:** the congregation has provided Tatar instruction since the community school closed; offers summer and winter courses; teaching covers language, culture, religion, and history; serves one of Finland’s oldest minority-language communities.
 - **Primary URL:** https://tatar.fi/
@@ -73,7 +73,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** high / verified via government/public-broadcaster sources; confirm canonical course page.
 
 ### 7. `suomen-tatarit-publications`
-- **Name:** Suomen tataarit — community publications
+- **Name:** Suomen tataarit - community publications
 - **Description:** Finnish Tatar publishing activity producing books, learning materials, periodicals, music, and children’s language resources.
 - **Facts:** Helsinki’s official history portal identifies the congregation and cultural association as active publishers; materials include books and educational resources; newborn families receive a language-and-culture resource box; publication work supports the Mishar Tatar community.
 - **Primary URL:** https://tatar.fi/
@@ -133,7 +133,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** high / verified.
 
 ### 13. `vilnius-tatar-community-publications`
-- **Name:** Vilniaus apskrities totorių bendruomenė — publications
+- **Name:** Vilniaus apskrities totorių bendruomenė - publications
 - **Description:** Vilnius Tatar community’s research and publishing channel on Lipka Tatar manuscripts, language, history, and culture.
 - **Facts:** organization registered in 2004; official profile documents multiple books and catalogues; publication subjects include the oldest Lithuanian Tatar manuscripts; work links Lithuanian, Polish, Turkish, and Tatar heritage.
 - **Primary URL:** https://www.vatb.org/
@@ -143,7 +143,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** high / verified.
 
 ### 14. `tatar-podcast-eu`
-- **Name:** Tatar Podcast — A Centuries-Old Muslim Community
+- **Name:** Tatar Podcast - A Centuries-Old Muslim Community
 - **Description:** English-language documentary podcast about Polish Tatars’ cultural heritage, everyday life, and religious practice.
 - **Facts:** hosted by Leiden professor Maurits Berger and University of Wrocław researcher Ewa Górska; recorded through travel in Poland; includes Kruszyniany; has a dedicated independent site.
 - **Primary URL:** https://tatarpodcast.eu/
@@ -164,7 +164,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 
 ### 16. `rocznik-tatarow-polskich`
 - **Name:** Rocznik Tatarów Polskich
-- **Description:** Polish Tatar yearbook publishing research and source material on the history and culture of Tatars in the Polish–Lithuanian sphere.
+- **Description:** Polish Tatar yearbook publishing research and source material on the history and culture of Tatars in the Polish-Lithuanian sphere.
 - **Facts:** long-form scholarly/editorial format; connected to the Union of Tatars of the Republic of Poland; centered on Lipka Tatar studies; Polish-language publication.
 - **Primary URL:** https://ztrp.pl/
 - **Category / people:** `media` / `tatar`
@@ -173,7 +173,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** medium / review; verify latest issue and canonical archive before import.
 
 ### 17. `ztrp-editorial-channel`
-- **Name:** Związek Tatarów Rzeczypospolitej Polskiej — editorial channel
+- **Name:** Związek Tatarów Rzeczypospolitej Polskiej - editorial channel
 - **Description:** Polish Tatar public information channel publishing community news, heritage material, events, and organizational history.
 - **Facts:** aims to preserve ethnic consciousness and integrate people of Tatar descent; promotes Tatar traditions as part of Polish culture; maintains a standalone news-rich website; acts as publisher within the Polish Tatar media network.
 - **Primary URL:** https://ztrp.pl/
@@ -213,7 +213,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** high / verified.
 
 ### 21. `crimean-tatar-foundation-usa-channel`
-- **Name:** Crimean Tatar Foundation USA — knowledge channel
+- **Name:** Crimean Tatar Foundation USA - knowledge channel
 - **Description:** US-based English-language documentation and public-education platform connecting Crimean Tatar perspectives with universities and international institutions.
 - **Facts:** registered US 501(c)(3); established in 2023; mission includes scholarship and documentation; publishes English material on identity, culture, language, rights, and policy.
 - **Primary URL:** https://crimeantatarfoundation.org/
@@ -223,7 +223,7 @@ Research date: 2026-08-22. This is a discovery artifact, not import-ready card d
 - **Confidence / status:** high / verified.
 
 ### 22. `american-crimean-turks-school-language-arts`
-- **Name:** School of Language & Arts — American Association of Crimean Turks
+- **Name:** School of Language & Arts - American Association of Crimean Turks
 - **Description:** New York diaspora school transmitting Crimean Tatar language, dance, and customs to younger generations.
 - **Facts:** dedicated language-and-arts school; run by the American Association of Crimean Turks; based around the Brooklyn community hall; combines language with dance and cultural education.
 - **Primary URL:** https://www.kirimny.org/home
@@ -381,7 +381,7 @@ These are relevant leads found through official link graphs, publication network
 - **Confidence / status:** medium / review exact organization and social URL.
 
 ### 38. `finlandiya-turkleri-birligi-publications`
-- **Name:** Finlandiya Türkleri Birligi — publications
+- **Name:** Finlandiya Türkleri Birligi - publications
 - **Description:** Historic Finnish Tatar cultural association’s publishing and cultural-programme surface.
 - **Facts:** cultural association founded in 1935; active in sustaining Tatar language and culture; identified by Finnish government sources; part of Finland’s established Tatar publishing ecosystem.
 - **Primary URL:** https://tatar.fi/
@@ -390,7 +390,7 @@ These are relevant leads found through official link graphs, publication network
 - **Confidence / status:** medium / review: determine current independent publications and canonical page.
 
 ### 39. `turk-islam-foreningen-sweden-archive`
-- **Name:** Turk-Islam Föreningen i Sverige — Tatar heritage archive
+- **Name:** Turk-Islam Föreningen i Sverige - Tatar heritage archive
 - **Description:** Potential archival/media treatment of Sweden’s first Tatar-founded Muslim and cultural association.
 - **Facts:** founded in 1948 by Finnish and Estonian Tatars; served both religious and Tatar cultural functions; helped preserve language and customs; historically Sweden’s first Muslim congregation.
 - **Primary URL:** https://www.sverigesradio.se/artikel/6455430
@@ -488,4 +488,4 @@ These are relevant leads found through official link graphs, publication network
 
 ## Import recommendation
 
-Start with candidates **1–7, 9–13, 17–25, 27, 30** after a final URL/status check. This yields about 22 category-compatible new cards without relying on weak social leads. Treat items 14, 22, 25, and 31 as duplicate/merge work, and do not import items 28–29 or 32–43 until their explicit review notes are resolved.
+Start with candidates **1-7, 9-13, 17-25, 27, 30** after a final URL/status check. This yields about 22 category-compatible new cards without relying on weak social leads. Treat items 14, 22, 25, and 31 as duplicate/merge work, and do not import items 28-29 or 32-43 until their explicit review notes are resolved.

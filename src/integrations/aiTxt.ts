@@ -6,9 +6,9 @@ export interface AiTxtOptions {
 	readonly siteName: string;
 	readonly description: string;
 	readonly locale: string;
-	/** Разрешён ли доступ AI-краулеров. */
+	/** Разрешен ли доступ AI-краулеров. */
 	readonly access?: "allowed" | "disallowed";
-	/** Пункты политики. Задан — полностью заменяет значения по умолчанию. */
+	/** Пункты политики. Задан - полностью заменяет значения по умолчанию. */
 	readonly policy?: readonly string[];
 	/** Добавить ссылку на `/llms.txt`. */
 	readonly llms?: boolean;

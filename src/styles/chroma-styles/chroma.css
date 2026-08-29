@@ -1,0 +1,169 @@
+/**
+ * Chroma styles for text reveal effect
+ */
+
+/* Shared chroma reveal behavior */
+.chroma-reveal,
+.chroma-reveal-violet,
+.chroma-reveal-fire,
+.chroma-reveal-emerald,
+.chroma-reveal-pink,
+.chroma-reveal-acid {
+  display: inline-block;
+
+  background-size: 300% 100%;
+  background-position: 100% 0;
+
+  background-clip: text;
+  -webkit-background-clip: text;
+
+  color: transparent;
+
+  filter: blur(2px);
+
+  will-change: background-position, filter;
+
+  animation: chroma-reveal-sweep 3010ms ease-in-out 180ms 1 forwards;
+}
+
+/**
+ * Default
+ * Pink → Red → Orange → Ice → Blue
+ */
+.chroma-reveal {
+  background-image: linear-gradient(
+    90deg,
+    #111827 0,
+    #111827 33.33%,
+    #c679c4 40%,
+    #fa3d1d 45%,
+    #ffb005 50%,
+    #e1e1fe 55%,
+    #0358f7 60%,
+    transparent 66.67%,
+    transparent 100%
+  );
+}
+
+/**
+ * Violet
+ * Violet → Magenta → Cyan → Blue
+ */
+.chroma-reveal-violet {
+  background-image: linear-gradient(
+    90deg,
+    #111827 0,
+    #111827 33.33%,
+    #8b5cf6 40%,
+    #d946ef 45%,
+    #22d3ee 50%,
+    #60a5fa 55%,
+    #2563eb 60%,
+    transparent 66.67%,
+    transparent 100%
+  );
+}
+
+/**
+ * Fire
+ * Red → Orange → Gold → Rose
+ */
+.chroma-reveal-fire {
+  background-image: linear-gradient(
+    90deg,
+    #18181b 0,
+    #18181b 33.33%,
+    #ef4444 40%,
+    #f97316 45%,
+    #fbbf24 50%,
+    #fde68a 55%,
+    #fb7185 60%,
+    transparent 66.67%,
+    transparent 100%
+  );
+}
+
+/**
+ * Emerald
+ * Emerald → Teal → Aqua → Cyan
+ */
+.chroma-reveal-emerald {
+  background-image: linear-gradient(
+    90deg,
+    #0f172a 0,
+    #0f172a 33.33%,
+    #059669 40%,
+    #10b981 45%,
+    #2dd4bf 50%,
+    #67e8f9 55%,
+    #06b6d4 60%,
+    transparent 66.67%,
+    transparent 100%
+  );
+}
+
+/**
+ * Pink
+ * Pink → Purple → Ice → Sky
+ */
+.chroma-reveal-pink {
+  background-image: linear-gradient(
+    90deg,
+    #111827 0,
+    #111827 33.33%,
+    #ec4899 40%,
+    #f472b6 45%,
+    #c084fc 50%,
+    #a5b4fc 55%,
+    #38bdf8 60%,
+    transparent 66.67%,
+    transparent 100%
+  );
+}
+
+/**
+ * Acid
+ * Lime → Green → Cyan → Blue → Violet
+ */
+.chroma-reveal-acid {
+  background-image: linear-gradient(
+    90deg,
+    #09090b 0,
+    #09090b 33.33%,
+    #a3e635 40%,
+    #22c55e 45%,
+    #06b6d4 50%,
+    #3b82f6 55%,
+    #8b5cf6 60%,
+    transparent 66.67%,
+    transparent 100%
+  );
+}
+
+/**
+ * Chroma sweep animation
+ */
+@keyframes chroma-reveal-sweep {
+  to {
+    background-position: 0 0;
+    filter: blur(0);
+  }
+}
+
+/**
+ * Accessibility
+ */
+@media (prefers-reduced-motion: reduce) {
+  .chroma-reveal,
+  .chroma-reveal-violet,
+  .chroma-reveal-fire,
+  .chroma-reveal-emerald,
+  .chroma-reveal-pink,
+  .chroma-reveal-acid {
+    animation: none;
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+    color: inherit;
+    filter: none;
+  }
+}

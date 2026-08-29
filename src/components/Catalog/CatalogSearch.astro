@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
 import { cn } from "@/utils/lib/cn";
@@ -14,15 +15,15 @@ const t = useTranslations(locale);
 /*
  * Поле поиска по каталогу. Это не полнотекстовый поиск по сайту, а фильтр
  * алфавитного списка: весь каталог уже лежит в DOM страницы, и фильтрация
- * идёт на месте — записи, которые не подошли, просто скрываются
+ * идет на месте - записи, которые не подошли, просто скрываются
  * (см. скрипт в `CatalogGlossary.astro`).
  *
- * Раньше здесь стоял Pagefind. Он отвечает на другой вопрос — «найди
- * страницу по индексу и покажи выдачу», — и его выпадающий список
+ * Раньше здесь стоял Pagefind. Он отвечает на другой вопрос - «найди
+ * страницу по индексу и покажи выдачу», - и его выпадающий список
  * подменял бы собой сам список каталога вместо того, чтобы его сужать.
  *
  * Размеры пилюли (727×68, радиус 20, иконка 20px на отступе 40px)
- * повторяют оригинал, по которому её просили сделать.
+ * повторяют оригинал, по которому ее просили сделать.
  */
 ---
 
@@ -32,20 +33,11 @@ const t = useTranslations(locale);
 			{t("catalog.search.placeholder")}
 		</label>
 
-		<svg
+		<Icon
+			name="mdi:magnify"
 			class="pointer-events-none absolute top-1/2 left-6 size-5 -translate-y-1/2 text-background/65 sm:left-10"
-			width="20"
-			height="20"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
 			aria-hidden="true"
-		>
-			<circle cx="11" cy="11" r="7"></circle>
-			<path d="M20 20l-3.5-3.5"></path>
-		</svg>
+		/>
 
 		<input
 			id="catalog-search"
@@ -54,12 +46,12 @@ const t = useTranslations(locale);
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={t("catalog.search.placeholder")}
-			class="h-14 w-full rounded-[20px] bg-foreground/88 pr-12 pl-14 text-background text-base leading-normal outline-none backdrop-blur-sm transition placeholder:text-background/65 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:h-17 sm:pr-14 sm:pl-17 sm:text-xl [&::-webkit-search-cancel-button]:appearance-none"
+			class="h-14 w-full rounded-[20px] bg-foreground/88 pr-12 pl-14 text-background text-base leading-normal outline-none backdrop-blur-sm transition placeholder:text-background/65 focus:outline-none focus-visible:outline-none sm:h-17 sm:pr-14 sm:pl-17 sm:text-xl [&::-webkit-search-cancel-button]:appearance-none"
 		>
 
 		<!-- Кнопка очистки поверх поля: нативный крестик `type="search"`
-		     выключен выше — он есть только в WebKit и красится системно,
-		     а не под тёмную пилюлю. -->
+		     выключен выше - он есть только в WebKit и красится системно,
+		     а не под темную пилюлю. -->
 		<button
 			type="button"
 			data-glossary-search-clear

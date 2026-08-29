@@ -4,7 +4,7 @@ import { Icon } from "astro-icon/components";
 import { tagLabel } from "@/components/Catalog/labels";
 import { tagIcon } from "@/components/Catalog/tagIcons";
 import type { Tag } from "@/components/Catalog/tags";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import Tooltip from "@/components/partials/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -13,14 +13,14 @@ interface Props {
 	locale: LocaleCode;
 	/** Теги, у которых есть карточки. Пустых вкладок в тулбаре не бывает. */
 	tags: Tag[];
-	/** Тег текущей страницы. `undefined` — раздел «Все проекты». */
+	/** Тег текущей страницы. `undefined` - раздел «Все проекты». */
 	activeTag?: Tag | undefined;
 }
 
 const { locale, tags, activeTag } = Astro.props;
 const t = useTranslations(locale);
 
-/** «Все проекты» + по одной записи на тег — общий список для строки вкладок и диалога. */
+/** «Все проекты» + по одной записи на тег - общий список для строки вкладок и диалога. */
 const entries = [
 	{
 		href: getRelativeLocaleUrl(locale, "catalog"),
@@ -37,26 +37,26 @@ const entries = [
 ];
 
 /*
- * Вкладки — настоящие ссылки на `/catalog` и `/catalog/<tag>`, а не кнопки с
+ * Вкладки - настоящие ссылки на `/catalog` и `/catalog/<tag>`, а не кнопки с
  * JS-фильтром: у каждого тега своя страница (см. `starter-i18n`), поэтому
- * переключение — обычная навигация, и активное состояние — `aria-current`,
+ * переключение - обычная навигация, и активное состояние - `aria-current`,
  * а не запоминаемый клиентом `aria-pressed`.
  *
- * `aria-current` — не готовый вариант Tailwind (в отличие от `aria-pressed`
+ * `aria-current` - не готовый вариант Tailwind (в отличие от `aria-pressed`
  * и `aria-selected`), поэтому селектор с явным значением: `aria-[current=page]`.
  * Просто `aria-current:` молча ничего не генерирует, и активная вкладка
  * визуально не отличалась от остальных.
  *
  * `inline-block` обязателен: `<a>` по умолчанию `inline`, а у инлайновых
  * элементов вертикальный `padding` красится визуально, но не входит в высоту
- * строки. Раньше вкладки были кнопками (у `<button>` UA-стиль — уже
+ * строки. Раньше вкладки были кнопками (у `<button>` UA-стиль - уже
  * `inline-block`), и это работало само собой; после замены на `<a>` пилюля
  * рисовалась на несколько px выше своего же layout-бокса.
  */
 const tabClass =
 	"inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-muted px-4 py-2 font-medium text-muted-foreground text-sm transition hover:bg-muted/70 hover:text-foreground aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground";
 
-/** Пункт того же списка тегов, но в диалоге — строкой на всю ширину. */
+/** Пункт того же списка тегов, но в диалоге - строкой на всю ширину. */
 const dialogLinkClass =
 	"flex items-center gap-2 rounded-xl px-3 py-2 font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground";
 
@@ -80,11 +80,11 @@ const viewClass =
 				Всегда в конце строки на мобильном: на узком экране пилюли почти
 				никогда не влезают все разом, а мигающая по ширине контента кнопка
 				(то есть, то нет) хуже стабильно видимой. `[data-tag-list]` прячет
-				лишние `[data-tag-item]` скриптом ниже — эта кнопка их место не
+				лишние `[data-tag-item]` скриптом ниже - эта кнопка их место не
 				занимает, стоит своим последним `<li>`.
 			-->
 			<li class="sm:hidden">
-				<PrimitiveButton
+				<Button
 					preset="soft"
 					data-tags-open
 					aria-haspopup="dialog"
@@ -105,7 +105,7 @@ const viewClass =
 					>
 						<path d="M6 9l6 6 6-6" />
 					</svg>
-				</PrimitiveButton>
+				</Button>
 			</li>
 		</ul>
 	</nav>
@@ -168,7 +168,7 @@ const viewClass =
 >
 	<div class="flex items-center justify-between gap-4 pb-3">
 		<p class="font-semibold text-foreground">{t("catalog.filter.label")}</p>
-		<PrimitiveButton
+		<Button
 			preset="ghost"
 			size="icon"
 			data-tags-close
@@ -188,7 +188,7 @@ const viewClass =
 				<path d="M6 6l12 12M18 6L6 18" />
 			</svg>
 			<Tooltip label={t("catalog.filter.close")} />
-		</PrimitiveButton>
+		</Button>
 	</div>
 
 	<ul class="flex flex-col gap-1">
@@ -205,11 +205,11 @@ const viewClass =
 
 <script>
 /**
- * Хвост тегов, которые не влезли в строку на мобильном, прячется — не
+ * Хвост тегов, которые не влезли в строку на мобильном, прячется - не
  * горизонтальным скроллом (был обрезанный по высоте край и лишний скролл
  * из-за него), а через `hidden`. Гарантированно видна только кнопка «Все
  * теги»: на самых узких экранах даже «Все проекты» рядом с ней не влезает,
- * а внутри диалога «Все теги» есть и «Все проекты» — пункт не теряется,
+ * а внутри диалога «Все теги» есть и «Все проекты» - пункт не теряется,
  * просто уходит на один клик дальше.
  */
 function setupTagOverflow(list: HTMLElement) {
@@ -224,7 +224,7 @@ function setupTagOverflow(list: HTMLElement) {
 	const recalc = () => {
 		for (const item of items) item.classList.remove("hidden");
 
-		// `sm:hidden` на кнопке — обрезка только на мобильном, на широком экране
+		// `sm:hidden` на кнопке - обрезка только на мобильном, на широком экране
 		// вкладки и так помещаются в ряд (см. CatalogToolbar.astro).
 		if (getComputedStyle(moreItem).display === "none") return;
 
@@ -241,15 +241,15 @@ function setupTagOverflow(list: HTMLElement) {
 	window.addEventListener("resize", recalc);
 }
 
-/** `aria-controls` указывает на id диалога — та же связка, что у мобильного меню в `Header.astro`. */
+/** `aria-controls` указывает на id диалога - та же связка, что у мобильного меню в `Header.astro`. */
 function setupTagsDialog(openButton: HTMLButtonElement) {
 	const dialog = document.getElementById(
 		openButton.getAttribute("aria-controls") ?? "",
 	);
 	if (!(dialog instanceof HTMLDialogElement)) return;
 
-	// `showModal()` сам по себе фон не блокирует — особенно на мобильном
-	// Safari страница под диалогом всё ещё скроллится свайпом. `close` — один
+	// `showModal()` сам по себе фон не блокирует - особенно на мобильном
+	// Safari страница под диалогом все еще скроллится свайпом. `close` - один
 	// обработчик снятия блокировки на все способы закрытия (крестик, клик по
 	// `::backdrop`, Esc), а не дублировать его в каждом из них.
 	openButton.addEventListener("click", () => {
@@ -264,8 +264,8 @@ function setupTagsDialog(openButton: HTMLButtonElement) {
 		.querySelector<HTMLButtonElement>("[data-tags-close]")
 		?.addEventListener("click", () => dialog.close());
 
-	// Клик по `::backdrop` и по паддингу самого `<dialog>` — цель события сам
-	// `<dialog>`; клик по ссылке внутри — цель ссылка, диалог не закроется.
+	// Клик по `::backdrop` и по паддингу самого `<dialog>` - цель события сам
+	// `<dialog>`; клик по ссылке внутри - цель ссылка, диалог не закроется.
 	dialog.addEventListener("click", (event) => {
 		if (event.target === dialog) dialog.close();
 	});

@@ -1,9 +1,4 @@
 ---
-import { Image } from "astro:assets";
-import presentPhoto from "@/assets/images/main/present.png";
-import videoLeft from "@/assets/video/p-v-1.mp4";
-import videoRight from "@/assets/video/p-v-2.mp4";
-
 interface Item {
 	title: string;
 	description: string;
@@ -15,33 +10,58 @@ interface Props {
 }
 
 /*
- * Контент по умолчанию — не lorem ipsum, реальные шаги работы с каталогом
- * (см. тот же принцип в FAQ.astro). Средняя карточка — фото (`present.png`,
- * уже показанное в VideoShowcase): заглушка до появления отдельного
- * скриншота на этот шаг. Крайние — видео p-v-1/p-v-2.
+ * Контент по умолчанию - не lorem ipsum, реальные сценарии работы с
+ * каталогом (см. тот же принцип в FAQ.astro). У каждой карточки своя
+ * запись экрана: поиск (p-v-3), исходники на GitHub (p-v-2), сохранение
+ * проекта в избранное (p-v-4). Порядок текстов и видео связан индексом,
+ * поэтому переставлять их можно только вместе.
+ *
+ * Исходники записей лежат в `src/assets/video/original/` (в git не едут).
+ * В репозитории - сжатые версии, 800×800/30, 0.3-0.9 МБ: в карточке видео
+ * занимает меньше 400px, разницы не видно, а страница не весит как
+ * дистрибутив.
  */
 const {
-	heading = "Один каталог — три способа его использовать.",
+	heading = "Все в одном каталоге - это удобно",
 	items = [
 		{
-			title: "Смотрите весь каталог",
+			title: "Находите за секунды",
 			description:
-				"224 проекта о татарском, башкирском и крымскотатарском языках и культуре — с фильтрами по типу и языку.",
+				"Поиск по названию, описанию и тегам сужает каталог по мере ввода - а рядом весь список по алфавиту.",
 		},
 		{
-			title: "Открывайте карточку проекта",
+			title: "Все открыто на GitHub",
 			description:
-				"Факты, ссылка на сайт и логотип — короткая выжимка о каждом проекте, без лишнего текста.",
+				"Код сайта и сами карточки лежат в открытом репозитории: любую правку видно в истории, любую можно предложить.",
 		},
 		{
-			title: "Добавляйте свой проект",
+			title: "Сохраняйте понравившееся",
 			description:
-				"Через pull request на GitHub — заполните карточку по образцу уже существующих и отправьте на ревью.",
+				"Отмечайте проекты сердечком - они собираются на отдельной странице и остаются в браузере без всякой регистрации.",
 		},
 	],
 } = Astro.props;
 
-const VIDEOS = [videoLeft, undefined, videoRight] as const;
+/*
+ * Видео подтягиваются `import.meta.glob`, а не обычным `import`: файл
+ * ролика может отсутствовать (его еще не сняли, переименовали, вырезали
+ * из репозитория из-за веса), и статический импорт в этом случае роняет
+ * всю сборку. Через glob недостающий файл - это просто `undefined`, и
+ * карточка показывает заглушку.
+ */
+const videos = import.meta.glob<{ default: string }>("/src/assets/video/*.mp4", {
+	eager: true,
+});
+
+const videoSrc = (file: string): string | undefined =>
+	videos[`/src/assets/video/${file}`]?.default;
+
+/*
+ * Все три записи сняты 1:1 под квадратную карточку, поэтому кадр
+ * заполняет ее целиком и ничего не обрезается. Новые ролики тоже нужно
+ * снимать квадратными - иначе `object-cover` срежет им края.
+ */
+const VIDEOS = [videoSrc("p-v-3.mp4"), videoSrc("p-v-2.mp4"), videoSrc("p-v-4.mp4")] as const;
 ---
 
 <section class="py-16">
@@ -50,34 +70,48 @@ const VIDEOS = [videoLeft, undefined, videoRight] as const;
 	</h2>
 
 	<div class="mt-12 grid gap-6 sm:grid-cols-3">
-		{items.map((item, index) => (
+		{
+			items.map((item, index) => (
 				<div class="flex flex-col items-center text-center">
-					<div class="aspect-square w-full overflow-hidden rounded-3xl corner-squircle bg-muted">
-						{VIDEOS[index] ? (
+					<div class="relative aspect-square w-full overflow-hidden rounded-3xl corner-squircle bg-muted">
+						{VIDEOS[index] && (
 							<video
+								data-feature-video
 								src={VIDEOS[index]}
 								class="h-full w-full object-cover"
 								loop
 								muted
 								playsinline
 								autoplay
-								preload="auto"
-							/>
-						) : (
-							<Image
-								src={presentPhoto}
-								alt=""
-								width={600}
-								height={600}
-								densities={[1, 2]}
-								format="webp"
-								class="h-full w-full object-cover object-center"
+								preload="metadata"
 							/>
 						)}
 					</div>
 					<p class="mt-6 font-semibold text-foreground text-lg">{item.title}</p>
 					<p class="mt-2 text-muted-foreground text-sm">{item.description}</p>
 				</div>
-			))}
+			))
+		}
 	</div>
 </section>
+
+<script>
+	/*
+	 * Видео может не доехать - файла нет в сборке, кодек не поддержан, сеть
+	 * оборвалась. Пустой черный квадрат в таком случае выглядит поломкой,
+	 * поэтому при ошибке загрузки видео уступает место статичной заглушке.
+	 *
+	 * Слушатель именно на `<video>`, а не на `window`: событие `error` от
+	 * медиа не всплывает, до делегирования на документ оно не доходит.
+	 */
+	for (const video of document.querySelectorAll<HTMLVideoElement>("[data-feature-video]")) {
+		video.addEventListener("error", () => {
+			video.hidden = true;
+
+			const fallback = video.parentElement?.querySelector<HTMLElement>(
+				"[data-feature-fallback]",
+			);
+			if (fallback) fallback.hidden = false;
+		});
+	}
+</script>

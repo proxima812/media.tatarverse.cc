@@ -14,7 +14,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = useTranslations(locale);
 
-/** Колонка навигации по сайту — тот же набор, что в шапке. */
+/** Колонка навигации по сайту - тот же набор, что в шапке. */
 const navLinks = [
 	{ href: getRelativeLocaleUrl(locale, "catalog"), label: t("nav.catalog") },
 	{ href: getRelativeLocaleUrl(locale, "search"), label: t("nav.search") },
@@ -23,11 +23,11 @@ const navLinks = [
 ];
 
 /*
- * Вторая колонка — наружу. Раньше это были два абзаца прозы («часть
+ * Вторая колонка - наружу. Раньше это были два абзаца прозы («часть
  * tatarverse.cc», «откройте pull request в репозитории»); ссылка в колонке
- * ведёт туда же, но её видно с одного взгляда, а не после чтения предложения.
+ * ведет туда же, но ее видно с одного взгляда, а не после чтения предложения.
  *
- * Подпись репозитория — «Открытый исходный код», а не «GitHub»: посетителю
+ * Подпись репозитория - «Открытый исходный код», а не «GitHub»: посетителю
  * важно, что код открыт и его можно проверить/форкнуть, а не то, на какой
  * именно площадке он лежит.
  */
@@ -56,8 +56,8 @@ const externalLinks = [
 ];
 
 /**
- * Правовые страницы — тут вместо статичной строки «Все права защищены»:
- * текст ничего не даёт посетителю, а ссылка на реальный документ даёт.
+ * Правовые страницы - тут вместо статичной строки «Все права защищены»:
+ * текст ничего не дает посетителю, а ссылка на реальный документ дает.
  */
 const legalLinks = [
 	{ href: getRelativeLocaleUrl(locale, "privacy"), label: t("nav.privacy") },
@@ -65,7 +65,7 @@ const legalLinks = [
 	{ href: getRelativeLocaleUrl(locale, "sources"), label: t("nav.sources") },
 ];
 
-/** Год — на билде, не в браузере: страница статическая, значение одно для всех. */
+/** Год - на билде, не в браузере: страница статическая, значение одно для всех. */
 const year = new Date().getFullYear();
 
 const linkClass =
@@ -151,7 +151,7 @@ const linkClass =
 	</div>
 </footer>
 
-<div class="no-container -mt-12 -mb-18 bg-primary">
+<div class="no-container  bg-primary">
 	<BigWordBottom
 		text="Муэллиф"
 		color1="from-primary-foreground"

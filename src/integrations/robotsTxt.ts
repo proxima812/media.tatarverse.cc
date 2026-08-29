@@ -4,7 +4,7 @@ import { emitFile } from "./shared/dist";
 export interface RobotsTxtOptions {
 	/** Базовый URL сайта. */
 	readonly site: URL;
-	/** Правила краулинга. По умолчанию — открыть весь сайт. */
+	/** Правила краулинга. По умолчанию - открыть весь сайт. */
 	readonly rules?: string;
 	/** Добавить строку со ссылкой на `/ai.txt`. */
 	readonly aiPolicy?: boolean;

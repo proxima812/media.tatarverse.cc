@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
 
@@ -129,20 +129,20 @@ const LOGO_PX = 120;
 	</p>
 
 	<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-		<PrimitiveButton
+		<Button
 			href={getRelativeLocaleUrl(locale, "catalog")}
 			preset="solid"
 			size="lg"
 		>
 			{t("marquee.cta.catalog")}
-		</PrimitiveButton>
-		<PrimitiveButton
+		</Button>
+		<Button
 			href={getRelativeLocaleUrl(locale, "add")}
 			preset="outline"
 			size="lg"
 		>
 			{t("marquee.cta.add")}
-		</PrimitiveButton>
+		</Button>
 	</div>
 </section>
 

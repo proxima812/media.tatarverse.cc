@@ -4,7 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
 import { localizeCards } from "@/components/Catalog/localize";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -44,12 +44,12 @@ const cards = await localizeCards(await getCollection("cards"), "en");
 		/>
 		<h2 class="font-semibold text-lg">{t("saved.empty.title")}</h2>
 		<p class="text-muted-foreground text-sm">{t("saved.empty.description")}</p>
-		<PrimitiveButton
+		<Button
 			href={getRelativeLocaleUrl("en", "catalog")}
 			preset="solid"
 		>
 			{t("saved.empty.cta")}
-		</PrimitiveButton>
+		</Button>
 	</div>
 
 	<div class="columns-1 gap-8 px-5 sm:columns-2 lg:columns-3">

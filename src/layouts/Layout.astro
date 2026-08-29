@@ -89,16 +89,7 @@ const containerAttrs = {
 } satisfies ContainerProps;
 ---
 
-<!--
-	`[touch-action:pan-x_pan-y]` вместо скрипта: одна декларация убирает
-	и pinch-zoom, и зум по двойному тапу. Готового класса нет - `touch-manipulation`
-	гасит только двойной тап, а `touch-pan-x touch-pan-y` конфликтуют между собой
-	(обе пишут `touch-action`, побеждает последняя).
--->
-<html
-	lang={htmlLang ?? currentLocale}
-	class="scroll-smooth subpixel-antialiased [touch-action:pan-x_pan-y]"
->
+<html lang={htmlLang ?? currentLocale} class="scroll-smooth subpixel-antialiased">
 	<head>
 		<Font cssVariable="--font-inter" preload />
 		{

@@ -150,7 +150,7 @@ const scriptSrc = `https://mc.yandex.ru/metrika/tag.js?id=${counterId}`;
 	// automatic one, and `astro:page-load` only fires when <ClientRouter /> is used.
 	sendHit();
 
-	// With <ClientRouter />, `astro:page-load` also fires for the initial page —
+	// With <ClientRouter />, `astro:page-load` also fires for the initial page -
 	// skip that first event so it is not counted twice.
 	let skipFirstPageLoad = true;
 

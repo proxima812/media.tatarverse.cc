@@ -4,7 +4,7 @@
  * Все генерируемые артефакты стартера (robots.txt, ai.txt, site.webmanifest,
  * ключ IndexNow) пишутся на хуке `astro:build:done`. Так интеграция получает
  * конфигурацию явно, через аргументы, и не зависит от того, в каком инстансе
- * модуля её выполнил Vite.
+ * модуля ее выполнил Vite.
  */
 import fs from "node:fs/promises";
 import path from "node:path";

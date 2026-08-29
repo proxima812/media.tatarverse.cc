@@ -7,7 +7,7 @@ import { distFileExists, emitFile } from "./shared/dist";
 
 export interface IndexNowOptions {
 	readonly site: URL;
-	/** Ключ IndexNow: 8–128 символов `[A-Za-z0-9-]`. */
+	/** Ключ IndexNow: 8-128 символов `[A-Za-z0-9-]`. */
 	readonly key: string;
 	/** Собрать и залогировать список, но не отправлять. */
 	readonly dryRun?: boolean;
@@ -100,7 +100,7 @@ export default function indexNow(options: IndexNowOptions): AstroIntegration {
 	// Ключ проверяем сразу: лучше упасть на конфиге, чем молча не проиндексироваться
 	if (!KEY_PATTERN.test(options.key)) {
 		throw new Error(
-			`[indexnow] Некорректный ключ: ожидается 8–128 символов [A-Za-z0-9-], получено ${JSON.stringify(options.key)}`,
+			`[indexnow] Некорректный ключ: ожидается 8-128 символов [A-Za-z0-9-], получено ${JSON.stringify(options.key)}`,
 		);
 	}
 
@@ -111,16 +111,16 @@ export default function indexNow(options: IndexNowOptions): AstroIntegration {
 		name: "starter:indexnow",
 		hooks: {
 			"astro:config:setup": ({ config }) => {
-				// Кеш держим вне dist — он не должен уезжать на прод
+				// Кеш держим вне dist - он не должен уезжать на прод
 				cacheFile = path.join(fileURLToPath(config.cacheDir), "indexnow.json");
 			},
 
 			"astro:build:done": async ({ dir, logger }) => {
 				const outDir = fileURLToPath(dir);
 
-				// Файл верификации: стартер отдаёт его сам, руками создавать не нужно
+				// Файл верификации: стартер отдает его сам, руками создавать не нужно
 				if (await distFileExists(dir, keyFile)) {
-					logger.warn(`${keyFile} уже существует — оставляю как есть`);
+					logger.warn(`${keyFile} уже существует - оставляю как есть`);
 				} else {
 					await emitFile(dir, keyFile, `${options.key}\n`);
 					logger.info(`${keyFile} создан (верификация IndexNow)`);
@@ -129,7 +129,7 @@ export default function indexNow(options: IndexNowOptions): AstroIntegration {
 				const urls = (await readSitemapUrls(outDir)).filter(isSubmittable);
 
 				if (!urls.length) {
-					logger.warn("sitemap пуст — отправлять нечего");
+					logger.warn("sitemap пуст - отправлять нечего");
 					return;
 				}
 
@@ -173,7 +173,7 @@ export default function indexNow(options: IndexNowOptions): AstroIntegration {
 					});
 
 					if (!response.ok) {
-						logger.warn(`запрос не прошёл: ${response.status}`);
+						logger.warn(`запрос не прошел: ${response.status}`);
 						return;
 					}
 

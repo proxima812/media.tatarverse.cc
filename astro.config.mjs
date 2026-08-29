@@ -14,6 +14,7 @@ import aiTxt from "./src/integrations/aiTxt";
 import { buildIndexMarkdown } from "./src/integrations/dualmarkPages";
 import indexNow from "./src/integrations/indexNow";
 import robotsTxt from "./src/integrations/robotsTxt";
+import stripComments from "./src/integrations/stripComments";
 import webManifest from "./src/integrations/webManifest";
 
 const publicDir = fileURLToPath(new URL("./public", import.meta.url));
@@ -33,14 +34,14 @@ const siteMeta = {
 	locale: og.locale,
 };
 
-// Дефолтная локаль без префикса в URL (`prefixDefaultLocale: false` ниже) —
+// Дефолтная локаль без префикса в URL (`prefixDefaultLocale: false` ниже) -
 // `/`, а не `/ru/`. Остальные локали получают `/<locale>/`.
 const localePath = (locale) =>
 	locale === i18n.defaultLocale ? "/" : `/${locale}/`;
 
 const localeDicts = { ru, en };
 
-// Markdown-двойник для `staticPages` обязан быть строковым литералом — см.
+// Markdown-двойник для `staticPages` обязан быть строковым литералом - см.
 // комментарий в `src/integrations/dualmarkPages.ts`.
 const dualmarkStaticPages = i18n.locales.map((locale) => {
 	const dict = localeDicts[locale];
@@ -77,10 +78,10 @@ export default defineConfig({
 		prefetchAll: true,
 	},
 
-	// Inter — единственный шрифт сайта (--font-inter → --font-sans в
+	// Inter - единственный шрифт сайта (--font-inter → --font-sans в
 	// tailwind.css). Каталог собирает проекты о татарах, башкирах и
-	// крымских татарах, поэтому cyrillic-ext обязателен: в нём лежат
-	// татарские Әә Өө Үү Җҗ Ңң Һһ и башкирские Ғғ Ҙҙ Ҡҡ Ҫҫ — без этого
+	// крымских татарах, поэтому cyrillic-ext обязателен: в нем лежат
+	// татарские Әә Өө Үү Җҗ Ңң Һһ и башкирские Ғғ Ҙҙ Ҡҡ Ҫҫ - без этого
 	// подсета браузер покажет tofu вместо этих букв.
 	fonts: [
 		{
@@ -102,7 +103,7 @@ export default defineConfig({
 		},
 	],
 
-	// Логотипы карточек иногда приходят в виде SVG — растеризуем их наравне
+	// Логотипы карточек иногда приходят в виде SVG - растеризуем их наравне
 	// с остальными форматами, чтобы `<Image>` мог сгенерировать webp-миниатюры.
 	image: {
 		dangerouslyProcessSVG: true,
@@ -140,7 +141,7 @@ export default defineConfig({
 
 		...(features.ai ? [aiTxt({ ...siteMeta, llms: features.llms })] : []),
 
-		// Markdown-двойники страниц + llms.txt. Коллекций контента пока нет —
+		// Markdown-двойники страниц + llms.txt. Коллекций контента пока нет -
 		// `collections` не указан; когда появится первая, добавить маппинг сюда.
 		dualmark({
 			siteUrl: config.site.url.replace(/\/$/, ""),
@@ -149,8 +150,8 @@ export default defineConfig({
 				enabled: features.llms,
 				brandName: og.siteName,
 				description: og.description,
-				// `sections` не собираются автоматически из `staticPages` —
-				// перечислять руками. Появятся коллекции — добавить туда же.
+				// `sections` не собираются автоматически из `staticPages` -
+				// перечислять руками. Появятся коллекции - добавить туда же.
 				sections: [
 					{
 						title: "Pages",
@@ -162,8 +163,8 @@ export default defineConfig({
 					},
 				],
 			},
-			// output: "static" — рантайм-middleware пакета не выполняется на
-			// проде, alternate на markdown отдаётся тегом в SEO.astro.
+			// output: "static" - рантайм-middleware пакета не выполняется на
+			// проде, alternate на markdown отдается тегом в SEO.astro.
 			middleware: { injectLinkHeader: false },
 		}),
 
@@ -188,6 +189,10 @@ export default defineConfig({
 					}),
 				]
 			: []),
+
+		// Последней в списке: чистит уже готовый `dist/`, поэтому должна
+		// отработать после всех, кто в него пишет.
+		stripComments(),
 	],
 
 	output: "static",

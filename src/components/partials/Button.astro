@@ -1,0 +1,128 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/utils/lib/cn";
+
+/**
+ * Полиморфная кнопка - `<a>`, если передан `href`, иначе `<button>`.
+ * Пресеты собраны на семантических токенах проекта (`bg-primary`/`bg-muted`/...),
+ * а не на сырых цветах Tailwind: перекраска темы в `tailwind.css` подхватывается
+ * кнопками сама.
+ */
+
+type Preset =
+	| "solid"
+	| "soft"
+	| "outline"
+	| "ghost"
+	| "secondary"
+	| "destructive"
+	| "link";
+type Size = "xs" | "sm" | "md" | "lg" | "xl" | "icon-xs" | "icon-sm" | "icon";
+type Radius = "none" | "xs" | "sm" | "md" | "lg" | "full";
+
+const presets: Record<Preset, string> = {
+	solid: "bg-primary text-primary-foreground hover:opacity-90",
+	soft: "bg-muted text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+	outline: "border border-border bg-background text-foreground hover:bg-muted",
+	ghost: "text-muted-foreground hover:bg-muted hover:text-foreground",
+	secondary:
+		"bg-secondary text-secondary-foreground hover:bg-secondary/80",
+	/*
+	 * Отдельного destructive-токена в теме нет, и заводить его ради одной
+	 * кнопки не стоит: пока опасное действие красится встроенной палитрой.
+	 */
+	destructive: "bg-red-600 text-white hover:bg-red-600/90",
+	link: "text-foreground underline underline-offset-4 hover:opacity-70",
+};
+
+/*
+ * Высота задана шагом в 2 (h-6 → h-14), горизонтальный padding и кегль растут
+ * вместе с ней. `icon-*` - те же высоты квадратом и без padding: иконка
+ * центрируется сама, а лишний `px` сделал бы кнопку прямоугольной.
+ */
+const sizes: Record<Size, string> = {
+	xs: "h-6 gap-1 px-2 text-[11px]",
+	sm: "h-8 gap-1.5 px-3 text-xs",
+	md: "h-10 gap-2 px-5 text-sm",
+	lg: "h-12 gap-2.5 px-6 text-base",
+	xl: "h-14 gap-3 px-8 text-lg",
+	"icon-xs": "size-6 p-0",
+	"icon-sm": "size-8 p-0",
+	icon: "size-10 p-0",
+};
+
+/*
+ * Форма отделена от размера: у сайта исторически кнопки-пилюли (`full`),
+ * поэтому он и остается дефолтом, а `none`/`xs`/`sm` дают тот самый
+ * минимальный скругленный угол, не трогая уже существующие вызовы.
+ */
+const radii: Record<Radius, string> = {
+	none: "rounded-none",
+	xs: "rounded-xs",
+	sm: "rounded-sm",
+	md: "rounded-md",
+	lg: "rounded-lg",
+	full: "rounded-full",
+};
+
+interface Props {
+	href?: string;
+	preset?: Preset;
+	size?: Size;
+	/** Скругление углов. `full` - пилюля, `xs`/`sm` - минимальный радиус. */
+	radius?: Radius;
+	/** Кнопка на всю ширину родителя. */
+	block?: boolean;
+	type?: "button" | "submit" | "reset";
+	target?: string;
+	rel?: string;
+	/** `target="_blank"` + `rel="noreferrer noopener"`, если не заданы явно. */
+	external?: boolean;
+	class?: string;
+}
+
+/*
+ * Явные пропсы описывают стилевой контракт; остальное (aria-*, data-*,
+ * title) уходит в `rest` без отдельного поля на каждый атрибут - так кнопки
+ * вида «иконка + `data-view-button`» остаются возможны без раздувания Props.
+ */
+const {
+	href,
+	preset = "solid",
+	size = "md",
+	radius = "full",
+	block = false,
+	type = "button",
+	target,
+	rel,
+	external = false,
+	class: className,
+	...rest
+} = Astro.props as Props & HTMLAttributes<"a"> & HTMLAttributes<"button">;
+
+const linkTarget = target ?? (external ? "_blank" : undefined);
+const linkRel = rel ?? (external ? "noreferrer noopener" : undefined);
+
+/*
+ * `link` игнорирует геометрию размера: это текстовая ссылка в потоке, и
+ * фиксированная высота с padding оторвали бы ее от соседнего текста.
+ */
+const classes = cn(
+	"inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
+	presets[preset],
+	preset === "link" ? "h-auto gap-1.5 p-0" : sizes[size],
+	preset === "link" ? "rounded-none" : radii[radius],
+	block && "w-full",
+	className,
+);
+---
+
+{href ? (
+		<a href={href} target={linkTarget} rel={linkRel} class={classes} {...rest}>
+			<slot />
+		</a>
+	) : (
+		<button type={type} class={classes} {...rest}>
+			<slot />
+		</button>
+	)}

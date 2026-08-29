@@ -1,8 +1,8 @@
 /**
  * Минимальный i18n-слой стартера: список локалей приходит из `main.config.ts`,
- * словари — из `src/i18n/locales/*.ts`. В отличие от проектов с частичным
+ * словари - из `src/i18n/locales/*.ts`. В отличие от проектов с частичным
  * переводом контента, здесь предполагается, что каждая локаль покрывает все
- * маршруты — иначе `useTranslations` тихо покажет ключ вместо текста.
+ * маршруты - иначе `useTranslations` тихо покажет ключ вместо текста.
  */
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { config } from "main.config";
@@ -44,7 +44,7 @@ export function stripLocalePrefix(pathname: string): string {
 
 /**
  * hreflang-альтернативы для `<SEO alternates>`: по одной ссылке на каждую
- * локаль плюс `x-default` на дефолтную. `pathname` — без учёта текущей
+ * локаль плюс `x-default` на дефолтную. `pathname` - без учета текущей
  * локали в префиксе (например `/about`, а не `/en/about`).
  */
 export function buildAlternates(
@@ -69,8 +69,8 @@ export function buildAlternates(
 /**
  * Форма слова под число: к ключу добавляется категория `Intl.PluralRules`
  * (`stats.projects` + `few` → `stats.projects.few`). Категории зависят от
- * языка — в русском их четыре, в английском две, — поэтому склонения лежат
- * в словарях, а не в коде компонента. Нет нужной формы — берётся `.other`.
+ * языка - в русском их четыре, в английском две, - поэтому склонения лежат
+ * в словарях, а не в коде компонента. Нет нужной формы - берется `.other`.
  */
 export function usePlural(locale: LocaleCode) {
 	const dict = dictionaries[locale] ?? dictionaries[defaultLocale];

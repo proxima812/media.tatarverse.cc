@@ -1,17 +1,44 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import bashkirIcon from "@/assets/images/svg/bash.svg";
+import crimeanTatarIcon from "@/assets/images/svg/qrim.svg";
+import tatarIcon from "@/assets/images/svg/tat.svg";
 import { meshGradient } from "@/utils/lib/meshGradient";
+
+type People = CollectionEntry<"cards">["data"]["peoples"][number];
 
 interface Props {
 	name: string;
 	logo?: CollectionEntry<"cards">["data"]["logo"];
+	/**
+	 * Народы проекта. Нужны только для заглушки: у карточки без логотипа
+	 * поверх градиента ставится знак народа - по нему проект узнается в
+	 * списке быстрее, чем по одному лишь цветовому пятну.
+	 */
+	peoples?: readonly People[];
 	size?: "md" | "lg" | "xl";
-	/** Логотип над сгибом (страница проекта) — грузим сразу, он и есть LCP. */
+	/** Логотип над сгибом (страница проекта) - грузим сразу, он и есть LCP. */
 	priority?: boolean;
 }
 
-const { name, logo, size = "lg", priority = false } = Astro.props;
+const { name, logo, peoples, size = "lg", priority = false } = Astro.props;
+
+/*
+ * Знаки народов - белые монохромные SVG, поэтому кладутся прямо поверх
+ * градиента без перекраски. Мягкая тень нужна на светлых блобах
+ * (`HIGHLIGHT` в `meshGradient` доходит до светлоты 0.9): без нее белое
+ * по светлому местами пропадало бы. Проект бывает общим для нескольких народов
+ * (языковая платформа сразу для двух-трех): в заглушке показывается
+ * первый - тот же порядок, в котором народы перечислены в карточке.
+ */
+const PEOPLE_ICONS = {
+	tatar: tatarIcon,
+	bashkir: bashkirIcon,
+	"crimean-tatar": crimeanTatarIcon,
+} satisfies Record<People, ImageMetadata>;
+
+const peopleIcon = peoples?.[0] ? PEOPLE_ICONS[peoples[0]] : undefined;
 
 const sizeClasses = {
 	md: "w-10 h-10",
@@ -44,8 +71,20 @@ const pixelSize = pixels[size];
 		/>
 	) : (
 		<div
-			class={`rounded-full corner-squircle ${sizeClass}`}
+			class={`relative rounded-full corner-squircle ${sizeClass}`}
 			style={meshGradient(name)}
 			aria-hidden="true"
-		/>
+		>
+			{peopleIcon && (
+				<img
+					src={peopleIcon.src}
+					alt=""
+					width={pixelSize}
+					height={pixelSize}
+					loading={priority ? "eager" : "lazy"}
+					decoding="async"
+					class="absolute inset-0 m-auto size-[55%] object-contain drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]"
+				/>
+			)}
+		</div>
 	)}

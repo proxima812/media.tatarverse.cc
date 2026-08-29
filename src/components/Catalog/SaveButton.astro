@@ -34,7 +34,7 @@ const t = useTranslations(locale);
 	/>
 
 	<!-- Две подписи вместо одной: текст зависит от состояния кнопки, а состояние
-	     переключает клиентский скрипт через `aria-pressed` — так подпись меняется
+	     переключает клиентский скрипт через `aria-pressed` - так подпись меняется
 	     без участия JS. -->
 	<Tooltip label={t("saved.add")} class="group-aria-pressed:hidden" />
 	<Tooltip label={t("saved.remove")} class="hidden group-aria-pressed:block" />
@@ -42,13 +42,13 @@ const t = useTranslations(locale);
 
 <script>
 	/*
-	 * Закладки — только в localStorage: сайт статический, аккаунтов нет.
-	 * Формат — плоский массив id карточек, тот же приём, что у `catalog:view`
-	 * в `Catalog.astro`. Кнопка сама переключает своё состояние и все свои
+	 * Закладки - только в localStorage: сайт статический, аккаунтов нет.
+	 * Формат - плоский массив id карточек, тот же прием, что у `catalog:view`
+	 * в `Catalog.astro`. Кнопка сама переключает свое состояние и все свои
 	 * копии на странице (одна и та же карточка может стоять и в каталоге,
-	 * и на странице проекта одновременно — оба места должны быть в courant).
+	 * и на странице проекта одновременно - оба места должны быть в courant).
 	 *
-	 * `catalog:saved-change` — кастомное событие для страницы `/saved`: она
+	 * `catalog:saved-change` - кастомное событие для страницы `/saved`: она
 	 * не может держать собственный список карточек синхронно с localStorage
 	 * без него, а перезагружать страницу ради снятия одной закладки не нужно.
 	 */
@@ -96,9 +96,57 @@ const t = useTranslations(locale);
 		);
 	}
 
-	const saved = getSaved();
-	for (const button of document.querySelectorAll<HTMLButtonElement>("[data-save-button]")) {
-		applyState(button, saved);
-		button.addEventListener("click", () => toggle(button));
+	/** Проставляет актуальное состояние всем кнопкам внутри узла (и ему самому). */
+	function syncButtons(nodes: Iterable<Element>) {
+		const saved = getSaved();
+
+		for (const node of nodes) {
+			if (node.matches("[data-save-button]")) {
+				applyState(node as HTMLButtonElement, saved);
+			}
+
+			for (const button of node.querySelectorAll<HTMLButtonElement>(
+				"[data-save-button]",
+			)) {
+				applyState(button, saved);
+			}
+		}
 	}
+
+	/*
+	 * Клик ловится делегированием на документе, а не подпиской на каждую
+	 * кнопку. Каталог отдает в DOM только первую порцию карточек, остальные
+	 * лежат в `<template>` и вставляются по скроллу (`CatalogGrid.astro`):
+	 * их кнопок в момент запуска скрипта еще не существует, и обход
+	 * `querySelectorAll` их не увидел бы. Делегирование работает независимо
+	 * от того, когда узел появился.
+	 */
+	document.addEventListener("click", (event) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+
+		const button = target.closest<HTMLButtonElement>("[data-save-button]");
+		if (button) toggle(button);
+	});
+
+	syncButtons([document.body]);
+
+	/*
+	 * Состояние - вторая половина той же проблемы: подгруженная карточка
+	 * приезжает из шаблона с `aria-pressed="false"`, даже если проект уже в
+	 * закладках. Наблюдатель проставляет его в момент вставки.
+	 */
+	const observer = new MutationObserver((records) => {
+		const added: Element[] = [];
+
+		for (const record of records) {
+			for (const node of record.addedNodes) {
+				if (node instanceof Element) added.push(node);
+			}
+		}
+
+		if (added.length > 0) syncButtons(added);
+	});
+
+	observer.observe(document.body, { childList: true, subtree: true });
 </script>

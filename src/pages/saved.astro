@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
-import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
+import Button from "@/components/partials/Button.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -50,12 +50,12 @@ const cards = await getCollection("cards");
 		/>
 		<h2 class="font-semibold text-lg">{t("saved.empty.title")}</h2>
 		<p class="text-muted-foreground text-sm">{t("saved.empty.description")}</p>
-		<PrimitiveButton
+		<Button
 			href={getRelativeLocaleUrl("ru", "catalog")}
 			preset="solid"
 		>
 			{t("saved.empty.cta")}
-		</PrimitiveButton>
+		</Button>
 	</div>
 
 	<div class="columns-1 gap-8 px-5 sm:columns-2 lg:columns-3">
