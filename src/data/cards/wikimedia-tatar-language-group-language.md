@@ -7,7 +7,7 @@ facts:
   - "К редактированию активно подключаются редакторы Башкирской Википедии из-за близости языков"
 url: "https://meta.wikimedia.org/wiki/Wikimedia_Community_of_Tatar_language_User_Group"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/wikimedia-tatar-language-group-language.png"
+
 tags: ["language"]
 peoples: ["tatar", "bashkir"]
 ---

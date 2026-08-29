@@ -1,5 +1,5 @@
 ---
-name: "Rustem Skibin — El-Cheber Workshop"
+name: "Rustem Skibin - El-Cheber Workshop"
 description: "A Crimean Tatar ceramicist and artist reviving traditional ornamental compositions in contemporary ceramics."
 facts:
   - "Born in 1976 in Samarkand, returned to Crimea in 1996"

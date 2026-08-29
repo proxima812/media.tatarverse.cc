@@ -1,5 +1,5 @@
 ---
-name: "TIP-TOP — Crimean Tatar language courses"
+name: "TIP-TOP - Crimean Tatar language courses"
 description: "A language school offering Crimean Tatar language courses with teachers."
 facts:
   - "Runs Crimean Tatar language courses with experienced teachers"

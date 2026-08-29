@@ -7,7 +7,7 @@ facts:
   - "Входит в каталог проектов диаспорального портала Qirimca.org"
 url: "https://qirimca.org/index.php/en/projects/kirim-akademiyasi"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/kirim-akademiyasi-channel.jpg"
+logo: "../../assets/images/logo/kirim-akademiyasi-channel.png"
 tags: ["community"]
 peoples: ["crimean-tatar"]
 ---

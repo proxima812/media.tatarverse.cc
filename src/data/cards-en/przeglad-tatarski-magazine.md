@@ -5,5 +5,5 @@ facts:
   - "The magazine is published quarterly"
   - "It publishes event reports, interviews, memoirs, and the history of Tatar families"
   - "The magazine features research by scholars from Polish universities"
-  - "Publisher — the Muslim Religious Union in Poland"
+  - "Publisher - the Muslim Religious Union in Poland"
 ---

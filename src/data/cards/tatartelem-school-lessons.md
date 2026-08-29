@@ -7,7 +7,7 @@ facts:
   - "Программа рассчитана на учеников разных возрастов"
 url: "https://tatartelem.ru/"
 pubDate: "2026-08-25"
-logo: "../../assets/images/logo/tatartelem-school-lessons.jpg"
+logo: "../../assets/images/logo/tatartelem-school-lessons.png"
 tags: ["lessons"]
 peoples: ["tatar"]
 ---

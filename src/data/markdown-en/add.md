@@ -1,6 +1,6 @@
 ---
 title: Add a project
-description: Placeholder — the "Add a project" page text hasn't been written yet.
+description: Placeholder - the "Add a project" page text hasn't been written yet.
 updatedDate: 2026-08-25
 ---
 
@@ -14,7 +14,7 @@ For now, in short: new cards enter the catalog through a pull request in the
 
 ## What a card needs
 
-Worth adding here: a step-by-step guide — where cards live, which fields are
+Worth adding here: a step-by-step guide - where cards live, which fields are
 required (name, description, facts, link, tags, logo), which existing card to
 use as a reference.
 

@@ -5,7 +5,7 @@ updatedDate: 2026-08-25
 ---
 
 By using media.tatarverse you agree to the terms below. If something here
-doesn't work for you, simply don't use the site — there's no forced sign-up
+doesn't work for you, simply don't use the site - there's no forced sign-up
 or "accept terms" gate.
 
 ## What this is
@@ -13,13 +13,13 @@ or "accept terms" gate.
 media.tatarverse is an open catalog of projects about the Tatar, Bashkir, and
 Crimean Tatar languages and cultures: language apps, channels, media outlets,
 courses, and graphic design work. We don't create these projects or own
-them — we only collect links and short descriptions in one place.
+them - we only collect links and short descriptions in one place.
 
 ## Open source and submitting projects
 
 The site's source code and every catalog card are open and live in the
 [GitHub repository](https://github.com/proxima812/media.tatarverse.cc). You
-can add your own project or fix someone else's card via a pull request — such
+can add your own project or fix someone else's card via a pull request - such
 contributions are additionally governed by GitHub's own terms of use and the
 repository's license.
 
@@ -36,7 +36,7 @@ You're free to browse the catalog, follow links, and share them. You may not:
 ## Trademarks and third-party content
 
 Project names, logos, and descriptions in the catalog belong to their
-respective owners and are used strictly for identification and cataloging —
+respective owners and are used strictly for identification and cataloging -
 media.tatarverse is not affiliated with any listed project unless explicitly
 stated otherwise. See the "[Sources](/en/sources)" page for details.
 
@@ -62,5 +62,5 @@ full edit history is open in the repository.
 
 ## Contact
 
-Questions about these terms — open an issue in the
+Questions about these terms - open an issue in the
 [project's GitHub repository](https://github.com/proxima812/media.tatarverse.cc).

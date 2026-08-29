@@ -1,6 +1,6 @@
 ---
 title: About
-description: Placeholder — the "About" page text hasn't been written yet.
+description: Placeholder - the "About" page text hasn't been written yet.
 updatedDate: 2026-08-25
 ---
 

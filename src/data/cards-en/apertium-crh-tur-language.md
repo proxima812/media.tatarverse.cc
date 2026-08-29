@@ -1,5 +1,5 @@
 ---
-name: "Apertium: Crimean Tatar–Turkish Translation"
+name: "Apertium: Crimean Tatar-Turkish Translation"
 description: "An open machine translation system between Crimean Tatar and Turkish."
 facts:
   - "Works in both translation directions"

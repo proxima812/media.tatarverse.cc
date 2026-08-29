@@ -4,10 +4,10 @@ description: "Крымскотатарская продакшн-студия и�
 facts:
   - "Продакшн-студия полного цикла, снимающая ТВ-контент, рекламу и документальные фильмы на крымскотатарском"
   - "Запустила детский YouTube-канал «Diñgilday» для изучения языка через игровой видеоконтент"
-  - "Проводит марафон «Ana tili — Vatan tili» в честь Международного дня родного языка"
+  - "Проводит марафон «Ana tili - Vatan tili» в честь Международного дня родного языка"
 url: "https://www.youtube.com/channel/UCkYP3Zc9JIztRj__EO0fOSw"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/qaradeniz-production-channel.jpg"
+logo: "../../assets/images/logo/qaradeniz-production-channel.png"
 tags: ["channel"]
 peoples: ["crimean-tatar"]
 ---

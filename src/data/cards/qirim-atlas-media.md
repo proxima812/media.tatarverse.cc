@@ -7,7 +7,7 @@ facts:
   - "Крупнейшие общины диаспоры сосредоточены в Турции, Узбекистане, Украине, Румынии, Болгарии, США и Канаде"
 url: "https://qirimatlas.com/en/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/qirim-atlas-media.svg"
+logo: "../../assets/images/logo/qirim-atlas-media.png"
 tags: ["media"]
 peoples: ["crimean-tatar"]
 ---

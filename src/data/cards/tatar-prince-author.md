@@ -1,10 +1,10 @@
 ---
-name: "Tatar Prince — Marsel Ganeyev"
+name: "Tatar Prince - Marsel Ganeyev"
 description: "Аккаунт языкового и квир-активиста татарского происхождения, продвигающего изучение татарского языка и обсуждение идентичности."
 facts:
   - "Родился в Казахстане, идентифицирует себя как татарин"
   - "Мотивировал сотни людей начать изучать татарский или другие этнические языки"
-  - "Ведёт подкаст Modern Tatar Identity"
+  - "Ведет подкаст Modern Tatar Identity"
 url: "https://www.instagram.com/tatar.prince/"
 pubDate: "2026-08-21"
 tags: ["author"]

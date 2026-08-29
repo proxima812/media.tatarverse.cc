@@ -7,7 +7,7 @@ facts:
   - "Входит в структуру информационного агентства «Татар-информ»"
 url: "https://intertat.tatar/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/intertat-media.svg"
+logo: "../../assets/images/logo/intertat-media.png"
 tags: ["media"]
 peoples: ["tatar"]
 ---

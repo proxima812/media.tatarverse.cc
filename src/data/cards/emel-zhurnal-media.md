@@ -4,7 +4,7 @@ description: "Диаспоральный журнал крымских тата�
 facts:
   - "Переиздан в 1960 году по инициативе Kırım Türkleri Yardımlaşma Cemiyeti"
   - "Публикует статьи и стихи диаспоральных интеллектуалов о крымскотатарской идентичности"
-  - "Издаётся и поныне через фонд Emel Kırım Vakfı"
+  - "Издается и поныне через фонд Emel Kırım Vakfı"
 url: "https://emelvakfi.org/emel-dergisi-hakkindaki-akademik-calismalar/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/emel-zhurnal-media.png"

@@ -7,7 +7,7 @@ facts:
   - "Ориентировано на изучающих язык и носителей диаспоры"
 url: "https://apps.apple.com/us/app/id1457493656"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/qirimtatar-lugaty-language.jpg"
+logo: "../../assets/images/logo/qirimtatar-lugaty-language.png"
 tags: ["language"]
 peoples: ["crimean-tatar"]
 ---

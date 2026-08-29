@@ -1,5 +1,5 @@
 ---
-name: "Apertium: Tatar–Russian Translation"
+name: "Apertium: Tatar-Russian Translation"
 description: "An open machine translation system between Tatar and Russian."
 facts:
   - "Works in both translation directions"

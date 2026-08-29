@@ -7,7 +7,7 @@ facts:
   - "Доступно бесплатно на Android и iOS"
 url: "https://www.oc3.ru/products/inofon/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/inofon-bashkir-language.jpg"
+logo: "../../assets/images/logo/inofon-bashkir-language.png"
 tags: ["lessons"]
 peoples: ["bashkir"]
 ---

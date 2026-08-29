@@ -7,7 +7,6 @@ facts:
   - "Ориентирован на диаспору и глобальное татарское сообщество"
 url: "https://tatarlar.info/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/tatarlar-info-media.png"
 tags: ["media"]
 peoples: ["tatar"]
 ---

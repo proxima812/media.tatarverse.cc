@@ -7,7 +7,7 @@ facts:
   - "Журналисты подвергались слежке, задержаниям и давлению со стороны оккупационных властей"
 url: "https://qirimca.org/index.php/en/projects/krym-realii"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/krym-realii-media.svg"
+logo: "../../assets/images/logo/krym-realii-media.png"
 tags: ["media"]
 peoples: ["crimean-tatar"]
 ---

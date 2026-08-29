@@ -7,7 +7,6 @@ facts:
   - "Доступен для прослушивания онлайн бесплатно"
 url: "https://qirim.online/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/qirim-online-media.png"
 tags: ["media"]
 peoples: ["crimean-tatar"]
 ---

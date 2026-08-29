@@ -1,5 +1,5 @@
 ---
-name: "Etnodim — the \"Qırım\" collection"
+name: "Etnodim - the \"Qırım\" collection"
 description: "A capsule collection by the Ukrainian fashion brand Etnodim dedicated to Crimean Tatar identity, culture, and history."
 facts:
   - "Consists of seven garments: blouses, shirts, a dress, and an accessory"

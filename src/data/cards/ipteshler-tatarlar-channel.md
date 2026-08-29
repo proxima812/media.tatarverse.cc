@@ -5,7 +5,7 @@ facts:
   - "Публикует новости татарского мира"
   - "Размещает афиши культурных событий"
   - "Делится аудиопроизведениями и рецензиями"
-url: "https://t.me/ipteshlertatarlar"
+url: "https://t.me/ipteshler"
 pubDate: "2026-08-21"
 tags: ["channel"]
 peoples: ["tatar"]

@@ -7,7 +7,7 @@ facts:
   - "Доступна онлайн и в FM-диапазоне (100.5 FM в Казани)"
 url: "https://www.tatarradio.ru/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/tatar-radiosy-media.svg"
+logo: "../../assets/images/logo/tatar-radiosy-media.png"
 tags: ["media"]
 peoples: ["tatar"]
 ---

@@ -7,7 +7,7 @@ facts:
   - "Редакция расположена в Набережных Челнах"
 url: "http://maydan.tatar/"
 pubDate: "2026-08-21"
-logo: "../../assets/images/logo/maydan-zhurnal-media.jpg"
+logo: "../../assets/images/logo/maydan-zhurnal-media.png"
 tags: ["media"]
 peoples: ["tatar"]
 ---
