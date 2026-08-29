@@ -56,30 +56,22 @@ const SLIDE_SECONDS = 6;
 const total = slides.length * SLIDE_SECONDS;
 
 /*
- * Смена кадров устроена как в оригинале (cosmos.so) и это не затухание:
- * новый кадр наезжает шторкой снизу вверх - `clip-path: inset()` открывает
- * его полосой, а картинка и подпись внутри едут навстречу. Так кадр не
- * «просвечивает» сквозь соседний, чего при кроссфейде двух фотографий
- * не избежать.
+ * Кадры сменяются горизонтальным слайдом: следующий приходит слева и
+ * выталкивает текущий вправо. Ничего, кроме `transform`, не анимируется -
+ * браузер везет такую смену на композиторе, без перерисовки кадра.
  *
  * Keyframes собираются строкой, а не пишутся руками: доля одного кадра
  * зависит от их числа, и при добавлении файла в папку проценты в статичном
  * CSS пришлось бы пересчитывать вручную - о чем никто не вспомнит.
  */
 const share = 100 / Math.max(slides.length, 1);
-/**
- * Доля цикла на саму шторку. Половина смены: чем короче переход, тем резче
- * он читается - на 10-12% кадр не выезжает, а вздрагивает.
- */
+/** Доля цикла на сам проезд. Половина смены едет, половина стоит. */
 const reveal = share * 0.5;
-/** На сколько содержимое кадра сдвинуто в момент входа и выхода, как в оригинале. */
-const SHIFT_PX = 30;
 
 /*
- * Плавность задана внутри keyframes, а не на самой анимации: общий
- * `ease-in-out` растягивается на весь цикл, включая участки, где кадр просто
- * стоит - и переход то разгоняется, то тормозит без причины. Здесь разгон и
- * торможение живут ровно в своем сегменте.
+ * Плавность задана внутри keyframes, а не на самой анимации: общая кривая
+ * растянулась бы на весь цикл, включая участки, где кадр просто стоит - и
+ * проезд то разгонялся бы, то тормозил без причины.
  *
  * Кривая - easeOutQuint: резкий старт и долгий выход, за счет чего движение
  * успокаивается, а не упирается в конец.
@@ -88,27 +80,17 @@ const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const pct = (value: number) => `${value.toFixed(2)}%`;
 
-const keyframes = `@keyframes photo-statement-reveal {
-	0% { z-index: 2; clip-path: inset(100% 0 0 0); animation-timing-function: ${EASE} }
-	${pct(reveal)} { z-index: 2; clip-path: inset(0) }
-	${pct(share)} { z-index: 1; clip-path: inset(0) }
-	100% { z-index: 0; clip-path: inset(0) }
-}
-
 /*
- * Контр-ход содержимого: пока шторка идет вверх, кадр внутри догоняет ее
- * снизу, а уходя - сдвигается вверх и освобождает место следующему. Без
- * этого шторка читается как жалюзи, а не как смена кадра.
- *
- * Разрыв между последним кадром (-30px) и первым (+30px) на стыке цикла
- * не виден: в этот момент слайд закрыт шторкой наглухо.
+ * За кадром слайд стоит слева (`-100%`), свою смену проезжает в ноль, потом
+ * уходит вправо и ждет там до конца цикла. Разрыв между `100%` и `0%` на
+ * стыке не виден - в этот момент слайд за пределами `figure`.
  */
-@keyframes photo-statement-shift {
-	0% { transform: translate3d(0, ${SHIFT_PX}px, 0); animation-timing-function: ${EASE} }
-	${pct(reveal)} { transform: translate3d(0, 0, 0); animation-timing-function: ${EASE} }
+const keyframes = `@keyframes photo-statement-slide {
+	0% { transform: translate3d(-100%, 0, 0); animation-timing-function: ${EASE} }
+	${pct(reveal)} { transform: translate3d(0, 0, 0) }
 	${pct(share)} { transform: translate3d(0, 0, 0); animation-timing-function: ${EASE} }
-	${pct(share + reveal)} { transform: translate3d(0, -${SHIFT_PX}px, 0) }
-	100% { transform: translate3d(0, -${SHIFT_PX}px, 0) }
+	${pct(share + reveal)} { transform: translate3d(100%, 0, 0) }
+	100% { transform: translate3d(100%, 0, 0) }
 }`;
 ---
 
@@ -123,9 +105,8 @@ const keyframes = `@keyframes photo-statement-reveal {
 		</h2>
 
 		<!--
-			Скругление и обрезка - на самой `figure`: шторка каждого кадра
-			ездит внутри нее, и держи ее слайды - на углах вылезали бы
-			прямоугольные края в момент перехода.
+			Обрезка и скругление - на самой `figure`: слайды заезжают и уезжают
+			за ее край, и без `overflow-hidden` они ехали бы поверх текста.
 		-->
 		<figure
 			class="photo-statement relative aspect-[21/32] w-full max-w-[420px] shrink-0 overflow-hidden rounded-[14px]"
@@ -137,7 +118,7 @@ const keyframes = `@keyframes photo-statement-reveal {
 						class="photo-statement__slide absolute inset-0"
 						style={`--slide-delay:${index * SLIDE_SECONDS}s`}
 					>
-						<div class="photo-statement__shift size-full">
+						<div class="size-full">
 							<Image
 								src={slide.photo}
 								alt=""
@@ -150,11 +131,6 @@ const keyframes = `@keyframes photo-statement-reveal {
 							/>
 						</div>
 
-						{/*
-						 * Центрирование и ход подписи разнесены по двум узлам:
-						 * `-translate-y-1/2` и анимация - оба `transform`, и на
-						 * одном элементе анимация просто затерла бы центрирование.
-						 */}
 						<figcaption class="absolute inset-x-0 top-1/2 flex -translate-y-1/2 items-center justify-center">
 							<div class="photo-statement__shift flex flex-wrap items-center justify-center gap-1 px-6 text-[18px] text-white">
 								<p class="whitespace-nowrap leading-[16px] tracking-[-0.18px]">
@@ -186,40 +162,30 @@ const keyframes = `@keyframes photo-statement-reveal {
 	 * поэтому слайды могут быть `absolute` все до одного - без «первый в
 	 * потоке, остальные поверх» и вызванного этим скачка раскладки.
 	 *
-	 * `backwards` обязателен: до своей очереди слайд обязан стоять закрытым
-	 * (кадр `0%`), иначе во время `animation-delay` все три висят раскрытыми
-	 * друг на друге и до первой смены виден только последний.
+	 * `backwards` обязателен: до своей очереди слайд обязан стоять за левым
+	 * краем (кадр `0%`), иначе во время `animation-delay` все три висят по
+	 * центру друг на друге и до первой смены виден только последний.
 	 */
 	.photo-statement__slide {
-		animation: photo-statement-reveal var(--slide-total) linear infinite
-			backwards;
-		animation-delay: var(--slide-delay);
-		will-change: clip-path;
-	}
-
-	/* Картинка и подпись едут одинаково, каждая своим узлом. */
-	.photo-statement__shift {
-		animation: photo-statement-shift var(--slide-total) linear infinite
+		animation: photo-statement-slide var(--slide-total) linear infinite
 			backwards;
 		animation-delay: var(--slide-delay);
 		will-change: transform;
 	}
 
-	/* Один кадр - двигать нечего, он и так на экране. */
-	.photo-statement__slide:only-child,
-	.photo-statement__slide:only-child .photo-statement__shift {
+	/* Один кадр - ехать некуда, он и так на экране. */
+	.photo-statement__slide:only-child {
 		animation: none;
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.photo-statement__slide,
-		.photo-statement__shift {
+		.photo-statement__slide {
 			animation: none;
 		}
 
-		/* Без перелистывания виден первый кадр, остальные лежат под ним. */
+		/* Без проезда виден первый кадр, остальные стоят за краем. */
 		.photo-statement__slide:not(:first-child) {
-			clip-path: inset(100% 0 0 0);
+			transform: translate3d(-100%, 0, 0);
 		}
 	}
 </style>
