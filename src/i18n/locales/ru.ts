@@ -46,6 +46,7 @@ export default {
 	"footer.nav": "Дополнительная навигация",
 	"footer.sections": "Разделы",
 	"footer.social": "Социальные сети",
+	"footer.useful": "Полезное",
 	"footer.contact": "Связь",
 	"footer.material": "Материал",
 	"footer.ecosystem": "Экосистема",

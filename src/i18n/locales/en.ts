@@ -40,6 +40,7 @@ export default {
 	"footer.nav": "Footer navigation",
 	"footer.sections": "Sections",
 	"footer.social": "Social",
+	"footer.useful": "Useful",
 	"footer.contact": "Contact",
 	"footer.material": "Material",
 	"footer.ecosystem": "Ecosystem",

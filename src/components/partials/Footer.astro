@@ -23,6 +23,14 @@ const sectionLinks = [
 	{ href: getRelativeLocaleUrl(locale, "catalog"), label: t("nav.catalog") },
 	{ href: getRelativeLocaleUrl(locale, "search"), label: t("nav.search") },
 	{ href: getRelativeLocaleUrl(locale, "saved"), label: t("nav.saved") },
+];
+
+/*
+ * «Полезное» - страницы о самом каталоге, а не его содержимом: их читают
+ * один раз и по своей причине, поэтому в списке разделов они только
+ * разбавляли бы навигацию по данным.
+ */
+const usefulLinks = [
 	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
 	{ href: getRelativeLocaleUrl(locale, "add"), label: t("nav.add") },
 ];
@@ -43,19 +51,19 @@ const socialLinks = [
 		href: "https://t.me/the_tatarverse",
 		network: "Telegram",
 		label: "the_tatarverse",
-		icon: "tabler:brand-telegram",
+		icon: "mdi:telegram",
 	},
 	{
 		href: "https://vk.ru/the_tatarverse",
 		network: "VK",
 		label: "the_tatarverse",
-		icon: "tabler:brand-vk",
+		icon: "mdi:vk",
 	},
 	{
 		href: "https://instagram.com/the_tatarverse",
 		network: "Instagram",
 		label: "@the_tatarverse",
-		icon: "tabler:brand-instagram",
+		icon: "mdi:instagram",
 	},
 	{
 		href: "https://www.threads.com/@the_tatarverse",
@@ -75,7 +83,7 @@ const materialLinks = [
 		href: "https://github.com/proxima812/media.tatarverse.cc",
 		network: "GitHub",
 		label: t("footer.openSource"),
-		icon: "tabler:brand-github",
+		icon: "mdi:github",
 	},
 ];
 
@@ -84,7 +92,7 @@ const ecosystemLinks = [
 		href: "https://tatarverse.cc",
 		network: "tatarverse.cc",
 		label: "tatarverse.cc",
-		icon: "tabler:world",
+		icon: "mdi:world",
 	},
 ];
 
@@ -93,7 +101,7 @@ const contactLinks = [
 	{
 		href: "mailto:kamil.mirikhan@gmail.com",
 		network: t("footer.email"),
-		label: "kamil.mirikhan@gmail.com",
+		label: t("footer.email"),
 		icon: "tabler:mail",
 	},
 ];
@@ -192,6 +200,19 @@ const headingClass =
 									rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
 								>
 									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
+									{link.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+
+				<h2 class={cn(headingClass, "mt-8")}>{t("footer.useful")}</h2>
+				<ul class="space-y-3">
+					{
+						usefulLinks.map((link) => (
+							<li>
+								<a href={link.href} class={linkClass}>
 									{link.label}
 								</a>
 							</li>
