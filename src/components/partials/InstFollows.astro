@@ -30,16 +30,15 @@ const rows = [followers.slice(0, perRow), followers.slice(perRow)];
 	</h2>
 
 	<!--
-		Строки не переносятся и уезжают за край: маска гасит их к краям экрана,
-		и обрезанный хендл читается как «список продолжается», а не как
-		случайно обрубленное имя. Отсюда же `no-container` - в колонке
-		`max-w-6xl` край пришелся бы на пустое поле, и гасить было бы нечего.
+		Строки не переносятся и уезжают за край колонки: маска гасит их по
+		краям, и обрезанный хендл читается как «список продолжается», а не как
+		случайно обрубленное имя.
 
 		`select-none` + `pointer-events-none`: это витрина, а не навигация -
 		хендлы не кликаются и не выделяются, курсор проходит сквозь них.
 	-->
 	<div
-		class="no-container mt-10 select-none space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+		class="mt-10 select-none space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
 	>
 		{rows.map((row) => (
 			<ul
