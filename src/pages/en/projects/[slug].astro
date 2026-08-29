@@ -4,8 +4,6 @@ import CardDetail from "@/components/Catalog/CardDetail.astro";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
 import { localizeCards } from "@/components/Catalog/localize";
 import { getRelatedCards } from "@/components/Catalog/related";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -29,7 +27,6 @@ const t = useTranslations("en");
 	locale="en-US"
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<Header locale="en" />
 	<CardDetail card={card} locale="en" />
 
 	{related.length > 0 && (
@@ -45,5 +42,4 @@ const t = useTranslations("en");
 			</section>
 		)}
 
-	<Footer locale="en" />
 </Layout>

@@ -5,8 +5,6 @@ import CatalogStats from "@/components/CatalogStats/CatalogStats.astro";
 import MainTitle from "@/components/MainTitle.astro";
 import FAQ from "@/components/partials/FAQ.astro";
 import Features from "@/components/partials/Features.astro";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
 import LogoMarquee from "@/components/partials/LogoMarquee.astro";
 import LogoStack from "@/components/partials/LogoStack.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
@@ -15,7 +13,7 @@ import Layout from "@/layouts/Layout.astro";
 const t = useTranslations("en");
 const cards = await localizeCards(await getCollection("cards"), "en");
 
-/** У `FAQ` дефолты только на русском — на английской версии передаём свои. */
+/** У `FAQ` дефолты только на русском - на английской версии передаем свои. */
 const faqItems = [
 	{
 		question: "What is media.tatarverse?",
@@ -25,41 +23,41 @@ const faqItems = [
 	{
 		question: "How do I add my project to the catalog?",
 		answer:
-			"Via a pull request in the open GitHub repository — fill in a card following the existing examples and submit it for review.",
+			"Via a pull request in the open GitHub repository - fill in a card following the existing examples and submit it for review.",
 	},
 	{
 		question: "Is it free?",
 		answer:
-			"Yes. The catalog shows no ads and doesn't sell access — the source code is open, with no commercial model.",
+			"Yes. The catalog shows no ads and doesn't sell access - the source code is open, with no commercial model.",
 	},
 	{
 		question: "Who owns the logos in the cards?",
 		answer:
-			'The respective project owners — we use them only for identification. See the "Sources" page for details.',
+			'The respective project owners - we use them only for identification. See the "Sources" page for details.',
 	},
 	{
-		question: "Found an error in a card — where do I report it?",
+		question: "Found an error in a card - where do I report it?",
 		answer:
-			"Open an issue in the GitHub repository — we try to respond quickly.",
+			"Open an issue in the GitHub repository - we try to respond quickly.",
 	},
 ];
 
-/** У `Features` дефолты только на русском — на английской версии передаём свои. */
+/** У `Features` дефолты только на русском - на английской версии передаем свои. */
 const featuresItems = [
 	{
-		title: "Browse the whole catalog",
+		title: "Find it in seconds",
 		description:
-			"224 projects about the Tatar, Bashkir, and Crimean Tatar languages and cultures — with filters by type and language.",
+			"Search by name, description, and tags narrows the catalog as you type - with the full A-Z list right next to it.",
 	},
 	{
-		title: "Open a project card",
+		title: "Open source on GitHub",
 		description:
-			"Facts, a link to the site, and a logo — a short summary of each project, without the extra text.",
+			"The site and the cards themselves live in a public repository: every change is in the history, and anyone can propose one.",
 	},
 	{
-		title: "Add your own project",
+		title: "Keep what you like",
 		description:
-			"Via a pull request on GitHub — fill in a card following the existing examples and submit it for review.",
+			"Heart a project and it lands on your saved page - stored in the browser, no account needed.",
 	},
 ];
 ---
@@ -72,7 +70,6 @@ const featuresItems = [
 	alternates={buildAlternates(Astro.url.pathname)}
 	markdownURL="/en.md"
 >
-	<Header locale="en" />
 	<LogoStack />
 
 	<MainTitle locale="en" />
@@ -80,7 +77,7 @@ const featuresItems = [
 	<LogoMarquee locale="en" cards={cards} />
 
 	<Features
-		heading="One catalog — three ways to use it."
+		heading="One catalog - three ways to use it."
 		items={featuresItems}
 	/>
 
@@ -88,5 +85,4 @@ const featuresItems = [
 
 	<FAQ title="Frequently asked questions" items={faqItems} />
 
-	<Footer locale="en" />
 </Layout>

@@ -3,8 +3,6 @@ import { getCollection } from "astro:content";
 import CatalogGlossary from "@/components/Catalog/CatalogGlossary.astro";
 import CatalogSearch from "@/components/Catalog/CatalogSearch.astro";
 import { localizeCards } from "@/components/Catalog/localize";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -18,9 +16,8 @@ const cards = await localizeCards(await getCollection("cards"), "en");
 	locale="en-US"
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<Header locale="en" />
 
-	<!-- Плашка с гигантской «Aa» и пилюлей поиска поверх неё — раскладка
+	<!-- Плашка с гигантской «Aa» и пилюлей поиска поверх нее - раскладка
 	     и размеры взяты с оригинала: панель 400px, буквы прижаты к центру,
 	     поле 727px по центру панели. -->
 	<section
@@ -40,5 +37,4 @@ const cards = await localizeCards(await getCollection("cards"), "en");
 
 	<CatalogGlossary locale="en" cards={cards} />
 
-	<Footer locale="en" />
 </Layout>

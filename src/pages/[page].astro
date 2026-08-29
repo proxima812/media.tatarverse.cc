@@ -1,0 +1,33 @@
+---
+import { getCollection, render } from "astro:content";
+import type { GetStaticPaths } from "astro";
+import MDX from "@/layouts/MDX.astro";
+
+/*
+ * Один маршрут на все текстовые страницы каталога - «О проекте», «Добавить
+ * проект», политика, условия, источники. Раньше на каждую был свой файл в
+ * `src/pages/`, и все пять отличались только идентификатором записи:
+ * добавление страницы означало копирование того же кода в шестой раз, а
+ * забытый файл - текст в коллекции, до которого нет маршрута.
+ *
+ * Маршрут динамический, но набор путей известен на сборке: он приходит из
+ * коллекции `pages`, то есть из состава `src/data/markdown/`. Статические
+ * маршруты (`/catalog`, `/search`, `/saved`) приоритетнее динамического, так
+ * что перехватить их этот файл не может; см. `starter-mdx`.
+ */
+export const getStaticPaths = (async () => {
+	const entries = await getCollection("pages");
+
+	return entries.map((entry) => ({
+		params: { page: entry.id },
+		props: { entry },
+	}));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<MDX locale="ru" {...entry.data}>
+	<Content />
+</MDX>

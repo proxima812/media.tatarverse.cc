@@ -3,8 +3,6 @@ import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
 import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
@@ -13,11 +11,11 @@ const t = useTranslations("ru");
 const cards = await getCollection("cards");
 
 /*
- * Закладки живут только в localStorage — на сборке неизвестно, что сохранил
+ * Закладки живут только в localStorage - на сборке неизвестно, что сохранил
  * конкретный посетитель. Поэтому рендерятся все карточки сразу, каждая под
  * своим `data-saved-item`, и скрыты по умолчанию; скрипт открывает только
- * совпавшие с localStorage. Тот же приём, что у списочного вида каталога
- * (`CatalogList`) — разметка есть в DOM без запроса, а не догружается с сервера.
+ * совпавшие с localStorage. Тот же прием, что у списочного вида каталога
+ * (`CatalogList`) - разметка есть в DOM без запроса, а не догружается с сервера.
  */
 ---
 
@@ -26,7 +24,6 @@ const cards = await getCollection("cards");
 	htmlLang="ru"
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<Header locale="ru" />
 
 	<div class="flex items-center justify-between px-6">
 		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
@@ -69,7 +66,6 @@ const cards = await getCollection("cards");
 			))}
 	</div>
 
-	<Footer locale="ru" />
 </Layout>
 
 <script>

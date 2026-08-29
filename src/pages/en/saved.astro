@@ -4,8 +4,6 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
 import { localizeCards } from "@/components/Catalog/localize";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
 import PrimitiveButton from "@/components/partials/PrimitiveButton.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
@@ -20,7 +18,6 @@ const cards = await localizeCards(await getCollection("cards"), "en");
 	locale="en-US"
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<Header locale="en" />
 
 	<div class="flex items-center justify-between px-6">
 		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
@@ -63,7 +60,6 @@ const cards = await localizeCards(await getCollection("cards"), "en");
 			))}
 	</div>
 
-	<Footer locale="en" />
 </Layout>
 
 <script>

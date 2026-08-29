@@ -4,16 +4,14 @@ import CatalogStats from "@/components/CatalogStats/CatalogStats.astro";
 import MainTitle from "@/components/MainTitle.astro";
 import FAQ from "@/components/partials/FAQ.astro";
 import Features from "@/components/partials/Features.astro";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
+import ImageShowcase from "@/components/partials/ImageShowcase.astro";
 import LogoMarquee from "@/components/partials/LogoMarquee.astro";
 import LogoStack from "@/components/partials/LogoStack.astro";
 import Quote from "@/components/partials/Quote.astro";
-import ImageShowcase from "@/components/partials/ImageShowcase.astro";
-import { config } from "main.config";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { config } from "main.config";
 
 const t = useTranslations("ru");
 const cards = await getCollection("cards");
@@ -26,7 +24,6 @@ const cards = await getCollection("cards");
 	alternates={buildAlternates(Astro.url.pathname)}
 	markdownURL="/index.md"
 >
-	<Header locale="ru" />
 	<LogoStack />
 	<MainTitle locale="ru" />
 	<ImageShowcase locale="ru" />
@@ -40,5 +37,4 @@ const cards = await getCollection("cards");
 	/>
 	<CatalogStats locale="ru" cards={cards} />
 	<FAQ />
-	<Footer locale="ru" />
 </Layout>

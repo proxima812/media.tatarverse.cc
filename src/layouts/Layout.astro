@@ -9,6 +9,8 @@ import type { SeoKeywords, SeoPageType } from "@/config/types";
 import "@/styles/tailwind.css";
 import { ClientRouter } from "astro:transitions";
 import { config } from "main.config";
+import Footer from "@/components/partials/Footer.astro";
+import Header from "@/components/partials/Header.astro";
 
 interface Props {
 	title?: string;
@@ -46,7 +48,7 @@ const {
 	locale,
 	name,
 	author,
-	htmlLang = config.site.language,
+	htmlLang,
 	markdownURL,
 	alternates,
 	class: className,
@@ -54,6 +56,13 @@ const {
 	innerSetOff,
 	gap,
 } = Astro.props;
+
+/*
+ * Локаль шапки и подвала берется из URL, а не из пропса: страницы под `/en/`
+ * должны получать `en` сами, иначе каждую пришлось бы помнить передать локаль
+ * руками - и один забытый проп дал бы русское меню на английской странице.
+ */
+const currentLocale = Astro.currentLocale ?? config.i18n.defaultLocale;
 
 const seoProps = {
 	title,
@@ -80,7 +89,7 @@ const containerAttrs = {
 } satisfies ContainerProps;
 ---
 
-<html lang={htmlLang} class="scroll-smooth subpixel-antialiased">
+<html lang={htmlLang ?? currentLocale} class="scroll-smooth subpixel-antialiased">
 	<head>
 		<Font cssVariable="--font-inter" preload />
 		{
@@ -147,8 +156,10 @@ const containerAttrs = {
 		</script>
 	</head>
 	<body>
+		<Header locale={currentLocale} />
 		<Container {...containerAttrs}>
 			<slot />
 		</Container>
+		<Footer locale={currentLocale} />
 	</body>
 </html>

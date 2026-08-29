@@ -2,8 +2,6 @@
 import { getCollection } from "astro:content";
 import CatalogGlossary from "@/components/Catalog/CatalogGlossary.astro";
 import CatalogSearch from "@/components/Catalog/CatalogSearch.astro";
-import Footer from "@/components/partials/Footer.astro";
-import Header from "@/components/partials/Header.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -16,9 +14,8 @@ const cards = await getCollection("cards");
 	htmlLang="ru"
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<Header locale="ru" />
 
-	<!-- Плашка с гигантской «Аә» и пилюлей поиска поверх неё — раскладка
+	<!-- Плашка с гигантской «Аә» и пилюлей поиска поверх нее - раскладка
 	     и размеры взяты с оригинала: панель 400px, буквы прижаты к центру,
 	     поле 727px по центру панели. -->
 	<section
@@ -38,5 +35,4 @@ const cards = await getCollection("cards");
 
 	<CatalogGlossary locale="ru" cards={cards} />
 
-	<Footer locale="ru" />
 </Layout>
