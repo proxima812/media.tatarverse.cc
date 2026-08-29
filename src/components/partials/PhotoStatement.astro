@@ -1,40 +1,77 @@
 ---
 import { Image } from "astro:assets";
-import { meshGradient } from "@/utils/lib/meshGradient";
 
 /**
  * Заголовок - снимок - пояснение в одну строку. Смысл раскладки в том, что
  * снимок стоит между двумя текстами и читается как то, о чем они говорят:
  * слева утверждение, справа расшифровка, между ними сам предмет разговора.
+ *
+ * Снимок не один: кадры сменяют друг друга вместе с подписью под ними.
  */
 interface Props {
 	title?: string;
 	description?: string;
-	/**
-	 * Снимок - импортированный ассет, а не путь строкой: так `astro:assets`
-	 * сам сделает webp и версии под плотность экрана. Нет снимка - рисуется
-	 * мэш-градиент, как у карточек без логотипа и у `Quote.astro`.
-	 */
-	photo?: ImageMetadata;
-	/** Подпись поверх снимка; `captionAuthor` - выделенная пилюля в ее конце. */
-	caption?: string;
-	captionAuthor?: string;
 }
 
-/*
- * Дефолты - заглушка, как в `Quote.astro`: реальный снимок и текст
- * подставляются пропами, но компонент должен выглядеть готовым и без них.
- */
 const {
-	photo,
 	title = "Know what you're looking at.",
 	description = "Cosmos researches images - surfacing the artist, source, and story.",
-	caption = "Editorial photography by",
-	captionAuthor = "Guiri",
 } = Astro.props;
+
+/*
+ * Кадры подхватываются `import.meta.glob`, а не импортами подряд: добавить
+ * снимок должно быть достаточно, положив файл в папку. Порядок - по имени,
+ * чтобы состав ленты не зависел от порядка обхода файловой системы.
+ */
+const modules = import.meta.glob<{ default: ImageMetadata }>(
+	"/src/assets/PhoteStatment/*.{png,jpg,jpeg,webp}",
+	{ eager: true },
+);
+
+const photos = Object.entries(modules)
+	.sort(([a], [b]) => a.localeCompare(b))
+	.map(([, module]) => module.default);
+
+/*
+ * Подписи идут своим списком и раздаются кадрам по кругу: снимков может
+ * стать больше или меньше, и жесткая пара «файл - подпись» ломалась бы при
+ * каждой правке папки.
+ */
+const CAPTIONS = [
+	{ caption: "Editorial photography by", author: "Guiri" },
+	{ caption: "Из архива проекта", author: "tatarverse" },
+	{ caption: "Кадр из каталога", author: "media.tatarverse" },
+] as const;
+
+const slides = photos.map((photo, index) => ({
+	photo,
+	...CAPTIONS[index % CAPTIONS.length],
+}));
 
 /** Ширина снимка в css-пикселях - от нее считается исходник растра. */
 const PHOTO_WIDTH = 420;
+
+/** Сколько один кадр держится на экране, включая перекрестное затухание. */
+const SLIDE_SECONDS = 4;
+const total = slides.length * SLIDE_SECONDS;
+
+/*
+ * Keyframes собираются строкой, а не пишутся руками: доля одного кадра
+ * зависит от их числа, и при добавлении файла в папку проценты в статичном
+ * CSS пришлось бы пересчитывать вручную - о чем никто не вспомнит.
+ *
+ * `fade` - доля цикла на перекрестное затухание. Дальше кадр держится
+ * непрозрачным до своей границы и уходит в ноль, где его подхватывает следующий.
+ */
+const share = 100 / Math.max(slides.length, 1);
+const fade = Math.min(share / 2, 3);
+const keyframes = `@keyframes photo-statement {
+	0% { opacity: 0 }
+	${fade.toFixed(2)}% { opacity: 1 }
+	${(share - fade).toFixed(2)}% { opacity: 1 }
+	${share.toFixed(2)}% { opacity: 0 }
+	100% { opacity: 0 }
+}`;
 ---
 
 <section class="px-5 py-16 sm:py-24">
@@ -53,38 +90,41 @@ const PHOTO_WIDTH = 420;
 			{title}
 		</h2>
 
-		<figure class="relative mx-auto w-full max-w-[420px]">
-			{photo ? (
-				<Image
-					src={photo}
-					alt=""
-					width={PHOTO_WIDTH}
-					height={PHOTO_WIDTH * 1.4}
-					densities={[1, 2]}
-					format="webp"
-					class="aspect-[3/4] w-full rounded-2xl corner-squircle object-cover"
-				/>
-			) : (
+		<figure
+			class="photo-statement relative mx-auto aspect-[3/4] w-full max-w-[420px]"
+			style={`--slide-total:${total}s`}
+		>
+			{slides.map((slide, index) => (
 				<div
-					class="aspect-[3/4] w-full rounded-2xl corner-squircle"
-					style={meshGradient(captionAuthor)}
-					aria-hidden="true"
-				/>
-			)}
+					class="photo-statement__slide absolute inset-0"
+					style={`--slide-delay:${index * SLIDE_SECONDS}s`}
+				>
+					<Image
+						src={slide.photo}
+						alt=""
+						width={PHOTO_WIDTH}
+						height={PHOTO_WIDTH * 1.4}
+						densities={[1, 2]}
+						format="webp"
+						loading={index === 0 ? "eager" : "lazy"}
+						class="size-full rounded-2xl corner-squircle object-cover"
+					/>
 
-			<!--
-				Подпись лежит поверх снимка по центру. `drop-shadow` вместо
-				подложки на всю строку: затемнять кадр целиком ради одной
-				строки текста - терять сам снимок, а тень читается на любом фоне.
-			-->
-			<figcaption
-				class="absolute inset-x-4 top-1/2 flex -translate-y-1/2 flex-wrap items-center justify-center gap-2 text-center font-medium text-sm text-white drop-shadow-[0_1px_6px_rgb(0_0_0/0.6)] sm:text-base"
-			>
-				{caption}
-				<span class="rounded-full bg-white/25 px-3 py-1 backdrop-blur-sm">
-					{captionAuthor}
-				</span>
-			</figcaption>
+					<!--
+						Подпись лежит поверх снимка по центру. `drop-shadow` вместо
+						подложки на всю строку: затемнять кадр целиком ради одной
+						строки текста - терять сам снимок, а тень читается на любом фоне.
+					-->
+					<figcaption
+						class="absolute inset-x-4 top-1/2 flex -translate-y-1/2 flex-wrap items-center justify-center gap-2 text-center font-medium text-sm text-white drop-shadow-[0_1px_6px_rgb(0_0_0/0.6)] sm:text-base"
+					>
+						{slide.caption}
+						<span class="rounded-full bg-white/25 px-3 py-1 backdrop-blur-sm">
+							{slide.author}
+						</span>
+					</figcaption>
+				</div>
+			))}
 		</figure>
 
 		<p
@@ -94,3 +134,36 @@ const PHOTO_WIDTH = 420;
 		</p>
 	</div>
 </section>
+
+<style is:inline set:html={keyframes}></style>
+
+<style>
+/*
+ * Кадры лежат стопкой и по очереди проявляются. Высоту задает сама `figure`
+ * (`aspect-[3/4]`), поэтому слайды могут быть `absolute` все до одного -
+ * без «первый в потоке, остальные поверх» и вызванного этим скачка раскладки.
+ */
+.photo-statement__slide {
+	opacity: 0;
+	animation: photo-statement var(--slide-total) linear infinite;
+	animation-delay: var(--slide-delay);
+	will-change: opacity;
+}
+
+/* Один кадр - анимировать нечего, он и так на экране. */
+.photo-statement__slide:only-child {
+	opacity: 1;
+	animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.photo-statement__slide {
+		animation: none;
+	}
+
+	/* Без перелистывания показываем первый кадр, остальные не мигают. */
+	.photo-statement__slide:first-child {
+		opacity: 1;
+	}
+}
+</style>
