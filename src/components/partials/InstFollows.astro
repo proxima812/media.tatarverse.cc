@@ -3,29 +3,61 @@ import { Icon } from "astro-icon/components";
 import { followers } from "@/data/inst_follows";
 
 /**
- * Стена подписчиков: две строки по десять аккаунтов под заголовком - тот же
+ * Стена подписчиков: две строки по десять хендлов под заголовком - тот же
  * прием, что у полос с логотипами клиентов. Показывает, что за каталогом
  * стоят живые люди, не превращаясь в список на весь экран.
  */
 interface Props {
 	title?: string;
-	/** Сколько аккаунтов в одной строке. Строк всегда две. */
-	perRow?: number;
 }
 
-const { title = "Спасибо Вам за поддержку.", perRow = 10 } = Astro.props;
+const { title = "Спасибо Вам за поддержку." } = Astro.props;
 
 /*
- * Берем начало списка, а не случайную выборку: случайная давала бы новый
- * состав на каждой пересборке, и diff артефактов шумел бы без причины.
+ * Состав отобран руками, а не срезом списка: в строку помещается короткий
+ * хендл, а длинный пришлось бы обрезать многоточием - и вместо благодарности
+ * получился бы список огрызков. Порядок = порядок в строках.
  */
-const rows = [
-	followers.slice(0, perRow),
-	followers.slice(perRow, perRow * 2),
-];
+const PICKED = [
+	// Строка 1
+	"@altyn.urda",
+	"@tatar.mosaics",
+	"@tartarrica",
+	"@torikbodin",
+	"@bulat.shams",
+	"@kursainov",
+	"@gumus.sozluk",
+	"@const_proxima",
+	"@mr_beart",
+	"@xrenat",
+	// Строка 2
+	"@tatary_almaty",
+	"@volga_ural_tatar",
+	"@ilnur.mirikhan",
+	"@tatarstan.kz",
+	"@nv_notes",
+	"@djin_grin",
+	"@silkwaykzn",
+	"@tatartalkbot",
+	"@malina.visual",
+	"@lilyrouz",
+] as const;
 
-const instagramUrl = (handle: string) =>
-	`https://instagram.com/${handle.replace(/^@/, "")}`;
+/*
+ * Хендл сверяется с данными: опечатка тут - это благодарность
+ * несуществующему аккаунту, и заметить ее можно только глазами на проде.
+ */
+const known = new Set(followers.map((follower) => follower.handle));
+for (const handle of PICKED) {
+	if (!known.has(handle)) {
+		throw new Error(
+			`InstFollows: «${handle}» нет в src/data/inst_follows.ts`,
+		);
+	}
+}
+
+const perRow = PICKED.length / 2;
+const rows = [PICKED.slice(0, perRow), PICKED.slice(perRow)];
 ---
 
 <section class="py-16 sm:py-24">
@@ -37,32 +69,29 @@ const instagramUrl = (handle: string) =>
 
 	<!--
 		Строки не переносятся и уезжают за край: маска гасит их к краям экрана,
-		и обрезанный аккаунт читается как «список продолжается», а не как
+		и обрезанный хендл читается как «список продолжается», а не как
 		случайно обрубленное имя. Отсюда же `no-container` - в колонке
 		`max-w-6xl` край пришелся бы на пустое поле, и гасить было бы нечего.
+
+		`select-none` + `pointer-events-none`: это витрина, а не навигация -
+		хендлы не кликаются и не выделяются, курсор проходит сквозь них.
 	-->
 	<div
-		class="no-container mt-10 space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+		class="no-container mt-10 select-none space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
 	>
 		{rows.map((row) => (
-			<ul class="flex flex-nowrap justify-center gap-x-8 gap-y-4 px-5 sm:gap-x-12">
-				{row.map((follower) => (
-					<li class="shrink-0">
-						<a
-							href={instagramUrl(follower.handle)}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="flex items-center gap-2 text-muted-foreground transition hover:text-foreground"
-						>
-							<Icon
-								name="tabler:brand-instagram"
-								class="size-5 shrink-0"
-								aria-hidden="true"
-							/>
-							<span class="max-w-40 truncate font-medium text-sm sm:text-base">
-								{follower.name ?? follower.handle}
-							</span>
-						</a>
+			<ul
+				class="pointer-events-none flex flex-nowrap justify-center gap-x-8 px-5 sm:gap-x-12"
+				aria-hidden="true"
+			>
+				{row.map((handle) => (
+					<li class="flex shrink-0 items-center gap-2 text-muted-foreground">
+						<Icon
+							name="tabler:brand-instagram"
+							class="size-5 shrink-0"
+							aria-hidden="true"
+						/>
+						<span class="font-medium text-sm sm:text-base">{handle}</span>
 					</li>
 				))}
 			</ul>
