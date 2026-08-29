@@ -29,12 +29,7 @@ const cards = await getCollection("cards");
 	<ImageShowcase locale="ru" />
 	<LogoMarquee locale="ru" cards={cards} />
 	<Features />
-	<Quote
-		photo={authorPhoto}
-		quote={config.site.quote.text}
-		name={config.site.quote.name}
-		position={config.site.quote.position}
-	/>
+	<Quote photo={authorPhoto} {...config.site.quote} />
 	<CatalogStats locale="ru" cards={cards} />
 	<FAQ />
 </Layout>

@@ -125,7 +125,8 @@ export interface ThemeColors {
  * видеть импорт статически, из строки в конфиге он картинку не соберет.
  */
 export interface QuoteConfig {
-	readonly text: string;
+	/** Ключи названы как пропсы `Quote.astro` - объект уходит в него спредом. */
+	readonly quote: string;
 	readonly name: string;
 	/** Именно `position`, а не `role` - см. пропсы `Quote.astro`. */
 	readonly position: string;
