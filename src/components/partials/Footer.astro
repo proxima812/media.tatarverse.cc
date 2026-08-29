@@ -31,7 +31,8 @@ const sectionLinks = [
 /*
  * Соцсети и связь - те же аккаунты, что в подвале tatarverse.cc: у проектов
  * одна редакция, и разводить их по разным аккаунтам значит терять читателя
- * на переходе между сайтами. Иконки Threads в наборе mdi нет, поэтому `at`.
+ * на переходе между сайтами. Логотипа Threads в mdi нет - он один берется
+ * из `tabler`.
  *
  * Видимая подпись - точный хендл, а не имя площадки: его копируют и ищут
  * по нему. Площадку показывает иконка, а для скринридера она уходит в
@@ -41,8 +42,14 @@ const socialLinks = [
 	{
 		href: "https://t.me/the_tatarverse",
 		network: "Telegram",
-		label: "@the_tatarverse",
+		label: "the_tatarverse",
 		icon: "mdi:telegram",
+	},
+	{
+		href: "https://vk.ru/the_tatarverse",
+		network: "VK",
+		label: "the_tatarverse",
+		icon: "mdi:vk",
 	},
 	{
 		href: "https://instagram.com/the_tatarverse",
@@ -51,16 +58,10 @@ const socialLinks = [
 		icon: "mdi:instagram",
 	},
 	{
-		href: "https://vk.ru/the_tatarverse",
-		network: "VK",
-		label: "@the_tatarverse",
-		icon: "mdi:vk",
-	},
-	{
 		href: "https://www.threads.com/@the_tatarverse",
-		network: "Threads",
+		network: "Threads", 
 		label: "@the_tatarverse",
-		icon: "mdi:at",
+		icon: "tabler:brand-threads",
 	},
 	{
 		href: "mailto:kamil.mirikhan@gmail.com",
@@ -102,8 +103,7 @@ const legalLinks = [
 /** Год - на билде, не в браузере: страница статическая, значение одно для всех. */
 const year = new Date().getFullYear();
 
-const linkClass =
-	"text-primary-foreground/70 transition hover:text-primary-foreground";
+const linkClass = "text-primary-foreground/70 transition hover:text-primary-foreground";
 
 /** Заголовок колонки: приглушен и разряжен, чтобы не спорить со ссылками. */
 const headingClass =
@@ -129,7 +129,7 @@ const headingClass =
 						width="48"
 						height="48"
 						class="size-12 brightness-0 invert"
-					>
+					/>
 					<Tooltip label={t("nav.home")} />
 				</a>
 				<p class="text-primary-foreground/60 text-sm">
@@ -140,20 +140,23 @@ const headingClass =
 			<nav aria-label={t("footer.sections")} class="lg:min-w-44">
 				<h2 class={headingClass}>{t("footer.sections")}</h2>
 				<ul class="space-y-3">
-					{sectionLinks.map((link) => (
+					{
+						sectionLinks.map((link) => (
 							<li>
 								<a href={link.href} class={linkClass}>
 									{link.label}
 								</a>
 							</li>
-						))}
+						))
+					}
 				</ul>
 			</nav>
 
 			<nav aria-label={t("footer.social")} class="lg:min-w-44">
 				<h2 class={headingClass}>{t("footer.social")}</h2>
 				<ul class="space-y-3">
-					{socialLinks.map((link) => (
+					{
+						socialLinks.map((link) => (
 							<li>
 								<a
 									href={link.href}
@@ -166,14 +169,16 @@ const headingClass =
 									{link.label}
 								</a>
 							</li>
-						))}
+						))
+					}
 				</ul>
 			</nav>
 
 			<nav aria-label={t("footer.material")} class="lg:min-w-44">
 				<h2 class={headingClass}>{t("footer.material")}</h2>
 				<ul class="space-y-3">
-					{materialLinks.map((link) => (
+					{
+						materialLinks.map((link) => (
 							<li>
 								<a
 									href={link.href}
@@ -185,7 +190,8 @@ const headingClass =
 									{link.label}
 								</a>
 							</li>
-						))}
+						))
+					}
 				</ul>
 			</nav>
 		</div>
@@ -196,20 +202,22 @@ const headingClass =
 			<p>© {year} media.tatarverse</p>
 			<nav aria-label={t("footer.legal")}>
 				<ul class="flex flex-wrap gap-x-6 gap-y-2">
-					{legalLinks.map((link) => (
+					{
+						legalLinks.map((link) => (
 							<li>
 								<a href={link.href} class={linkClass}>
 									{link.label}
 								</a>
 							</li>
-						))}
+						))
+					}
 				</ul>
 			</nav>
 		</div>
 	</div>
 </footer>
 
-<div class="no-container  bg-primary">
+<div class="no-container bg-primary">
 	<BigWordBottom
 		text="Муэллиф"
 		color1="from-primary-foreground"
