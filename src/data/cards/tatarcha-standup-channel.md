@@ -7,6 +7,7 @@ facts:
   - "Самоопределение проекта - «яңа татар юморы»"
 url: "https://t.me/tatarchastandup"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "humor"]
 peoples: ["tatar"]
 ---

@@ -125,6 +125,8 @@ export default defineConfig({
 	integrations: [
 		mdx(),
 		sitemap({
+			// Временная демо-страница под съемку - в карту сайта не идет.
+			filter: (page) => !page.includes("/demo"),
 			i18n: {
 				defaultLocale: i18n.defaultLocale,
 				locales: Object.fromEntries(

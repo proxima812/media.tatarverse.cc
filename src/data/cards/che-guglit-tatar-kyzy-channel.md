@@ -7,6 +7,7 @@ facts:
   - "Входит в подборки лучших татарских Telegram-каналов"
 url: "https://t.me/cheguglittatarkyzy"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["humor"]
 peoples: ["tatar"]
 ---

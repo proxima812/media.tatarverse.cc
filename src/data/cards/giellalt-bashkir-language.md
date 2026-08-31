@@ -7,6 +7,7 @@ facts:
   - "Предназначен для анализаторов и средств проверки текста"
 url: "https://github.com/giellalt/lang-bak"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "language-model", "open-source"]
 peoples: ["bashkir"]
 ---

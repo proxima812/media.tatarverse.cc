@@ -7,6 +7,7 @@ facts:
   - "Ведет подкаст Modern Tatar Identity"
 url: "https://www.instagram.com/tatar.prince/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["activist", "language", "identity", "blog"]
 peoples: ["tatar"]
 ---

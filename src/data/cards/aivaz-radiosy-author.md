@@ -7,6 +7,7 @@ facts:
   - "Связь по сотрудничеству - @aivazsadyrov"
 url: "https://t.me/AivazRadiosi"
 pubDate: "2026-08-29"
-tags: ["author"]
+categories: ["author"]
+tags: ["musician", "presenter", "music", "radio"]
 peoples: ["tatar"]
 ---

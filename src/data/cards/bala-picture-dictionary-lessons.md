@@ -7,6 +7,7 @@ facts:
   - "Работает непосредственно в браузере"
 url: "https://github.com/rabinovich2006/lugat"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["education", "children", "dictionary", "for-children", "open-source", "educational"]
 peoples: ["crimean-tatar"]
 ---

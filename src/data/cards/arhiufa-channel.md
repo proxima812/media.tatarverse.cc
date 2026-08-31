@@ -7,6 +7,7 @@ facts:
   - "Сравнивает виды одного места с разницей в 60-120 лет"
 url: "https://t.me/arhiufa"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history"]
 peoples: ["bashkir"]
 ---

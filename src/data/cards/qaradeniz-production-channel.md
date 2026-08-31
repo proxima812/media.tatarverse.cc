@@ -8,6 +8,7 @@ facts:
 url: "https://www.youtube.com/channel/UCkYP3Zc9JIztRj__EO0fOSw"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qaradeniz-production-channel.png"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "video"]
 peoples: ["crimean-tatar"]
 ---

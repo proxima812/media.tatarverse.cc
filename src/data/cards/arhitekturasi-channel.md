@@ -7,6 +7,7 @@ facts:
   - "Есть сестринский канал «Улица Гоголя» с рассказами по конкретной улице"
 url: "https://t.me/arhitekturasi"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "architecture"]
 peoples: ["tatar"]
 ---

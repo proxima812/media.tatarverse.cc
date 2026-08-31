@@ -7,6 +7,7 @@ facts:
   - "Публикует литературные произведения и детские рисунки"
 url: "https://akbuzat-rb.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "literature", "poetry", "children", "magazine", "for-children"]
 peoples: ["bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Создает собственные обучающие программы"
 url: "https://tt.shayantv.ru/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "cinema", "children", "television", "for-children", "educational"]
 peoples: ["tatar"]
 ---

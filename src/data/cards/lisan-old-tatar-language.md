@@ -7,6 +7,7 @@ facts:
   - "Включает онлайн-библиотеку и инструменты для работы с метрическими книгами"
 url: "https://lisan.tatar/"
 pubDate: "2026-08-21"
+categories: ["language"]
 tags: ["language"]
 peoples: ["tatar", "bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Ведет Музей наследия и архив, документирующий историю депортации 1944 года"
 url: "https://www.kirimny.org/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["culture", "religion", "society", "for-diaspora"]
 peoples: ["crimean-tatar"]
 ---

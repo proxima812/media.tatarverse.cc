@@ -7,6 +7,7 @@ facts:
   - "Продвигает татарский интерфейс Телеграма через официальный языковой пакет"
 url: "https://t.me/basqala_project"
 pubDate: "2026-08-29"
-tags: ["lessons", "language"]
+categories: ["lessons", "language"]
+tags: ["language", "education", "library", "educational"]
 peoples: ["tatar"]
 ---

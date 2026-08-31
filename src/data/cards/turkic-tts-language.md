@@ -7,6 +7,7 @@ facts:
   - "Исходный код системы написан на Python"
 url: "https://github.com/IS2AI/TurkicTTS"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "text-to-speech", "open-source", "multilingual"]
 peoples: ["tatar", "bashkir"]
 ---

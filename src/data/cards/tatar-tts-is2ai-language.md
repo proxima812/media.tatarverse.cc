@@ -7,6 +7,7 @@ facts:
   - "Опубликован по лицензии CC BY 4.0"
 url: "https://github.com/IS2AI/TatarTTS"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "text-to-speech", "dataset", "open-source"]
 peoples: ["tatar"]
 ---

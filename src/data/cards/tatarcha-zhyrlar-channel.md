@@ -7,6 +7,7 @@ facts:
   - "Обратная связь через @tatarchazhyr"
 url: "https://t.me/tatarcha_zhyr"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["music"]
 peoples: ["tatar"]
 ---

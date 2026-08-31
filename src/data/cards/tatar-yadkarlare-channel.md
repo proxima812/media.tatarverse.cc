@@ -7,6 +7,7 @@ facts:
   - "Публикации преимущественно на татарском языке"
 url: "https://t.me/tatar_yadkarlare"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "traditions", "heritage"]
 peoples: ["tatar"]
 ---

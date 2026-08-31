@@ -8,6 +8,7 @@ facts:
 url: "https://play.google.com/store/apps/details?id=com.bashphrases"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/bashkir-salyam-phrasebook-language.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "app", "mobile-app", "educational"]
 peoples: ["bashkir"]
 ---

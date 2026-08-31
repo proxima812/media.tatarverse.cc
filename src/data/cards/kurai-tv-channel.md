@@ -7,6 +7,7 @@ facts:
   - "Публикует эфирные материалы и видео в интернете"
 url: "https://kurai.tv/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["music", "culture", "television"]
 peoples: ["bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "На сайте работает курс с лексическими, стандартными и контрольными уроками"
 url: "https://diyar.im/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "history", "culture", "education", "library", "course", "dictionary", "educational"]
 peoples: ["crimean-tatar"]
 ---

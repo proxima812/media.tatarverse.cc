@@ -7,6 +7,7 @@ facts:
   - "Проект ведет журналистка Севиля Кендже"
 url: "https://t.me/buyurodaga"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["literature", "history", "culture", "magazine"]
 peoples: ["crimean-tatar"]
 ---

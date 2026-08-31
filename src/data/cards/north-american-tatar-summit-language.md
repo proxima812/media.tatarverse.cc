@@ -7,6 +7,7 @@ facts:
   - "Публикует учебные материалы и татарский иллюстрированный словарь «Tatarça Rasemle Süzlek»"
 url: "https://sites.duke.edu/tatarsu/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["language", "education", "society", "course", "educational"]
 peoples: ["tatar"]
 ---

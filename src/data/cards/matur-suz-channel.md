@@ -7,6 +7,7 @@ facts:
   - "Пожелания и предложения принимаются анонимно через @matur_suz_bot"
 url: "https://t.me/matur_suz"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["blog"]
 peoples: ["tatar"]
 ---

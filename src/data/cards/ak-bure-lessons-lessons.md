@@ -8,6 +8,7 @@ facts:
 url: "https://apps.apple.com/qa/app/id1562685598"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/ak-bure-lessons-lessons.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "children", "app", "mobile-app", "educational"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Опубликован по лицензии CC BY-SA 4.0"
 url: "https://github.com/LingConLab/data_oral_bashkir_corpus"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "open-source"]
 peoples: ["bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Статьи распространяются по свободным лицензиям Wikimedia"
 url: "https://crh.wikipedia.org/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "society", "encyclopedia"]
 peoples: ["crimean-tatar"]
 ---

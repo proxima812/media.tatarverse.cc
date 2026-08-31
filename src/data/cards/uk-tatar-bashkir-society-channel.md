@@ -7,6 +7,7 @@ facts:
   - "Проект публикует новости и анонсы культурных мероприятий"
 url: "https://www.uktatars.org/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["history", "culture", "society", "event", "for-diaspora"]
 peoples: ["tatar", "bashkir"]
 ---

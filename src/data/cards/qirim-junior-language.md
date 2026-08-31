@@ -8,6 +8,7 @@ facts:
 url: "https://play.google.com/store/apps/details?id=com.anaurt.QirimJunior"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qirim-junior-language.png"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "cinema", "children", "website", "mobile-app", "for-children", "educational"]
 peoples: ["crimean-tatar"]
 ---

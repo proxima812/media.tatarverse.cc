@@ -8,6 +8,7 @@ facts:
 url: "https://www.oc3.ru/products/inofon/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/inofon-bashkir-language.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "app", "course", "educational"]
 peoples: ["bashkir"]
 ---

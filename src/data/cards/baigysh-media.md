@@ -7,6 +7,7 @@ facts:
   - "Работает также как Telegram-канал с книгами и переводами"
 url: "https://baigysh.tatar/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "book", "library"]
 peoples: ["tatar"]
 ---

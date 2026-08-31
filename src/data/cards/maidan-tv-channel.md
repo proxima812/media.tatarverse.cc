@@ -7,6 +7,7 @@ facts:
   - "Представляет молодых и известных татарских исполнителей"
 url: "https://maidan.tv/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "music", "culture", "traditions", "television"]
 peoples: ["tatar"]
 ---

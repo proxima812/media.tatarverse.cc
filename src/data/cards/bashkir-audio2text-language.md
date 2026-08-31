@@ -8,6 +8,7 @@ facts:
   - "Коллекция включает 583 аудиофайла книг и рассказов"
 url: "https://github.com/akhmetvaleev-ruslan/bashkir-language-audio2text"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "speech-recognition", "open-source"]
 peoples: ["bashkir"]
 ---

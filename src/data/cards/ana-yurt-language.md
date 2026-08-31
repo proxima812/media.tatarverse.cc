@@ -8,6 +8,7 @@ facts:
 url: "https://ana-yurt.com/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/ana-yurt-language.png"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "history", "culture"]
 peoples: ["crimean-tatar"]
 ---

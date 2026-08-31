@@ -65,7 +65,11 @@ const MASONRY_BREAKPOINTS = { default: 3, 1023: 2, 639: 1 };
 		class="group/masonry gap-8 px-5 not-data-ready:columns-1 data-ready:flex data-ready:items-start sm:not-data-ready:columns-2 lg:not-data-ready:columns-3"
 	>
 		{head.map((card) => (
-				<div class="break-inside-avoid not-group-data-ready/masonry:mb-8">
+				<div
+					data-catalog-item
+					data-tags={card.data.tags.join(",")}
+					class="break-inside-avoid not-group-data-ready/masonry:mb-8 [&[hidden]]:hidden"
+				>
 					<CatalogCard card={card} />
 				</div>
 			))}
@@ -74,7 +78,7 @@ const MASONRY_BREAKPOINTS = { default: 3, 1023: 2, 639: 1 };
 	{chunks.map((group) => (
 			<template data-catalog-chunk>
 				{group.map((card) => (
-						<div>
+						<div data-catalog-item data-tags={card.data.tags.join(",")} class="[&[hidden]]:hidden">
 							<CatalogCard card={card} />
 						</div>
 					))}
@@ -124,6 +128,7 @@ function setupCatalogGrid(root: HTMLElement) {
 		...root.querySelectorAll<HTMLTemplateElement>("[data-catalog-chunk]"),
 	];
 	let next = 0;
+	let observer: IntersectionObserver | undefined;
 
 	const revealNext = () => {
 		const template = chunks[next];
@@ -136,20 +141,29 @@ function setupCatalogGrid(root: HTMLElement) {
 		return true;
 	};
 
-	if (!("IntersectionObserver" in window)) {
+	const revealAll = () => {
+		observer?.disconnect();
 		while (revealNext()) {
-			// Без наблюдателя частичная загрузка невозможна - отдаем все сразу.
+			// Фильтру нужны все карточки, включая отложенные в template.
 		}
 		sentinel.remove();
+	};
+
+	root
+		.closest("[data-catalog]")
+		?.addEventListener("catalog:before-filter", revealAll);
+
+	if (!("IntersectionObserver" in window)) {
+		revealAll();
 		return;
 	}
 
-	const observer = new IntersectionObserver(
+	const intersectionObserver = new IntersectionObserver(
 		(entries) => {
 			if (!entries.some((entry) => entry.isIntersecting)) return;
 
 			if (!revealNext()) {
-				observer.disconnect();
+				intersectionObserver.disconnect();
 				sentinel.remove();
 				return;
 			}
@@ -161,13 +175,14 @@ function setupCatalogGrid(root: HTMLElement) {
 			 * запускает новую проверку, и порции доезжают до тех пор, пока
 			 * сентинел не уйдет за порог.
 			 */
-			observer.unobserve(sentinel);
-			observer.observe(sentinel);
+			intersectionObserver.unobserve(sentinel);
+			intersectionObserver.observe(sentinel);
 		},
 		{ rootMargin: PRELOAD_MARGIN },
 	);
+	observer = intersectionObserver;
 
-	observer.observe(sentinel);
+	intersectionObserver.observe(sentinel);
 }
 
 for (const root of document.querySelectorAll<HTMLElement>(

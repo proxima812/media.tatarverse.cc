@@ -7,6 +7,7 @@ facts:
   - "Доступна для настольных, мобильных и браузерных сценариев"
 url: "https://keyman.com/keyboards/tatar"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "keyboard", "free"]
 peoples: ["tatar"]
 ---

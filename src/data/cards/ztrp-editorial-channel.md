@@ -7,6 +7,7 @@ facts:
   - "На сайте публикуются новости, анонсы и исторические материалы"
 url: "https://ztrp.pl/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["history", "heritage", "news", "society", "event"]
 peoples: ["tatar"]
 ---

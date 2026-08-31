@@ -8,6 +8,7 @@ facts:
 url: "https://play.google.com/store/apps/details?id=ru.beztatarlar.twa"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/bez-tatarlar-language.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "app", "mobile-app", "for-beginners", "free", "educational"]
 peoples: ["tatar"]
 ---

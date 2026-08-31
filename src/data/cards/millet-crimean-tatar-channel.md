@@ -7,6 +7,7 @@ facts:
   - "Рассказывает о жизни, обычаях, культуре и истории крымских татар"
 url: "https://trkmillet.ru/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["culture", "news", "society", "technology", "television"]
 peoples: ["crimean-tatar"]
 ---

@@ -8,6 +8,7 @@ facts:
   - "В архиве представлен свежий выпуск газеты за 2026 год"
 url: "https://ltim.lt/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["history", "heritage", "news", "society", "newspaper", "archive"]
 peoples: ["tatar"]
 ---

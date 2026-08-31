@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import { categoryLabel, peopleLabel, tagLabel } from "@/components/Catalog/labels";
 import { searchHaystack } from "@/components/Catalog/searchText";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -85,11 +85,12 @@ if (groups.has("#")) letters.push("#");
  * правилами, что применяются к запросу в браузере (`searchText.ts`).
  */
 function searchIndex(card: CollectionEntry<"cards">): string {
-	const { name, description, tags, peoples } = card.data;
+	const { name, description, categories, tags, peoples } = card.data;
 
 	const parts = [
 		name,
 		description,
+		...categories.map((category) => categoryLabel(locale, category)),
 		...tags.map((tag) => tagLabel(locale, tag)),
 		...peoples.map((people) => peopleLabel(locale, people)),
 	];

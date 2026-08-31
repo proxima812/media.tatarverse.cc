@@ -7,6 +7,7 @@ facts:
   - "Часть сети каналов вместе с аудиокнигами @tataraudio и кино @tatarkino"
 url: "https://t.me/tatarkniga"
 pubDate: "2026-08-29"
-tags: ["media", "language"]
+categories: ["media", "language"]
+tags: ["language", "magazine", "book", "library"]
 peoples: ["tatar"]
 ---

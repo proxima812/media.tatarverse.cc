@@ -8,6 +8,7 @@ facts:
 url: "https://tatartelem.ru/"
 pubDate: "2026-08-25"
 logo: "../../assets/images/logo/tatartelem-school-lessons.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "school", "educational"]
 peoples: ["tatar"]
 ---

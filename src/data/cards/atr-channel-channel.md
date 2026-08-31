@@ -8,6 +8,7 @@ facts:
 url: "https://atr.ua/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/atr-channel-channel.png"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "culture", "television"]
 peoples: ["crimean-tatar"]
 ---

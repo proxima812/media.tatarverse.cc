@@ -7,6 +7,7 @@ facts:
   - "Программа рассчитана на девять уровней владения языком"
 url: "https://kpfu.ru/philology-culture/kmlc/anatele"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "school", "free", "educational"]
 peoples: ["tatar"]
 ---

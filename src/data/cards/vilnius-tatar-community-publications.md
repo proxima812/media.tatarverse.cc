@@ -8,6 +8,7 @@ facts:
   - "Исследования затрагивают литовские, польские и турецкие культурные связи"
 url: "https://www.vatb.org/apie"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "history", "culture", "society"]
 peoples: ["tatar"]
 ---

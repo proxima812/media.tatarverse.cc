@@ -8,6 +8,7 @@ facts:
   - "На сайте публикуются новости и культурные программы общины"
 url: "https://uctr.ro/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["language", "culture", "traditions", "religion", "society", "technology"]
 peoples: ["crimean-tatar"]
 ---

@@ -8,6 +8,7 @@ facts:
   - "Фонд сотрудничает с университетами и международными организациями"
 url: "https://crimeantatarfoundation.org/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["language", "history", "culture", "identity", "society"]
 peoples: ["crimean-tatar"]
 ---

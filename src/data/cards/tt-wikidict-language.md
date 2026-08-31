@@ -8,6 +8,7 @@ facts:
   - "Исходный код опубликован по лицензии GPL-3.0"
 url: "https://github.com/tagay1n/tt-wikidict"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "dictionary", "open-source"]
 peoples: ["tatar"]
 ---

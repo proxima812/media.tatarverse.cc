@@ -1,9 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 
 /**
- * Похожесть = 2 балла за каждый общий тег + 1 балл за каждый общий народ.
- * Тег весит больше: у канала и языкового проекта одного народа общего
- * меньше, чем у двух каналов.
+ * Категория описывает тип проекта и весит 3 балла. Тег дает 2, общий народ - 1.
  */
 function similarity(
 	card: CollectionEntry<"cards">,
@@ -12,11 +10,14 @@ function similarity(
 	const sharedPeoples = other.data.peoples.filter((people) =>
 		card.data.peoples.includes(people),
 	).length;
+	const sharedCategories = other.data.categories.filter((category) =>
+		card.data.categories.includes(category),
+	).length;
 	const sharedTags = other.data.tags.filter((tag) =>
 		card.data.tags.includes(tag),
 	).length;
 
-	return sharedPeoples + sharedTags * 2;
+	return sharedPeoples + sharedTags * 2 + sharedCategories * 3;
 }
 
 export function getRelatedCards(

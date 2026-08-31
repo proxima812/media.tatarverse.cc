@@ -7,6 +7,7 @@ facts:
   - "Релизы собраны на витрине band.link/yummymusic"
 url: "https://t.me/yummmymusic"
 pubDate: "2026-08-29"
-tags: ["media"]
+categories: ["media"]
+tags: ["music"]
 peoples: ["tatar"]
 ---

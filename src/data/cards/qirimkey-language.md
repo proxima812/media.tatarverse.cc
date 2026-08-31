@@ -8,6 +8,7 @@ facts:
   - "Исходный код написан на Swift"
 url: "https://github.com/qirimca/Keyboard"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "keyboard", "open-source"]
 peoples: ["crimean-tatar"]
 ---

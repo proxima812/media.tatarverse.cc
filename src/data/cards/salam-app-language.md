@@ -7,6 +7,7 @@ facts:
   - "Разработано независимой командой энтузиастов"
 url: "https://www.rustore.ru/catalog/app/novayu.proga.salam"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "app", "mobile-app", "for-beginners", "interactive", "educational"]
 peoples: ["tatar"]
 ---

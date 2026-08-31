@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/buelbuel"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/bulbul-lessons.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "educational"]
 peoples: ["crimean-tatar"]
 ---

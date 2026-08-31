@@ -8,6 +8,7 @@ facts:
 url: "https://matbugat.ru/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/matbugat-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "news", "society"]
 peoples: ["tatar"]
 ---

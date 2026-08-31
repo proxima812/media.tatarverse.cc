@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/krym-realii"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/krym-realii-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "music", "radio"]
 peoples: ["crimean-tatar"]
 ---

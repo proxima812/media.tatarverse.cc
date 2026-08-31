@@ -7,6 +7,7 @@ facts:
   - "Публикует короткие документальные ролики и архивные материалы"
 url: "https://www.instagram.com/im_crimean_tatar/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["culture", "heritage", "blog"]
 peoples: ["crimean-tatar"]
 ---

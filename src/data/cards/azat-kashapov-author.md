@@ -7,6 +7,7 @@ facts:
   - "Контент ориентирован на татароязычную и русскоязычную аудиторию региона"
 url: "https://www.instagram.com/azatkashap/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["blogger", "humor", "blog"]
 peoples: ["tatar"]
 ---

@@ -8,6 +8,7 @@ facts:
 url: "https://www.azatliq.org/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/azatliq-radiosy-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "music", "radio"]
 peoples: ["tatar", "bashkir"]
 ---

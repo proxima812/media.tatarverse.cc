@@ -7,6 +7,7 @@ facts:
   - "Обучение построено на коммуникативной методике - лексика, диалоги, аудирование, грамматика"
 url: "https://region.bspu.ru/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "website", "educational"]
 peoples: ["bashkir"]
 ---

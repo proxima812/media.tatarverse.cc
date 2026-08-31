@@ -7,6 +7,7 @@ facts:
   - "Создана при поддержке Фонда президентских грантов"
 url: "http://сказкиповолжья.рф/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["folklore", "education", "library", "educational"]
 peoples: ["tatar"]
 ---

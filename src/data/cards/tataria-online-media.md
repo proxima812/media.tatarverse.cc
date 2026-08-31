@@ -7,6 +7,7 @@ facts:
   - "Позиционируется как ресурс «все о татарах» для англоязычных читателей"
 url: "https://www.tataria.online/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "culture", "blog"]
 peoples: ["tatar"]
 ---

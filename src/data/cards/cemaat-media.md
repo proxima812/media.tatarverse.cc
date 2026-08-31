@@ -8,6 +8,7 @@ facts:
   - "На сайте доступны версии на нескольких языках"
 url: "https://www.cemaat.media/en/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "identity", "society"]
 peoples: ["crimean-tatar"]
 ---

@@ -74,3 +74,35 @@ const t = useTranslations(locale);
 		</button>
 	</div>
 </search>
+
+<script>
+	/*
+	 * Cmd+K (Ctrl+K вне macOS) ставит курсор в поле поиска, не сдвигая
+	 * страницу к нему. Escape возвращает фокус обратно на страницу.
+	 *
+	 * Клавиша ловится по `event.code`, а не по `event.key`: в русской
+	 * раскладке Cmd+K дает `key === "л"`, и проверка по букве не сработала
+	 * бы ровно на той аудитории, ради которой сайт и сделан.
+	 *
+	 * `preventDefault` обязателен: в Firefox Cmd+K уводит фокус в строку
+	 * поиска браузера, а в Chrome по Ctrl+K открывается омнибокс.
+	 */
+	const field = document.querySelector<HTMLInputElement>("[data-glossary-search]");
+
+	if (field) {
+		document.addEventListener("keydown", (event) => {
+			if (event.code === "KeyK" && (event.metaKey || event.ctrlKey)) {
+				event.preventDefault();
+				/* `preventScroll`: страницу к полю не тянем - его могли вызвать из середины каталога. */
+				field.focus({ preventScroll: true });
+				/* Набранное выделяется целиком: следующий символ начинает новый запрос, а не дописывает старый. */
+				field.select();
+				return;
+			}
+
+			if (event.key === "Escape" && document.activeElement === field) {
+				field.blur();
+			}
+		});
+	}
+</script>

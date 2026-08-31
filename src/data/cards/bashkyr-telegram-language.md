@@ -7,6 +7,7 @@ facts:
   - "Входит в сеть телеграм-каналов по изучению языков народов России"
 url: "https://t.me/bashkyr"
 pubDate: "2026-08-21"
+categories: ["language"]
 tags: ["language"]
 peoples: ["bashkir"]
 ---

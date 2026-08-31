@@ -8,6 +8,7 @@ facts:
 url: "https://intertat.tatar/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/intertat-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["newspaper"]
 peoples: ["tatar"]
 ---

@@ -8,6 +8,7 @@ facts:
 url: "https://play.google.com/store/apps/details?id=learn.tatar.by.voice.and.translation"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/learn-tatar-by-voice-language.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "app", "mobile-app", "educational"]
 peoples: ["tatar"]
 ---

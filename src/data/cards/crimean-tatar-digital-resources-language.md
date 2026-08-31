@@ -7,6 +7,7 @@ facts:
   - "Включает рекомендации по локализации"
 url: "https://github.com/bropy/Crimean-Tatar-Language-Digital-Resources"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "open-source"]
 peoples: ["crimean-tatar"]
 ---

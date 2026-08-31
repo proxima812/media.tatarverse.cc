@@ -1,14 +1,18 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import {
+	categoryLabel,
+	peopleLabel,
+	tagLabel,
+} from "@/components/Catalog/labels";
 
 interface Props {
 	card: CollectionEntry<"cards">;
 }
 
 const { card } = Astro.props;
-const { name, tags, peoples } = card.data;
+const { name, categories, tags, peoples } = card.data;
 
 const locale = Astro.currentLocale ?? "ru";
 const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
@@ -16,7 +20,10 @@ const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
 
 <a
 	href={href}
-	class="flex content-auto [contain-intrinsic-size:auto_4rem] items-center justify-between gap-4 border-border border-b px-4 py-5 transition hover:bg-muted/60"
+	data-catalog-item
+	data-catalog-list-item
+	data-tags={tags.join(",")}
+	class="flex content-auto [contain-intrinsic-size:auto_4rem] items-center justify-between gap-4 border-border border-b px-4 py-5 transition hover:bg-muted/60 [&[hidden]]:hidden"
 >
 	<span class="min-w-0 truncate font-medium text-base text-foreground">
 		{name}
@@ -25,7 +32,12 @@ const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
 	<span
 		class="flex shrink-0 items-center gap-3 text-muted-foreground text-xs uppercase tracking-wide"
 	>
-		<span>{tags.map((tag) => tagLabel(locale, tag)).join(", ")}</span>
+		<span
+			>{categories.map((category) => categoryLabel(locale, category)).join(", ")}</span
+		>
+		<span class="hidden md:inline"
+			>{tags.map((tag) => tagLabel(locale, tag)).join(", ")}</span
+		>
 		<span class="hidden sm:inline"
 			>{peoples.map((people) => peopleLabel(locale, people)).join(", ")}</span
 		>

@@ -8,6 +8,7 @@ facts:
 url: "https://podcasts.apple.com/us/podcast/tatars-in-poland-adopted-homeland/id1823669240"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/tatars-in-poland-podcast-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "society", "podcast"]
 peoples: ["tatar"]
 ---

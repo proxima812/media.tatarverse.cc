@@ -7,6 +7,7 @@ facts:
   - "Проводит музыкальные конкурсы «Юлдаш йыры» и «Юлдаш Хит»"
 url: "https://bash.news/yuldash"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "culture", "news", "technology", "radio"]
 peoples: ["bashkir"]
 ---

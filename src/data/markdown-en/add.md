@@ -15,7 +15,7 @@ For now, in short: new cards enter the catalog through a pull request in the
 ## What a card needs
 
 Worth adding here: a step-by-step guide - where cards live, which fields are
-required (name, description, facts, link, tags, logo), which existing card to
+required (name, description, facts, link, categories, tags, logo), which existing card to
 use as a reference.
 
 ## Project requirements

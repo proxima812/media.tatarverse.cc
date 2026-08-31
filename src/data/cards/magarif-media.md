@@ -7,6 +7,7 @@ facts:
   - "Освещает преподавание татарского языка"
 url: "https://magarif.tatar/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["education", "science", "society", "magazine", "for-teachers"]
 peoples: ["tatar"]
 ---

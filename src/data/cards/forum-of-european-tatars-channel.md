@@ -8,6 +8,7 @@ facts:
   - "Организаторы планируют сделать форум регулярным"
 url: "https://www.tatarforum.eu/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["language", "education", "society", "for-diaspora"]
 peoples: ["tatar"]
 ---

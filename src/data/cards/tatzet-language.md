@@ -7,6 +7,7 @@ facts:
   - "Включает электронный атлас татарских народных говоров"
 url: "https://antat.ru/ru/tatzet/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "science", "school"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Исследует, почему новые поколения потомков общины возвращаются к культурным корням"
 url: "https://dianachester.com/brooklyn-tatars/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["researcher", "religion", "society"]
 peoples: ["tatar"]
 ---

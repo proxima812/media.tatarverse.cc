@@ -7,6 +7,7 @@ facts:
   - "Рассказывает об истории и современной жизни кряшен"
 url: "https://tuganaylar.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "history", "culture", "society", "website", "newspaper"]
 peoples: ["tatar"]
 ---

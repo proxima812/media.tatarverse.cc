@@ -8,6 +8,7 @@ facts:
   - "Исходный код открыт на GitHub"
 url: "https://github.com/Leonidius20/Lugat"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "dictionary", "open-source"]
 peoples: ["crimean-tatar"]
 ---

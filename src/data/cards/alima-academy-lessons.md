@@ -7,6 +7,7 @@ facts:
   - "Выпускает первый татарский детский онлайн-журнал «Ялт-йолт» для детей 5-12 лет"
 url: "https://alima.academy/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "culture", "education", "children", "school", "educational"]
 peoples: ["tatar"]
 ---

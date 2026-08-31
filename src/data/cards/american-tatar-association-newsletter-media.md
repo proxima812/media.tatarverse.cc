@@ -7,6 +7,7 @@ facts:
   - "Освещает события и объявления общины"
 url: "https://atanyc.com/newsletter/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["society", "newsletter"]
 peoples: ["tatar"]
 ---

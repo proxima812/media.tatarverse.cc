@@ -7,6 +7,7 @@ facts:
   - "У канала есть связанная открытая группа для общения подписчиков"
 url: "https://t.me/tatariya"
 pubDate: "2026-08-29"
-tags: ["channel", "community"]
+categories: ["channel", "community"]
+tags: ["society", "bilingual"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Основательница лаборатории TEL:L"
 url: "https://www.instagram.com/pustotalitarism/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["writer", "poet", "language", "literature", "poetry", "blog"]
 peoples: ["tatar"]
 ---

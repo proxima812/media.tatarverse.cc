@@ -7,6 +7,7 @@ facts:
   - "Материалы посвящены воспитанию, семье и школе"
 url: "https://magarif.tatar/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["education", "children", "magazine"]
 peoples: ["tatar"]
 ---

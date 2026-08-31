@@ -7,6 +7,7 @@ facts:
   - "История издания начинается в 1923 году"
 url: "https://agideljurn.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["literature", "politics", "society", "magazine"]
 peoples: ["bashkir"]
 ---

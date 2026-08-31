@@ -7,6 +7,7 @@ facts:
   - "Ориентирована на пользователей разного уровня - от начального до продвинутого"
 url: "https://qirimtatartili.app/en"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "education", "website", "library", "course", "dictionary", "educational"]
 peoples: ["crimean-tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Партнеры - Минкультуры Татарстана, Национальный музей РТ, Национальная библиотека РТ"
 url: "https://tatarica.org/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["encyclopedia"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Материалы проекта распространяются по лицензии CC BY 4.0"
 url: "https://www.antat.ru/ru/ips/science/rnd/tatsoft.php"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "app"]
 peoples: ["tatar"]
 ---

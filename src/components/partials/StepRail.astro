@@ -1,0 +1,355 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import type { LocaleCode } from "@/config/types";
+import { defaultLocale } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+interface Step {
+	title: string;
+	description: string;
+}
+
+interface Props {
+	locale: LocaleCode;
+	heading?: string;
+	lead?: string;
+	/** Сколько один шаг держится на экране, мс. Весь круг - вчетверо больше. */
+	interval?: number;
+	steps?: Step[];
+	class?: string;
+}
+
+const { locale, heading, lead, interval = 2500, steps, class: className = "" } = Astro.props;
+
+/*
+ * Ровно четыре шага: дорожка keyframes ниже расписана четвертями, и пятый
+ * пункт потребовал бы переписать все проценты в `<style>` на пятые доли.
+ *
+ * Тексты - реальный путь по каталогу, а не заглушка (тот же принцип, что в
+ * `FAQ.astro` и `Features.astro`): пункт «шаг 2» в самобегущем списке
+ * выглядел бы как незаполненный компонент.
+ */
+/*
+ * Снимки подхватываются `import.meta.glob`, а не обычным `import`: файл может
+ * отсутствовать (переименовали, еще не нарисовали, вырезали из репозитория), и
+ * статический импорт в этом случае роняет всю сборку. Через glob недостающий
+ * файл - это просто `undefined`, и карточка остается пустой подложкой.
+ */
+const images = import.meta.glob<{ default: ImageMetadata }>(
+	"/src/assets/images/main/*.png",
+	{ eager: true },
+);
+
+const imageSrc = (file: string): ImageMetadata | undefined =>
+	images[`/src/assets/images/main/${file}`]?.default;
+
+/*
+ * Снимки - оформление, они одни на все локали и держат порядок шагов: поиск,
+ * фильтр по тегам, карточка проекта, сохраненное. Порядок связан с текстами
+ * индексом, поэтому переставлять их можно только вместе.
+ *
+ * Все четыре нарисованы 1:1 под квадратную карточку - иначе `object-cover`
+ * срежет им края.
+ */
+const PHOTOS = [
+	imageSrc("search.png"),
+	imageSrc("tags.png"),
+	imageSrc("open.png"),
+	imageSrc("save.png"),
+];
+
+/** Ширина карточки в css-пикселях: колонка `minmax(0,22rem)` в раскладке ниже. */
+const PHOTO_SIZES = "(min-width: 640px) 352px, calc(100vw - 2.5rem)";
+
+interface Copy {
+	heading: string;
+	lead: string;
+	/** Надпись над шагом: «ШАГ 1». */
+	step: (index: number) => string;
+	steps: [Step, Step, Step, Step];
+}
+
+const COPY = {
+	ru: {
+		heading: "Как пользоваться каталогом",
+		lead: "Четыре шага - от первого слова в поиске до собственной подборки.",
+		step: (index: number) => `ШАГ ${index}`,
+		steps: [
+			{
+				title: "Найдите по слову",
+				description:
+					"Поиск сужает каталог по названию, описанию и тегам, пока вы печатаете.",
+			},
+			{
+				title: "Сузьте до рубрики",
+				description:
+					"Семь тегов и три народа: оставьте на экране только ту часть каталога, что нужна.",
+			},
+			{
+				title: "Откройте карточку",
+				description:
+					"Внутри - что это за проект, несколько фактов и ссылка на первоисточник.",
+			},
+			{
+				title: "Сохраните на потом",
+				description:
+					"Отмеченное собирается на отдельной странице и остается в браузере без регистрации.",
+			},
+		],
+	},
+	en: {
+		heading: "How to use the catalog",
+		lead: "Four steps - from the first word you type to a shortlist of your own.",
+		step: (index: number) => `STEP ${index}`,
+		steps: [
+			{
+				title: "Search by a word",
+				description:
+					"Search narrows the catalog by name, description and tags as you type.",
+			},
+			{
+				title: "Narrow it to a category",
+				description:
+					"Seven categories and three peoples: keep only the slice of the catalog you need.",
+			},
+			{
+				title: "Open a card",
+				description:
+					"Inside: what the project is, a few facts, and a link to the original source.",
+			},
+			{
+				title: "Save it for later",
+				description:
+					"Anything you heart lands on its own page and stays in the browser, no account.",
+			},
+		],
+	},
+} satisfies Record<string, Copy>;
+
+const known: Record<string, Copy | undefined> = COPY;
+const copy: Copy = known[locale] ?? known[defaultLocale] ?? COPY.ru;
+
+const rail = (steps ?? copy.steps).slice(0, PHOTOS.length);
+const cycle = interval * rail.length;
+---
+
+<section class={cn("py-16", className)}>
+	<h2 class="text-center font-black text-3xl text-balance sm:text-4xl">
+		{heading ?? copy.heading}
+	</h2>
+	<p class="mx-auto mt-4 max-w-xl text-balance text-center text-muted-foreground">
+		{lead ?? copy.lead}
+	</p>
+
+	<div
+		class="step-rail mt-12 grid items-center gap-8 sm:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] sm:gap-10"
+		style={`--step-interval:${interval}ms;--step-cycle:${cycle}ms`}
+	>
+		<div
+			class="relative aspect-square w-full overflow-hidden rounded-[1.75rem] corner-squircle bg-muted"
+		>
+			{
+				rail.map((_step, index) => {
+					/* Локальная переменная, а не `PHOTOS[index]` прямо в разметке: обращение
+					   по индексу не сужает тип, и `src` остался бы `ImageMetadata | undefined`. */
+					const photo = PHOTOS[index];
+					if (!photo) return null;
+
+					return (
+						/*
+						 * Подпись поверх снимка не ставится: снимки светлые, белый текст на
+						 * них не читается, а название шага и так стоит рядом в списке.
+						 */
+						<Image
+							src={photo}
+							alt=""
+							widths={[352, 704]}
+							sizes={PHOTO_SIZES}
+							format="webp"
+							quality={80}
+							loading="lazy"
+							decoding="async"
+							class="step-card absolute inset-0 h-full w-full object-cover"
+							style={`--i:${index}`}
+						/>
+					);
+				})
+			}
+		</div>
+
+		<ol class="grid gap-5">
+			{
+				rail.map((step, index) => (
+					<li class="step-item relative pl-4" style={`--i:${index}`}>
+						{/* Серая дорожка - трек, темная наливается по ней и служит отсчетом до следующего шага. */}
+						<span
+							class="absolute inset-y-0 left-0 w-0.5 rounded-full bg-border"
+							aria-hidden="true"
+						/>
+						<span
+							class="step-mark absolute inset-y-0 left-0 w-0.5 origin-top rounded-full bg-primary"
+							aria-hidden="true"
+						/>
+						<p class="step-index font-medium text-[0.6875rem] tabular-nums tracking-[0.12em]">
+							{copy.step(index + 1)}
+						</p>
+						<p class="step-title mt-1 font-semibold text-base tracking-tight">
+							{step.title}
+						</p>
+						<p class="step-description text-sm leading-6">{step.description}</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
+
+<style>
+	.step-rail {
+		/* Цвета берутся из семантических токенов, чтобы список жил в палитре сайта. */
+		--step-on: var(--color-foreground);
+		--step-off: var(--color-muted-foreground);
+		--step-dim: var(--color-border);
+	}
+
+	.step-card,
+	.step-mark,
+	.step-index,
+	.step-title,
+	.step-description {
+		animation-duration: var(--step-cycle);
+		animation-timing-function: linear;
+		animation-iteration-count: infinite;
+		animation-fill-mode: both;
+		animation-delay: calc(var(--i) * var(--step-interval));
+	}
+
+	.step-card {
+		animation-name: step-card;
+	}
+
+	.step-mark {
+		animation-name: step-mark;
+	}
+
+	.step-index,
+	.step-description {
+		animation-name: step-description;
+	}
+
+	.step-title {
+		animation-name: step-title;
+	}
+
+	/* Четверть круга - удержание, рампы в 3% по краям - перекрестное затухание (300мс на скорости по умолчанию). */
+	@keyframes step-card {
+		0% {
+			opacity: 0;
+			filter: blur(14px);
+			transform: scale(1.05);
+		}
+		3%,
+		25% {
+			opacity: 1;
+			filter: blur(0);
+			transform: scale(1);
+		}
+		28%,
+		100% {
+			opacity: 0;
+			filter: blur(14px);
+			transform: scale(0.97);
+		}
+	}
+
+	/* Заливка идет сверху вниз ровно за свою четверть - поэтому дорожка и есть таймер. */
+	@keyframes step-mark {
+		0% {
+			opacity: 1;
+			transform: scaleY(0);
+		}
+		25% {
+			opacity: 1;
+			transform: scaleY(1);
+		}
+		28%,
+		100% {
+			opacity: 0;
+			transform: scaleY(1);
+		}
+	}
+
+	@keyframes step-title {
+		0% {
+			color: var(--step-off);
+		}
+		4%,
+		25% {
+			color: var(--step-on);
+		}
+		28%,
+		100% {
+			color: var(--step-off);
+		}
+	}
+
+	@keyframes step-description {
+		0% {
+			color: var(--step-dim);
+		}
+		4%,
+		25% {
+			color: var(--step-off);
+		}
+		28%,
+		100% {
+			color: var(--step-dim);
+		}
+	}
+
+	/* Ход не запускается вовсе: первый шаг остается активным, остальные - в покое. */
+	@media (prefers-reduced-motion: reduce) {
+		.step-card,
+		.step-mark,
+		.step-index,
+		.step-title,
+		.step-description {
+			animation: none;
+		}
+
+		.step-card {
+			opacity: 0;
+		}
+
+		.step-card:first-child {
+			opacity: 1;
+		}
+
+		.step-mark {
+			opacity: 0;
+		}
+
+		.step-item:first-child .step-mark {
+			opacity: 1;
+		}
+
+		.step-title {
+			color: var(--step-off);
+		}
+
+		.step-index,
+		.step-description {
+			color: var(--step-dim);
+		}
+
+		.step-item:first-child .step-title {
+			color: var(--step-on);
+		}
+
+		.step-item:first-child .step-index,
+		.step-item:first-child .step-description {
+			color: var(--step-off);
+		}
+	}
+</style>

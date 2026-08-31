@@ -8,6 +8,7 @@ facts:
 url: "https://stepik.org/course/185961/promo"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/siltem-stepik-lessons.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "course", "interactive", "educational"]
 peoples: ["crimean-tatar"]
 ---

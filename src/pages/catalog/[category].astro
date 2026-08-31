@@ -2,41 +2,41 @@
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
-import { tagLabel } from "@/components/Catalog/labels";
-import { tagIcon } from "@/components/Catalog/tagIcons";
-import { cardsByTag, getAllTags } from "@/components/Catalog/tags";
+import { cardsByCategory, getAllCategories } from "@/components/Catalog/categories";
+import { categoryIcon } from "@/components/Catalog/categoryIcons";
+import { categoryLabel } from "@/components/Catalog/labels";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 export async function getStaticPaths() {
 	const cards = await getCollection("cards");
-	const tags = getAllTags(cards);
+	const categories = getAllCategories(cards);
 
-	return tags.map((tag) => ({
-		params: { tag },
-		props: { tag, cards, tags },
+	return categories.map((category) => ({
+		params: { category },
+		props: { category, cards, categories },
 	}));
 }
 
-const { tag, cards, tags } = Astro.props;
+const { category, cards, categories } = Astro.props;
 const t = useTranslations("ru");
-const filtered = cardsByTag(cards, tag);
+const filtered = cardsByCategory(cards, category);
 
 /** "Карточки по {тег} ({count})" - заголовок и `<title>` в одном месте. */
-const heading = `${t("catalog.byTagPrefix")} ${tagLabel("ru", tag)} (${filtered.length})`;
+const heading = `${t("catalog.byCategoryPrefix")} ${categoryLabel("ru", category)} (${filtered.length})`;
 ---
 
 <Layout title={heading} htmlLang="ru" alternates={buildAlternates(Astro.url.pathname)}>
 	<div class="px-6 flex justify-between items-center">
 		<div class="flex space-x-6 items-center">
 			<h1 class="font-bold text-3xl text-balance sm:text-4xl">
-				{t("catalog.byTagPrefix")}
+				{t("catalog.byCategoryPrefix")}
 			</h1>
 			<div
 				class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-muted/60 text-muted-foreground"
 			>
-				<Icon name={tagIcon(tag)} class="size-4.5 text-muted-foreground" aria-hidden="true" />
-				<span class="chroma-reveal-violet text-muted-foreground">{tagLabel("ru", tag)}</span>
+				<Icon name={categoryIcon(category)} class="size-4.5 text-muted-foreground" aria-hidden="true" />
+				<span class=" text-muted-foreground">{categoryLabel("ru", category)}</span>
 			</div>
 		</div>
 		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
@@ -45,5 +45,5 @@ const heading = `${t("catalog.byTagPrefix")} ${tagLabel("ru", tag)} (${filtered.
 		</div>
 	</div>
 
-	<Catalog locale="ru" cards={filtered} tags={tags} activeTag={tag} />
+	<Catalog locale="ru" cards={filtered} categories={categories} activeCategory={category} />
 </Layout>

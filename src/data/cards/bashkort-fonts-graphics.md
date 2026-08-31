@@ -7,6 +7,7 @@ facts:
   - "Часть более широкого волонтерского сообщества bashkort.org"
 url: "https://bashkort.org/fonts/"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["society", "design", "app", "keyboard", "font", "free"]
 peoples: ["bashkir"]
 ---

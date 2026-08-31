@@ -7,6 +7,7 @@ facts:
   - "Развивается командой «Нейротатарлар»"
 url: "https://github.com/neurotatarlar/Tatar-speech-tools"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "open-source"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Исходный код опубликован по лицензии MIT"
 url: "https://github.com/2k1dmg/ttc2l"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "transliteration", "open-source"]
 peoples: ["tatar"]
 ---

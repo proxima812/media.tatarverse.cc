@@ -7,6 +7,7 @@ facts:
   - "Данные развиваются в открытом репозитории"
 url: "https://github.com/dracor-org/bashdracor"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "open-source"]
 peoples: ["bashkir"]
 ---

@@ -2,13 +2,13 @@
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
-import { getAllTags } from "@/components/Catalog/tags";
+import { getAllCategories } from "@/components/Catalog/categories";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 const t = useTranslations("ru");
 const cards = await getCollection("cards");
-const tags = getAllTags(cards);
+const categories = getAllCategories(cards);
 ---
 
 <Layout
@@ -17,7 +17,7 @@ const tags = getAllTags(cards);
 	alternates={buildAlternates(Astro.url.pathname)}
 >
 	<div class="px-6 flex justify-between items-center">
-		<h1 class="font-bold chroma-reveal-violet text-primary text-3xl text-balance sm:text-4xl">
+		<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
 			{t("catalog.pageTitle")}
 		</h1>
 		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
@@ -25,5 +25,5 @@ const tags = getAllTags(cards);
 			<span>{cards.length}</span>
 		</div>
 	</div>
-	<Catalog locale="ru" cards={cards} tags={tags} />
+	<Catalog locale="ru" cards={cards} categories={categories} />
 </Layout>

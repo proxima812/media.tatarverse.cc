@@ -8,6 +8,7 @@ facts:
   - "Одно из направлений работы - сбор и публикация материалов о фольклоре и культуре"
 url: "https://www.kirimdernegi.org.tr/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["history", "heritage", "news", "society", "archive"]
 peoples: ["crimean-tatar"]
 ---

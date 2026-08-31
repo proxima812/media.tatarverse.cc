@@ -7,6 +7,7 @@ facts:
   - "Есть параллельные подборки по родственным языкам - башкирскому, удмуртскому, эрзянскому"
 url: "https://tatar4a.carrd.co/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "education", "podcast", "dictionary", "educational"]
 peoples: ["tatar"]
 ---

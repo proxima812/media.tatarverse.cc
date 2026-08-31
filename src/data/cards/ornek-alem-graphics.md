@@ -7,6 +7,7 @@ facts:
   - "Сайт проекта на английском языке рассказывает историю и символику örnek для международной аудитории"
 url: "https://www.ornek-crimea.com/about-ornek-en"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["traditions", "design"]
 peoples: ["crimean-tatar"]
 ---

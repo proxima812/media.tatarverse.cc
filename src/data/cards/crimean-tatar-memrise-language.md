@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/crimean-tatar-language-on-memrise"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/crimean-tatar-memrise-language.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "course", "educational"]
 peoples: ["crimean-tatar"]
 ---

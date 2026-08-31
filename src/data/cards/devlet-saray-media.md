@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/devlet-saray"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/devlet-saray-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "culture", "museum"]
 peoples: ["crimean-tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Имеет самостоятельную онлайн-редакцию и архив публикаций"
 url: "https://bashkizi.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "literature", "culture", "magazine"]
 peoples: ["bashkir"]
 ---

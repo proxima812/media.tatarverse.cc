@@ -7,6 +7,7 @@ facts:
   - "Истории и вопросы подписчиков собираются через бот @kazlarski_bot"
 url: "https://t.me/kazlarski"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["blog"]
 peoples: ["tatar"]
 ---

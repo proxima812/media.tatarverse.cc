@@ -8,6 +8,7 @@ facts:
   - "Данные опубликованы по лицензии CC BY 4.0"
 url: "https://github.com/SamyRai/tatar-names"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "open-source"]
 peoples: ["tatar"]
 ---

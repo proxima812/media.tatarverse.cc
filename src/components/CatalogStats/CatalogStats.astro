@@ -23,8 +23,8 @@ const number = new Intl.NumberFormat(locale);
 const stats = [
 	{ key: "stats.projects", value: cards.length },
 	{
-		key: "stats.tags",
-		value: new Set(cards.flatMap((c) => c.data.tags)).size,
+		key: "stats.categories",
+		value: new Set(cards.flatMap((c) => c.data.categories)).size,
 	},
 	{
 		key: "stats.peoples",

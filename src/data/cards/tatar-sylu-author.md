@@ -7,6 +7,7 @@ facts:
   - "Выступала гостьей на других YouTube-каналах о языках и культуре"
 url: "https://www.youtube.com/channel/UCoJlv-4ftT47WFgRZnGHiKg"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["blogger", "language", "traditions", "cuisine", "blog", "video"]
 peoples: ["tatar"]
 ---

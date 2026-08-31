@@ -1,0 +1,486 @@
+---
+type Frame = {
+	alt: string;
+	image: string;
+	/** Положение и размер внутри панели, в процентах от ее габарита. */
+	left: number;
+	top: number;
+	width: number;
+	height: number;
+};
+
+type Slide = {
+	query: string;
+	background: string;
+	frames: [Frame, Frame, Frame];
+};
+
+interface Props {
+	/** Сколько один слайд держится на экране, мс. */
+	duration?: number;
+	class?: string;
+}
+
+const { duration = 2500, class: className = "" } = Astro.props;
+
+const photo = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`;
+
+const slides: Slide[] = [
+	{
+		query: "portraiture",
+		background: "#2a4561",
+		frames: [
+			{
+				alt: "Studio portrait against a charcoal backdrop",
+				image: photo("photo-1524504388940-b1c1722653e1"),
+				left: 0,
+				top: 0,
+				width: 29.4,
+				height: 100,
+			},
+			{
+				alt: "Beauty portrait on a soft pink backdrop",
+				image: photo("photo-1531746020798-e6953c6e8e04"),
+				left: 39.7,
+				top: 19.5,
+				width: 20.5,
+				height: 60,
+			},
+			{
+				alt: "Outdoor portrait in golden evening light",
+				image: photo("photo-1544005313-94ddf0286df2"),
+				left: 71.9,
+				top: 14.3,
+				width: 20.4,
+				height: 70,
+			},
+		],
+	},
+	{
+		query: "art",
+		background: "#b66b7f",
+		frames: [
+			{
+				alt: "Weathered mural of a face on a wooden wall",
+				image: photo("photo-1547891654-e66ed7ebb968"),
+				left: 0,
+				top: 21.5,
+				width: 29.2,
+				height: 55,
+			},
+			{
+				alt: "Abstract canvas in blue, red and yellow blocks",
+				image: photo("photo-1531913764164-f85c52e6e654"),
+				left: 36.6,
+				top: 15.5,
+				width: 20.8,
+				height: 73,
+			},
+			{
+				alt: "Thick impasto painting in teal and vermilion",
+				image: photo("photo-1541961017774-22349e4a1262"),
+				left: 69.6,
+				top: 0,
+				width: 30.4,
+				height: 100,
+			},
+		],
+	},
+	{
+		query: "future home",
+		background: "#979781",
+		frames: [
+			{
+				alt: "Sunlit living room with a curved sand-toned sofa",
+				image: photo("photo-1691036561573-4b76998b60de"),
+				left: 5.7,
+				top: 13.8,
+				width: 24.4,
+				height: 73,
+			},
+			{
+				alt: "Pale living room with a black sofa and dried grasses",
+				image: photo("photo-1513694203232-719a280e022f"),
+				left: 40.3,
+				top: 22.8,
+				width: 18.2,
+				height: 55,
+			},
+			{
+				alt: "Bright open-plan lounge with an arc floor lamp",
+				image: photo("photo-1524758631624-e2822e304c36"),
+				left: 69.9,
+				top: 14.5,
+				width: 23.8,
+				height: 71.5,
+			},
+		],
+	},
+	{
+		query: "runway editorial",
+		background: "#3e2022",
+		frames: [
+			{
+				alt: "Model in a trailing red gown on the runway",
+				image: photo("photo-1733322991133-2de13aa12c57"),
+				left: 7.25,
+				top: 16,
+				width: 21.5,
+				height: 69,
+			},
+			{
+				alt: "Black and white runway shot of an oversized fur coat",
+				image: photo("photo-1733322980454-62a1d5727460"),
+				left: 41.4,
+				top: 21.7,
+				width: 16.6,
+				height: 57.5,
+			},
+			{
+				alt: "Translucent organza dress under runway lights",
+				image: photo("photo-1650057947130-9d465d4f240f"),
+				left: 71.3,
+				top: 0,
+				width: 28.7,
+				height: 100,
+			},
+		],
+	},
+];
+
+/** Смещение (в процентах от высоты самого кадра), паркующее его сразу за краем панели. */
+const exitOffset = (frame: Frame) => -(((frame.top + frame.height) / frame.height) * 100 + 6);
+const enterOffset = (frame: Frame) => ((100 - frame.top) / frame.height) * 100 + 6;
+
+const columnDelay = 70;
+---
+
+<section class:list={["w-full", className]} data-search-showcase data-duration={String(duration)}>
+	<div
+		class="search-showcase-panel relative w-full overflow-hidden rounded-[1.25rem]"
+		style={`background-color:${slides[0].background};`}
+		data-panel
+	>
+		{
+			slides.map((slide, slideIndex) =>
+				slide.frames.map((frame, columnIndex) => (
+					<figure
+						class:list={["search-showcase-frame", { "is-active": slideIndex === 0 }]}
+						data-frame
+						data-slide={String(slideIndex)}
+						style={`left:${frame.left}%;top:${frame.top}%;width:${frame.width}%;height:${frame.height}%;--frame-exit:${exitOffset(frame).toFixed(2)}%;--frame-enter:${enterOffset(frame).toFixed(2)}%;--frame-delay:${columnIndex * columnDelay}ms;`}
+					>
+						<img
+							src={frame.image}
+							alt={frame.alt}
+							loading={slideIndex === 0 ? "eager" : "lazy"}
+							decoding="async"
+							class="search-showcase-photo h-full w-full object-cover"
+						/>
+					</figure>
+				)),
+			)
+		}
+
+		<div class="search-showcase-pill" aria-hidden="true">
+			<svg
+				class="search-showcase-icon"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.8"
+				stroke-linecap="round"
+			>
+				<circle cx="10.5" cy="10.5" r="6.5"></circle>
+				<path d="m15.4 15.4 4.1 4.1"></path>
+			</svg>
+			<span class="search-showcase-queries">
+				{
+					slides.map((slide, slideIndex) => (
+						<span
+							class:list={["search-showcase-query", { "is-active": slideIndex === 0 }]}
+							data-query
+							data-slide={String(slideIndex)}
+							data-background={slide.background}
+						>
+							{slide.query}
+						</span>
+					))
+				}
+			</span>
+		</div>
+	</div>
+</section>
+
+<style>
+	.search-showcase-panel {
+		aspect-ratio: 841 / 351;
+		transition: background-color 620ms cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.search-showcase-frame {
+		position: absolute;
+		margin: 0;
+		overflow: hidden;
+		transform: translate3d(0, var(--frame-enter), 0);
+		will-change: transform;
+	}
+
+	.search-showcase-frame.is-active {
+		animation: search-showcase-frame-in 620ms cubic-bezier(0.16, 0.86, 0.3, 1) var(--frame-delay) both;
+	}
+
+	.search-showcase-frame.is-exiting {
+		animation: search-showcase-frame-out 440ms cubic-bezier(0.5, 0, 0.85, 0.28) var(--frame-delay) both;
+	}
+
+	.search-showcase-frame.is-active .search-showcase-photo {
+		animation: search-showcase-photo-in 720ms cubic-bezier(0.16, 0.86, 0.3, 1) var(--frame-delay) both;
+	}
+
+	.search-showcase-frame.is-exiting .search-showcase-photo {
+		animation: search-showcase-photo-out 440ms cubic-bezier(0.5, 0, 0.85, 0.28) var(--frame-delay) both;
+	}
+
+	@keyframes search-showcase-frame-in {
+		from {
+			transform: translate3d(0, var(--frame-enter), 0);
+		}
+		to {
+			transform: translate3d(0, 0, 0);
+		}
+	}
+
+	@keyframes search-showcase-frame-out {
+		from {
+			transform: translate3d(0, 0, 0);
+		}
+		to {
+			transform: translate3d(0, var(--frame-exit), 0);
+		}
+	}
+
+	@keyframes search-showcase-photo-in {
+		from {
+			transform: translate3d(0, 7%, 0) scale(1.07);
+		}
+		to {
+			transform: translate3d(0, 0, 0) scale(1);
+		}
+	}
+
+	@keyframes search-showcase-photo-out {
+		from {
+			transform: translate3d(0, 0, 0) scale(1);
+		}
+		to {
+			transform: translate3d(0, 7%, 0) scale(1.05);
+		}
+	}
+
+	.search-showcase-pill {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		gap: 0.62em;
+		width: min(32%, 26rem);
+		overflow: hidden;
+		padding: 0.9em 1.15em;
+		border-radius: 999px;
+		background-color: rgb(0 0 0 / 0.24);
+		font-size: clamp(0.78rem, 1.15vw, 1.02rem);
+		line-height: 1;
+		color: rgb(255 255 255 / 0.96);
+		transform: translate(-50%, -50%);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+	}
+
+	.search-showcase-icon {
+		width: 1.2em;
+		height: 1.2em;
+		flex: none;
+		opacity: 0.92;
+	}
+
+	.search-showcase-queries {
+		position: relative;
+		display: block;
+		flex: 1;
+		min-width: 0;
+		height: 1.3em;
+	}
+
+	.search-showcase-query {
+		position: absolute;
+		inset-inline-start: 0;
+		top: 0;
+		display: flex;
+		align-items: center;
+		height: 100%;
+		white-space: nowrap;
+		opacity: 0;
+		transform: translate3d(0, 130%, 0);
+	}
+
+	.search-showcase-query.is-active {
+		animation: search-showcase-query-in 340ms cubic-bezier(0.16, 0.86, 0.3, 1) 90ms both;
+	}
+
+	.search-showcase-query.is-exiting {
+		animation: search-showcase-query-out 220ms cubic-bezier(0.5, 0, 0.85, 0.28) both;
+	}
+
+	@keyframes search-showcase-query-in {
+		from {
+			opacity: 0;
+			transform: translate3d(0, 130%, 0);
+		}
+		to {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+	}
+
+	@keyframes search-showcase-query-out {
+		from {
+			opacity: 1;
+			transform: translate3d(0, 0, 0);
+		}
+		to {
+			opacity: 0;
+			transform: translate3d(0, -130%, 0);
+		}
+	}
+
+	/* Центральный кадр стоит за поисковой строкой и на телефоне становится нечитаемо узким. */
+	@media (max-width: 719px) {
+		.search-showcase-panel {
+			aspect-ratio: 4 / 3;
+		}
+
+		.search-showcase-frame:nth-child(3n + 2) {
+			display: none;
+		}
+
+		.search-showcase-pill {
+			width: 78%;
+			font-size: clamp(0.8rem, 3.4vw, 1rem);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.search-showcase-panel,
+		.search-showcase-frame,
+		.search-showcase-photo,
+		.search-showcase-query {
+			transition: none !important;
+			animation: none !important;
+		}
+
+		.search-showcase-frame {
+			transform: none;
+			visibility: hidden;
+		}
+
+		.search-showcase-frame.is-active {
+			visibility: visible;
+		}
+
+		.search-showcase-query {
+			opacity: 0;
+			transform: none;
+		}
+
+		.search-showcase-query.is-active {
+			opacity: 1;
+		}
+	}
+</style>
+
+<script>
+	/*
+	 * Все кадры всех слайдов отрисованы сразу и запаркованы за краем панели;
+	 * скрипт только переносит классы `is-active` / `is-exiting` между группами
+	 * `data-slide`, сам переход целиком на CSS.
+	 */
+	const roots = document.querySelectorAll<HTMLElement>("[data-search-showcase]");
+
+	for (const root of roots) {
+		const panel = root.querySelector<HTMLElement>("[data-panel]");
+		const frames = Array.from(root.querySelectorAll<HTMLElement>("[data-frame]"));
+		const queries = Array.from(root.querySelectorAll<HTMLElement>("[data-query]"));
+		const duration = Number(root.dataset.duration || "2500");
+		const backgrounds = queries.map((query) => query.dataset.background || "");
+
+		if (!panel || backgrounds.length < 2) continue;
+
+		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+		let activeIndex = 0;
+		let timerId = 0;
+
+		const groupFor = (elements: HTMLElement[], index: number) =>
+			elements.filter((element) => Number(element.dataset.slide) === index);
+
+		const showSlide = (nextIndex: number) => {
+			const previousIndex = activeIndex;
+			activeIndex = nextIndex;
+
+			panel.style.backgroundColor = backgrounds[activeIndex];
+
+			const leaving = [...groupFor(frames, previousIndex), ...groupFor(queries, previousIndex)];
+			const entering = [...groupFor(frames, activeIndex), ...groupFor(queries, activeIndex)];
+
+			for (const element of leaving) {
+				element.classList.remove("is-active");
+				element.classList.add("is-exiting");
+			}
+
+			for (const element of entering) {
+				element.classList.remove("is-exiting");
+				element.classList.add("is-active");
+			}
+
+			window.setTimeout(() => {
+				for (const element of leaving) {
+					if (!element.classList.contains("is-active")) {
+						element.classList.remove("is-exiting");
+					}
+				}
+			}, 900);
+		};
+
+		const stop = () => {
+			if (timerId) {
+				window.clearInterval(timerId);
+				timerId = 0;
+			}
+		};
+
+		const start = () => {
+			if (timerId || reduceMotion.matches) return;
+			timerId = window.setInterval(() => {
+				showSlide((activeIndex + 1) % backgrounds.length);
+			}, duration);
+		};
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) start();
+					else stop();
+				}
+			},
+			{ threshold: 0.15 },
+		);
+
+		observer.observe(root);
+		reduceMotion.addEventListener("change", () => {
+			stop();
+			start();
+		});
+	}
+</script>

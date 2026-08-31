@@ -7,6 +7,7 @@ facts:
   - "Публикует научно-популярные и художественные материалы о культуре и истории башкир"
 url: "https://vatandash.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "politics", "society", "magazine"]
 peoples: ["bashkir"]
 ---

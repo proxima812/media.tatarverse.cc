@@ -7,6 +7,7 @@ facts:
   - "Параллельная площадка - группа vk.com/tafisha"
 url: "https://t.me/tatafisha"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["event"]
 peoples: ["tatar"]
 ---

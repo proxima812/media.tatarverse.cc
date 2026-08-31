@@ -7,6 +7,7 @@ facts:
   - "Основной язык издания - татарский"
 url: "https://syuyumbike.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "society", "website", "magazine"]
 peoples: ["tatar"]
 ---

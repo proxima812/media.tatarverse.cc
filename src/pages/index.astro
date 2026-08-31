@@ -1,15 +1,17 @@
 ---
 import authorPhoto from "@/assets/author.jpg";
-import CatalogStats from "@/components/CatalogStats/CatalogStats.astro";
 import MainTitle from "@/components/MainTitle.astro";
+
 import FAQ from "@/components/partials/FAQ.astro";
 import Features from "@/components/partials/Features.astro";
-import ImageShowcase from "@/components/partials/ImageShowcase.astro";
 import InstFollows from "@/components/partials/InstFollows.astro";
 import LogoMarquee from "@/components/partials/LogoMarquee.astro";
 import LogoStack from "@/components/partials/LogoStack.astro";
-import PhotoStatement from "@/components/partials/PhotoStatement.astro";
 import Quote from "@/components/partials/Quote.astro";
+import SearchShowcase from "@/components/partials/SearchShowcase.astro";
+import StatField from "@/components/partials/StatField.astro";
+import StepRail from "@/components/partials/StepRail.astro";
+import StickyList from "@/components/partials/StickyList.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 import { getCollection } from "astro:content";
@@ -28,12 +30,13 @@ const cards = await getCollection("cards");
 >
 	<LogoStack />
 	<MainTitle locale="ru" />
-	<ImageShowcase locale="ru" />
-	<LogoMarquee locale="ru" cards={cards} />
+	<SearchShowcase />
 	<Features />
+	<StatField locale="ru" cards={cards} />
+	<StepRail locale="ru" />
+	<StickyList locale="ru" cards={cards} />
 	<Quote photo={authorPhoto} {...config.site.quote} />
-	<PhotoStatement />
+	<LogoMarquee locale="ru" cards={cards} />
 	<InstFollows />
-	<CatalogStats locale="ru" cards={cards} />
 	<FAQ />
 </Layout>

@@ -8,6 +8,7 @@ facts:
   - "На сайте публикуются материалы о культуре, истории и мероприятиях диаспоры"
 url: "https://www.attasf.org/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["history", "culture", "traditions", "society", "for-diaspora"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Материалы публикуются на татарском языке"
 url: "https://vatantat.tatmedia.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "politics", "society", "website", "newspaper"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Бесплатный, с выдачей сертификата о прохождении"
 url: "https://prometheus.org.ua/course/course-v1:Prometheus+QIRIM101+2021_T2"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "history", "culture", "education", "course", "free", "educational"]
 peoples: ["crimean-tatar"]
 ---

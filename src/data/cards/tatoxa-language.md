@@ -7,6 +7,7 @@ facts:
   - "В репозитории опубликованы код, эксперименты и доступные части датасета"
 url: "https://github.com/s-nlp/tatoxa"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "dataset", "open-source"]
 peoples: ["tatar"]
 ---

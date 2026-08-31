@@ -8,6 +8,7 @@ facts:
   - "Занятия охватывают язык, культуру, религию и историю"
 url: "https://tatar.fi/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "history", "culture", "religion", "education", "society", "course", "educational"]
 peoples: ["tatar"]
 ---

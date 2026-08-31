@@ -7,6 +7,7 @@ facts:
   - "Публикует региональные новости и культурные материалы"
 url: "https://kiziltan.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "news", "society", "newspaper"]
 peoples: ["tatar"]
 ---

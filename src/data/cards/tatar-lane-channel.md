@@ -7,6 +7,7 @@ facts:
   - "Использует документальный и короткий видеоформаты"
 url: "https://www.youtube.com/@TatarLane"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "culture", "identity", "video"]
 peoples: ["tatar"]
 ---

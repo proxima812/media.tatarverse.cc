@@ -7,6 +7,7 @@ facts:
   - "Ведет программу интервью с деятелями культуры и искусства"
 url: "https://canli.online/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "education", "podcast", "radio", "course", "educational"]
 peoples: ["crimean-tatar"]
 ---

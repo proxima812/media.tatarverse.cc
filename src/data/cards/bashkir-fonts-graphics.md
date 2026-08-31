@@ -7,6 +7,7 @@ facts:
   - "30 шрифтов доступны бесплатно через сайт и телеграм-бота @BashShriftBot"
 url: "https://fonts.bsfond.ru/"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["design", "library", "font", "free"]
 peoples: ["bashkir"]
 ---

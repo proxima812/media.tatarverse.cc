@@ -7,6 +7,7 @@ facts:
   - "Публикует литературу и общественные материалы на башкирском языке"
 url: "https://shonkar.com/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "literature", "politics", "society", "youth", "magazine", "for-youth"]
 peoples: ["bashkir"]
 ---

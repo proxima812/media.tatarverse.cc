@@ -7,6 +7,7 @@ facts:
   - "Входит в подборку рекомендованных каналов для изучающих татарский"
 url: "https://t.me/tatbelem"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "video", "course", "educational"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Рекламные размещения ведутся отдельным контактом"
 url: "https://t.me/tatartg"
 pubDate: "2026-08-29"
-tags: ["channel", "community"]
+categories: ["channel", "community"]
+tags: ["society"]
 peoples: ["tatar"]
 ---

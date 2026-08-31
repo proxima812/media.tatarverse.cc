@@ -7,6 +7,7 @@ facts:
   - "Данные опубликованы в формате CoNLL-U с открытой историей изменений"
 url: "https://github.com/UniversalDependencies/UD_Tatar-NMCTT"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "open-source"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Работает в браузере без регистрации и установки приложения"
 url: "http://syzlek.ru/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "dictionary"]
 peoples: ["tatar"]
 ---

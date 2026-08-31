@@ -7,6 +7,7 @@ facts:
   - "Проекты адресованы переселенцам и крымским татарам по всему миру"
 url: "https://qirimhub.com/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["for-diaspora", "educational"]
 peoples: ["crimean-tatar"]
 ---

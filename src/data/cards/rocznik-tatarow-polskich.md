@@ -8,6 +8,7 @@ facts:
   - "Статьи охватывают историю, религию, культуру, язык и социологию татар"
 url: "https://bibliotekatatarska.pl/rocznik-tatarow-polskich/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["literature", "history", "culture", "science", "society"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Ориентирован на популяризацию науки среди татароязычных читателей"
 url: "https://giylem.tatar/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "science"]
 peoples: ["tatar"]
 ---

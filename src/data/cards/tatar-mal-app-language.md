@@ -7,6 +7,7 @@ facts:
   - "Доступно на iPhone, iPad, Mac (Apple Silicon) и Apple Vision Pro"
 url: "https://apps.apple.com/us/app/tatar-m-a-l/id1601106901"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "app", "mobile-app", "interactive", "educational"]
 peoples: ["tatar"]
 ---

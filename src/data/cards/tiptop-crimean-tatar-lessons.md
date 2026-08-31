@@ -8,6 +8,7 @@ facts:
 url: "https://mytiptop.ru/languages/krymskotatarskij-yazyk/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/tiptop-crimean-tatar-lessons.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "course", "school", "educational"]
 peoples: ["crimean-tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Ведется на татарском языке"
 url: "https://t.me/andatugel"
 pubDate: "2026-08-29"
-tags: ["author"]
+categories: ["author"]
+tags: ["language", "cuisine", "blog"]
 peoples: ["tatar"]
 ---

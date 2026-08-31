@@ -8,6 +8,7 @@ facts:
   - "Освещает исторические татарские деревни Бохоники и Крушиняны"
 url: "https://zycietatarskie.pl/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "culture", "religion", "magazine"]
 peoples: ["tatar"]
 ---

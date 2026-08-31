@@ -7,6 +7,7 @@ facts:
   - "Зеркалируется на Hugging Face с интерактивным демо"
 url: "https://github.com/egorsmkv/qirimtatar-tts-datasets"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "text-to-speech", "dataset", "open-source"]
 peoples: ["crimean-tatar"]
 ---

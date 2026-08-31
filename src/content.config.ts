@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { CATEGORY_VALUES, TAG_VALUES } from "@/components/Catalog/taxonomy";
 
 /**
  * Одна карточка = один проект в каталоге. `peoples` - массив, потому что
@@ -21,26 +22,15 @@ const cards = defineCollection({
 			pubDate: z.coerce.date(),
 			/** Локальный файл логотипа - Astro оптимизирует и генерирует размеры. Нет логотипа - карточка рисует монограмму. */
 			logo: image().optional(),
-			tags: z
-				.array(
-					z.enum([
-						"channel",
-						"author",
-						"media",
-						"language",
-						"lessons",
-						"graphics",
-						"community",
-					]),
-				)
-				.min(1),
+			categories: z.array(z.enum(CATEGORY_VALUES)).min(1),
+			tags: z.array(z.enum(TAG_VALUES)).min(1),
 			peoples: z.array(z.enum(["tatar", "bashkir", "crimean-tatar"])).min(1),
 		}),
 });
 
 /**
  * Английский перевод карточек. Только переводимый текст - url, logo,
- * tags и peoples не зависят от языка и берутся из `cards`. Нет файла
+ * categories, tags и peoples не зависят от языка и берутся из `cards`. Нет файла
  * с тем же id - карточка на /en/ показывается с русским текстом (см.
  * `localizeCards` в `src/components/Catalog/localize.ts`).
  */

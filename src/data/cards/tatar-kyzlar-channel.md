@@ -7,6 +7,7 @@ facts:
   - "Выступали как аудиовизуальный перформанс в берлинском HAU Hebbel am Ufer"
 url: "https://linktr.ee/tatarkyzlar"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["poetry", "music"]
 peoples: ["tatar"]
 ---

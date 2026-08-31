@@ -7,6 +7,7 @@ facts:
   - "Основной сайт - kamalteatr.ru"
 url: "https://t.me/kamalteatr"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["theatre", "school"]
 peoples: ["tatar"]
 ---

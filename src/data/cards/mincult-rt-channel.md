@@ -7,6 +7,7 @@ facts:
   - "Публикации дублируются на русском и татарском"
 url: "https://t.me/mincult_rt"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "culture"]
 peoples: ["tatar"]
 ---

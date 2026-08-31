@@ -7,6 +7,7 @@ facts:
   - "В корпус вошли материалы татарских газет, журналов и издательств"
 url: "https://tugantel.tatar/?lang=tt"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology"]
 peoples: ["tatar"]
 ---

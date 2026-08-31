@@ -7,6 +7,7 @@ facts:
   - "В коллекцию входят тексты разных жанров"
 url: "https://parallel-corpus.antat.ru/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology"]
 peoples: ["tatar"]
 ---

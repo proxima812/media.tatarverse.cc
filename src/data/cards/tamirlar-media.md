@@ -7,6 +7,7 @@ facts:
   - "Инициатор проекта - крымскотатарский общественный деятель Алим Алиев"
 url: "https://tamirlar.com/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["museum"]
 peoples: ["crimean-tatar"]
 ---

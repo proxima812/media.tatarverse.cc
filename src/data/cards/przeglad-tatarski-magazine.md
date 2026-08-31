@@ -8,6 +8,7 @@ facts:
   - "Издатель - Мусульманский религиозный союз Польши"
 url: "https://bibliotekatatarska.pl/przeglad-tatarski/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "culture", "science", "society"]
 peoples: ["tatar"]
 ---

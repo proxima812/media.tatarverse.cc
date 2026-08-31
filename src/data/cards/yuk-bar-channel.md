@@ -7,6 +7,7 @@ facts:
   - "Обратная связь через @YukBarBot"
 url: "https://t.me/yukbar"
 pubDate: "2026-08-29"
-tags: ["author"]
+categories: ["author"]
+tags: ["identity", "cuisine", "blog"]
 peoples: ["tatar"]
 ---

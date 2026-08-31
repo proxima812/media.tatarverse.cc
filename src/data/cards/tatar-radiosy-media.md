@@ -8,6 +8,7 @@ facts:
 url: "https://www.tatarradio.ru/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/tatar-radiosy-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "radio"]
 peoples: ["tatar"]
 ---

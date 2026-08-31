@@ -7,6 +7,7 @@ facts:
   - "Видеоуроки опубликованы в открытом доступе на официальном YouTube-канале «Крым.Реалии»"
 url: "https://www.youtube.com/watch?v=ScV3z8oUdrg"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "video", "course", "educational"]
 peoples: ["crimean-tatar"]
 ---

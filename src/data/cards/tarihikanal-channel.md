@@ -7,6 +7,7 @@ facts:
   - "Публикует материалы на татарском, русском и арабском языках"
 url: "https://t.me/tarihikanal"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "heritage", "archive"]
 peoples: ["tatar", "bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Включает как общественное достояние, так и фрагменты текстов под копирайтом"
 url: "https://github.com/nevmenandr/bashkir-corpus"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "open-source"]
 peoples: ["bashkir"]
 ---

@@ -8,6 +8,7 @@ facts:
 url: "https://www.youtube.com/playlist?list=PLwRsaQZNueC63qWfwXRG0OqWYvlPfmsMA"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/tamyr-channel-channel.png"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "music", "children", "technology", "video", "radio", "television", "for-children"]
 peoples: ["bashkir"]
 ---

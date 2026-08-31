@@ -8,6 +8,7 @@ facts:
 url: "https://github.com/neurotatarlar"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/neurotatarlar-language.png"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "society", "technology", "speech-recognition", "open-source"]
 peoples: ["tatar"]
 ---

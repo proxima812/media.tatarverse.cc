@@ -7,6 +7,7 @@ facts:
   - "Ведет Telegram-канал о своих работах в области национального дизайна"
 url: "https://t.me/fayaz_sdelal"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["design"]
 peoples: ["tatar"]
 ---

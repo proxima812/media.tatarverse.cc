@@ -7,6 +7,7 @@ facts:
   - "Освещает не только Екатеринбург, но и малые города области - Первоуральск, Североуральск"
 url: "https://t.me/ekatatar"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["society", "for-diaspora"]
 peoples: ["tatar"]
 ---

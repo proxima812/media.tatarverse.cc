@@ -7,6 +7,7 @@ facts:
   - "Образовательная работа сообщества включает язык, историю, литературу и национальную культуру"
 url: "https://totoriai.lt/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "culture", "heritage", "education", "society", "children", "youth", "school", "for-children", "educational"]
 peoples: ["tatar"]
 ---

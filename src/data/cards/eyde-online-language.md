@@ -8,6 +8,7 @@ facts:
 url: "https://www.azatliq.org/eyde"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/azatliq-radiosy-media.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "music", "education", "video", "radio", "course", "educational"]
 peoples: ["tatar"]
 ---

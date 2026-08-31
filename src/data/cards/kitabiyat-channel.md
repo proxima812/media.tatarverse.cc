@@ -7,6 +7,7 @@ facts:
   - "Материалы на татарском языке"
 url: "https://t.me/tatarkitaplar"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["literature", "book"]
 peoples: ["tatar"]
 ---

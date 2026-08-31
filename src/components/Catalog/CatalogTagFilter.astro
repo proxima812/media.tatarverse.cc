@@ -1,0 +1,163 @@
+---
+import { tagGroupLabel, tagLabel } from "@/components/Catalog/labels";
+import {
+	TAG_DEFINITIONS,
+	TAG_GROUP_VALUES,
+	type Tag,
+} from "@/components/Catalog/taxonomy";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+	locale: LocaleCode;
+	tagCounts: ReadonlyMap<Tag, number>;
+	cardCount: number;
+}
+
+const { locale, tagCounts, cardCount } = Astro.props;
+const t = useTranslations(locale);
+const tags = [...tagCounts.keys()];
+const available = new Set(tags);
+const groups = TAG_GROUP_VALUES.map((group) => ({
+	group,
+	tags: (Object.keys(TAG_DEFINITIONS) as Tag[]).filter(
+		(value) => available.has(value) && TAG_DEFINITIONS[value].group === group,
+	),
+})).filter(({ tags: values }) => values.length > 0);
+---
+
+<details
+	data-tag-filter
+	data-available-tags={tags.join(",")}
+	class="mx-5 mb-8 rounded-2xl border border-border bg-background open:shadow-sm"
+>
+	<summary
+		class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-4 py-3 font-medium text-foreground transition hover:bg-muted/60 [&::-webkit-details-marker]:hidden"
+	>
+		<span class="flex items-center gap-2">
+			{t("catalog.filter.label")}
+			<span
+				data-tag-filter-count
+				hidden
+				class="rounded-full bg-primary px-2 py-0.5 text-primary-foreground text-xs"
+			></span>
+		</span>
+		<span class="text-muted-foreground text-sm">
+			<output data-catalog-result-count>{cardCount}</output>
+		</span>
+	</summary>
+
+	<div class="border-border border-t px-4 py-5">
+		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+			{groups.map(({ group, tags: values }) => (
+					<fieldset>
+						<legend class="mb-2 font-semibold text-sm text-foreground">
+							{tagGroupLabel(locale, group)}
+						</legend>
+						<div class="flex flex-wrap gap-2">
+							{values.map((value) => (
+									<label class="cursor-pointer">
+										<input
+											type="checkbox"
+											value={value}
+											aria-label={tagLabel(locale, value)}
+											data-tag-filter-input
+											class="peer sr-only"
+										/>
+										<span class="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground text-sm transition peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-foreground">
+											<span>{tagLabel(locale, value)}</span>
+											<span class="text-xs opacity-70">{tagCounts.get(value)}</span>
+										</span>
+									</label>
+								))}
+						</div>
+					</fieldset>
+				))}
+		</div>
+
+		<button
+			type="button"
+			data-tag-filter-clear
+			hidden
+			class="mt-5 cursor-pointer text-muted-foreground text-sm underline underline-offset-4 hover:text-foreground"
+		>
+			{t("catalog.filter.clear")}
+		</button>
+	</div>
+</details>
+
+<script>
+import { parseTagQuery } from "@/components/Catalog/tagFilter";
+import type { Tag } from "@/components/Catalog/taxonomy";
+
+interface FilterDetail {
+	tags: Tag[];
+}
+
+function setupTagFilter(filter: HTMLDetailsElement) {
+	const catalog = filter.closest<HTMLElement>("[data-catalog]");
+	if (!catalog) return;
+
+	const available = (filter.dataset.availableTags ?? "")
+		.split(",")
+		.filter(Boolean) as Tag[];
+	const inputs = [
+		...filter.querySelectorAll<HTMLInputElement>("[data-tag-filter-input]"),
+	];
+	const count = filter.querySelector<HTMLElement>("[data-tag-filter-count]");
+	const clear = filter.querySelector<HTMLButtonElement>(
+		"[data-tag-filter-clear]",
+	);
+
+	const apply = (writeUrl: boolean) => {
+		const selected = inputs
+			.filter((input) => input.checked)
+			.map((input) => input.value as Tag);
+
+		if (count) {
+			count.textContent = String(selected.length);
+			count.hidden = selected.length === 0;
+		}
+		if (clear) clear.hidden = selected.length === 0;
+
+		if (writeUrl) {
+			const url = new URL(window.location.href);
+			if (selected.length > 0) url.searchParams.set("tags", selected.join(","));
+			else url.searchParams.delete("tags");
+			history.replaceState(history.state, "", url);
+		}
+
+		const detail: FilterDetail = { tags: selected };
+		catalog.dispatchEvent(
+			new CustomEvent<FilterDetail>("catalog:before-filter", { detail }),
+		);
+		catalog.dispatchEvent(
+			new CustomEvent<FilterDetail>("catalog:filter", { detail }),
+		);
+	};
+
+	const initial = new Set(
+		parseTagQuery(
+			new URL(window.location.href).searchParams.get("tags"),
+			available,
+		),
+	);
+	for (const input of inputs) input.checked = initial.has(input.value as Tag);
+	if (initial.size > 0) filter.open = true;
+	apply(initial.size > 0);
+
+	for (const input of inputs)
+		input.addEventListener("change", () => apply(true));
+	clear?.addEventListener("click", () => {
+		for (const input of inputs) input.checked = false;
+		apply(true);
+	});
+}
+
+setTimeout(() => {
+	for (const filter of document.querySelectorAll<HTMLDetailsElement>(
+		"[data-tag-filter]",
+	))
+		setupTagFilter(filter);
+}, 0);
+</script>

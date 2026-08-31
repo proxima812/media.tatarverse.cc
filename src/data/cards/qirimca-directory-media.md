@@ -7,6 +7,7 @@ facts:
   - "Работает на украинском и английском языках с крымскотатарскими названиями"
 url: "https://qirimca.org/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "culture", "education"]
 peoples: ["crimean-tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Проект получил грант «ВКонтакте» на развитие контента на родных языках"
 url: "https://media.kpfu.ru/news/proekt-kfu-tatcast-vyigral-grant-vkontakte"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "technology", "podcast"]
 peoples: ["tatar"]
 ---

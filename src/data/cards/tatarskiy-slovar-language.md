@@ -7,6 +7,7 @@ facts:
   - "У проекта есть второй канал и бот для поддержки"
 url: "https://t.me/tatarskiyslovar"
 pubDate: "2026-08-29"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "dictionary"]
 peoples: ["tatar"]
 ---

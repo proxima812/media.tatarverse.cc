@@ -1,0 +1,590 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import { peopleLabel, categoryLabel } from "@/components/Catalog/labels";
+import { categoryIcon } from "@/components/Catalog/categoryIcons";
+import type { Category } from "@/components/Catalog/taxonomy";
+import type { LocaleCode } from "@/config/types";
+import { defaultLocale } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+type CardData = CollectionEntry<"cards">["data"];
+type People = CardData["peoples"][number];
+
+interface Props {
+	locale: LocaleCode;
+	cards: CollectionEntry<"cards">[];
+	heading?: string;
+	lead?: string;
+	className?: string;
+	/** Сколько карточка держит переднюю позицию, мс. Полный круг - вчетверо больше. */
+	interval?: number;
+	/** Множитель разноса слоев по глубине: 0 - плоско, 2 - вдвое дальше. */
+	depth?: number;
+	/** Покачивание слоев, пока карточка стоит спереди. */
+	drift?: boolean;
+}
+
+const {
+	locale,
+	cards,
+	heading,
+	lead,
+	className,
+	depth = 1,
+	drift = true,
+	interval = 3500,
+} = Astro.props;
+
+/*
+ * Тексты рубрик - здесь, а цифры считаются из коллекции: карточки приезжают
+ * пулл-реквестами, и вписанное руками число устарело бы в первый же день
+ * (тот же принцип, что в `CatalogStats.astro`).
+ *
+ * Порядок фиксированный, а не «четыре самых больших по счету»: колода
+ * рассчитана ровно на четыре карточки, и порядок задает палитру, а от
+ * перестановки рубрик местами при добавлении карточек кадр бы дергался.
+ */
+interface Rubric {
+	category: Category;
+	accent: string;
+	second: string;
+	glow: string;
+}
+
+/*
+ * Палитра и порядок - это оформление, оно одно на все локали. `as const`
+ * здесь не косметика: без него `category` схлопнется до всего union'а `Category`, и
+ * тексты ниже потребуют перевода для всех семи тегов, а не для этих четырех.
+ */
+const RUBRICS = [
+	{ category: "media", accent: "#b45309", second: "#ea580c", glow: "#f59e0b" },
+	{ category: "language", accent: "#0f766e", second: "#0d9488", glow: "#22d3ee" },
+	{ category: "channel", accent: "#4338ca", second: "#6366f1", glow: "#38bdf8" },
+	{ category: "author", accent: "#be123c", second: "#e11d48", glow: "#fb7185" },
+] as const satisfies ReadonlyArray<Rubric>;
+
+type RubricTag = (typeof RUBRICS)[number]["category"];
+
+interface Copy {
+	heading: string;
+	lead: string;
+	chip: string;
+	/** Подпись у счетчика в шапке карточки: «83 в каталоге». */
+	inCatalog: (count: string) => string;
+	/** «крымские татары» в ячейку шириной в треть карточки не влезает. */
+	shortPeople: Partial<Record<People, string>>;
+	rubric: Record<RubricTag, { title: string; note: string }>;
+}
+
+/*
+ * Тексты живут здесь, а не в `src/i18n/locales/`, по той же причине, что и
+ * подписи тегов в `labels.ts`: они привязаны к значениям схемы коллекции,
+ * а не к интерфейсу сайта. Ключ `rubric` проверяется типом, поэтому новая
+ * рубрика в `RUBRICS` не проедет без перевода.
+ */
+const COPY = {
+	ru: {
+		heading: "Каталог собран по рубрикам",
+		lead: "Четыре самые большие - и сколько проектов в каждой прямо сейчас.",
+		chip: "Рубрика",
+		inCatalog: (count: string) => `${count} в каталоге`,
+		shortPeople: { "crimean-tatar": "Крым" },
+		rubric: {
+			media: {
+				title: "Издания, которые пишут на своем языке",
+				note: "Газеты, журналы и онлайн-редакции - от республиканских до эмигрантских.",
+			},
+			language: {
+				title: "Инструменты, которые держат язык живым",
+				note: "Словари, клавиатуры, переводчики и синтез речи для трех языков.",
+			},
+			channel: {
+				title: "Телеграм и YouTube без посредников",
+				note: "Авторские каналы, подкасты и видео - там, где аудиторию читают каждый день.",
+			},
+			author: {
+				title: "Люди, а не только проекты",
+				note: "Музыканты, переводчики, педагоги и художники, которых стоит знать по имени.",
+			},
+		},
+	},
+	en: {
+		heading: "The catalog, grouped by category",
+		lead: "The four largest ones - and how many projects each holds right now.",
+		chip: "Category",
+		inCatalog: (count: string) => `${count} in the catalog`,
+		shortPeople: { "crimean-tatar": "Crimean" },
+		rubric: {
+			media: {
+				title: "Outlets writing in their own language",
+				note: "Newspapers, magazines and online newsrooms - from republic-wide to diaspora.",
+			},
+			language: {
+				title: "Tools that keep a language alive",
+				note: "Dictionaries, keyboards, translators and speech synthesis for three languages.",
+			},
+			channel: {
+				title: "Telegram and YouTube, no middlemen",
+				note: "Personal channels, podcasts and video - where the audience shows up every day.",
+			},
+			author: {
+				title: "People, not just projects",
+				note: "Musicians, translators, teachers and artists worth knowing by name.",
+			},
+		},
+	},
+} satisfies Record<string, Copy>;
+
+const known: Record<string, Copy | undefined> = COPY;
+const copy: Copy = known[locale] ?? known[defaultLocale] ?? COPY.ru;
+
+/*
+ * Три ячейки статистики - разбивка рубрики по народам. Взято именно оно, а не
+ * «сколько народов охвачено»: последнее у всех четырех рубрик равно трем и в
+ * кадре читалось бы как ошибка верстки, а не как факт.
+ */
+const STAT_PEOPLES: People[] = ["tatar", "bashkir", "crimean-tatar"];
+
+const number = new Intl.NumberFormat(locale);
+
+const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+
+const deck = RUBRICS.map((rubric) => {
+	const inRubric = cards.filter((card) => card.data.categories.includes(rubric.category));
+
+	return {
+		...rubric,
+		...copy.rubric[rubric.category],
+		name: categoryLabel(locale, rubric.category),
+		href: getRelativeLocaleUrl(locale, `catalog/${rubric.category}`),
+		badge: number.format(inRubric.length),
+		stats: STAT_PEOPLES.map((people) => ({
+			key: copy.shortPeople[people] ?? capitalize(peopleLabel(locale, people)),
+			value: number.format(
+				inRubric.filter((card) => card.data.peoples.includes(people)).length,
+			),
+		})),
+	};
+});
+
+const layers = [
+	{ drift: -9, z: -110 },
+	{ drift: -2, z: -34 },
+	{ drift: 9, z: 34 },
+	{ drift: 18, z: 74 },
+] as const;
+---
+
+<section class={cn("py-16", className)}>
+	<h2 class="text-center font-black text-3xl text-balance sm:text-4xl">
+		{heading ?? copy.heading}
+	</h2>
+	<p class="mx-auto mt-4 max-w-xl text-balance text-center text-muted-foreground">
+		{lead ?? copy.lead}
+	</p>
+
+	<div
+		class={cn("depth-deck mt-12", !drift && "is-still")}
+		data-depth-deck
+		style={`--deck-step:${interval}ms;--deck-depth:${depth};`}
+	>
+		<ul class="depth-deck-stage" data-depth-stage>
+			{
+				deck.map((card, index) => (
+					<li
+						class="depth-card"
+						data-depth-card
+						style={`--i:${index};--deck-a:${card.accent};--deck-b:${card.second};--deck-c:${card.glow};`}
+					>
+						<div class="depth-card-head flex items-center gap-3 px-4">
+							<span class="depth-glyph grid size-8 shrink-0 place-items-center rounded-[0.625rem] text-white">
+								<Icon name={categoryIcon(card.category)} class="size-4" aria-hidden="true" />
+							</span>
+							<a
+								href={card.href}
+								class="min-w-0 flex-1 truncate font-semibold text-[0.9375rem] text-foreground tracking-[-0.01em] hover:underline"
+							>
+								{card.name}
+							</a>
+							<span class="depth-meta shrink-0 font-medium text-[0.6875rem] text-muted-foreground tracking-[0.02em]">
+								{copy.inCatalog(card.badge)}
+							</span>
+						</div>
+
+						<div class="depth-card-body" data-depth-body>
+							<div class="depth-scene">
+								<div
+									class="depth-layer depth-layer-back"
+									style={`--layer:0;--z:${layers[0].z};--drift:${layers[0].drift};`}
+								>
+									<div class="depth-drift">
+										<span class="depth-aurora" />
+										<span class="depth-grid" />
+									</div>
+								</div>
+
+								<div
+									class="depth-layer depth-layer-copy"
+									style={`--layer:2;--z:${layers[2].z};--drift:${layers[2].drift};`}
+								>
+									<div class="depth-drift grid gap-1.5 px-4 pt-4 pr-20">
+										<span class="depth-chip w-fit rounded-full px-2 py-[0.1875rem] font-semibold text-[0.625rem] uppercase tracking-[0.09em]">
+											{copy.chip}
+										</span>
+										<span class="font-semibold text-[1.0625rem] text-foreground leading-[1.2] tracking-[-0.015em]">
+											{card.title}
+										</span>
+										<span class="text-[0.75rem] text-muted-foreground leading-[1.45]">
+											{card.note}
+										</span>
+									</div>
+								</div>
+
+								<div
+									class="depth-layer depth-layer-stats"
+									style={`--layer:1;--z:${layers[1].z};--drift:${layers[1].drift};`}
+								>
+									<div class="depth-drift grid grid-cols-3 gap-1.5 px-4 pb-4">
+										{card.stats.map((stat) => (
+											<span class="depth-stat grid gap-0.5 rounded-xl px-2 py-2">
+												<span class="depth-stat-value truncate font-semibold text-[0.8125rem] leading-none tracking-[-0.01em] tabular-nums">
+													{stat.value}
+												</span>
+												<span class="truncate text-[0.625rem] text-muted-foreground leading-none">
+													{stat.key}
+												</span>
+											</span>
+										))}
+									</div>
+								</div>
+
+								<div
+									class="depth-layer depth-layer-badge"
+									style={`--layer:3;--z:${layers[3].z};--drift:${layers[3].drift};`}
+								>
+									<div class="depth-drift">
+										<span class="depth-badge absolute top-4 right-4 rounded-full px-2.5 py-1 font-semibold text-[0.6875rem] text-white leading-none tabular-nums">
+											{card.badge}
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
+
+<style>
+	.depth-deck {
+		width: 100%;
+		min-width: 0;
+		--deck-head: 3.5rem;
+		--deck-body: 11.5rem;
+		--deck-gap: 0.6rem;
+		--deck-stagger: 70ms;
+		--deck-swing: 6s;
+		--deck-ease: cubic-bezier(0.22, 1, 0.36, 1);
+		--deck-offset: calc(
+			(var(--deck-head) + var(--deck-body)) / 2 + var(--deck-gap) + var(--deck-head) / 2
+		);
+		--deck-cycle: calc(var(--deck-step) * 4);
+		--deck-up: calc(var(--deck-body) / 2 - var(--deck-offset));
+		--deck-down: calc(var(--deck-body) / 2 + var(--deck-offset));
+	}
+
+	.depth-deck-stage {
+		position: relative;
+		margin-inline: auto;
+		width: 100%;
+		max-width: 26rem;
+		height: calc(var(--deck-offset) * 2 + var(--deck-head));
+		list-style: none;
+		padding: 0;
+	}
+
+	.depth-card {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(50% - (var(--deck-head) + var(--deck-body)) / 2);
+		z-index: 3;
+		overflow: hidden;
+		border-radius: 1.25rem;
+		border: 1px solid var(--color-border);
+		background: color-mix(in srgb, var(--deck-a) 4%, var(--color-background));
+		box-shadow:
+			0 1px 2px rgb(24 24 27 / 0.05),
+			0 22px 46px -30px color-mix(in srgb, var(--deck-a) 60%, rgb(24 24 27 / 0.55));
+		opacity: 1;
+		transform: translate3d(0, 0, 0) scale(1);
+		will-change: transform, opacity;
+	}
+
+	/* Статичная раскладка - она же то, что остается при reduce-motion. */
+	.depth-card:nth-child(2) {
+		z-index: 1;
+		opacity: 0.4;
+		filter: blur(3px);
+		transform: translate3d(0, var(--deck-down), 0) scale(0.9);
+	}
+
+	.depth-card:nth-child(3) {
+		z-index: 0;
+		opacity: 0;
+		filter: blur(9px);
+		transform: translate3d(0, calc(var(--deck-down) + 1.5rem), 0) scale(0.86);
+	}
+
+	.depth-card:nth-child(4) {
+		z-index: 2;
+		opacity: 0.4;
+		filter: blur(3px);
+		transform: translate3d(0, var(--deck-up), 0) scale(0.9);
+	}
+
+	.depth-card-head {
+		position: relative;
+		z-index: 1;
+		height: var(--deck-head);
+	}
+
+	.depth-glyph {
+		background: linear-gradient(135deg, var(--deck-a), var(--deck-b));
+		box-shadow: 0 6px 14px -8px color-mix(in srgb, var(--deck-a) 85%, transparent);
+	}
+
+	.depth-card-body {
+		height: var(--deck-body);
+		overflow: hidden;
+		opacity: 1;
+	}
+
+	.depth-card:nth-child(n + 2) .depth-card-body {
+		height: 0;
+		opacity: 0;
+	}
+
+	.depth-scene {
+		position: relative;
+		height: var(--deck-body);
+		perspective: 900px;
+		perspective-origin: 50% 42%;
+		transform-style: preserve-3d;
+	}
+
+	.depth-layer {
+		position: absolute;
+		inset: 0;
+		transform: translate3d(0, 0, calc(var(--z) * var(--deck-depth) * 1px));
+	}
+
+	.depth-layer-back {
+		z-index: 0;
+	}
+	.depth-layer-stats {
+		z-index: 1;
+		top: auto;
+	}
+	.depth-layer-copy {
+		z-index: 2;
+		bottom: auto;
+	}
+	.depth-layer-badge {
+		z-index: 3;
+	}
+
+	.depth-drift {
+		height: 100%;
+		animation: depth-deck-drift var(--deck-swing) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+	}
+
+	.depth-layer-stats .depth-drift,
+	.depth-layer-copy .depth-drift {
+		height: auto;
+	}
+
+	.is-still .depth-drift {
+		animation: none;
+	}
+
+	.depth-aurora,
+	.depth-grid {
+		position: absolute;
+		inset: -22%;
+	}
+
+	.depth-aurora {
+		background:
+			radial-gradient(42% 46% at 20% 16%, var(--deck-a) 0%, transparent 68%),
+			radial-gradient(46% 52% at 84% 82%, var(--deck-b) 0%, transparent 66%),
+			radial-gradient(36% 40% at 64% 8%, var(--deck-c) 0%, transparent 70%);
+		opacity: 0.3;
+	}
+
+	.depth-grid {
+		background-image:
+			linear-gradient(
+				to right,
+				color-mix(in srgb, var(--deck-a) 24%, transparent) 1px,
+				transparent 1px
+			),
+			linear-gradient(
+				to bottom,
+				color-mix(in srgb, var(--deck-a) 24%, transparent) 1px,
+				transparent 1px
+			);
+		background-size: 2.25rem 2.25rem;
+		mask-image: radial-gradient(72% 68% at 50% 40%, #000 0%, transparent 78%);
+		opacity: 0.55;
+	}
+
+	.depth-chip {
+		color: color-mix(in srgb, var(--deck-a) 78%, var(--color-foreground));
+		background: color-mix(in srgb, var(--deck-a) 14%, var(--color-background));
+	}
+
+	.depth-stat {
+		border: 1px solid color-mix(in srgb, var(--deck-a) 16%, transparent);
+		background: color-mix(in srgb, var(--color-background) 82%, transparent);
+		backdrop-filter: blur(6px);
+	}
+
+	.depth-stat-value {
+		color: color-mix(in srgb, var(--deck-a) 72%, var(--color-foreground));
+	}
+
+	.depth-badge {
+		background: linear-gradient(135deg, var(--deck-b), var(--deck-a));
+		box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--deck-b) 90%, transparent);
+	}
+
+	/*
+	 * Ход колоды. Никакого JS: один и тот же таймлайн крутится на всех
+	 * четырех карточках, сдвинутый по фазе на свой индекс отрицательной
+	 * задержкой - поэтому на первом же кадре круг уже в середине.
+	 */
+	@keyframes depth-deck-slot {
+		0%,
+		19% {
+			z-index: 3;
+			opacity: 1;
+			filter: blur(0px);
+			transform: translate3d(0, 0, 0) scale(1);
+		}
+		25%,
+		42% {
+			z-index: 2;
+			opacity: 0.4;
+			filter: blur(3px);
+			transform: translate3d(0, var(--deck-up), 0) scale(0.9);
+		}
+		46% {
+			z-index: 1;
+			opacity: 0;
+			filter: blur(9px);
+			transform: translate3d(0, calc(var(--deck-up) - 2rem), 0) scale(0.86);
+		}
+		50%,
+		69% {
+			z-index: 0;
+			opacity: 0;
+			filter: blur(9px);
+			transform: translate3d(0, calc(var(--deck-down) + 1.5rem), 0) scale(0.86);
+		}
+		75%,
+		94% {
+			z-index: 1;
+			opacity: 0.4;
+			filter: blur(3px);
+			transform: translate3d(0, var(--deck-down), 0) scale(0.9);
+		}
+		100% {
+			z-index: 3;
+			opacity: 1;
+			filter: blur(0px);
+			transform: translate3d(0, 0, 0) scale(1);
+		}
+	}
+
+	@keyframes depth-deck-body {
+		0%,
+		19% {
+			height: var(--deck-body);
+			opacity: 1;
+		}
+		25%,
+		94% {
+			height: 0;
+			opacity: 0;
+		}
+		100% {
+			height: var(--deck-body);
+			opacity: 1;
+		}
+	}
+
+	@keyframes depth-deck-layer {
+		0%,
+		19% {
+			opacity: 1;
+			transform: translate3d(0, 0, calc(var(--z) * var(--deck-depth) * 1px));
+		}
+		25% {
+			opacity: 0;
+			transform: translate3d(0, -12px, calc((var(--z) * var(--deck-depth) + 150) * 1px));
+		}
+		50%,
+		92% {
+			opacity: 0;
+			transform: translate3d(0, 16px, calc((var(--z) * var(--deck-depth) - 190) * 1px));
+		}
+		100% {
+			opacity: 1;
+			transform: translate3d(0, 0, calc(var(--z) * var(--deck-depth) * 1px));
+		}
+	}
+
+	@keyframes depth-deck-drift {
+		from {
+			transform: translate3d(calc(var(--drift) * -1px), calc(var(--drift) * 0.35px), 0);
+		}
+		to {
+			transform: translate3d(calc(var(--drift) * 1px), calc(var(--drift) * -0.35px), 0);
+		}
+	}
+
+	.depth-card {
+		animation: depth-deck-slot var(--deck-cycle) var(--deck-ease) infinite both;
+		animation-delay: calc((var(--i) - 4) * var(--deck-step));
+	}
+
+	.depth-card-body {
+		animation: depth-deck-body var(--deck-cycle) var(--deck-ease) infinite both;
+		animation-delay: calc((var(--i) - 4) * var(--deck-step));
+	}
+
+	.depth-layer {
+		animation: depth-deck-layer var(--deck-cycle) var(--deck-ease) infinite both;
+		animation-delay: calc((var(--i) - 4) * var(--deck-step) + var(--layer) * var(--deck-stagger));
+	}
+
+	@media (max-width: 26rem) {
+		.depth-deck {
+			--deck-body: 12.75rem;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.depth-card,
+		.depth-card-body,
+		.depth-layer,
+		.depth-drift {
+			animation: none;
+		}
+	}
+</style>

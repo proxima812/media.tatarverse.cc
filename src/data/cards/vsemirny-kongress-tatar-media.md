@@ -7,6 +7,7 @@ facts:
   - "Ведет версии сайта для разных региональных татарских сообществ"
 url: "https://tatar-congress.org/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "news", "society"]
 peoples: ["tatar"]
 ---

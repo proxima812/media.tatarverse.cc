@@ -7,6 +7,7 @@ facts:
   - "Связан с проектом-справочником tatar4a"
 url: "https://t.me/tatartili"
 pubDate: "2026-08-29"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "music", "video", "book"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Содержит 35 интерактивных уроков - от простых тем к более сложным"
 url: "https://t.me/tatyaz"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "for-beginners", "educational"]
 peoples: ["tatar"]
 ---

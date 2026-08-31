@@ -8,6 +8,7 @@ facts:
 url: "https://languagelifeschool.com/land/learn-tatar-language-online/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/language-life-school-tatar-lessons.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "course", "school", "educational"]
 peoples: ["tatar"]
 ---

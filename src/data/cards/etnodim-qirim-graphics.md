@@ -7,6 +7,7 @@ facts:
   - "Коллекция призвана привлечь внимание к культуре и истории коренного народа Крыма"
 url: "https://etnodim.com/qirim"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["history", "culture", "identity", "fashion", "design"]
 peoples: ["crimean-tatar"]
 ---

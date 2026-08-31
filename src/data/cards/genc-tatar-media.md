@@ -9,6 +9,7 @@ facts:
 url: "https://genctatar.com/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/genc-tatar-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "history", "identity", "youth", "technology", "podcast", "magazine", "for-youth"]
 peoples: ["crimean-tatar"]
 ---

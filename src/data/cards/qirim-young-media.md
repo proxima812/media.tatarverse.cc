@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/qirim-young"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qirim-young-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["society", "youth", "educational"]
 peoples: ["crimean-tatar"]
 ---

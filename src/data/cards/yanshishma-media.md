@@ -7,6 +7,7 @@ facts:
   - "Размещает познавательные материалы и творчество юных авторов"
 url: "https://yanshishma.com/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "children", "newspaper", "for-children"]
 peoples: ["bashkir"]
 ---

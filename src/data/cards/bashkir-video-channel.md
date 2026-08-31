@@ -8,6 +8,7 @@ facts:
 url: "https://www.youtube.com/channel/UCd8j6pD7yk5_sVTJM_U7ktQ"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/bashkir-video-channel.png"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "culture", "traditions", "video"]
 peoples: ["bashkir"]
 ---

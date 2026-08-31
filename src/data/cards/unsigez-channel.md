@@ -7,6 +7,7 @@ facts:
   - "Девиз канала - «яшә. алга атла. ярат.»"
 url: "https://t.me/unsigez"
 pubDate: "2026-08-29"
-tags: ["author"]
+categories: ["author"]
+tags: ["blog"]
 peoples: ["tatar"]
 ---

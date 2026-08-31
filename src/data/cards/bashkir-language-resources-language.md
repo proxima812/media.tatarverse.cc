@@ -7,6 +7,7 @@ facts:
   - "Каталог открыт для дополнений через GitHub"
 url: "https://github.com/nevmenandr/bashkir-language-resources"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "open-source"]
 peoples: ["bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "31 тыс. подписчиков в Instagram"
 url: "https://damdam.co/"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["language", "fashion", "design"]
 peoples: ["bashkir"]
 ---

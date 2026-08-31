@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/qirim-gazetasi"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qirim-gazetasi-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "newspaper"]
 peoples: ["crimean-tatar"]
 ---

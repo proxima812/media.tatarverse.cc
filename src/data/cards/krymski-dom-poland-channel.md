@@ -8,6 +8,7 @@ facts:
   - "На мероприятиях показывали фильмы Cemaat Media и работы крымскотатарских авторов"
 url: "https://krymskidom.pl/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["culture", "society", "art", "cinema", "book", "for-diaspora"]
 peoples: ["crimean-tatar"]
 ---

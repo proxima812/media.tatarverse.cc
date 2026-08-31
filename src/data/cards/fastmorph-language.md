@@ -8,6 +8,7 @@ facts:
   - "Исходный код опубликован по лицензии GPL-3.0"
 url: "https://github.com/mansayk/fastmorph"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "language-model", "open-source"]
 peoples: ["tatar"]
 ---

@@ -8,6 +8,7 @@ facts:
   - "Обрабатывает архивы Qirim Junior и тексты Шамиля Алядина"
 url: "https://github.com/NikPeg/qirimtatar-embedding-crawlers"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "open-source"]
 peoples: ["crimean-tatar"]
 ---

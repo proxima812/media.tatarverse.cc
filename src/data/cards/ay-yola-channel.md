@@ -8,6 +8,7 @@ facts:
   - "Сингл «Homay» вошел в тренды VK, Казахстана, Турции и Кыргызстана"
 url: "https://www.youtube.com/channel/UC1Xknaz3Tko0Q1D__4NjWqg"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["video"]
 peoples: ["bashkir"]
 ---

@@ -8,6 +8,7 @@ facts:
   - "Финансовую поддержку журналу оказывает Kırım Vakfı"
 url: "https://www.kirimdernegi.org.tr/Dosyalar/KIRIM-bulteni/Bulten_67.pdf"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "society", "newsletter", "free"]
 peoples: ["crimean-tatar"]
 ---

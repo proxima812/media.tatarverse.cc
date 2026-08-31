@@ -7,6 +7,7 @@ facts:
   - "Описывает свой формат как «оттатаривание» аудитории через юмор"
 url: "https://www.instagram.com/elza_is/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["blogger", "culture", "identity", "blog", "video"]
 peoples: ["tatar"]
 ---

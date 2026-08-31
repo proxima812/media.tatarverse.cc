@@ -7,6 +7,7 @@ facts:
   - "Материалы выходят на башкирском языке"
 url: "https://bashgazet.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "politics", "society", "website", "newspaper"]
 peoples: ["bashkir"]
 ---

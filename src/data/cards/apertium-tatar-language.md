@@ -7,6 +7,7 @@ facts:
   - "Опубликован по лицензии GPL-3.0"
 url: "https://github.com/apertium/apertium-tat"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "translator-tool", "language-model", "open-source"]
 peoples: ["tatar"]
 ---

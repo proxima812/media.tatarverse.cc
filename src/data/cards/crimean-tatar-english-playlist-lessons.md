@@ -7,6 +7,7 @@ facts:
   - "Публикуется на YouTube в формате плейлиста"
 url: "https://www.youtube.com/playlist?list=PL686ACZGmFlFY39qoIQiz_nytEWpWJ_dM"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "video", "course", "educational"]
 peoples: ["crimean-tatar"]
 ---

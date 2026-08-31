@@ -8,6 +8,7 @@ facts:
 url: "https://podcasts.apple.com/us/podcast/modern-tatar-identity/id1676611703"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/modern-tatar-identity-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "identity", "podcast"]
 peoples: ["tatar"]
 ---

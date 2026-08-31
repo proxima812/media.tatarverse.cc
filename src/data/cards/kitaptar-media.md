@@ -7,6 +7,7 @@ facts:
   - "Доступ - после бесплатной регистрации"
 url: "https://kitaptar.bashkort.org/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "library"]
 peoples: ["bashkir"]
 ---

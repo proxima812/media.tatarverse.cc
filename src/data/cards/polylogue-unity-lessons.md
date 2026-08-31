@@ -7,6 +7,7 @@ facts:
   - "Серия опубликована в открытом доступе на YouTube"
 url: "https://www.youtube.com/watch?v=LY1AU4gL1Ek"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "video", "television", "course", "educational"]
 peoples: ["crimean-tatar"]
 ---

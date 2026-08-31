@@ -8,6 +8,7 @@ facts:
   - "Участница программы Artists at Risk, выставлялась в Берлине и Литве"
 url: "https://www.instagram.com/asanova_renata/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["artist", "traditions", "identity", "art", "design", "blog"]
 peoples: ["crimean-tatar"]
 ---

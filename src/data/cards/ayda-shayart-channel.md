@@ -7,6 +7,7 @@ facts:
   - "Формат - заманча юмористик телевизион тапшыру"
 url: "https://t.me/aydashayart"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["humor"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Каждая работа содержит символику, отражающую культуру и традиции крымских татар"
 url: "https://www.instagram.com/ceramic_eldar_gusenov/"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["art", "design", "blog"]
 peoples: ["crimean-tatar"]
 ---

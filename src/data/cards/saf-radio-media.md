@@ -7,6 +7,7 @@ facts:
   - "Позиционируется как kid's radio in Tatar, made in Kazan"
 url: "https://t.me/safradio"
 pubDate: "2026-08-29"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "children", "radio", "for-children"]
 peoples: ["tatar"]
 ---

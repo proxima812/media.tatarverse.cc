@@ -9,6 +9,7 @@ facts:
 url: "https://www.idelreal.org/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/azatliq-radiosy-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "radio"]
 peoples: ["tatar", "bashkir"]
 ---

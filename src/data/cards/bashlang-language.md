@@ -7,6 +7,7 @@ facts:
   - "Обучение доступно онлайн в любое время"
 url: "https://bashlang.ru/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "course", "interactive", "educational"]
 peoples: ["bashkir"]
 ---

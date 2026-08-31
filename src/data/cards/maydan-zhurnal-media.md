@@ -8,6 +8,7 @@ facts:
 url: "http://maydan.tatar/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/maydan-zhurnal-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["literature", "magazine"]
 peoples: ["tatar"]
 ---

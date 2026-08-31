@@ -8,6 +8,7 @@ facts:
 url: "https://vatan.fm/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/vatan-fm-channel.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "society", "radio"]
 peoples: ["crimean-tatar"]
 ---

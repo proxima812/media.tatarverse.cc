@@ -8,6 +8,7 @@ facts:
 url: "https://www.youtube.com/c/tatarcha24/playlists"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/tatarcha-youtube-channel.png"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["culture", "traditions", "video"]
 peoples: ["tatar"]
 ---

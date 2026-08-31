@@ -8,6 +8,7 @@ facts:
 url: "https://www.youtube.com/@idel.zhurnal"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/idel-zhurnal-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "literature", "youth", "video", "magazine", "for-youth"]
 peoples: ["tatar"]
 ---

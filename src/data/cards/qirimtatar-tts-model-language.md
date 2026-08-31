@@ -7,6 +7,7 @@ facts:
   - "Исходный код опубликован по лицензии MIT"
 url: "https://github.com/robinhad/qirimtatar-tts"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "text-to-speech", "open-source", "interactive"]
 peoples: ["crimean-tatar"]
 ---

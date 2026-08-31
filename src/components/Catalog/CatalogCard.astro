@@ -2,7 +2,11 @@
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import {
+	categoryLabel,
+	peopleLabel,
+	tagLabel,
+} from "@/components/Catalog/labels";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
 import Button from "@/components/partials/Button.astro";
 import { useTranslations } from "@/i18n";
@@ -13,7 +17,7 @@ interface Props {
 }
 
 const { card } = Astro.props;
-const { name, facts, logo, url, tags, peoples } = card.data;
+const { name, facts, logo, url, categories, tags, peoples } = card.data;
 
 const locale = Astro.currentLocale ?? "ru";
 const t = useTranslations(locale);
@@ -66,8 +70,14 @@ const glow = meshGradient(name);
 				class="flex flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-7 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
 			>
 				<div class="flex flex-wrap items-center gap-1.5">
+					{categories.map((category) => (
+							<span class="rounded-lg bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+								{categoryLabel(locale, category)}
+							</span>
+						))}
+
 					{tags.map((tag) => (
-							<span class="rounded-lg bg-muted px-2 py-0.5 font-medium text-secondary-foreground text-xs">
+							<span class="rounded-lg bg-muted px-2 py-0.5 text-muted-foreground text-xs">
 								{tagLabel(locale, tag)}
 							</span>
 						))}

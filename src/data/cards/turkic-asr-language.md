@@ -7,6 +7,7 @@ facts:
   - "Модель и код опубликованы по лицензии CC BY 4.0"
 url: "https://github.com/IS2AI/TurkicASR"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "speech-recognition", "open-source"]
 peoples: ["tatar", "bashkir"]
 ---

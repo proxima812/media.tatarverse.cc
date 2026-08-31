@@ -7,6 +7,7 @@ facts:
   - "Прямой эфир доступен через интернет"
 url: "https://bolgarradio.com/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "culture", "news", "technology", "radio"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Материалы 18+, полностью на татарском"
 url: "https://t.me/siksan90"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["humor"]
 peoples: ["tatar"]
 ---

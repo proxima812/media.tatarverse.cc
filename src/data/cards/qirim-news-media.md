@@ -8,6 +8,7 @@ facts:
 url: "https://qirim.news/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qirim-news-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["website"]
 peoples: ["crimean-tatar"]
 ---

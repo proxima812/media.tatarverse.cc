@@ -7,6 +7,7 @@ facts:
   - "Позволяет искать татарские слова и просматривать словарные статьи"
 url: "https://suzlek.antat.ru/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "science", "dictionary"]
 peoples: ["tatar"]
 ---

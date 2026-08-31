@@ -7,6 +7,7 @@ facts:
   - "Освещал, в частности, блокировку библиотеки «Kitaptar» в России в 2023 году"
 url: "https://journal.bashkort.org/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "literature", "culture", "politics", "magazine"]
 peoples: ["bashkir"]
 ---

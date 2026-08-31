@@ -7,6 +7,7 @@ facts:
   - "Зависит от отдельных модулей apertium-tat и apertium-bak"
 url: "https://github.com/apertium/apertium-tat-bak"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "translator-tool", "open-source"]
 peoples: ["tatar", "bashkir"]
 ---

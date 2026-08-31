@@ -2,7 +2,11 @@
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import {
+	categoryLabel,
+	peopleLabel,
+	tagLabel,
+} from "@/components/Catalog/labels";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
 import Button from "@/components/partials/Button.astro";
 import type { LocaleCode } from "@/config/types";
@@ -14,7 +18,8 @@ interface Props {
 }
 
 const { card, locale } = Astro.props;
-const { name, description, facts, url, logo, tags, peoples } = card.data;
+const { name, description, facts, url, logo, categories, tags, peoples } =
+	card.data;
 const t = useTranslations(locale);
 ---
 
@@ -28,6 +33,11 @@ const t = useTranslations(locale);
 		</div>
 
 		<div class="flex flex-wrap justify-center gap-1.5">
+			{categories.map((category) => (
+					<span class="inline-block rounded-full bg-primary/10 px-2.5 py-0.5 font-medium text-primary text-xs">
+						{categoryLabel(locale, category)}
+					</span>
+				))}
 			{tags.map((tag) => (
 					<span class="inline-block rounded-full px-2.5 py-0.5 text-muted-foreground text-xs">
 						{tagLabel(locale, tag)}

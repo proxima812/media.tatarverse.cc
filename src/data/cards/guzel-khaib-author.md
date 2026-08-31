@@ -8,6 +8,7 @@ facts:
   - "Аудитория в Instagram - около 14,8 тыс. подписчиков"
 url: "https://guzel-khaib.ru/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["artist", "identity", "art"]
 peoples: ["tatar"]
 ---

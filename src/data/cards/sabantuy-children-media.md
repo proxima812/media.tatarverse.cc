@@ -7,6 +7,7 @@ facts:
   - "Журнал входит в структуру АО «Татмедиа»"
 url: "https://sabantuy.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["education", "children", "magazine", "course", "for-children", "educational"]
 peoples: ["tatar"]
 ---

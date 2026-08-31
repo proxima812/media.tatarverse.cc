@@ -7,6 +7,7 @@ facts:
   - "Сайт работает на татарском, русском и английском языках"
 url: "https://sptatar.com/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["literature", "news", "website"]
 peoples: ["tatar"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Разработано как перевод приложения некоммерческой организации Башкортостана"
 url: "https://apps.apple.com/ru/app/iq-балабаш/id1484539220"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "children", "app", "mobile-app", "for-children", "educational"]
 peoples: ["bashkir"]
 ---

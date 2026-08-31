@@ -1,14 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import Catalog from "@/components/Catalog/Catalog.astro";
+import { getAllCategories } from "@/components/Catalog/categories";
 import { localizeCards } from "@/components/Catalog/localize";
-import { getAllTags } from "@/components/Catalog/tags";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 const t = useTranslations("en");
 const cards = await localizeCards(await getCollection("cards"), "en");
-const tags = getAllTags(cards);
+const categories = getAllCategories(cards);
 ---
 
 <Layout
@@ -20,5 +20,5 @@ const tags = getAllTags(cards);
 	<h1 class="text-center font-bold text-3xl text-balance sm:text-4xl">
 		{t("catalog.pageTitle")}
 	</h1>
-	<Catalog locale="en" cards={cards} tags={tags} />
+	<Catalog locale="en" cards={cards} categories={categories} />
 </Layout>

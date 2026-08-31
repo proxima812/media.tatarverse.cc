@@ -7,6 +7,7 @@ facts:
   - "С 2021 года издание вручает премию «Татары года»"
 url: "https://milliard.tatar/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "culture", "encyclopedia"]
 peoples: ["tatar"]
 ---

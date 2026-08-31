@@ -7,6 +7,7 @@ facts:
   - "Связан с сестринскими каналами о татарских книгах и аудиокнигах"
 url: "https://t.me/tatarkino"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["theatre", "cinema", "performance"]
 peoples: ["tatar", "bashkir"]
 ---

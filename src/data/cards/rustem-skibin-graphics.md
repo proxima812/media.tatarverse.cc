@@ -7,6 +7,7 @@ facts:
   - "После переезда из Крыма открыл мастерскую «El-Cheber» в Киеве, представлен на платформе Homo Faber"
 url: "https://www.homofaber.com/en/artisans/rustem-skybin-ceramic-decorating-ukraine"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["traditions", "art", "design"]
 peoples: ["crimean-tatar"]
 ---

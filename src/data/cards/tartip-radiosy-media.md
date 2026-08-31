@@ -8,6 +8,7 @@ facts:
 url: "https://tartip.tatar/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/tartip-radiosy-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["music", "history", "culture", "art", "radio"]
 peoples: ["tatar"]
 ---

@@ -1,6 +1,6 @@
 ---
-import { Icon } from "astro-icon/components";
 import { followers } from "@/data/inst_follows";
+import { Icon } from "astro-icon/components";
 
 /**
  * Стена подписчиков: две строки по десять хендлов под заголовком - тот же
@@ -49,85 +49,85 @@ const rows = [
 	<div
 		class="mt-10 select-none space-y-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
 	>
-		{rows.map((row) => (
-			<div
-				class="marquee"
-				data-direction={row.direction}
-				style={`--marquee-duration:${row.duration}s`}
-				aria-hidden="true"
-			>
-				<div class="marquee__track pointer-events-none">
-					{/*
-					 * Две одинаковые копии подряд: анимация сдвигает дорожку ровно
-					 * на 50% ее ширины, и в момент возврата в начало кадр совпадает
-					 * с предыдущим - стык не виден.
-					 */}
-					{[false, true].map(() => (
-						<ul class="marquee__group">
-							{row.items.map((follower) => (
-								<li class="flex shrink-0 items-center gap-2 text-muted-foreground">
-									<Icon
-										name="tabler:brand-instagram"
-										class="size-5 shrink-0"
-										aria-hidden="true"
-									/>
-									<span class="font-medium text-sm sm:text-base">
-										{follower.handle}
-									</span>
-								</li>
-							))}
-						</ul>
-					))}
+		{
+			rows.map((row) => (
+				<div
+					class="marquee"
+					data-direction={row.direction}
+					style={`--marquee-duration:${row.duration}s`}
+					aria-hidden="true"
+				>
+					<div class="marquee__track pointer-events-none">
+						{/*
+						 * Две одинаковые копии подряд: анимация сдвигает дорожку ровно
+						 * на 50% ее ширины, и в момент возврата в начало кадр совпадает
+						 * с предыдущим - стык не виден.
+						 */}
+						{[false, true].map(() => (
+							<ul class="marquee__group">
+								{row.items.map((follower) => (
+									<li class="flex shrink-0 items-center gap-2 text-muted-foreground/50">
+										<Icon
+											name="tabler:brand-instagram"
+											class="size-6 shrink-0"
+											aria-hidden="true"
+										/>
+										<span class="text-xl ">{follower.handle}</span>
+									</li>
+								))}
+							</ul>
+						))}
+					</div>
 				</div>
-			</div>
-		))}
+			))
+		}
 	</div>
 </section>
 
 <style>
-.marquee {
-	--marquee-gap: 2rem;
-	overflow: hidden;
-}
+	.marquee {
+		--marquee-gap: 2rem;
+		overflow: hidden;
+	}
 
-.marquee__track {
-	display: flex;
-	width: max-content;
-	animation: inst-follows var(--marquee-duration) linear infinite;
-	will-change: transform;
-}
+	.marquee__track {
+		display: flex;
+		width: max-content;
+		animation: inst-follows var(--marquee-duration) linear infinite;
+		will-change: transform;
+	}
 
-/*
+	/*
  * Зазор живет внутри группы (`gap` + завершающий `padding`), а между группами
  * его нет. Будь `gap` на самой дорожке, ее половина отличалась бы от ширины
  * одной группы ровно на половину зазора - и на каждом обороте лента дергалась
  * бы на этот остаток.
  */
-.marquee__group {
-	display: flex;
-	align-items: center;
-	gap: var(--marquee-gap);
-	padding-inline-end: var(--marquee-gap);
-}
-
-.marquee[data-direction="right"] .marquee__track {
-	animation-direction: reverse;
-}
-
-@keyframes inst-follows {
-	to {
-		transform: translateX(-50%);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.marquee__track {
-		animation: none;
+	.marquee__group {
+		display: flex;
+		align-items: center;
+		gap: var(--marquee-gap);
+		padding-inline-end: var(--marquee-gap);
 	}
 
-	/* Без движения вторая копия - просто дубликат за краем экрана. */
-	.marquee__group:last-child {
-		display: none;
+	.marquee[data-direction="right"] .marquee__track {
+		animation-direction: reverse;
 	}
-}
+
+	@keyframes inst-follows {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.marquee__track {
+			animation: none;
+		}
+
+		/* Без движения вторая копия - просто дубликат за краем экрана. */
+		.marquee__group:last-child {
+			display: none;
+		}
+	}
 </style>

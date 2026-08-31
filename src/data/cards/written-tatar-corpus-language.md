@@ -7,6 +7,7 @@ facts:
   - "Включает тезаурус и сервис проверки правописания"
 url: "https://www.corpus.tatar/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology", "language-model"]
 peoples: ["tatar"]
 ---

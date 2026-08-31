@@ -7,6 +7,7 @@ facts:
   - "После аннексии Крыма редакция подвергалась обыскам и лишилась офиса, сотрудники продолжили работу удаленно"
 url: "https://avdet.org/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "politics", "society", "newspaper"]
 peoples: ["crimean-tatar"]
 ---

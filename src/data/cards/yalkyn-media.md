@@ -7,6 +7,7 @@ facts:
   - "Входит в структуру АО «Татмедиа»"
 url: "https://yalkyn.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "education", "youth", "magazine", "for-youth"]
 peoples: ["tatar"]
 ---

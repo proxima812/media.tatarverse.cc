@@ -8,6 +8,7 @@ facts:
 url: "http://kazanutlary.ru/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/kazan-utlary-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["literature", "politics", "society", "magazine"]
 peoples: ["tatar"]
 ---

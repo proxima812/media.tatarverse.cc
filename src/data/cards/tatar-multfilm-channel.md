@@ -7,6 +7,7 @@ facts:
   - "Разрабатывает интерактивные материалы для изучения живого татарского языка"
 url: "https://tatarmultfilm.ru/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "cinema", "educational"]
 peoples: ["tatar"]
 ---

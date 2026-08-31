@@ -1,5 +1,12 @@
 import type { CollectionEntry } from "astro:content";
-import type { Tag } from "@/components/Catalog/tags";
+import {
+	type Category,
+	type Tag,
+	type TagGroup,
+	categoryLabel as taxonomyCategoryLabel,
+	tagGroupLabel as taxonomyTagGroupLabel,
+	tagLabel as taxonomyTagLabel,
+} from "@/components/Catalog/taxonomy";
 import type { LocaleCode } from "@/config/types";
 import { defaultLocale } from "@/i18n";
 
@@ -14,15 +21,6 @@ type People = CardData["peoples"][number];
  */
 const labels = {
 	ru: {
-		tag: {
-			channel: "Канал",
-			author: "Автор",
-			media: "Медиа",
-			language: "Языковой проект",
-			lessons: "Уроки",
-			graphics: "Графика",
-			community: "Сообщество",
-		},
 		people: {
 			tatar: "татары",
 			bashkir: "башкиры",
@@ -30,25 +28,13 @@ const labels = {
 		},
 	},
 	en: {
-		tag: {
-			channel: "Channel",
-			author: "Author",
-			media: "Media",
-			language: "Language project",
-			lessons: "Lessons",
-			graphics: "Graphics",
-			community: "Community",
-		},
 		people: {
 			tatar: "Tatars",
 			bashkir: "Bashkirs",
 			"crimean-tatar": "Crimean Tatars",
 		},
 	},
-} satisfies Record<
-	string,
-	{ tag: Record<Tag, string>; people: Record<People, string> }
->;
+} satisfies Record<string, { people: Record<People, string> }>;
 
 type Labels = (typeof labels)[keyof typeof labels];
 
@@ -58,7 +44,15 @@ function forLocale(locale: LocaleCode): Labels {
 }
 
 export function tagLabel(locale: LocaleCode, tag: Tag): string {
-	return forLocale(locale).tag[tag];
+	return taxonomyTagLabel(locale === "en" ? "en" : "ru", tag);
+}
+
+export function categoryLabel(locale: LocaleCode, category: Category): string {
+	return taxonomyCategoryLabel(locale === "en" ? "en" : "ru", category);
+}
+
+export function tagGroupLabel(locale: LocaleCode, group: TagGroup): string {
+	return taxonomyTagGroupLabel(locale === "en" ? "en" : "ru", group);
 }
 
 export function peopleLabel(locale: LocaleCode, people: People): string {

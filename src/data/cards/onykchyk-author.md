@@ -7,6 +7,7 @@ facts:
   - "Дублируется в Instagram под тем же именем"
 url: "https://t.me/onykchyk"
 pubDate: "2026-08-29"
-tags: ["author"]
+categories: ["author"]
+tags: ["blogger", "language", "blog"]
 peoples: ["tatar"]
 ---

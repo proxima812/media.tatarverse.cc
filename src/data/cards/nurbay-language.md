@@ -8,6 +8,7 @@ facts:
 url: "https://nurbay.ru/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/nurbay-language.png"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "education", "children", "app", "school", "for-children", "educational"]
 peoples: ["tatar"]
 ---

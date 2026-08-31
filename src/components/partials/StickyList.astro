@@ -1,0 +1,176 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import type { LocaleCode } from "@/config/types";
+import { defaultLocale, usePlural } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+interface Props {
+	locale: LocaleCode;
+	cards: CollectionEntry<"cards">[];
+	heading?: string;
+	class?: string;
+}
+
+const { locale, cards, heading, class: className = "" } = Astro.props;
+
+const plural = usePlural(locale);
+const number = new Intl.NumberFormat(locale);
+
+/*
+ * Цифры во втором пункте считаются из коллекции, а не вписаны в текст:
+ * карточки приезжают пулл-реквестами, и «324 проекта» в манифесте устарело
+ * бы в первый же день (тот же принцип, что в `CatalogStats.astro`).
+ */
+const counted = (key: string, value: number) =>
+	`${number.format(value)} ${plural(key, value)}`;
+
+const totals = [
+	counted("stats.projects", cards.length),
+	counted("stats.categories", new Set(cards.flatMap((card) => card.data.categories)).size),
+	counted("stats.peoples", new Set(cards.flatMap((card) => card.data.peoples)).size),
+].join(", ");
+
+/*
+ * Четыре утверждения по одному на экран: карточки липкие и наезжают друг на
+ * друга по скроллу, поэтому в кадре всегда ровно одна мысль. Отсюда и длина
+ * текста - два-три предложения, больше не читается за проход.
+ *
+ * Градиенты - оформление, они одни на все локали; переводится только текст.
+ */
+const GRADIENTS = [
+	"linear-gradient(150deg, #f59e0b 0%, #ea580c 55%, #b45309 100%)",
+	"linear-gradient(150deg, #14b8a6 0%, #0f766e 55%, #115e59 100%)",
+	"linear-gradient(150deg, #6366f1 0%, #4338ca 55%, #312e81 100%)",
+	"linear-gradient(150deg, #fb7185 0%, #e11d48 55%, #9f1239 100%)",
+];
+
+interface Statement {
+	eyebrow: string;
+	text: string;
+}
+
+interface Copy {
+	heading: string;
+	cta: string;
+	/** Второе утверждение подставляет посчитанные цифры каталога. */
+	statements: (totals: string) => [Statement, Statement, Statement, Statement];
+}
+
+const COPY = {
+	ru: {
+		heading: "Зачем этот каталог",
+		cta: "Как добавить проект",
+		statements: (totals: string) => [
+			{
+				eyebrow: "01 · Как есть сейчас",
+				text: "Проекты о татарском, башкирском и крымскотатарском разбросаны по десяткам каналов, магазинов приложений и личных страниц. Найти их можно, только если уже знаешь, что ищешь.",
+			},
+			{
+				eyebrow: "02 · Что делает каталог",
+				text: `Собирает их в одном месте: ${totals} - у каждого проекта описание, несколько фактов и ссылка на первоисточник.`,
+			},
+			{
+				eyebrow: "03 · Ничего не спрятано",
+				text: "Сайт и сами карточки лежат в открытом репозитории. Любую правку видно в истории, любую можно оспорить - и никакой рекламы или платного доступа.",
+			},
+			{
+				eyebrow: "04 · Кто его пополняет",
+				text: "Любой желающий. Знаете проект, которого здесь нет, - заведите карточку по образцу и отправьте pull request.",
+			},
+		],
+	},
+	en: {
+		heading: "Why this catalog exists",
+		cta: "How to add a project",
+		statements: (totals: string) => [
+			{
+				eyebrow: "01 · How it stands today",
+				text: "Projects about Tatar, Bashkir and Crimean Tatar are scattered across dozens of channels, app stores and personal pages. You can only find them if you already know what you are looking for.",
+			},
+			{
+				eyebrow: "02 · What the catalog does",
+				text: `It brings them together in one place: ${totals} - each with a description, a few facts and a link to the original source.`,
+			},
+			{
+				eyebrow: "03 · Nothing is hidden",
+				text: "The site and the cards themselves live in an open repository. Every change is visible in the history and open to challenge - and there are no ads and no paywall.",
+			},
+			{
+				eyebrow: "04 · Who keeps it growing",
+				text: "Anyone. Know a project that is missing - fill in a card following the existing ones and send a pull request.",
+			},
+		],
+	},
+} satisfies Record<string, Copy>;
+
+const known: Record<string, Copy | undefined> = COPY;
+const copy: Copy = known[locale] ?? known[defaultLocale] ?? COPY.ru;
+
+const addHref = getRelativeLocaleUrl(locale, "add");
+
+const statements = copy.statements(totals).map((statement, index) => ({
+	...statement,
+	gradient: GRADIENTS[index],
+	...(index === GRADIENTS.length - 1 && { cta: { href: addHref, label: copy.cta } }),
+}));
+---
+
+<section class={cn("mx-auto max-w-2xl py-16", className)}>
+	<h2 class="text-center font-black text-3xl text-balance sm:text-4xl">
+		{heading ?? copy.heading}
+	</h2>
+
+	{
+		/*
+		 * Прилипание чисто на CSS: у каждой карточки `position: sticky` с общим
+		 * `top`, поэтому следующая наезжает на предыдущую по мере прокрутки.
+		 * Скрипта и наблюдателя здесь нет вовсе.
+		 *
+		 * `top` считается от высоты шапки, а не задан числом: иначе первая
+		 * прилипшая карточка уезжала бы под нее.
+		 */
+	}
+	<ol class="mt-12 flex flex-col gap-8">
+		{
+			statements.map((item) => (
+				<li
+					class="sticky top-[calc(var(--sticky-top))] grid aspect-square place-content-center gap-4 rounded-3xl corner-squircle p-10 text-white sm:p-12"
+					style={`background-image:${item.gradient}`}
+				>
+					<p class="font-semibold text-xs uppercase tracking-[0.14em] opacity-80">
+						{item.eyebrow}
+					</p>
+					<p class="text-balance font-medium text-xl leading-snug sm:text-3xl sm:leading-tight">
+						{item.text}
+					</p>
+					{item.cta && (
+						<a
+							href={item.cta.href}
+							class="w-fit rounded-full bg-white/15 px-4 py-2 font-semibold text-sm ring-1 ring-white/25 backdrop-blur transition hover:bg-white/25"
+						>
+							{item.cta.label}
+						</a>
+					)}
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<style>
+	section {
+		/* Шапка перекрывает прилипшую карточку, если не отступить на ее высоту. */
+		--sticky-top: 6rem;
+	}
+
+	/*
+	 * Прилипание - это движение, привязанное к прокрутке, а не автоплей:
+	 * при `reduce` карточки просто идут списком, ничего не наезжает.
+	 */
+	@media (prefers-reduced-motion: reduce) {
+		li {
+			position: static;
+		}
+	}
+</style>

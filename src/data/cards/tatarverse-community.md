@@ -8,6 +8,7 @@ facts:
 url: "https://tatarverse.cc/"
 pubDate: "2026-08-26"
 logo: "../../assets/images/logo/tatarverse.png"
-tags: ["community"]
+categories: ["community"]
+tags: ["language", "culture", "society"]
 peoples: ["tatar", "bashkir", "crimean-tatar"]
 ---

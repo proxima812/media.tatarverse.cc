@@ -8,6 +8,7 @@ facts:
 url: "https://qirimca.org/index.php/en/projects/kirim-akademiyasi"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/kirim-akademiyasi-channel.png"
-tags: ["community"]
+categories: ["community"]
+tags: ["language", "history", "culture", "education", "society", "course", "educational"]
 peoples: ["crimean-tatar"]
 ---

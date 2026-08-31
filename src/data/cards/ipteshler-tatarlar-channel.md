@@ -7,6 +7,7 @@ facts:
   - "Делится аудиопроизведениями и рецензиями"
 url: "https://t.me/ipteshler"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["news", "audiobook"]
 peoples: ["tatar"]
 ---

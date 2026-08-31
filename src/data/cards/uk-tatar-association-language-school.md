@@ -8,6 +8,7 @@ facts:
   - "Кроме занятий, сообщество проводит встречи татарской молодежи"
 url: "https://en.tatar.org.uk/about-ukta/"
 pubDate: "2026-08-21"
-tags: ["lessons"]
+categories: ["lessons"]
+tags: ["language", "culture", "education", "society", "children", "school", "for-children", "educational"]
 peoples: ["tatar"]
 ---

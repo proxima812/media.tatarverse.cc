@@ -8,6 +8,7 @@ facts:
 url: "https://meta.wikimedia.org/wiki/Wikimedia_Community_of_Tatar_language_User_Group"
 pubDate: "2026-08-21"
 
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "society", "encyclopedia"]
 peoples: ["tatar", "bashkir"]
 ---

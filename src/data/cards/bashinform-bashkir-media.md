@@ -7,6 +7,7 @@ facts:
   - "Освещает общественную и культурную жизнь республики"
 url: "https://bash.bashinform.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "news"]
 peoples: ["bashkir"]
 ---

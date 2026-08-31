@@ -7,6 +7,7 @@ facts:
   - "Размещение рекламы идет через биржу telega.in"
 url: "https://t.me/kitap_fm"
 pubDate: "2026-08-29"
-tags: ["media"]
+categories: ["media"]
+tags: ["literature", "music", "radio", "book", "audiobook"]
 peoples: ["tatar"]
 ---

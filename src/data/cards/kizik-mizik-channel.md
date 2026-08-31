@@ -7,6 +7,7 @@ facts:
   - "Входит в список из 40 татарских Telegram-каналов Всемирного конгресса татар"
 url: "https://t.me/kizik_mizik"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["video"]
 peoples: ["tatar"]
 ---

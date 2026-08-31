@@ -7,6 +7,7 @@ facts:
   - "Вещание доступно за пределами Татарстана"
 url: "https://tnv.ru/tat/"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "culture", "news", "technology", "video", "television"]
 peoples: ["tatar"]
 ---

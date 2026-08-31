@@ -7,6 +7,7 @@ facts:
   - "Автор выпустил книгу «Татарский орнамент. Глазами дизайнера», обобщающую его исследования"
 url: "https://ridero.ru/books/tatarskii_ornament_glazami_dizainera/"
 pubDate: "2026-08-21"
-tags: ["graphics"]
+categories: ["graphics"]
+tags: ["design"]
 peoples: ["tatar"]
 ---

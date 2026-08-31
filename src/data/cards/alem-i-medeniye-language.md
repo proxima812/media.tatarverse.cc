@@ -7,6 +7,7 @@ facts:
   - "Есть программа транслитерации текста с латиницы на кириллицу и обратно"
 url: "http://medeniye.org/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "library", "dictionary"]
 peoples: ["crimean-tatar"]
 ---

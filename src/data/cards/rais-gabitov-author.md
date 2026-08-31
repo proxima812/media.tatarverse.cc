@@ -7,6 +7,7 @@ facts:
   - "Контент посвящен путешествиям, географии и туризму по Южному Уралу и Башкортостану"
 url: "https://www.instagram.com/raissia_official/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["blogger", "researcher", "culture", "travel", "blog"]
 peoples: ["bashkir"]
 ---

@@ -7,6 +7,7 @@ facts:
   - "Название отсылает к древнему тюркскому символу небесного волка"
 url: "https://www.youtube.com/@%D0%9A%D1%83%D0%BA%D0%91%D1%83%D1%80%D0%B5-%D1%8E3%D1%81"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["history", "culture", "video"]
 peoples: ["bashkir"]
 ---

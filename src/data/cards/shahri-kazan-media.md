@@ -7,6 +7,7 @@ facts:
   - "Газета распространяется в Татарстане и других регионах России"
 url: "https://shahrikazan.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "news", "politics", "society", "website", "newspaper"]
 peoples: ["tatar"]
 ---

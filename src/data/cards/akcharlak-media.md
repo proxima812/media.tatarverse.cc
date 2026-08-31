@@ -7,6 +7,7 @@ facts:
   - "Редакция принимает от читателей вопросы, фотографии, аудио и видеосообщения"
 url: "https://t.me/akcharlakgazeta"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["history", "society", "newspaper"]
 peoples: ["tatar"]
 ---

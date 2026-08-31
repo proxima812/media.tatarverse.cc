@@ -7,6 +7,7 @@ facts:
   - "Тексты распространяются на условиях свободных лицензий Wikimedia"
 url: "https://tt.wikipedia.org/"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "encyclopedia"]
 peoples: ["tatar"]
 ---

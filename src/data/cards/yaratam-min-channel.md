@@ -7,6 +7,7 @@ facts:
   - "Предложения и реклама - через @tartipletatar_bot"
 url: "https://t.me/yaratam_min"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["blog"]
 peoples: ["tatar"]
 ---

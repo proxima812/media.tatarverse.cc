@@ -8,6 +8,7 @@ facts:
 url: "https://media.tatarverse.cc/"
 pubDate: "2026-08-26"
 logo: "../../assets/images/logo/media-tatarverse.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "culture", "education", "art", "app", "course", "educational"]
 peoples: ["tatar", "bashkir", "crimean-tatar"]
 ---

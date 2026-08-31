@@ -7,6 +7,7 @@ facts:
   - "Регулярно публикует новые материалы на башкирском языке"
 url: "https://ye102.ru/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["news", "society", "youth", "newspaper", "for-youth"]
 peoples: ["bashkir"]
 ---

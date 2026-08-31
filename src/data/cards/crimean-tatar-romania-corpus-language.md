@@ -7,6 +7,7 @@ facts:
   - "Принимает вклад через issues и pull request'ы"
 url: "https://tatar-tili-tilsizgasi-surasi.github.io/crimean-tatar-romania-corpus/"
 pubDate: "2026-08-21"
+categories: ["language"]
 tags: ["language"]
 peoples: ["crimean-tatar"]
 ---

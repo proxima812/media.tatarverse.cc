@@ -1,9 +1,9 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
-import { tagLabel } from "@/components/Catalog/labels";
-import { tagIcon } from "@/components/Catalog/tagIcons";
-import type { Tag } from "@/components/Catalog/tags";
+import { categoryIcon } from "@/components/Catalog/categoryIcons";
+import { categoryLabel } from "@/components/Catalog/labels";
+import type { Category } from "@/components/Catalog/taxonomy";
 import Button from "@/components/partials/Button.astro";
 import Tooltip from "@/components/partials/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
@@ -11,33 +11,33 @@ import { useTranslations } from "@/i18n";
 
 interface Props {
 	locale: LocaleCode;
-	/** Теги, у которых есть карточки. Пустых вкладок в тулбаре не бывает. */
-	tags: Tag[];
-	/** Тег текущей страницы. `undefined` - раздел «Все проекты». */
-	activeTag?: Tag | undefined;
+	/** Категории, у которых есть карточки. */
+	categories: Category[];
+	/** Категория текущей страницы. `undefined` - весь каталог. */
+	activeCategory?: Category | undefined;
 }
 
-const { locale, tags, activeTag } = Astro.props;
+const { locale, categories, activeCategory } = Astro.props;
 const t = useTranslations(locale);
 
 /** «Все проекты» + по одной записи на тег - общий список для строки вкладок и диалога. */
 const entries = [
 	{
 		href: getRelativeLocaleUrl(locale, "catalog"),
-		label: t("catalog.filter.all"),
+		label: t("catalog.category.all"),
 		icon: "mdi:view-grid-outline",
-		active: activeTag === undefined,
+		active: activeCategory === undefined,
 	},
-	...tags.map((tag) => ({
-		href: getRelativeLocaleUrl(locale, `catalog/${tag}`),
-		label: tagLabel(locale, tag),
-		icon: tagIcon(tag),
-		active: tag === activeTag,
+	...categories.map((category) => ({
+		href: getRelativeLocaleUrl(locale, `catalog/${category}`),
+		label: categoryLabel(locale, category),
+		icon: categoryIcon(category),
+		active: category === activeCategory,
 	})),
 ];
 
 /*
- * Вкладки - настоящие ссылки на `/catalog` и `/catalog/<tag>`, а не кнопки с
+ * Вкладки - настоящие ссылки на `/catalog` и `/catalog/<category>`, а не кнопки с
  * JS-фильтром: у каждого тега своя страница (см. `starter-i18n`), поэтому
  * переключение - обычная навигация, и активное состояние - `aria-current`,
  * а не запоминаемый клиентом `aria-pressed`.
@@ -65,10 +65,10 @@ const viewClass =
 ---
 
 <div class="flex flex-wrap items-center justify-between gap-3 px-5 pb-8">
-	<nav aria-label={t("catalog.filter.label")} class="min-w-0 flex-1">
-		<ul data-tag-list class="flex items-center gap-2 overflow-hidden">
+	<nav aria-label={t("catalog.category.label")} class="min-w-0 flex-1">
+		<ul data-category-list class="flex items-center gap-2 overflow-hidden">
 			{entries.map((entry) => (
-					<li data-tag-item>
+					<li data-category-item>
 						<a href={entry.href} class={tabClass} aria-current={entry.active ? "page" : undefined}>
 							<Icon name={entry.icon} class="size-4 shrink-0" aria-hidden="true" />
 							{entry.label}
@@ -79,19 +79,19 @@ const viewClass =
 			<!--
 				Всегда в конце строки на мобильном: на узком экране пилюли почти
 				никогда не влезают все разом, а мигающая по ширине контента кнопка
-				(то есть, то нет) хуже стабильно видимой. `[data-tag-list]` прячет
-				лишние `[data-tag-item]` скриптом ниже - эта кнопка их место не
+				(то есть, то нет) хуже стабильно видимой. `[data-category-list]` прячет
+				лишние `[data-category-item]` скриптом ниже - эта кнопка их место не
 				занимает, стоит своим последним `<li>`.
 			-->
 			<li class="sm:hidden">
 				<Button
 					preset="soft"
-					data-tags-open
+					data-categories-open
 					aria-haspopup="dialog"
-					aria-controls="catalog-tags-dialog"
+					aria-controls="catalog-categories-dialog"
 					class="gap-1"
 				>
-					{t("catalog.filter.allTags")}
+					{t("catalog.category.allCategories")}
 					<svg
 						width="14"
 						height="14"
@@ -162,17 +162,17 @@ const viewClass =
 </div>
 
 <dialog
-	id="catalog-tags-dialog"
-	data-tags-dialog
+	id="catalog-categories-dialog"
+	data-categories-dialog
 	class="m-auto max-h-[70vh] w-[calc(100%-2rem)] max-w-sm overflow-y-auto rounded-3xl border border-border bg-background p-4 shadow-black/10 shadow-lg backdrop:bg-background/70 backdrop:backdrop-blur-sm"
 >
 	<div class="flex items-center justify-between gap-4 pb-3">
-		<p class="font-semibold text-foreground">{t("catalog.filter.label")}</p>
+		<p class="font-semibold text-foreground">{t("catalog.category.label")}</p>
 		<Button
 			preset="ghost"
 			size="icon"
-			data-tags-close
-			aria-label={t("catalog.filter.close")}
+			data-categories-close
+			aria-label={t("catalog.category.close")}
 			class="group relative"
 		>
 			<svg
@@ -187,7 +187,7 @@ const viewClass =
 			>
 				<path d="M6 6l12 12M18 6L6 18" />
 			</svg>
-			<Tooltip label={t("catalog.filter.close")} />
+			<Tooltip label={t("catalog.category.close")} />
 		</Button>
 	</div>
 
@@ -212,10 +212,10 @@ const viewClass =
  * а внутри диалога «Все теги» есть и «Все проекты» - пункт не теряется,
  * просто уходит на один клик дальше.
  */
-function setupTagOverflow(list: HTMLElement) {
-	const items = list.querySelectorAll<HTMLElement>("[data-tag-item]");
+function setupCategoryOverflow(list: HTMLElement) {
+	const items = list.querySelectorAll<HTMLElement>("[data-category-item]");
 	const moreItem = list
-		.querySelector<HTMLElement>("[data-tags-open]")
+		.querySelector<HTMLElement>("[data-categories-open]")
 		?.closest("li");
 	if (!moreItem || items.length === 0) return;
 
@@ -242,7 +242,7 @@ function setupTagOverflow(list: HTMLElement) {
 }
 
 /** `aria-controls` указывает на id диалога - та же связка, что у мобильного меню в `Header.astro`. */
-function setupTagsDialog(openButton: HTMLButtonElement) {
+function setupCategoriesDialog(openButton: HTMLButtonElement) {
 	const dialog = document.getElementById(
 		openButton.getAttribute("aria-controls") ?? "",
 	);
@@ -261,7 +261,7 @@ function setupTagsDialog(openButton: HTMLButtonElement) {
 	});
 
 	dialog
-		.querySelector<HTMLButtonElement>("[data-tags-close]")
+		.querySelector<HTMLButtonElement>("[data-categories-close]")
 		?.addEventListener("click", () => dialog.close());
 
 	// Клик по `::backdrop` и по паддингу самого `<dialog>` - цель события сам
@@ -271,12 +271,14 @@ function setupTagsDialog(openButton: HTMLButtonElement) {
 	});
 }
 
-for (const list of document.querySelectorAll<HTMLElement>("[data-tag-list]")) {
-	setupTagOverflow(list);
+for (const list of document.querySelectorAll<HTMLElement>(
+	"[data-category-list]",
+)) {
+	setupCategoryOverflow(list);
 }
 for (const openButton of document.querySelectorAll<HTMLButtonElement>(
-	"[data-tags-open]",
+	"[data-categories-open]",
 )) {
-	setupTagsDialog(openButton);
+	setupCategoriesDialog(openButton);
 }
 </script>

@@ -7,6 +7,7 @@ facts:
   - "Транслирует общественные и культурные программы"
 url: "https://bash.news/bst"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["language", "culture", "news", "society", "technology", "television"]
 peoples: ["bashkir"]
 ---

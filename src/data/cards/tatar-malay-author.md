@@ -7,6 +7,7 @@ facts:
   - "Контент строится на юморе и разговорном татарском языке"
 url: "https://www.instagram.com/tatar__malay/"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["blogger", "language", "humor", "youth", "blog"]
 peoples: ["tatar"]
 ---

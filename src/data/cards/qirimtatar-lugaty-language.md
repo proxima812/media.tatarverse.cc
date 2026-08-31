@@ -8,6 +8,7 @@ facts:
 url: "https://apps.apple.com/us/app/id1457493656"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qirimtatar-lugaty-language.png"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "app", "mobile-app", "dictionary"]
 peoples: ["crimean-tatar"]
 ---

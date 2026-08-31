@@ -7,6 +7,7 @@ facts:
   - "На YouTube публикует крымскотатарские трип-хоп треки"
 url: "https://www.youtube.com/@AzizaEskender"
 pubDate: "2026-08-21"
-tags: ["author"]
+categories: ["author"]
+tags: ["musician", "artist", "poetry", "music", "art", "video"]
 peoples: ["crimean-tatar"]
 ---

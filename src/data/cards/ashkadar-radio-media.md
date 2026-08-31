@@ -7,6 +7,7 @@ facts:
   - "Выпускает разговорные программы о науке и культуре"
 url: "https://bash.news/ashkadar"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "music", "culture", "radio"]
 peoples: ["bashkir"]
 ---

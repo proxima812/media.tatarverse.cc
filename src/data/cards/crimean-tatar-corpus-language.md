@@ -8,6 +8,7 @@ facts:
   - "Интерфейс доступен на английском, украинском и крымскотатарском языках"
 url: "https://ctcorpus.org/en"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "technology"]
 peoples: ["crimean-tatar"]
 ---

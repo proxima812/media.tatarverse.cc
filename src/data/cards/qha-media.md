@@ -8,6 +8,7 @@ facts:
 url: "https://www.qha.com.tr/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/qha-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["news", "for-diaspora"]
 peoples: ["crimean-tatar"]
 ---

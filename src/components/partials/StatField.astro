@@ -1,0 +1,410 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { type CardWithLogo, driftVars } from "@/components/CatalogStats/logos";
+import type { LocaleCode } from "@/config/types";
+import { usePlural, useTranslations } from "@/i18n";
+import { cn } from "@/utils/lib/cn";
+
+interface Props {
+	locale: LocaleCode;
+	cards: CollectionEntry<"cards">[];
+	/** Строка над стопкой цифр. Она стоит на месте, пока цифры приходят и уходят. */
+	eyebrow?: string;
+	/** Сколько пикселей прокрутки приводит одну строку. */
+	step?: number;
+	/** Высота прилипшей сцены. Любая css-длина. */
+	stageHeight?: string;
+	class?: string;
+}
+
+const {
+	locale,
+	cards,
+	eyebrow,
+	step = 280,
+	stageHeight = "min(80svh, 34rem)",
+	class: className = "",
+} = Astro.props;
+
+const t = useTranslations(locale);
+const plural = usePlural(locale);
+const number = new Intl.NumberFormat(locale);
+
+/*
+ * Цифры считаются из коллекции, а не хранятся в словаре: карточки добавляются
+ * пулл-реквестами, и вручную поддерживаемое число устарело бы в первый же день.
+ */
+const stats = [
+	{ key: "stats.projects", value: cards.length },
+	{ key: "stats.categories", value: new Set(cards.flatMap((card) => card.data.categories)).size },
+	{ key: "stats.peoples", value: new Set(cards.flatMap((card) => card.data.peoples)).size },
+].map((stat) => `${number.format(stat.value)} ${plural(stat.key, stat.value)}`);
+
+/**
+ * Логотип в поле вокруг цифр.
+ *
+ * - `x` - позиция по ширине в процентах от рабочей зоны, а не от сцены:
+ *   зона отступает от краев сцены примерно на 150px на широком экране,
+ *   поэтому `x: 0` - это не край блока, а край отступа.
+ * - `y` - сколько rem выше или ниже середины сцены. Считать от центра, а не
+ *   от верха, приходится потому, что цифры держат примерно один размер при
+ *   любой ширине: расстояние до них меряется от них же.
+ * - `mid` - логотип стоит в средней полосе, вровень с цифрами. На узкой
+ *   сцене такому нет места, и он прячется.
+ */
+interface Tile {
+	id: string;
+	x: number;
+	y: number;
+	size: number;
+	mid?: boolean;
+}
+
+/*
+ * Раскладка ручная, не случайная - по той же причине, что и подборка в
+ * `CatalogStats/logos.ts`: витрина каталога это редакторское решение, а
+ * `Math.random()` дал бы то три логотипа в одной точке, то пустую половину.
+ * Разнобой набран руками: шаг по горизонтали неровный, высоты в верхней и
+ * нижней полосе гуляют на несколько rem, размеры не повторяются подряд.
+ *
+ * Средняя полоса (|y| меньше ~8rem) занята цифрами - там стоят только два
+ * логотипа по самым краям.
+ */
+const TILES: Tile[] = [
+	{ id: "idel-realii-media", x: 4, y: -11.2, size: 3.5 },
+	{ id: "tatarverse-community", x: 18, y: -14.1, size: 4.5 },
+	{ id: "neurotatarlar-language", x: 32, y: -9.4, size: 3.25 },
+	{ id: "kazan-utlary-media", x: 49, y: -13.4, size: 4.75 },
+	{ id: "tamyr-channel-channel", x: 64, y: -10.1, size: 3.75 },
+	{ id: "qirim-junior-language", x: 80, y: -14.6, size: 4.25 },
+	{ id: "emel-zhurnal-media", x: 96, y: -9.8, size: 3.5 },
+
+	{ id: "ana-yurt-language", x: 1, y: -1.4, size: 4.5, mid: true },
+	{ id: "qha-media", x: 99, y: 2.2, size: 4.25, mid: true },
+
+	{ id: "bashkir-teacher-app-language", x: 8, y: 13.4, size: 4 },
+	{ id: "tatar-radiosy-media", x: 26, y: 10.2, size: 3.5 },
+	{ id: "media-tatarverse-media", x: 44, y: 14.8, size: 4.5 },
+	{ id: "idel-zhurnal-media", x: 62, y: 10.6, size: 3.25 },
+	{ id: "qaradeniz-production-channel", x: 84, y: 13.9, size: 4.25 },
+];
+
+/*
+ * Неизвестный id роняет сборку, а не тихо пропускает слот: карточку могли
+ * переименовать или удалить, и дырка в витрине заметна куда позже, чем ошибка
+ * сборки. Тот же прием, что в `resolveLogos`.
+ */
+const byId = new Map(cards.map((card) => [card.id, card]));
+
+const placed = TILES.map((tile) => {
+	const card = byId.get(tile.id);
+	if (!card) {
+		throw new Error(
+			`StatField: карточки "${tile.id}" нет в коллекции cards - проверьте TILES в этом файле`,
+		);
+	}
+	if (!card.data.logo) {
+		throw new Error(`StatField: у карточки "${tile.id}" нет логотипа - выберите другую в TILES`);
+	}
+
+	return { tile, card: card as CardWithLogo };
+});
+
+/** Стопка выше трех строк выталкивает поле наружу, иначе ближние логотипы достанут до цифр. */
+const lift = Math.max(stats.length - 3, 0) * 1.1;
+
+/** По шагу на строку плюс последний - чтобы собранную стопку подержали перед тем, как сцена отлипнет. */
+const travel = (stats.length + 1) * step;
+
+/** Максимальный css-размер плитки (`--tile` в rem) - от него считается исходник растра. */
+const BASE_PX = 80;
+
+/**
+ * На сколько поле расходится от центра за весь показ. Смысл движения - дать
+ * стопке цифр расти, не упираясь в логотипы: строк становится больше, и поле
+ * расступается ровно настолько, насколько они занимают.
+ */
+const PUSH_X = 64;
+const PUSH_Y = 26;
+---
+
+<section
+	class={cn("stat-field w-full", className)}
+	style={`--stat-step:${step}px;--stat-travel:${travel}px;--stat-stage:${stageHeight}`}
+	data-stat-field
+>
+	<div class="stat-field-track" data-stat-track>
+		<div class="stat-field-stage" data-stat-stage>
+			<div class="stat-field-zone pointer-events-none absolute" aria-hidden="true">
+				{
+					placed.map(({ tile, card }) => (
+						<div
+							class:list={["stat-slot absolute", tile.mid && "stat-slot-mid"]}
+							style={[
+								`left:${tile.x}%`,
+								`top:calc(50% + ${(tile.y + Math.sign(tile.y) * lift).toFixed(2)}rem)`,
+								`--push-x:${(Math.sign(tile.x - 50) * PUSH_X).toFixed(0)}px`,
+								`--push-y:${(Math.sign(tile.y) * PUSH_Y).toFixed(0)}px`,
+							].join(";")}
+							title={card.data.name}
+						>
+							{/*
+							 * Траектория берется из `driftVars` - той же функции, что кормит
+							 * витрину в `CatalogStats`: три точки в полярных координатах,
+							 * выведенные из id карточки. Значения псевдослучайные, но
+							 * стабильные между сборками, поэтому статика не «дергается».
+							 */}
+							<div
+								class="stat-tile drift overflow-hidden rounded-[28%] corner-squircle border border-border bg-background"
+								style={`--tile:${tile.size};${driftVars(tile.id)}`}
+							>
+								<Image
+									src={card.data.logo}
+									alt=""
+									width={Math.round(BASE_PX * (tile.size / 4.75))}
+									height={Math.round(BASE_PX * (tile.size / 4.75))}
+									densities={[1, 2]}
+									format="webp"
+									class="h-full w-full object-cover"
+								/>
+							</div>
+						</div>
+					))
+				}
+			</div>
+
+			<div class="relative grid justify-items-center gap-2 text-center">
+				<p class="stat-eyebrow font-medium text-muted-foreground">
+					{eyebrow ?? t("stats.label")}
+				</p>
+
+				<div class="grid justify-items-center">
+					{
+						stats.map((stat) => (
+							<div class="stat-line font-bold tracking-tight tabular-nums" data-stat-line>
+								{stat}
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.stat-field-track {
+		/* Сцену держат по шагу на строку, так что расстояние прокрутки - это и есть расписание. */
+		height: calc(var(--stat-stage) + var(--stat-travel));
+	}
+
+	/*
+	 * Сцена прилипает по середине экрана, а не к его верху. Это и есть ответ на
+	 * «показ начинается слишком поздно»: при `top: 0` секцию надо было домотать
+	 * до самого верха окна, то есть прокрутить почти целый экран впустую. С
+	 * серединой она закрепляется ровно тогда, когда попадает в фокус, и первая
+	 * строка идет сразу (скрипт ниже стартует расписание еще чуть раньше).
+	 */
+	.stat-field-stage {
+		container-type: inline-size;
+		position: sticky;
+		top: max(0px, calc((100svh - var(--stat-stage)) / 2));
+		display: grid;
+		place-items: center;
+		height: var(--stat-stage);
+		overflow: hidden;
+		padding: 2.5rem 1rem;
+		isolation: isolate;
+	}
+
+	/*
+	 * Отступ рабочей зоны от краев сцены: логотипы раскиданы по всей ширине, но
+	 * не липнут к границе экрана. На широком - около 150px, на узком ужимается,
+	 * иначе зона схлопнулась бы в полоску.
+	 *
+	 * `cqi` считается здесь, а не на самой секции: единицы контейнерных запросов
+	 * меряются по ближайшему контейнеру-предку, а контейнер тут - сцена, то есть
+	 * родитель этого элемента. На секции они бы упали в размер вьюпорта.
+	 */
+	.stat-field-zone {
+		inset-block: 0;
+		inset-inline: clamp(1rem, 12cqi, 150px);
+	}
+
+	.stat-eyebrow {
+		font-size: clamp(0.75rem, 1.9cqi, 0.875rem);
+	}
+
+	/*
+	 * Слот отвечает за место логотипа, сам логотип - только за свой вид и
+	 * движение. Разделено потому, что слот двигает `translate`, а траектория
+	 * идет через `transform`: на одном элементе анимация затерла бы позицию.
+	 *
+	 * `--q` - общий прогресс показа, его пишет скрипт. По умолчанию 0, поэтому
+	 * без JS поле просто стоит на своих местах.
+	 */
+	.stat-slot {
+		translate: calc(-50% + var(--q, 0) * var(--push-x)) calc(-50% + var(--q, 0) * var(--push-y));
+		will-change: translate;
+	}
+
+	/* Средняя полоса вровень с цифрами - на узкой сцене там нет места. */
+	.stat-slot-mid {
+		display: none;
+	}
+
+	@container (min-width: 44rem) {
+		.stat-slot-mid {
+			display: block;
+		}
+	}
+
+	.stat-tile {
+		/* `--tile` - размер в rem при опорной ширине сцены 48rem. */
+		width: clamp(2rem, calc(var(--tile) * 2.083cqi), calc(var(--tile) * 1rem));
+		height: clamp(2rem, calc(var(--tile) * 2.083cqi), calc(var(--tile) * 1rem));
+		box-shadow: 0 14px 30px -14px rgb(9 9 11 / 0.45);
+	}
+
+	/*
+	 * Хаотичное движение «на месте»: три точки траектории приходят инлайновыми
+	 * переменными (`logos.ts`), поэтому один @keyframes обслуживает все
+	 * логотипы, а разными их делают длительность и отрицательная задержка.
+	 * Анимируется только transform - без layout и paint.
+	 */
+	.drift {
+		animation: drift var(--drift-duration) ease-in-out var(--drift-delay) infinite;
+		will-change: transform;
+	}
+
+	@keyframes drift {
+		0%,
+		100% {
+			transform: translate3d(0, 0, 0) rotate(0deg);
+		}
+		25% {
+			transform: translate3d(var(--dx-1), var(--dy-1), 0) rotate(var(--rot-1));
+		}
+		50% {
+			transform: translate3d(var(--dx-2), var(--dy-2), 0) rotate(var(--rot-2));
+		}
+		75% {
+			transform: translate3d(var(--dx-3), var(--dy-3), 0) rotate(var(--rot-3));
+		}
+	}
+
+	/*
+	 * `--p` - собственный прогресс строки, его пишет скрипт ниже. Все остальное
+	 * выводится из него, поэтому прокрутка вверх бесплатно отыгрывает появление
+	 * назад. Без скрипта - и при `prefers-reduced-motion` - `--p` остается
+	 * единицей, и стопка просто стоит на месте целиком.
+	 */
+	.stat-line {
+		--p: 1;
+		/* `--ink` отстает от `--p`: строка сначала встает на место и только потом набирает цвет. */
+		--ink: clamp(0, (var(--p) - 0.45) * 1.8, 1);
+		/* А проявляется, наоборот, сразу: строка почти весь путь едет уже видимой, светло-серой. */
+		--fade: clamp(0, var(--p) * 3.5, 1);
+
+		/* Цифры держатся около 60% ширины сцены - это и не пускает логотипы к тексту. */
+		font-size: clamp(1.375rem, 8cqi, 3.75rem);
+		line-height: 1.08;
+		opacity: var(--fade);
+		/*
+		 * Строка приходит издалека - примерно на две с половиной своих высоты ниже
+		 * места, а не подрагивает у него: в оригинале видно, как она поднимается
+		 * снизу сцены, и короткий ход читается как дрожание, а не как приезд.
+		 */
+		transform: translateY(calc((1 - var(--p)) * 2.6em));
+		color: color-mix(in oklab, var(--color-border), var(--color-foreground) calc(var(--ink) * 100%));
+		will-change: transform, opacity;
+	}
+
+	/* Поле стоит на месте, стопка остается собранной - скрипт ниже сам не запускается. */
+	@media (prefers-reduced-motion: reduce) {
+		.drift {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	/** Правда, когда между дорожкой и страницей ничто не обрезает и не скроллит - значит `sticky` удержит. */
+	function isPinnable(node: HTMLElement) {
+		for (let el = node.parentElement; el && el !== document.body; el = el.parentElement) {
+			const { overflowX, overflowY } = getComputedStyle(el);
+			if (overflowX !== "visible" || overflowY !== "visible") return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Насколько раньше закрепления сцены начинается показ. Пока секция въезжает
+	 * снизу, она уже в фокусе - ждать, когда она встанет на место, значит
+	 * потратить впустую половину экрана прокрутки.
+	 */
+	const LEAD = 140;
+
+	function initStatField() {
+		if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		for (const field of document.querySelectorAll<HTMLElement>("[data-stat-field]")) {
+			if (field.dataset.statReady === "true") continue;
+			field.dataset.statReady = "true";
+
+			const track = field.querySelector<HTMLElement>("[data-stat-track]");
+			const stage = field.querySelector<HTMLElement>("[data-stat-stage]");
+			const lines = [...field.querySelectorAll<HTMLElement>("[data-stat-line]")];
+			if (!track || !stage || lines.length === 0) continue;
+
+			/*
+			 * Сцена прилипает только к настоящему скроллпорту. Внутри обрезанного
+			 * контейнера она не прилипнет никогда, и показ отыграл бы, когда блок
+			 * уже уехал с экрана - поэтому схлопываем запас прокрутки и оставляем
+			 * `--p` единицей, то есть собранную стопку.
+			 */
+			if (!isPinnable(track)) {
+				track.style.height = "auto";
+				continue;
+			}
+
+			const step =
+				Number.parseFloat(getComputedStyle(field).getPropertyValue("--stat-step")) || 240;
+			/** Столько от своего шага строка входит - чтобы успеть встать до начала следующей. */
+			const ramp = step * 0.7;
+			let frame = 0;
+
+			const update = () => {
+				frame = 0;
+
+				/* Отступ закрепления читается из стиля: он зависит от высоты окна и меняется с ней. */
+				const pin = Number.parseFloat(getComputedStyle(stage).top) || 0;
+				const rect = track.getBoundingClientRect();
+				const room = Math.max(rect.height - stage.offsetHeight, 0);
+				/** Сколько прокрутки уже отсчитано - те самые пиксели, по которым расписан показ. */
+				const held = Math.min(Math.max(pin + LEAD - rect.top, 0), room);
+
+				/* Общий прогресс показа - на нем расходится поле логотипов. */
+				const span = Math.max(lines.length * step, 1);
+				field.style.setProperty("--q", Math.min(Math.max(held / span, 0), 1).toFixed(4));
+
+				lines.forEach((line, index) => {
+					const progress = (held - index * step) / ramp;
+					line.style.setProperty("--p", String(Math.min(Math.max(progress, 0), 1)));
+				});
+			};
+
+			const request = () => {
+				if (frame === 0) frame = requestAnimationFrame(update);
+			};
+
+			addEventListener("scroll", request, { passive: true });
+			addEventListener("resize", request);
+			update();
+		}
+	}
+
+	initStatField();
+	document.addEventListener("astro:page-load", initStatField);
+</script>

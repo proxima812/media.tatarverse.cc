@@ -7,6 +7,7 @@ facts:
   - "Выпускает «Фикер-подкаст»"
 url: "https://www.youtube.com/@UrduckTv"
 pubDate: "2026-08-21"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["music", "news", "video", "podcast"]
 peoples: ["tatar"]
 ---

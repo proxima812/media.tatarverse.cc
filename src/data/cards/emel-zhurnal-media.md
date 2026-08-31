@@ -8,6 +8,7 @@ facts:
 url: "https://emelvakfi.org/emel-dergisi-hakkindaki-akademik-calismalar/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/emel-zhurnal-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["magazine", "for-diaspora"]
 peoples: ["crimean-tatar"]
 ---

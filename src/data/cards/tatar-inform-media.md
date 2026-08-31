@@ -7,6 +7,7 @@ facts:
   - "Публикует материалы о культуре, языке и жизни татар в России и мире"
 url: "https://tatar-inform.tatar/"
 pubDate: "2026-08-21"
-tags: ["media"]
+categories: ["media"]
+tags: ["language", "news"]
 peoples: ["tatar"]
 ---

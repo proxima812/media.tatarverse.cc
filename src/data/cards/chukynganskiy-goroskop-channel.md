@@ -7,6 +7,7 @@ facts:
   - "Построен на игре с татарскими стереотипами и поговорками"
 url: "https://t.me/chukinganskigoroskop"
 pubDate: "2026-08-29"
-tags: ["channel"]
+categories: ["channel"]
+tags: ["humor"]
 peoples: ["tatar"]
 ---

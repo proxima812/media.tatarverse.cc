@@ -8,6 +8,7 @@ facts:
   - "При центре также работает образовательная школа"
 url: "https://ncktrp.pl/"
 pubDate: "2026-08-21"
-tags: ["community"]
+categories: ["community"]
+tags: ["culture", "society", "museum", "educational"]
 peoples: ["tatar"]
 ---

@@ -8,6 +8,7 @@ facts:
   - "Исходный код опубликован по лицензии GPL-2.0"
 url: "https://github.com/RHVoice/RHVoice"
 pubDate: "2026-08-21"
-tags: ["language"]
+categories: ["language"]
+tags: ["language", "open-source"]
 peoples: ["tatar"]
 ---

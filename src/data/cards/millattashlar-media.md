@@ -8,6 +8,7 @@ facts:
 url: "http://www.millattashlar.ru/"
 pubDate: "2026-08-21"
 logo: "../../assets/images/logo/millattashlar-media.png"
-tags: ["media"]
+categories: ["media"]
+tags: ["culture", "encyclopedia", "for-diaspora"]
 peoples: ["tatar"]
 ---
