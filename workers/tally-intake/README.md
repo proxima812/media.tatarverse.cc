@@ -34,7 +34,7 @@ const body = JSON.stringify({
     submissionId: "local-test-1",
     formId: "D4G9EE",
     formName: "media.tatarverse - авторы",
-    fields: [{ key: "q1", label: "Имя", value: "Тест" }],
+    fields: [{ key: "q1", label: "Имя", type: "INPUT_TEXT", value: "Тест" }],
   },
 });
 const sig = crypto.createHmac("sha256", secret).update(body).digest("base64");

@@ -6,15 +6,18 @@ name: Tally submission intake
 # воркер и настройка вебхука в самой Tally - отдельная часть плана.
 #
 # Ручной прогон на dev (без воркера), пока формы вебхук еще не настроен:
-#   gh workflow run tally-submission.yml -f payload='{"submissionId":"test-1","formId":"D4G9EE","formName":"media.tatarverse - авторы","submittedAt":"2026-09-03T12:00:00.000Z","fields":{"Имя":"Тест","Ссылка":"https://example.com"}}'
+#   gh workflow run tally-submission.yml -f payload='{"submissionId":"test-1","formId":"D4G9EE","formName":"media.tatarverse - авторы","submittedAt":"2026-09-03T12:00:00.000Z","fields":[{"key":"q1","label":"Имя","type":"INPUT_TEXT","value":"Тест"}]}'
 on:
   workflow_dispatch:
     inputs:
       payload:
         description: >-
           JSON одной строкой: {submissionId, formId, formName, submittedAt,
-          fields: {label: value}}. Присылает Worker, вложенность - внутри
-          строки, потому что у workflow_dispatch нет типа "объект".
+          fields: [{key, label, type, value, options}]}. Присылает Worker
+          почти без изменений - у полей с выбором (чекбоксы, дропдаун)
+          `value` это id варианта из `options`, текст мэппится здесь, а не
+          в Worker. Вложенность - внутри строки, потому что у
+          workflow_dispatch нет типа "объект".
         required: true
         type: string
 
@@ -34,11 +37,46 @@ jobs:
             const submission = JSON.parse(process.env.PAYLOAD);
             const { submissionId, formId, formName, submittedAt, fields } = submission;
 
-            if (!submissionId || typeof fields !== "object" || fields === null) {
+            if (!submissionId || !Array.isArray(fields)) {
               core.setFailed(
-                "payload обязан содержать submissionId и объект fields - проверь, что шлет Worker",
+                "payload обязан содержать submissionId и массив fields - проверь, что шлет Worker",
               );
               return;
+            }
+
+            // Значение поля мэппится по форме данных, а не по строке `type`
+            // (у Tally их много, и держать здесь исчерпывающий список хрупко):
+            //  - есть options - value это id варианта (или массив id) -
+            //    подставляем текст варианта;
+            //  - массив объектов (загруженные файлы: {name, url, ...}) -
+            //    ссылка на файл;
+            //  - любой другой массив/скаляр - как есть.
+            function renderFieldValue(field) {
+              const { value, options } = field;
+              if (value === null || value === undefined || value === "") return "-";
+
+              if (Array.isArray(options) && options.length > 0) {
+                const textById = new Map(options.map((o) => [o.id, o.text ?? o.id]));
+                if (Array.isArray(value)) {
+                  return value.map((id) => textById.get(id) ?? id).join(", ");
+                }
+                if (textById.has(value)) return textById.get(value);
+              }
+
+              if (Array.isArray(value)) {
+                return value
+                  .map((item) => {
+                    if (item && typeof item === "object") {
+                      return item.url && item.name ? `[${item.name}](${item.url})` : JSON.stringify(item);
+                    }
+                    return String(item);
+                  })
+                  .join(", ");
+              }
+
+              if (typeof value === "object") return JSON.stringify(value);
+
+              return String(value);
             }
 
             const CARD_SUBMISSION_LABEL = "card-submission";
@@ -74,26 +112,30 @@ jobs:
               return;
             }
 
-            const fieldEntries = Object.entries(fields).map(([label, value]) => {
-              const text = Array.isArray(value)
-                ? value.join(", ")
-                : typeof value === "object" && value !== null
-                  ? JSON.stringify(value)
-                  : String(value ?? "-");
-              return `**${label}**\n${text}`;
+            const fieldEntries = fields.map((field) => {
+              const label = field.label || field.key;
+              return `**${label}**\n${renderFieldValue(field)}\n`;
             });
 
             const body = [
               marker,
               `Заявка из формы «${formName ?? formId ?? "Tally"}» на странице /add.`,
               "",
-              ...fieldEntries.map((entry) => `${entry}\n`),
+              ...fieldEntries,
               "---",
               `submissionId: \`${submissionId}\``,
               formId ? `formId: \`${formId}\`` : null,
               submittedAt ? `submitted: ${submittedAt}` : null,
               "",
               "Перед тем как превращать в карточку - пройти чеклист `starter-card-review`.",
+              "",
+              "<details><summary>Сырой JSON (на случай, если рендер выше ошибся)</summary>",
+              "",
+              "```json",
+              JSON.stringify(fields, null, 2),
+              "```",
+              "",
+              "</details>",
             ]
               .filter((line) => line !== null)
               .join("\n");

@@ -18,10 +18,17 @@ export interface Env {
 	readonly GITHUB_REF: string;
 }
 
+interface TallyFieldOption {
+	readonly id: string;
+	readonly text?: string;
+}
+
 interface TallyField {
 	readonly key: string;
 	readonly label: string;
+	readonly type: string;
 	readonly value: unknown;
+	readonly options?: readonly TallyFieldOption[];
 }
 
 interface TallyWebhookPayload {
@@ -50,7 +57,11 @@ async function verifyTallySignature(
 		false,
 		["sign"],
 	);
-	const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(rawBody));
+	const mac = await crypto.subtle.sign(
+		"HMAC",
+		key,
+		new TextEncoder().encode(rawBody),
+	);
 	const expected = base64FromBuffer(mac);
 
 	return timingSafeEqual(expected, signatureHeader);
@@ -73,15 +84,32 @@ function timingSafeEqual(a: string, b: string): boolean {
 	return mismatch === 0;
 }
 
-function flattenFields(fields: readonly TallyField[]): Record<string, unknown> {
-	const result: Record<string, unknown> = {};
-	for (const field of fields) {
-		result[field.label || field.key] = field.value;
-	}
-	return result;
+/**
+ * Поля пересылаются как есть (key, label, type, value, options), без
+ * упрощения до `label → value` - у полей с выбором (чекбоксы, дропдаун)
+ * `value` это id варианта, а человекочитаемый текст лежит в `options`.
+ * Смэппить это можно только имея оба поля рядом, поэтому решение, как
+ * отрисовать значение, принимает workflow (см. tally-submission.yml) -
+ * там это правится пушем, без передеплоя воркера.
+ */
+function pickFields(
+	fields: readonly TallyField[],
+): ReadonlyArray<
+	Pick<TallyField, "key" | "label" | "type" | "value" | "options">
+> {
+	return fields.map(({ key, label, type, value, options }) => ({
+		key,
+		label,
+		type,
+		value,
+		options,
+	}));
 }
 
-async function dispatchWorkflow(env: Env, dispatchPayload: unknown): Promise<Response> {
+async function dispatchWorkflow(
+	env: Env,
+	dispatchPayload: unknown,
+): Promise<Response> {
 	return fetch(
 		`https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/actions/workflows/${env.GITHUB_WORKFLOW_ID}/dispatches`,
 		{
@@ -128,7 +156,9 @@ export default {
 		const submissionId = payload.data?.submissionId ?? payload.data?.responseId;
 		const fields = payload.data?.fields;
 		if (!submissionId || !fields) {
-			return new Response("Payload missing submissionId or fields", { status: 400 });
+			return new Response("Payload missing submissionId or fields", {
+				status: 400,
+			});
 		}
 
 		const dispatchPayload = {
@@ -136,13 +166,15 @@ export default {
 			formId: payload.data?.formId,
 			formName: payload.data?.formName,
 			submittedAt: payload.data?.createdAt ?? payload.createdAt,
-			fields: flattenFields(fields),
+			fields: pickFields(fields),
 		};
 
 		const githubResponse = await dispatchWorkflow(env, dispatchPayload);
 		if (!githubResponse.ok) {
 			const errorText = await githubResponse.text();
-			console.error(`GitHub dispatch failed: ${githubResponse.status} ${errorText}`);
+			console.error(
+				`GitHub dispatch failed: ${githubResponse.status} ${errorText}`,
+			);
 			// 502, не 200 - чтобы Tally повторил доставку позже (дедуп по
 			// submissionId на стороне workflow это переживет).
 			return new Response("Upstream dispatch failed", { status: 502 });
