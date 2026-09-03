@@ -36,6 +36,20 @@ jobs:
               return;
             }
 
+            // Репозиторий публичный - метку добавить может только тот, у
+            // кого есть права записи (это гарантирует сам GitHub), но
+            // content issue может написать кто угодно. Без этой проверки
+            // достаточно подделать в открытом issue маркер и JSON-блок под
+            // вид настоящей заявки - и по невнимательной метке бот соберет
+            // PR из чужого текста. Настоящие issue от tally-submission.yml
+            // всегда от github-actions[bot].
+            if (issue.user.login !== "github-actions[bot]") {
+              core.setFailed(
+                `issue #${issue.number} создан не автоматикой tally-submission.yml (автор: ${issue.user.login}) - не собираю черновик из чужого содержимого.`,
+              );
+              return;
+            }
+
             const bodyMatch = issue.body.match(/```json\n([\s\S]*?)\n```/);
             const submissionIdMatch = issue.body.match(/<!-- tally-submission-id: (.+?) -->/);
             if (!bodyMatch || !submissionIdMatch) {
