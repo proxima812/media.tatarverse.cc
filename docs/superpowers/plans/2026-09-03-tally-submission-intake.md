@@ -102,13 +102,18 @@ workflow.
       как `GITHUB_TOKEN` в `.dev.vars` еще не задан). Не проверено: реальный
       `workflow_dispatch` - нужен PAT и push workflow-файла в GitHub, это
       затрагивает сам репозиторий, делается отдельным шагом с подтверждением.
-- [ ] Шаг 4: `wrangler deploy`, завести секреты в проде, настроить вебхук в
-      Tally на реальный URL воркера.
-- [ ] Шаг 5: закоммитить и запушить `.github/workflows/tally-submission.yml`
-      (обязательное условие для `workflow_dispatch` - GitHub дергает только
-      то, что уже есть на целевой ветке), добавить `GITHUB_TOKEN` в
-      `.dev.vars`/прод-секреты, реальная тестовая заявка через форму на
-      `/add` до появления Issue.
+- [x] Шаг 4: `wrangler deploy` -
+      https://tally-intake.kamil-mirikhan.workers.dev, секреты
+      `TALLY_SIGNING_SECRET`/`GITHUB_TOKEN` заведены через `wrangler secret
+      put`. Прод проверен вручную: неверная подпись - 401, верная -
+      202 + реальный workflow_dispatch (issue #1, закрыт как тестовый после
+      проверки), повторная отправка того же submissionId - без дубля issue
+      даже против закрытого issue.
+- [x] Шаг 5 (частично): `.github/workflows/tally-submission.yml` уже на
+      `main` (запушен), `GITHUB_TOKEN` заведен. Осталось: вписать URL воркера
+      в Tally (Integrations → Webhooks) и сделать одну настоящую заявку через
+      форму на `/add`, чтобы проверить путь целиком от реального вебхука
+      Tally, а не от ручного curl/dispatch.
 - [ ] Шаг 6: дополнить `starter-card-review` абзацем про источник `card-submission`.
 
 ## Проверка
