@@ -28,6 +28,7 @@ Open source: новые карточки добавляются через:
 | `starter-code-style` | проектирование модулей, рефакторинг, review |
 | `starter-dependencies` | перед `bun add` и при обновлении пакетов |
 | `starter-card-review` | добавление или правка карточки в `src/data/cards/`, разбор PR и заявок из формы |
+| `starter-pr-review` | разобрать открытый PR перед мержем, включая черновики из `draft-card-pr.yml` |
 | `starter-validation` | перед тем, как считать задачу выполненной |
 
 ## Планы
