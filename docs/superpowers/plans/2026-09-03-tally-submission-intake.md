@@ -114,12 +114,25 @@ workflow.
       202 + реальный workflow_dispatch (issue #1, закрыт как тестовый после
       проверки), повторная отправка того же submissionId - без дубля issue
       даже против закрытого issue.
-- [x] Шаг 5 (частично): `.github/workflows/tally-submission.yml` уже на
-      `main` (запушен), `GITHUB_TOKEN` заведен. Осталось: вписать URL воркера
-      в Tally (Integrations → Webhooks) и сделать одну настоящую заявку через
-      форму на `/add`, чтобы проверить путь целиком от реального вебхука
-      Tally, а не от ручного curl/dispatch.
-- [ ] Шаг 6: дополнить `starter-card-review` абзацем про источник `card-submission`.
+- [x] Шаг 5: URL воркера вписан в Tally, сделана настоящая заявка через
+      форму на `/add` (issue #2, submissionId `PRPY62Q`) - путь целиком от
+      реального вебхука Tally подтвержден.
+- [x] Шаг 6: вместо правки `starter-card-review` добавлен отдельный скилл
+      `starter-pr-review` (`.agents/skills/starter-pr-review/SKILL.md`) -
+      механика доведения PR до мержа, включая специфику PR из
+      `draft-card-pr.yml` (переименование id, EN-перевод, `verify`).
+- [x] Шаг 7 (сверх исходного плана): `.github/workflows/draft-card-pr.yml` -
+      по метке `draft-card` на issue собирает черновик
+      `src/data/cards/draft-<slug>.md` (имя, описание, факты, `peoples`,
+      дата - остальное намеренно TODO/невалидно) и открывает draft PR,
+      `Closes #<issue>`. Идемпотентно через метку `card-drafted`. Требует
+      включенной настройки репозитория "Allow GitHub Actions to create
+      pull requests" (`can_approve_pull_request_reviews`) - включена через
+      `gh api`. Защита от подделки: обрабатывает только issue, автор
+      которых `github-actions[bot]` - иначе `core.setFailed` без побочных
+      эффектов. Все три сценария (обычный черновик, повторная метка -
+      дедуп, поддельный issue - отказ) проверены вживую на реальном
+      репозитории, тестовые issue/PR закрыты и удалены после проверки.
 
 ## Проверка
 
