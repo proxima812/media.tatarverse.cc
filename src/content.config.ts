@@ -53,7 +53,7 @@ const cardsEn = defineCollection({
  * Подробности и пример страницы - `starter-mdx`.
  */
 const pages = defineCollection({
-	loader: glob({ pattern: "**/*.md", base: "./src/data/markdown/" }),
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/data/markdown/" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
@@ -64,7 +64,7 @@ const pages = defineCollection({
 
 /** Английский перевод текстовых страниц. Id файла должен совпадать с `pages`. */
 const pagesEn = defineCollection({
-	loader: glob({ pattern: "**/*.md", base: "./src/data/markdown-en/" }),
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/data/markdown-en/" }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
