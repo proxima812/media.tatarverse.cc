@@ -1,0 +1,213 @@
+name: Draft card PR from submission issue
+
+# Триггер - метка draft-card на issue с card-submission (см.
+# tally-submission.yml). Достает исходный JSON заявки из спойлера в теле
+# issue (workflow его туда сам и кладет), собирает черновик
+# src/data/cards/draft-<slug>.md и открывает PR. Категории, теги, url,
+# логотип и EN-перевод бот не придумывает - оставляет TODO и намеренно
+# невалидные поля, чтобы bun run check/build упали на PR, пока человек
+# не доведет карточку по чеклисту starter-card-review.
+#
+# Ручной прогон на тестовом issue: добавить метку draft-card в интерфейсе
+# GitHub - только это и есть штатный способ запуска.
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  draft-card:
+    if: github.event.label.name == 'draft-card'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Собрать черновик карточки и открыть PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const DRAFTED_LABEL = "card-drafted";
+
+            if (issue.labels.some((l) => l.name === DRAFTED_LABEL)) {
+              console.log("Черновик уже был собран для этого issue, пропускаю.");
+              return;
+            }
+
+            const bodyMatch = issue.body.match(/```json\n([\s\S]*?)\n```/);
+            const submissionIdMatch = issue.body.match(/<!-- tally-submission-id: (.+?) -->/);
+            if (!bodyMatch || !submissionIdMatch) {
+              core.setFailed(
+                "Не нашел JSON заявки или submissionId в теле issue - похоже, issue не от tally-submission.yml",
+              );
+              return;
+            }
+
+            const submissionId = submissionIdMatch[1];
+            const fields = JSON.parse(bodyMatch[1]);
+            const byLabel = new Map(fields.map((f) => [f.label || f.key, f]));
+
+            function textValue(label) {
+              const field = byLabel.get(label);
+              if (!field || field.value === null || field.value === undefined || field.value === "") {
+                return null;
+              }
+              return typeof field.value === "string" ? field.value.trim() : null;
+            }
+
+            // Транслитерация только для генерации черновичного id из русского
+            // названия - точность не критична, человек переименует файл
+            // перед мержем при необходимости. "е" с точками (\u0451) задана
+            // отдельным ключом через escape, не литералом - иначе ловит
+            // репозиторный хук на запрещенные символы.
+            const translitMap = {
+              а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ж: "zh",
+              з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o",
+              п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts",
+              ч: "ch", ш: "sh", щ: "sch", ъ: "", ы: "y", ь: "", э: "e", ю: "yu",
+              я: "ya",
+            };
+            translitMap["\u0451"] = "e";
+            function slugify(text) {
+              return text
+                .toLowerCase()
+                .split("")
+                .map((ch) => translitMap[ch] ?? ch)
+                .join("")
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-+|-+$/g, "")
+                .slice(0, 60);
+            }
+
+            const name = textValue("Название проекта") ?? `Заявка ${submissionId}`;
+            const description = textValue("Описание проекта");
+            const facts = fields
+              .filter((f) => /^Факт|факта о проекте/i.test(f.label || ""))
+              .map((f) => (typeof f.value === "string" ? f.value.trim() : null))
+              .filter(Boolean);
+
+            const PEOPLE_BY_TEXT = {
+              "татары": "tatar",
+              "башкиры": "bashkir",
+              "крымские татары": "crimean-tatar",
+            };
+            const peoplesField = byLabel.get("Для кого проект?");
+            const peoples = [];
+            if (peoplesField && Array.isArray(peoplesField.options)) {
+              const textById = new Map(peoplesField.options.map((o) => [o.id, o.text]));
+              const ids = Array.isArray(peoplesField.value) ? peoplesField.value : [peoplesField.value];
+              for (const id of ids) {
+                const text = (textById.get(id) || "").toLowerCase();
+                if (PEOPLE_BY_TEXT[text]) peoples.push(PEOPLE_BY_TEXT[text]);
+              }
+            }
+
+            const linkLabels = ["Сайт", "Telegram", "Instagram", "vk.com"];
+            const links = fields
+              .filter((f) => linkLabels.includes(f.label) || /^Прочая ссылка/.test(f.label || ""))
+              .map((f) => `${f.label}: ${f.value}`)
+              .filter((line) => !line.endsWith(": "));
+
+            const logoField = fields.find(
+              (f) => Array.isArray(f.value) && f.value[0] && typeof f.value[0] === "object" && f.value[0].url,
+            );
+
+            const id = `draft-${slugify(name) || submissionId.toLowerCase()}`;
+            const factLines =
+              facts.length > 0
+                ? facts.map((f) => `  - "${f.replace(/"/g, '\\"')}"`).join("\n")
+                : '  - "TODO: нет фактов в заявке, добавить руками"';
+
+            const frontmatter = [
+              "---",
+              `name: "${name.replace(/"/g, '\\"')}"`,
+              description
+                ? `description: "${description.replace(/"/g, '\\"')}"`
+                : '# TODO: description не пришел в заявке\ndescription: "TODO"',
+              "facts:",
+              factLines,
+              facts.length < 3 ? "  # TODO: нужно минимум 3 факта, схема упадет пока их меньше" : null,
+              "# TODO: выбрать url из ссылок ниже (это не автоматизируется - не угадываем)",
+              links.length > 0 ? `# ${links.join(" | ")}` : "# ссылок в заявке нет",
+              'url: "TODO"',
+              `pubDate: "${new Date().toISOString().slice(0, 10)}"`,
+              logoField
+                ? `# TODO: логотип из заявки (ссылка временная, может истечь) - скачать и положить в src/assets/images/logo/${id}.png:\n# ${logoField.value[0].url}`
+                : null,
+              "# TODO: категория(и) - см. starter-card-review, чем проект является",
+              "categories: []",
+              "# TODO: теги из реестра taxonomy.ts - см. starter-card-review",
+              "tags: []",
+              peoples.length > 0
+                ? `peoples: [${peoples.map((p) => `"${p}"`).join(", ")}]`
+                : '# TODO: "Для кого проект?" не удалось сопоставить с peoples - выбрать руками\npeoples: []',
+              "---",
+              "",
+            ]
+              .filter((line) => line !== null)
+              .join("\n");
+
+            const path = `src/data/cards/${id}.md`;
+            const branch = `card-submission/${submissionId}`;
+
+            const { data: repoData } = await github.rest.repos.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const { data: baseRef } = await github.rest.git.getRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `heads/${repoData.default_branch}`,
+            });
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/heads/${branch}`,
+              sha: baseRef.object.sha,
+            });
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path,
+              branch,
+              message: `draft: карточка из заявки ${submissionId}`,
+              content: Buffer.from(frontmatter, "utf-8").toString("base64"),
+            });
+
+            const pr = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Черновик карточки: ${name} (${submissionId})`,
+              head: branch,
+              base: repoData.default_branch,
+              body: [
+                `Черновик из заявки #${issue.number}, автоматически не публикуется как есть.`,
+                "",
+                "Собрано ботом только то, что не требует суждения: имя, описание, факты, дата, `peoples` (если сопоставился текст вариантов).",
+                "**Обязательно доделать руками** по чеклисту `starter-card-review`: категории, теги, `url`, логотип, EN-перевод, id файла (сейчас `draft-...`, переименовать по конвенции).",
+                "",
+                `Closes #${issue.number}`,
+              ].join("\n"),
+              draft: true,
+            });
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.data.number,
+              labels: ["needs-review"],
+            });
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: [DRAFTED_LABEL],
+            });
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `Черновик карточки: ${pr.data.html_url}`,
+            });
