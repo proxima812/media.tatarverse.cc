@@ -1,0 +1,109 @@
+name: Tally submission intake
+
+# Триггерится через GitHub API (workflow_dispatch) из Cloudflare Worker,
+# который слушает вебхук Tally. См. docs/superpowers/plans/
+# 2026-09-03-tally-submission-intake.md - здесь только шаг "создать issue",
+# воркер и настройка вебхука в самой Tally - отдельная часть плана.
+#
+# Ручной прогон на dev (без воркера), пока формы вебхук еще не настроен:
+#   gh workflow run tally-submission.yml -f payload='{"submissionId":"test-1","formId":"D4G9EE","formName":"media.tatarverse - авторы","submittedAt":"2026-09-03T12:00:00.000Z","fields":{"Имя":"Тест","Ссылка":"https://example.com"}}'
+on:
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: >-
+          JSON одной строкой: {submissionId, formId, formName, submittedAt,
+          fields: {label: value}}. Присылает Worker, вложенность - внутри
+          строки, потому что у workflow_dispatch нет типа "объект".
+        required: true
+        type: string
+
+permissions:
+  issues: write
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Разобрать payload и создать issue
+        uses: actions/github-script@v7
+        env:
+          PAYLOAD: ${{ inputs.payload }}
+        with:
+          script: |
+            const submission = JSON.parse(process.env.PAYLOAD);
+            const { submissionId, formId, formName, submittedAt, fields } = submission;
+
+            if (!submissionId || typeof fields !== "object" || fields === null) {
+              core.setFailed(
+                "payload обязан содержать submissionId и объект fields - проверь, что шлет Worker",
+              );
+              return;
+            }
+
+            const CARD_SUBMISSION_LABEL = "card-submission";
+            const NEEDS_REVIEW_LABEL = "needs-review";
+            const marker = `<!-- tally-submission-id: ${submissionId} -->`;
+
+            // Метки создаются лениво и идемпотентно - первый прогон на dev
+            // не требует заводить их руками заранее.
+            for (const [name, color, description] of [
+              [CARD_SUBMISSION_LABEL, "0e8a16", "Заявка на добавление проекта из формы Tally"],
+              [NEEDS_REVIEW_LABEL, "fbca04", "Требует ревью человека перед мержем"],
+            ]) {
+              try {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name,
+                  color,
+                  description,
+                });
+              } catch (error) {
+                if (error.status !== 422) throw error; // 422 - метка уже существует
+              }
+            }
+
+            // Дедуп: повторная доставка вебхука Tally (обычная реакция на
+            // не-200 ответ) не должна плодить второй issue на ту же заявку.
+            const existing = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} is:issue "${submissionId}" in:body`,
+            });
+            if (existing.data.items.some((issue) => issue.body?.includes(marker))) {
+              console.log(`Issue для submissionId=${submissionId} уже существует, пропускаю.`);
+              return;
+            }
+
+            const fieldEntries = Object.entries(fields).map(([label, value]) => {
+              const text = Array.isArray(value)
+                ? value.join(", ")
+                : typeof value === "object" && value !== null
+                  ? JSON.stringify(value)
+                  : String(value ?? "-");
+              return `**${label}**\n${text}`;
+            });
+
+            const body = [
+              marker,
+              `Заявка из формы «${formName ?? formId ?? "Tally"}» на странице /add.`,
+              "",
+              ...fieldEntries.map((entry) => `${entry}\n`),
+              "---",
+              `submissionId: \`${submissionId}\``,
+              formId ? `formId: \`${formId}\`` : null,
+              submittedAt ? `submitted: ${submittedAt}` : null,
+              "",
+              "Перед тем как превращать в карточку - пройти чеклист `starter-card-review`.",
+            ]
+              .filter((line) => line !== null)
+              .join("\n");
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Заявка на добавление проекта (${submissionId})`,
+              body,
+              labels: [CARD_SUBMISSION_LABEL, NEEDS_REVIEW_LABEL],
+            });
+
+            console.log(`Создан issue #${issue.data.number}: ${issue.data.html_url}`);
