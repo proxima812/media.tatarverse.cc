@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import {
 	TAG_DEFINITIONS,
 	TAG_GROUP_VALUES,
@@ -30,7 +31,7 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 <details
 	data-tag-filter
 	data-available-tags={tags.join(",")}
-	class="mx-5 mb-8 rounded-2xl border border-border bg-background open:shadow-sm"
+	class="group mx-5 mb-8 rounded-2xl border border-border bg-background open:shadow-sm"
 >
 	<summary
 		class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl px-4 py-3 font-medium text-foreground transition hover:bg-muted/60 [&::-webkit-details-marker]:hidden"
@@ -43,8 +44,20 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 				class="rounded-full bg-primary px-2 py-0.5 text-primary-foreground text-xs"
 			></span>
 		</span>
-		<span class="text-muted-foreground text-sm">
+		<span class="flex items-center gap-2 text-muted-foreground text-sm">
 			<output data-catalog-result-count>{cardCount}</output>
+			{/*
+			 * Шеврон - единственный знак того, что блок раскрывается: у `summary`
+			 * убран маркер (`list-none` и скрытый `::-webkit-details-marker`), а
+			 * число справа читается как итог, а не как кнопка. Поворот вешается
+			 * через `group-open`, то есть на состоянии самого `details` - без
+			 * скрипта и без класса, который надо ставить на открытие.
+			 */}
+			<Icon
+				name="mdi:chevron-down"
+				class="size-5 transition-transform duration-200 group-open:rotate-180"
+				aria-hidden="true"
+			/>
 		</span>
 	</summary>
 
@@ -65,7 +78,7 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 											data-tag-filter-input
 											class="peer sr-only"
 										/>
-										<span class="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground text-sm transition peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-foreground">
+										<span class="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground text-sm transition peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-foreground peer-checked:hover:text-primary-foreground">
 											<span>{tagLabel(locale, value)}</span>
 											<span class="text-xs opacity-70">{tagCounts.get(value)}</span>
 										</span>
