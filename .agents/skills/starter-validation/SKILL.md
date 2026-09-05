@@ -15,7 +15,6 @@ description: Definition of Done - какие проверки обязатель
 ## Обязательный минимум
 
 ```bash
-bun run lint        # biome check . - линт и формат
 bun run check       # astro check - типы .astro и .ts
 bun run build       # реальная сборка
 bun run check:seo   # build + проверка dist/

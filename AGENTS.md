@@ -77,12 +77,11 @@ Open source: новые карточки добавляются через:
 ## Safety rules репозитория
 
 - Не затирать брендовые ассеты в `public/`.
-- Не расширять `files.includes` в `biome.json` на `public/` и
-  `src/components/SEO/Analytics/**` без крайней необходимости: Biome
-  переформатирует SVG в `public/` (уже ловили на `favicon.svg`) и не парсит
-  инлайн-`<script>` с обычным JS в `.astro` (падает с ошибкой парсинга на
-  `GoogleTagManager.astro`/`YandexMetrika.astro`) - поддержка `.astro` в Biome
-  экспериментальная.
+- Линтера и форматтера в репозитории нет: Biome удален - он не парсил `.astro`
+  (падал на `{cond && (...)}` и на инлайн-`<script>` в
+  `GoogleTagManager.astro`/`YandexMetrika.astro`) и переформатировал SVG в
+  `public/`. Стиль держится ревью и тем, как написан соседний код; проверки -
+  `bun run check` и `bun run check:seo`.
 - Не подставлять в `main.config.ts` значения чужого проекта. Дефолты - нейтральные
   и выключенные.
 - Не добавлять UI-фреймворки (React/Vue/Solid) без конкретной задачи.
@@ -94,10 +93,9 @@ Open source: новые карточки добавляются через:
 ```bash
 bun install
 bun dev
-bun run lint        # biome check .
 bun run check       # типы
 bun run build
 bun run check:seo   # build + проверка dist/
 bun run check:i18n  # у всех новых карточек есть EN-перевод
-bun run verify      # все сразу (lint + check + check:seo + check:i18n)
+bun run verify      # все сразу (check + check:seo + check:i18n)
 ```

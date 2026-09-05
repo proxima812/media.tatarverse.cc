@@ -13,13 +13,10 @@
 		"preview": "astro preview",
 		"astro": "astro",
 		"check": "astro check",
-		"lint": "biome check .",
-		"lint:fix": "biome check --write .",
-		"format": "biome format --write .",
 		"validate:seo": "node scripts/validate-seo.mjs",
 		"check:seo": "bun run build && bun run validate:seo",
 		"check:i18n": "node scripts/validate-cards-i18n.mjs",
-		"verify": "bun run lint && bun run check && bun run check:seo && bun run check:i18n"
+		"verify": "bun run check && bun run check:seo && bun run check:i18n"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "8.0.0",
@@ -38,7 +35,6 @@
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.10",
-		"@biomejs/biome": "^2.5.9",
 		"@iconify-json/mdi": "^1.2.3",
 		"@iconify-json/tabler": "^1.2.38",
 		"@tailwindcss/typography": "^0.5.20",
