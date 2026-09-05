@@ -1,0 +1,48 @@
+---
+import { getCollection } from "astro:content";
+import CatalogGlossary from "@/components/Catalog/CatalogGlossary.astro";
+import CatalogSearch from "@/components/Catalog/CatalogSearch.astro";
+import { localizeCards } from "@/components/Catalog/localize";
+import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: PageLocale;
+}
+
+const { locale } = Astro.props;
+
+const t = useTranslations(locale);
+const cards = await localizeCards(await getCollection("cards"), locale);
+---
+
+<Layout
+	title={t("nav.search")}
+	htmlLang={locale}
+	locale={ogLocale(locale)}
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+
+	<!-- Плашка с гигантскими буквами и пилюлей поиска поверх них - раскладка
+	     и размеры взяты с оригинала: панель 400px, буквы прижаты к центру,
+	     поле 727px по центру панели. Сами буквы разные у локалей и приезжают
+	     из словаря (`search.letters`). -->
+	<section
+		class="relative flex h-60 items-center justify-center overflow-hidden rounded-3xl bg-foreground/[0.06] px-5 sm:h-100"
+	>
+		<h1 class="sr-only">{t("search.title")}</h1>
+
+		<span
+			aria-hidden="true"
+			class="pointer-events-none absolute select-none text-[140px] text-foreground leading-none tracking-[-0.6px] sm:text-[260px] lg:text-[388px]"
+		>
+			{t("search.letters")}
+		</span>
+
+		<CatalogSearch locale={locale} class="relative z-10" />
+	</section>
+
+	<CatalogGlossary locale={locale} cards={cards} />
+
+</Layout>

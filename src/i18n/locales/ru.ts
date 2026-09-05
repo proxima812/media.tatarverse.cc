@@ -29,6 +29,8 @@ export default {
 	"catalog.view.grid": "Сеткой",
 	"catalog.view.list": "Списком",
 	"catalog.search.placeholder": "Поиск по проектам",
+	/** Декоративные буквы на плашке поиска - у каждой локали свои. */
+	"search.letters": "Аә",
 	"search.title": "Все проекты каталога",
 	"search.clear": "Очистить поиск",
 	"search.empty": "Ничего не нашлось - попробуйте другое слово.",

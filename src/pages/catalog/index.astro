@@ -1,29 +1,5 @@
 ---
-import { getCollection } from "astro:content";
-import { Icon } from "astro-icon/components";
-import Catalog from "@/components/Catalog/Catalog.astro";
-import { getAllCategories } from "@/components/Catalog/categories";
-import { buildAlternates, useTranslations } from "@/i18n";
-import Layout from "@/layouts/Layout.astro";
-
-const t = useTranslations("ru");
-const cards = await getCollection("cards");
-const categories = getAllCategories(cards);
+import CatalogIndexPage from "@/components/pages/CatalogIndexPage.astro";
 ---
 
-<Layout
-	title={t("catalog.pageTitle")}
-	htmlLang="ru"
-	alternates={buildAlternates(Astro.url.pathname)}
->
-	<div class="px-6 flex justify-between items-center">
-		<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
-			{t("catalog.pageTitle")}
-		</h1>
-		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
-			<Icon name="mdi:card-multiple-outline" class="size-4.5" aria-hidden="true" />
-			<span>{cards.length}</span>
-		</div>
-	</div>
-	<Catalog locale="ru" cards={cards} categories={categories} />
-</Layout>
+<CatalogIndexPage locale="ru" />

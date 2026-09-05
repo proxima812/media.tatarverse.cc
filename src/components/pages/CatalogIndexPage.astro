@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import { Icon } from "astro-icon/components";
+import Catalog from "@/components/Catalog/Catalog.astro";
+import { getAllCategories } from "@/components/Catalog/categories";
+import { localizeCards } from "@/components/Catalog/localize";
+import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: PageLocale;
+}
+
+const { locale } = Astro.props;
+
+const t = useTranslations(locale);
+const cards = await localizeCards(await getCollection("cards"), locale);
+const categories = getAllCategories(cards);
+---
+
+<Layout
+	title={t("catalog.pageTitle")}
+	htmlLang={locale}
+	locale={ogLocale(locale)}
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+	<div class="px-6 flex justify-between items-center">
+		<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
+			{t("catalog.pageTitle")}
+		</h1>
+		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
+			<Icon name="mdi:card-multiple-outline" class="size-4.5" aria-hidden="true" />
+			<span>{cards.length}</span>
+		</div>
+	</div>
+	<Catalog locale={locale} cards={cards} categories={categories} />
+</Layout>

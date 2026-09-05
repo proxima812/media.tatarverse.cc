@@ -1,45 +1,10 @@
 ---
-import { getCollection } from "astro:content";
-import CardDetail from "@/components/Catalog/CardDetail.astro";
-import CatalogCard from "@/components/Catalog/CatalogCard.astro";
-import { localizeCards } from "@/components/Catalog/localize";
-import { getRelatedCards } from "@/components/Catalog/related";
-import { buildAlternates, useTranslations } from "@/i18n";
-import Layout from "@/layouts/Layout.astro";
+import ProjectPage from "@/components/pages/ProjectPage.astro";
+import { cardPaths } from "@/components/pages/paths";
 
-export async function getStaticPaths() {
-	const cards = await localizeCards(await getCollection("cards"), "en");
-
-	return cards.map((card) => ({
-		params: { slug: card.id },
-		props: { card, related: getRelatedCards(card, cards) },
-	}));
-}
+export const getStaticPaths = () => cardPaths("en");
 
 const { card, related } = Astro.props;
-const t = useTranslations("en");
 ---
 
-<Layout
-	title={card.data.name}
-	description={card.data.description}
-	htmlLang="en"
-	locale="en-US"
-	alternates={buildAlternates(Astro.url.pathname)}
->
-	<CardDetail card={card} locale="en" />
-
-	{related.length > 0 && (
-			<section>
-				<h2 class="text-center font-bold text-2xl text-balance">
-					{t("card.related")}
-				</h2>
-				<div class="mt-8 grid gap-8 sm:grid-cols-3">
-					{related.map((relatedCard) => (
-						<CatalogCard card={relatedCard} />
-					))}
-				</div>
-			</section>
-		)}
-
-</Layout>
+<ProjectPage locale="en" card={card} related={related} />

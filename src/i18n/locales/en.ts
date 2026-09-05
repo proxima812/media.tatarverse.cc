@@ -29,6 +29,8 @@ export default {
 	"catalog.view.grid": "Grid view",
 	"catalog.view.list": "List view",
 	"catalog.search.placeholder": "Search projects",
+	/** Декоративные буквы на плашке поиска - у каждой локали свои. */
+	"search.letters": "Aa",
 	"search.title": "Every project in the catalog",
 	"search.clear": "Clear search",
 	"search.empty": "Nothing matched - try another word.",
