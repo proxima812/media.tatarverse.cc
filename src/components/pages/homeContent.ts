@@ -45,14 +45,14 @@ const ru: HomeContent = {
 					"Поиск по названию, описанию и тегам сужает каталог по мере ввода - а рядом весь список по алфавиту.",
 			},
 			{
-				title: "Легко добавить проект",
-				description:
-					"На странице «Добавить проект» есть форма - заполните ее, и после модерации карточка появится в каталоге.",
-			},
-			{
 				title: "Сохраняйте понравившееся",
 				description:
 					"Отмечайте проекты сердечком - они собираются на отдельной странице и остаются в браузере без всякой регистрации.",
+			},
+			{
+				title: "Легко добавить проект",
+				description:
+					"На странице «Добавить проект» есть форма - заполните ее, и после модерации карточка появится в каталоге.",
 			},
 		],
 	},
@@ -105,14 +105,14 @@ const en: HomeContent = {
 					"Search by name, description, and tags narrows the catalog as you type - with the full A-Z list right next to it.",
 			},
 			{
-				title: "Easy to add a project",
-				description:
-					'The "Add a project" page has a form - fill it in, and once it\'s reviewed the card appears in the catalog.',
-			},
-			{
 				title: "Keep what you like",
 				description:
 					"Heart a project and it lands on your saved page - stored in the browser, no account needed.",
+			},
+			{
+				title: "Easy to add a project",
+				description:
+					'The "Add a project" page has a form - fill it in, and once it\'s reviewed the card appears in the catalog.',
 			},
 		],
 	},
