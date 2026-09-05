@@ -1,10 +1,15 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
 import { peopleLabel } from "@/components/Catalog/labels";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
-import { categoryLabel, tagLabel } from "@/components/Catalog/taxonomy";
+import {
+	categoryIcon,
+	categoryLabel,
+	tagLabel,
+} from "@/components/Catalog/taxonomy";
 import Button from "@/components/partials/Button.astro";
 import { useTranslations } from "@/i18n";
 import { meshGradient } from "@/utils/lib/meshGradient";
@@ -68,14 +73,15 @@ const glow = meshGradient(name);
 			>
 				<div class="flex flex-wrap items-center gap-1.5">
 					{categories.map((category) => (
-							<span class="rounded-lg bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+							<span class="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+								<Icon name={categoryIcon(category)} class="size-3.5" aria-hidden="true" />
 								{categoryLabel(locale, category)}
 							</span>
 						))}
 
 					{tags.map((tag) => (
 							<span class="rounded-lg bg-muted px-2 py-0.5 text-muted-foreground text-xs">
-								{tagLabel(locale, tag)}
+								#{tagLabel(locale, tag)}
 							</span>
 						))}
 
