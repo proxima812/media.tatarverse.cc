@@ -22,18 +22,17 @@
 		"verify": "bun run lint && bun run check && bun run check:seo && bun run check:i18n"
 	},
 	"dependencies": {
-		"@astrojs/mdx": "^7.0.7",
-		"@astrojs/sitemap": "^3.7.3",
+		"@astrojs/mdx": "8.0.0",
+		"@astrojs/sitemap": "3.7.4",
 		"@dualmark/astro": "^0.10.0",
 		"@dualmark/converters": "^0.10.0",
 		"@dualmark/core": "^0.10.0",
 		"@tailwindcss/vite": "^4.3.3",
-		"astro": "^7.2.4",
+		"astro": "7.3.1",
 		"astro-icon": "^1.2.0",
 		"astro-pagefind": "^2.0.1",
-		"clsx": "^2.1.1",
+		"cn": "^0.2.4",
 		"schema-dts": "^2.0.0",
-		"tailwind-merge": "^3.6.0",
 		"tailwindcss": "^4.3.3",
 		"typescript": "^6.0.2"
 	},
