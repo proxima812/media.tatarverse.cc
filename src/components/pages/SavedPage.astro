@@ -35,6 +35,8 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 
 <Layout
 	title={t("saved.title")}
+	description={t("meta.saved.description")}
+	indexRobots={false}
 	htmlLang={locale}
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}

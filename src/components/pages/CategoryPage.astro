@@ -26,10 +26,14 @@ const filtered = cardsByCategory(cards, category);
 /** "Карточки по {категория} ({count})" - заголовок и `<title>` в одном месте. */
 const heading = `${t("catalog.byCategoryPrefix")} ${categoryLabel(locale, category)} (${filtered.length})`;
 const catalogHref = getRelativeLocaleUrl(locale, "catalog");
+
+/** Описание страницы раздела: то же, что в заголовке, но фразой для выдачи. */
+const metaDescription = `${t("meta.category.description")} ${categoryLabel(locale, category)}.`;
 ---
 
 <Layout
 	title={heading}
+	description={metaDescription}
 	htmlLang={locale}
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
@@ -43,8 +47,8 @@ const catalogHref = getRelativeLocaleUrl(locale, "catalog");
 		class="px-6"
 	/>
 
-	<div class="px-6 flex justify-between items-center">
-		<div class="flex space-x-6 items-center">
+	<div class="flex flex-wrap items-center justify-between gap-3 px-6">
+		<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
 			<h1 class="font-bold text-3xl text-balance sm:text-4xl">
 				{t("catalog.byCategoryPrefix")}
 			</h1>

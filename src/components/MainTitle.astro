@@ -17,12 +17,12 @@ const emphasis = dashIndex === -1 ? "" : title.slice(dashIndex + 3);
 ---
 
 <div class="space-y-4">
-	<h1 class="text-center font-black text-5xl text-balance">
+	<h1 class="text-center font-black text-4xl text-balance sm:text-5xl">
 		<span data-chroma-reveal>
 			{lead}{emphasis && <em class="italic">{emphasis}</em>}
 		</span>
 	</h1>
-	<p class="text-center text-primary/40 font-medium text-4xl text-balance">
+	<p class="text-center font-medium text-2xl text-balance text-primary/40 sm:text-4xl">
 		{t("catalog.lead")}
 	</p>
 </div>

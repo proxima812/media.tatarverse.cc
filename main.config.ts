@@ -65,7 +65,7 @@ export const config: AppConfig = {
 			locale: siteLocale,
 			siteName: siteName,
 			/** Файл в `public/`, 1200x630. Наличие проверяется на билде. */
-			defaultImage: "default-ogImage.jpg",
+			defaultImage: "default-ogImage.png",
 			imageAlt: `Превью страницы ${siteHost}`,
 			keywords: "",
 			titleSeparator: "|",
