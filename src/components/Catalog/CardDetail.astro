@@ -1,17 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import { config } from "main.config";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { peopleLabel } from "@/components/Catalog/labels";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
-import {
-	categoryIcon,
-	categoryLabel,
-	tagLabel,
-} from "@/components/Catalog/taxonomy";
 import Button from "@/components/partials/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -22,22 +15,12 @@ interface Props {
 }
 
 const { card, locale } = Astro.props;
-const {
-	name,
-	description,
-	facts,
-	url,
-	logo,
-	categories,
-	tags,
-	peoples,
-	pubDate,
-} = card.data;
+const { name, description, facts, url, logo, peoples, pubDate } = card.data;
 const t = useTranslations(locale);
 
 /*
- * Домен показывается рядом с кнопкой: человек уходит на чужой сайт и имеет
- * право видеть куда, не наводя курсор на ссылку.
+ * Домен стоит на самой кнопке: человек уходит на чужой сайт и имеет право
+ * видеть куда - подпись «Перейти на проект» этого не говорила.
  */
 const host = new URL(url).hostname.replace(/^www\./, "");
 
@@ -59,12 +42,6 @@ const editFolder = locale === "en" && hasTranslation ? "cards-en" : "cards";
 const editHref = config.site.repository
 	? `${config.site.repository}/edit/main/src/data/${editFolder}/${card.id}.md`
 	: undefined;
-
-/** Пилюли ведут в каталог: категория - на страницу раздела, тег - в фильтр. */
-const categoryHref = (category: string) =>
-	getRelativeLocaleUrl(locale, `catalog/${category}`);
-const tagHref = (tag: string) =>
-	`${getRelativeLocaleUrl(locale, "catalog")}?tags=${tag}`;
 ---
 
 <article
@@ -87,44 +64,14 @@ const tagHref = (tag: string) =>
 	<div class="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-6">
 		<p class="text-lg text-muted-foreground">{description}</p>
 
-		<div class="flex flex-wrap items-center gap-4">
-			<div class="flex flex-col gap-1">
-				<Button href={url} preset="solid" external>
-					{t("card.visit")}
-				</Button>
-				<span class="pl-1 text-muted-foreground text-xs">{host}</span>
-			</div>
+		<div class="flex flex-wrap items-center gap-3">
+			<Button href={url} preset="solid" external>
+				{host}
+				<Icon name="mdi:open-in-new" class="size-4" aria-hidden="true" />
+			</Button>
 
 			<SaveButton cardId={card.id} locale={locale} size="md" withLabel />
 		</div>
-
-		<div class="flex flex-wrap items-center gap-1.5">
-			{categories.map((category) => (
-				<a
-					href={categoryHref(category)}
-					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 font-medium text-primary text-xs transition hover:bg-primary/20"
-				>
-					<Icon name={categoryIcon(category)} class="size-3.5" aria-hidden="true" />
-					{categoryLabel(locale, category)}
-				</a>
-			))}
-			{tags.map((tag) => (
-				<a
-					href={tagHref(tag)}
-					class="inline-block rounded-full bg-muted px-2.5 py-1 text-muted-foreground text-xs transition hover:bg-muted/70 hover:text-foreground"
-				>
-					#{tagLabel(locale, tag)}
-				</a>
-			))}
-		</div>
-
-		<ul class="flex flex-wrap gap-3 divide-x divide-border/60">
-			{peoples.map((people) => (
-				<li class="pl-3 text-muted-foreground text-xs first:pl-0">
-					{peopleLabel(locale, people)}
-				</li>
-			))}
-		</ul>
 	</div>
 
 	<section class="mx-auto mt-10 w-full max-w-2xl">

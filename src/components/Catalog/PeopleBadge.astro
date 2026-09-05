@@ -1,0 +1,64 @@
+---
+import type { CollectionEntry } from "astro:content";
+import bashkirIcon from "@/assets/images/svg/bash.svg";
+import crimeanTatarIcon from "@/assets/images/svg/qrim.svg";
+import tatarIcon from "@/assets/images/svg/tat.svg";
+import { peopleLabel } from "@/components/Catalog/labels";
+import type { LocaleCode } from "@/config/types";
+
+/**
+ * Бейдж народа: знак и подпись. Те же три знака, что стоят на заглушке
+ * логотипа (`CardLogo`), - народ узнается по одной и той же форме и в
+ * списке, и на карточке проекта.
+ */
+
+type People = CollectionEntry<"cards">["data"]["peoples"][number];
+
+const PEOPLE_ICONS = {
+	tatar: tatarIcon,
+	bashkir: bashkirIcon,
+	"crimean-tatar": crimeanTatarIcon,
+} satisfies Record<People, ImageMetadata>;
+
+interface Props {
+	locale: LocaleCode;
+	people: People;
+	/** `sm` - плотные списки каталога, `md` - страница проекта. */
+	size?: "sm" | "md";
+	class?: string;
+}
+
+const { locale, people, size = "md", class: className = "" } = Astro.props;
+
+/*
+ * Знак белый и монохромный - на светлой плашке он бы пропал, поэтому под
+ * него кладется темный кружок. Тот же прием, что на заглушке логотипа
+ * (`CardLogo`): белое по цветному пятну.
+ */
+const icon = PEOPLE_ICONS[people];
+
+const sizes = {
+	sm: { badge: "gap-1.5 py-0.5 pr-2 pl-0.5 text-xs", disc: "size-4" },
+	md: { badge: "gap-1.5 py-1 pr-2.5 pl-1 text-xs", disc: "size-5" },
+} satisfies Record<NonNullable<Props["size"]>, { badge: string; disc: string }>;
+---
+
+<span
+	class={`inline-flex items-center rounded-full bg-muted text-muted-foreground ${sizes[size].badge} ${className}`}
+>
+	<span
+		class={`inline-flex shrink-0 items-center justify-center rounded-full corner-squircle bg-foreground ${sizes[size].disc}`}
+		aria-hidden="true"
+	>
+		<img
+			src={icon.src}
+			alt=""
+			width={20}
+			height={20}
+			loading="lazy"
+			decoding="async"
+			class="size-[65%] object-contain"
+		>
+	</span>
+	{peopleLabel(locale, people)}
+</span>

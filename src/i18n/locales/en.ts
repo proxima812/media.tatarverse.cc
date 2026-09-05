@@ -4,6 +4,13 @@ export default {
 	"meta.title": "People. Projects. Ideas.",
 	"meta.description":
 		"A catalog of Tatar, Bashkir and Crimean Tatar projects: language projects, channels, authors, lessons and graphic design.",
+	"meta.catalog.description":
+		"The whole catalog: channels, authors, media, language projects, lessons and graphics about Tatars, Bashkirs and Crimean Tatars.",
+	"meta.category.description": "Catalog projects in the category",
+	"meta.search.description":
+		"Search the catalog - find a project by name or topic. The full list is open alphabetically.",
+	"meta.saved.description":
+		"Projects you saved. The list is kept in your browser and is never sent anywhere.",
 	"nav.catalog": "Catalog",
 	"catalog.pageTitle": "Full catalog",
 	"nav.search": "Search",
@@ -75,6 +82,7 @@ export default {
 	"card.saved": "Saved",
 	"card.breadcrumbs": "You are here",
 	"card.related": "Related projects",
+	"card.peoples": "Peoples",
 	"saved.title": "Saved",
 	"saved.remove": "Remove from saved",
 	"saved.add": "Save project",

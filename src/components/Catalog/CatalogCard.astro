@@ -3,7 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { peopleLabel } from "@/components/Catalog/labels";
+import PeopleBadge from "@/components/Catalog/PeopleBadge.astro";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
 import {
 	categoryIcon,
@@ -86,9 +86,12 @@ const glow = meshGradient(name);
 						))}
 
 					{peoples.map((people) => (
-							<span class="rounded-lg bg-muted px-2 py-0.5 text-muted-foreground text-xs">
-								{peopleLabel(locale, people)}
-							</span>
+							<PeopleBadge
+								locale={locale}
+								people={people}
+								size="sm"
+								class="rounded-lg"
+							/>
 						))}
 				</div>
 

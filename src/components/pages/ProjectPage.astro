@@ -1,11 +1,14 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
 import CardDetail from "@/components/Catalog/CardDetail.astro";
+import CardTaxonomy from "@/components/Catalog/CardTaxonomy.astro";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
 import { categoryLabel } from "@/components/Catalog/taxonomy";
 import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
 import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
+import Button from "@/components/partials/Button.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -38,19 +41,50 @@ const categoryHref = mainCategory
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<Breadcrumbs
-		locale={locale}
-		items={[
-			{ label: t("nav.catalog"), href: catalogHref },
-			...(mainCategory && categoryHref
-				? [{ label: categoryLabel(locale, mainCategory), href: categoryHref }]
-				: []),
-			{ label: card.data.name },
-		]}
-		class="px-1"
-	/>
+	<!--
+	     Слева кнопка «как отсюда уйти», справа крошки «где я». Гость из
+	     поиска видит оба ответа до того, как начнет читать карточку.
+	-->
+	<div class="flex flex-wrap items-center gap-3 px-1">
+		<Button href={catalogHref} preset="soft" size="sm">
+			<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
+			{t("card.back")}
+		</Button>
 
-	<CardDetail card={card} locale={locale} />
+		<Breadcrumbs
+			locale={locale}
+			items={[
+				{ label: t("nav.catalog"), href: catalogHref },
+				...(mainCategory && categoryHref
+					? [{ label: categoryLabel(locale, mainCategory), href: categoryHref }]
+					: []),
+				{ label: card.data.name },
+			]}
+			class="ml-auto"
+		/>
+	</div>
+
+	<!--
+	     Рассказ о проекте и выходы в каталог - разные вещи, поэтому они в
+	     разных колонках.
+	-->
+	<div class="grid gap-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start">
+		<!--
+		     Aside стоит первым в разметке, но на узком экране это лишний экран
+		     пилюль перед самим проектом - поэтому там он уезжает вниз порядком.
+		-->
+		<aside class="order-last lg:order-first lg:sticky lg:top-24">
+			<CardTaxonomy
+				locale={locale}
+				categories={card.data.categories}
+				tags={card.data.tags}
+				peoples={card.data.peoples}
+				class="rounded-4xl corner-squircle bg-background p-6 shadow-xs"
+			/>
+		</aside>
+
+		<CardDetail card={card} locale={locale} />
+	</div>
 
 	{related.length > 0 && (
 			<section>
