@@ -20,7 +20,7 @@ const number = new Intl.NumberFormat(locale);
 /*
  * Цифры во втором пункте считаются из коллекции, а не вписаны в текст:
  * карточки приезжают пулл-реквестами, и «324 проекта» в манифесте устарело
- * бы в первый же день (тот же принцип, что в `CatalogStats.astro`).
+ * бы в первый же день (тот же принцип, что в `StatField.astro`).
  */
 const counted = (key: string, value: number) =>
 	`${number.format(value)} ${plural(key, value)}`;

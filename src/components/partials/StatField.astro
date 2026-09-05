@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
-import { type CardWithLogo, driftVars } from "@/components/CatalogStats/logos";
+import { type CardWithLogo, driftVars } from "@/components/partials/drift";
 import type { LocaleCode } from "@/config/types";
 import { usePlural, useTranslations } from "@/i18n";
 import { cn } from "@/utils/lib/cn";
@@ -62,8 +62,7 @@ interface Tile {
 }
 
 /*
- * Раскладка ручная, не случайная - по той же причине, что и подборка в
- * `CatalogStats/logos.ts`: витрина каталога это редакторское решение, а
+ * Раскладка ручная, не случайная: витрина каталога это редакторское решение, а
  * `Math.random()` дал бы то три логотипа в одной точке, то пустую половину.
  * Разнобой набран руками: шаг по горизонтали неровный, высоты в верхней и
  * нижней полосе гуляют на несколько rem, размеры не повторяются подряд.
@@ -93,7 +92,7 @@ const TILES: Tile[] = [
 /*
  * Неизвестный id роняет сборку, а не тихо пропускает слот: карточку могли
  * переименовать или удалить, и дырка в витрине заметна куда позже, чем ошибка
- * сборки. Тот же прием, что в `resolveLogos`.
+ * сборки.
  */
 const byId = new Map(cards.map((card) => [card.id, card]));
 
@@ -150,9 +149,9 @@ const PUSH_Y = 26;
 							title={card.data.name}
 						>
 							{/*
-							 * Траектория берется из `driftVars` - той же функции, что кормит
-							 * витрину в `CatalogStats`: три точки в полярных координатах,
-							 * выведенные из id карточки. Значения псевдослучайные, но
+							 * Траектория берется из `driftVars` (`partials/drift.ts`): три
+							 * точки в полярных координатах, выведенные из id карточки.
+							 * Значения псевдослучайные, но
 							 * стабильные между сборками, поэтому статика не «дергается».
 							 */}
 							<div
