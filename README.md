@@ -1,101 +1,110 @@
-# Astro Starter
+# media.tatarverse
+
+**Каталог проектов, которые ведут татары, башкиры и крымские татары**: авторы,
+каналы, медиа, языковые платформы, уроки, графика.
+
+[**media.tatarverse.cc**](https://media.tatarverse.cc) · [Добавить проект](https://media.tatarverse.cc/add) · [Telegram](https://t.me/the_tatarverse)
 
 [![Built with Astro](https://astro.badg.es/v2/built-with-astro/tiny.svg)](https://astro.build)
-![Astro](https://img.shields.io/badge/Astro-7-black?logo=astro&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
 ![Bun](https://img.shields.io/badge/Bun-ready-F9F1E1?logo=bun&logoColor=111111)
+![License](https://img.shields.io/badge/code-MIT-green)
+![Content](https://img.shields.io/badge/content-CC_BY_4.0-lightgrey)
 
-Основа для SEO-ориентированных статических сайтов: лендинги, корпоративные
-страницы, контентные проекты.
+![media.tatarverse](./public/default-ogImage.png)
 
-Идея простая: вся конфигурация проекта - в одном файле, все опциональные
-возможности честно включаются и выключаются, а сборка проверяет себя сама.
+Сайт статический: контент лежит в репозитории обычными markdown-файлами, а не в
+базе. Каждая карточка - один файл, который можно прочитать, поправить и прислать
+пул-реквестом. Сборка проверяет себя сама: неизвестный тег, отсутствующий
+перевод или сломанная ссылка на ассет роняют билд, а не уезжают на прод.
 
-## Быстрый старт
+## Как это выглядит
+
+| Каталог | Фильтр по категории |
+|---|---|
+| ![Каталог](./src/assets/images/main/1.png) | ![Фильтр](./src/assets/images/main/2.png) |
+
+## Содержание
+
+- [Как добавить проект](#как-добавить-проект)
+- [Устройство карточки](#устройство-карточки)
+- [Локальный запуск](#локальный-запуск)
+- [Команды](#команды)
+- [Структура репозитория](#структура-репозитория)
+- [Как это устроено](#как-это-устроено)
+- [Вклад в проект](#вклад-в-проект)
+- [Лицензия](#лицензия)
+
+## Как добавить проект
+
+Три пути, от простого к техническому.
+
+**1. Форма.** Заполнить [форму на сайте](https://media.tatarverse.cc/add) -
+заявка уходит на модерацию, карточка появляется в каталоге в течение 1-24 часов.
+Форма создает GitHub Issue, а бот собирает из нее черновик карточки.
+
+**2. Issue.** Открыть
+[issue](https://github.com/proxima812/media.tatarverse.cc/issues/new) с
+описанием проекта - если не хочется заполнять форму или нужно что-то обсудить.
+
+**3. Pull request.** Добавить файл карточки самому - самый быстрый путь, если вы
+работаете с кодом. Дальше об этом.
+
+## Устройство карточки
+
+Одна карточка - один файл `src/data/cards/<id>.md`. Тела у файла нет, только
+фронтматтер:
+
+```markdown
+---
+name: "15 daqqa"
+description: "Авторский Instagram-блог педагога Эмине Шерфе о разговорном крымскотатарском языке и повседневных идиомах."
+facts:
+  - "Ведет блог с 2019 года, аудитория - в основном крымские татары"
+  - "Ранее работала на телеканале ATR и радиопрограммах о языке и истории"
+  - "Аккаунт «учим крымскотатарский» - около 13 тысяч подписчиков"
+url: "https://www.instagram.com/15_daqqa/"
+pubDate: "2026-08-29"
+categories: ["author", "lessons"]
+tags: ["teacher", "language", "education", "blog", "educational"]
+peoples: ["crimean-tatar"]
+---
+```
+
+Правила, которые проверяет сборка:
+
+- **`id`** - имя файла без расширения, вида `<название>-<категория>`. После
+  публикации не меняется: этим же id связаны перевод и логотип.
+- **`facts`** - от трех до четырех коротких фактов. Не рекламные обещания, а
+  проверяемые утверждения о проекте.
+- **`categories`, `tags`, `peoples`** - только значения из реестра
+  [`src/components/Catalog/taxonomy.ts`](./src/components/Catalog/taxonomy.ts)
+  (`peoples`: `tatar`, `bashkir`, `crimean-tatar`). Новое значение - отдельное
+  решение, а не побочный эффект новой карточки.
+- **Перевод** - файл с тем же id в `src/data/cards-en/`: только `name`,
+  `description` и `facts`. Ссылка, логотип и таксономия от языка не зависят.
+  Без перевода падает `bun run check:i18n`.
+- **Логотип** - необязателен. Файл `src/assets/images/logo/<id>.png` подключается
+  полем `logo`. Нет логотипа - карточка сама рисует мэш-градиент со знаком
+  народа, постоянный для этого названия.
+
+Чеклист ревью карточки целиком -
+[`.agents/skills/starter-card-review/SKILL.md`](./.agents/skills/starter-card-review/SKILL.md).
+
+## Локальный запуск
+
+Нужен [Bun](https://bun.sh) и Node 22.12 или новее.
 
 ```bash
+git clone https://github.com/proxima812/media.tatarverse.cc
+cd media.tatarverse.cc
 bun install
 bun dev
 ```
 
-Новый проект:
-
-1. клонировать репозиторий;
-2. заменить значения в [`main.config.ts`](./main.config.ts);
-3. положить свои `public/favicon.svg` и OG-картинку;
-4. добавить страницы в `src/pages/` (и словари в `src/i18n/locales/`, если локалей
-   больше одной);
-5. `bun run verify` и деплой.
-
-## Конфигурация
-
-Правится **только** [`main.config.ts`](./main.config.ts) - там URL сайта, название,
-локаль, Open Graph, цвета темы, подтверждения владения доменом, аналитика и
-feature flags.
-
-- контракт и типы - `src/config/types.ts`;
-- проверки - `src/config/validate.ts`.
-
-Конфигурация проверяется на старте `dev` и `build`: некорректный URL, неверный
-формат GTM ID, отсутствующая OG-картинка, короткий ключ IndexNow - сборка падает
-сразу и перечисляет все проблемы разом.
-
-Часть некорректных состояний не выражается в типах: включить аналитику без ID или
-IndexNow без ключа не даст TypeScript.
-
-## Возможности
-
-| Фича | Конфиг | Что появляется в `dist/` |
-|---|---|---|
-| SEO-метатеги, Open Graph, JSON-LD | всегда | теги в `<head>` каждой страницы |
-| `robots.txt` | всегда | `robots.txt` |
-| Sitemap | всегда | `sitemap-index.xml`, `sitemap-0.xml` |
-| Favicon pipeline | всегда | `favicon.*`, `apple-touch-icon.png` |
-| Web App Manifest | `features.manifest` | `site.webmanifest` + `<link rel="manifest">` |
-| `ai.txt` | `features.ai` | `ai.txt` + строка в `robots.txt` |
-| `llms.txt` + markdown-двойники страниц | `features.llms` | `llms.txt`, `/index.md`, `/en.md`, строка в `robots.txt` |
-| IndexNow | `indexNow.enabled` | `<key>.txt` + отправка измененных URL |
-| Google Tag Manager | `analytics.googleTagManager` | скрипт GTM |
-| Yandex Metrika | `analytics.yandexMetrika` | скрипт счетчика |
-| i18n | `i18n.locales` | маршруты по локалям, hreflang, sitemap с alternate-ссылками |
-
-Выключенная фича не оставляет ничего: ни файла, ни тега, ни ссылки на себя
-из `robots.txt`.
-
-По умолчанию все опциональное выключено.
-
-### i18n
-
-Роутинг - нативный i18n Astro, без пакетов. Дефолтная локаль (`i18n.defaultLocale`
-в `main.config.ts`) не получает префикс в URL: `/`, а не `/ru/`. Остальные локали -
-`/en/`. Словари строк - `src/i18n/locales/<locale>.ts`, доступ через
-`useTranslations(locale)` из `src/i18n`. hreflang-ссылки (включая `x-default`) и
-sitemap с alternate-записями собираются автоматически из `i18n.locales`.
-
-Добавить локаль - три места: `i18n.locales` в `main.config.ts`, новый файл в
-`src/i18n/locales/`, страница в `src/pages/<locale>/`.
-
-### llms.txt и markdown-двойники
-
-Генерирует [`@dualmark/astro`](https://dualmark.dev/docs/integrations/astro):
-каждая статическая страница из `staticPages` (в `astro.config.mjs`) получает
-markdown-версию (`/index.md`, `/en.md`), а `llms.txt` собирается из явно заданных
-`sections` - не парсится из HTML и не обновляется сам при добавлении страницы,
-как было раньше. Появилась новая статическая страница - добавить ее в
-`dualmarkStaticPages` и в `llmsTxt.sections` в `astro.config.mjs`. Появится первая
-content collection - замапить ее в `dualmark({ collections })` там же.
-
-Alternate-ссылка на markdown отдается тегом `<link rel="alternate" type="text/markdown">`
-в `<head>` (проп `markdownURL` у `Layout`/`SEO`), не HTTP-заголовком: сайт
-статический, рантайм-middleware пакета на проде не выполняется.
-
-### IndexNow
-
-Файл верификации `/<key>.txt` стартер создает сам - руками класть его в `public/`
-не нужно. Ключ получают на [bing.com/indexnow/getstarted](https://www.bing.com/indexnow/getstarted).
-
-Чтобы прогнать пайплайн без реальной отправки: `{ enabled: true, key: "...", dryRun: true }`.
+Сайт поднимется на `http://localhost:4321`. Ключей, `.env` и внешних сервисов
+для локальной работы не нужно - весь контент лежит в репозитории.
 
 ## Команды
 
@@ -103,51 +112,90 @@ Alternate-ссылка на markdown отдается тегом `<link rel="alt
 bun dev             # дев-сервер
 bun run build       # сборка в dist/
 bun run preview     # локальный просмотр собранного
-bun run lint        # biome check . - линт и порядок импортов
-bun run lint:fix    # biome check --write .
-bun run format      # biome format --write .
-bun run check       # astro check - типы
-bun run check:seo   # build + проверка dist/
-bun run verify      # lint + check + check:seo
+bun run check       # astro check - типы .astro и .ts
+bun run check:seo   # build + проверка каждой страницы в dist/
+bun run check:i18n  # у всех карточек есть EN-перевод
+bun run verify      # все сразу
 ```
 
-`bun run check:seo` проверяет каждую страницу сборки: `<title>`, description,
+`bun run check:seo` проверяет каждую собранную страницу: `<title>`, description,
 canonical, набор Open Graph, валидность JSON-LD, `<html lang>`, количество `<h1>`,
-`noindex` на 404 - и что все локальные ссылки на ассеты действительно
-существуют в `dist/`.
+`noindex` на 404 - и что все локальные ссылки на ассеты действительно существуют
+в `dist/`. Ошибки роняют команду, предупреждения только печатаются.
 
-Фавиконы генерируются из `public/favicon.svg` перед `bun dev`
-(или вручную: `bun run generate:favicons`).
+Линтера и форматтера в репозитории нет намеренно (Biome не разбирал `.astro` и
+переформатировал SVG в `public/`) - стиль держится ревью и тем, как написан
+соседний код.
 
-## Структура
+## Структура репозитория
 
 ```
-main.config.ts            значения проекта - единственный файл под правку
-astro.config.mjs          сборка интеграций, i18n-роутинг, dualmark
-biome.json                линт и форматирование (bun run lint)
+main.config.ts            конфигурация сайта - единственный файл под правку
+astro.config.mjs          интеграции, i18n-роутинг, dualmark
 src/
-  config/                 контракт конфигурации и ее валидация
-  i18n/                   локали, словари, useTranslations/buildAlternates
-  integrations/           генерация robots.txt, ai.txt, manifest, IndexNow, dualmark-двойники
+  data/cards/             карточки каталога (RU - источник истины)
+  data/cards-en/          английские переводы карточек
+  data/markdown/          текстовые страницы: о проекте, правовые, «Добавить»
+  components/Catalog/     каталог, карточки, фильтры, реестр таксономии
+  components/pages/       сборка страниц из компонентов
   components/SEO/         метатеги, JSON-LD, аналитика
-  layouts/Layout.astro    каркас страницы
+  i18n/                   локали, словари, useTranslations/buildAlternates
+  integrations/           robots.txt, ai.txt, manifest, IndexNow, markdown-двойники
   pages/                  маршруты (en/ - вторая локаль)
   styles/tailwind.css     тема и семантические токены
-scripts/                  favicon pipeline, SEO-валидатор
+docs/adr/                 принятые решения и их причины
+CONTEXT.md                глоссарий домена
+AGENTS.md                 правила репозитория
 ```
 
-Артефакты интеграций генерируются на этапе `astro:build:done`, поэтому в
-`astro dev` их нет - смотреть после `bun run build`.
+## Как это устроено
 
-## Деплой
+**Стек.** Astro (статическая генерация), Tailwind CSS v4 на семантических
+токенах, TypeScript в strict, Bun. UI-фреймворков и клиентских островов нет:
+интерактив - фильтры, закладки, поиск по каталогу - это несколько небольших
+скриптов на самой странице.
 
-`output: "static"` - подходит любой статический хостинг: Vercel, Cloudflare Pages,
-Netlify, nginx. Команда сборки `bun run build`, каталог `dist`.
-Адаптер не подключен; он нужен только при переходе на SSR.
+**Конфигурация.** Все, что относится к сайту как таковому - URL, Open Graph,
+цвета темы, аналитика, feature flags - лежит в
+[`main.config.ts`](./main.config.ts). Значения проверяются на старте `dev` и
+`build`: неверный URL, кривой GTM ID, отсутствующая OG-картинка - сборка падает
+сразу и перечисляет все проблемы разом.
 
-## Работа с AI-агентами
+**Двуязычность.** Нативный i18n Astro, без пакетов. Русская локаль - без
+префикса (`/catalog`), английская - `/en/catalog`. Строки интерфейса -
+`src/i18n/locales/<locale>.ts`. hreflang и sitemap с alternate-записями
+собираются сами. Нет английской карточки - на `/en/` показывается русский текст,
+страница не пропадает.
 
-Правила репозитория - в [`AGENTS.md`](./AGENTS.md), специализированные скиллы -
-в `.agents/skills/starter-*/`. Они едут вместе с репозиторием, поэтому клон сразу
-получает контекст: архитектуру, правила фич, SEO, Tailwind, TypeScript и
-definition of done.
+**Поиск и закладки.** Поиск по каталогу - фильтрация уже отрендеренного списка на
+месте, без индекса и запросов. Сохраненные проекты живут в `localStorage`
+браузера и никуда не отправляются.
+
+**SEO.** Метатеги, Open Graph и JSON-LD на каждой странице, хлебные крошки
+уходят в разметку `BreadcrumbList`, `robots.txt` и sitemap генерируются на билде.
+Автоматика - в `src/integrations/`.
+
+## Вклад в проект
+
+Приветствуются и карточки, и правки кода, и исправления фактических ошибок в
+описаниях - у каждой карточки на сайте есть ссылка «Предложить правку», которая
+ведет прямо в редактор нужного файла на GitHub.
+
+Перед пул-реквестом:
+
+1. `bun run verify` - зеленый;
+2. правила репозитория - [`AGENTS.md`](./AGENTS.md);
+3. доменные слова - [`CONTEXT.md`](./CONTEXT.md) (карточка, а не «запись»);
+4. решения, которые уже приняты и почему, - `docs/adr/`.
+
+Карточка описывает живой проект живых людей. Если описание неточное или проект
+закрылся - это баг, и о нем стоит сообщить.
+
+## Лицензия
+
+- **Код** - [MIT](./LICENSE).
+- **Контент каталога** (тексты карточек в `src/data/`) -
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.ru): можно
+  использовать и переделывать с указанием источника.
+- **Логотипы проектов** в `src/assets/images/logo/` принадлежат их владельцам и
+  используются для обозначения самих проектов.
