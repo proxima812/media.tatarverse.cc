@@ -5,7 +5,6 @@ import { localizeCards } from "@/components/Catalog/localize";
 import MainTitle from "@/components/MainTitle.astro";
 import { homeContent } from "@/components/pages/homeContent";
 import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
-import DepthDeck from "@/components/partials/DepthDeck.astro";
 import FAQ from "@/components/partials/FAQ.astro";
 import Features from "@/components/partials/Features.astro";
 import InstFollows from "@/components/partials/InstFollows.astro";
@@ -43,13 +42,12 @@ const markdownURL = locale === "en" ? "/en.md" : "/index.md";
 >
 	<LogoStack />
 	<MainTitle locale={locale} />
-	<SearchShowcase />
+	<SearchShowcase locale={locale} />
 	<Features heading={content.features.heading} items={[...content.features.items]} />
 	<StatField locale={locale} cards={cards} />
 	<StepRail locale={locale} />
 	<StickyList locale={locale} cards={cards} />
 	<Quote photo={authorPhoto} {...content.quote} />
-	<DepthDeck locale={locale} cards={cards} />
 	<LogoMarquee locale={locale} cards={cards} />
 	<InstFollows title={content.instFollows.title} />
 	<FAQ title={content.faq.title} items={[...content.faq.items]} />
