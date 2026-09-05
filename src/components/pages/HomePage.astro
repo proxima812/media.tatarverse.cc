@@ -43,7 +43,10 @@ const markdownURL = locale === "en" ? "/en.md" : "/index.md";
 	<LogoStack />
 	<MainTitle locale={locale} />
 	<SearchShowcase locale={locale} />
-	<Features heading={content.features.heading} items={[...content.features.items]} />
+	<Features
+		heading={content.features.heading}
+		items={[...content.features.items]}
+	/>
 	<StatField locale={locale} cards={cards} />
 	<StepRail locale={locale} />
 	<StickyList locale={locale} cards={cards} />

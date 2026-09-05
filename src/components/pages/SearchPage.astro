@@ -23,7 +23,6 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-
 	<!-- Плашка с гигантскими буквами и пилюлей поиска поверх них - раскладка
 	     и размеры взяты с оригинала: панель 400px, буквы прижаты к центру,
 	     поле 727px по центру панели. Сами буквы разные у локалей и приезжают
@@ -44,5 +43,4 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 	</section>
 
 	<CatalogGlossary locale={locale} cards={cards} />
-
 </Layout>

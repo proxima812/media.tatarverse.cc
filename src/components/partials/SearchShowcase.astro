@@ -62,15 +62,24 @@ const SLIDES: {
 		photos: [
 			{
 				id: "photo-1478737270239-2f02b77fc618",
-				alt: { ru: "Микрофоны в студии звукозаписи", en: "Microphones in a recording studio" },
+				alt: {
+					ru: "Микрофоны в студии звукозаписи",
+					en: "Microphones in a recording studio",
+				},
 			},
 			{
 				id: "photo-1485579149621-3123dd979885",
-				alt: { ru: "Винтажный микрофон на сцене", en: "Vintage microphone on a stage" },
+				alt: {
+					ru: "Винтажный микрофон на сцене",
+					en: "Vintage microphone on a stage",
+				},
 			},
 			{
 				id: "photo-1511671782779-c97d3d27a1d4",
-				alt: { ru: "Микрофон в огнях вечернего эфира", en: "Microphone against evening studio lights" },
+				alt: {
+					ru: "Микрофон в огнях вечернего эфира",
+					en: "Microphone against evening studio lights",
+				},
 			},
 		],
 	},
@@ -80,15 +89,24 @@ const SLIDES: {
 		photos: [
 			{
 				id: "photo-1462642109801-4ac2971a3a51",
-				alt: { ru: "Тетрадь с рукописным текстом и перьевая ручка", en: "Notebook with handwriting and a fountain pen" },
+				alt: {
+					ru: "Тетрадь с рукописным текстом и перьевая ручка",
+					en: "Notebook with handwriting and a fountain pen",
+				},
 			},
 			{
 				id: "photo-1473186505569-9c61870c11f9",
-				alt: { ru: "Две ручки на исписанном листе", en: "Two pens resting on a written page" },
+				alt: {
+					ru: "Две ручки на исписанном листе",
+					en: "Two pens resting on a written page",
+				},
 			},
 			{
 				id: "photo-1585178332093-1dfaa3998f6b",
-				alt: { ru: "Раскрытый блокнот с записями в руке", en: "An open handwritten notebook held in a hand" },
+				alt: {
+					ru: "Раскрытый блокнот с записями в руке",
+					en: "An open handwritten notebook held in a hand",
+				},
 			},
 		],
 	},
@@ -98,15 +116,24 @@ const SLIDES: {
 		photos: [
 			{
 				id: "photo-1440404653325-ab127d49abc1",
-				alt: { ru: "Катушки с кинопленкой и старая аппаратура", en: "Film reels and vintage equipment" },
+				alt: {
+					ru: "Катушки с кинопленкой и старая аппаратура",
+					en: "Film reels and vintage equipment",
+				},
 			},
 			{
 				id: "photo-1493804714600-6edb1cd93080",
-				alt: { ru: "Ретро-камера в руке на голубом фоне", en: "A retro camera held against a blue backdrop" },
+				alt: {
+					ru: "Ретро-камера в руке на голубом фоне",
+					en: "A retro camera held against a blue backdrop",
+				},
 			},
 			{
 				id: "photo-1495121553079-4c61bcce1894",
-				alt: { ru: "Двухобъективная пленочная камера", en: "A twin-lens film camera" },
+				alt: {
+					ru: "Двухобъективная пленочная камера",
+					en: "A twin-lens film camera",
+				},
 			},
 		],
 	},
@@ -116,15 +143,24 @@ const SLIDES: {
 		photos: [
 			{
 				id: "photo-1455390582262-044cdead277a",
-				alt: { ru: "Перо выводит строчку на бумаге", en: "A nib writing a line on paper" },
+				alt: {
+					ru: "Перо выводит строчку на бумаге",
+					en: "A nib writing a line on paper",
+				},
 			},
 			{
 				id: "photo-1502485019198-a625bd53ceb7",
-				alt: { ru: "Зал старой библиотеки с книжными полками", en: "A hall of an old library lined with books" },
+				alt: {
+					ru: "Зал старой библиотеки с книжными полками",
+					en: "A hall of an old library lined with books",
+				},
 			},
 			{
 				id: "photo-1576414160011-98dfab3aa889",
-				alt: { ru: "Стопка старых книг в кожаных переплетах", en: "A stack of old leather-bound books" },
+				alt: {
+					ru: "Стопка старых книг в кожаных переплетах",
+					en: "A stack of old leather-bound books",
+				},
 			},
 		],
 	},
@@ -142,22 +178,24 @@ const slides = SLIDES.map((slide) => ({
 }));
 
 /** Смещение (в процентах от высоты самого кадра), паркующее его сразу за краем панели. */
-const exitOffset = (tile: Tile) => -(((tile.top + tile.height) / tile.height) * 100 + 6);
+const exitOffset = (tile: Tile) =>
+	-(((tile.top + tile.height) / tile.height) * 100 + 6);
 const enterOffset = (tile: Tile) => ((100 - tile.top) / tile.height) * 100 + 6;
 
 const columnDelay = 70;
 ---
 
-
-
-<section class:list={["w-full", className]} data-search-showcase data-duration={String(duration)}>
+<section
+	class:list={["w-full", className]}
+	data-search-showcase
+	data-duration={String(duration)}
+>
 	<div
 		class="search-showcase-panel relative w-full overflow-hidden rounded-[1.25rem]"
 		style={`background-color:${slides[0]?.background ?? "transparent"};`}
 		data-panel
 	>
-		{
-			slides.map((slide, slideIndex) =>
+		{slides.map((slide, slideIndex) =>
 				slide.frames.map(({ tile, photo }, columnIndex) => (
 					<figure
 						class:list={["search-showcase-frame", { "is-active": slideIndex === 0 }]}
@@ -174,8 +212,7 @@ const columnDelay = 70;
 						/>
 					</figure>
 				)),
-			)
-		}
+			)}
 
 		<div class="search-showcase-pill" aria-hidden="true">
 			<svg
@@ -190,8 +227,7 @@ const columnDelay = 70;
 				<path d="m15.4 15.4 4.1 4.1"></path>
 			</svg>
 			<span class="search-showcase-queries">
-				{
-					slides.map((slide, slideIndex) => (
+				{slides.map((slide, slideIndex) => (
 						<span
 							class:list={["search-showcase-query", { "is-active": slideIndex === 0 }]}
 							data-query
@@ -200,286 +236,299 @@ const columnDelay = 70;
 						>
 							{slide.query}
 						</span>
-					))
-				}
+					))}
 			</span>
 		</div>
 	</div>
 </section>
 
 <style>
-	.search-showcase-panel {
-		aspect-ratio: 841 / 351;
-		transition: background-color 620ms cubic-bezier(0.4, 0, 0.2, 1);
-	}
+.search-showcase-panel {
+	aspect-ratio: 841 / 351;
+	transition: background-color 620ms cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-	.search-showcase-frame {
-		position: absolute;
-		margin: 0;
-		overflow: hidden;
+.search-showcase-frame {
+	position: absolute;
+	margin: 0;
+	overflow: hidden;
+	transform: translate3d(0, var(--frame-enter), 0);
+	will-change: transform;
+}
+
+.search-showcase-frame.is-active {
+	animation: search-showcase-frame-in 620ms cubic-bezier(0.16, 0.86, 0.3, 1)
+		var(--frame-delay) both;
+}
+
+.search-showcase-frame.is-exiting {
+	animation: search-showcase-frame-out 440ms cubic-bezier(0.5, 0, 0.85, 0.28)
+		var(--frame-delay) both;
+}
+
+.search-showcase-frame.is-active .search-showcase-photo {
+	animation: search-showcase-photo-in 720ms cubic-bezier(0.16, 0.86, 0.3, 1)
+		var(--frame-delay) both;
+}
+
+.search-showcase-frame.is-exiting .search-showcase-photo {
+	animation: search-showcase-photo-out 440ms cubic-bezier(0.5, 0, 0.85, 0.28)
+		var(--frame-delay) both;
+}
+
+@keyframes search-showcase-frame-in {
+	from {
 		transform: translate3d(0, var(--frame-enter), 0);
-		will-change: transform;
 	}
-
-	.search-showcase-frame.is-active {
-		animation: search-showcase-frame-in 620ms cubic-bezier(0.16, 0.86, 0.3, 1) var(--frame-delay) both;
+	to {
+		transform: translate3d(0, 0, 0);
 	}
+}
 
-	.search-showcase-frame.is-exiting {
-		animation: search-showcase-frame-out 440ms cubic-bezier(0.5, 0, 0.85, 0.28) var(--frame-delay) both;
+@keyframes search-showcase-frame-out {
+	from {
+		transform: translate3d(0, 0, 0);
 	}
-
-	.search-showcase-frame.is-active .search-showcase-photo {
-		animation: search-showcase-photo-in 720ms cubic-bezier(0.16, 0.86, 0.3, 1) var(--frame-delay) both;
+	to {
+		transform: translate3d(0, var(--frame-exit), 0);
 	}
+}
 
-	.search-showcase-frame.is-exiting .search-showcase-photo {
-		animation: search-showcase-photo-out 440ms cubic-bezier(0.5, 0, 0.85, 0.28) var(--frame-delay) both;
+@keyframes search-showcase-photo-in {
+	from {
+		transform: translate3d(0, 7%, 0) scale(1.07);
 	}
-
-	@keyframes search-showcase-frame-in {
-		from {
-			transform: translate3d(0, var(--frame-enter), 0);
-		}
-		to {
-			transform: translate3d(0, 0, 0);
-		}
+	to {
+		transform: translate3d(0, 0, 0) scale(1);
 	}
+}
 
-	@keyframes search-showcase-frame-out {
-		from {
-			transform: translate3d(0, 0, 0);
-		}
-		to {
-			transform: translate3d(0, var(--frame-exit), 0);
-		}
+@keyframes search-showcase-photo-out {
+	from {
+		transform: translate3d(0, 0, 0) scale(1);
 	}
-
-	@keyframes search-showcase-photo-in {
-		from {
-			transform: translate3d(0, 7%, 0) scale(1.07);
-		}
-		to {
-			transform: translate3d(0, 0, 0) scale(1);
-		}
+	to {
+		transform: translate3d(0, 7%, 0) scale(1.05);
 	}
+}
 
-	@keyframes search-showcase-photo-out {
-		from {
-			transform: translate3d(0, 0, 0) scale(1);
-		}
-		to {
-			transform: translate3d(0, 7%, 0) scale(1.05);
-		}
-	}
+.search-showcase-pill {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	gap: 0.62em;
+	width: min(32%, 26rem);
+	overflow: hidden;
+	padding: 0.9em 1.15em;
+	border-radius: 999px;
+	background-color: rgb(0 0 0 / 0.24);
+	font-size: clamp(0.78rem, 1.15vw, 1.02rem);
+	line-height: 1;
+	color: rgb(255 255 255 / 0.96);
+	transform: translate(-50%, -50%);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+}
 
-	.search-showcase-pill {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		z-index: 2;
-		display: flex;
-		align-items: center;
-		gap: 0.62em;
-		width: min(32%, 26rem);
-		overflow: hidden;
-		padding: 0.9em 1.15em;
-		border-radius: 999px;
-		background-color: rgb(0 0 0 / 0.24);
-		font-size: clamp(0.78rem, 1.15vw, 1.02rem);
-		line-height: 1;
-		color: rgb(255 255 255 / 0.96);
-		transform: translate(-50%, -50%);
-		backdrop-filter: blur(12px);
-		-webkit-backdrop-filter: blur(12px);
-	}
+.search-showcase-icon {
+	width: 1.2em;
+	height: 1.2em;
+	flex: none;
+	opacity: 0.92;
+}
 
-	.search-showcase-icon {
-		width: 1.2em;
-		height: 1.2em;
-		flex: none;
-		opacity: 0.92;
-	}
+.search-showcase-queries {
+	position: relative;
+	display: block;
+	flex: 1;
+	min-width: 0;
+	height: 1.3em;
+}
 
-	.search-showcase-queries {
-		position: relative;
-		display: block;
-		flex: 1;
-		min-width: 0;
-		height: 1.3em;
-	}
+.search-showcase-query {
+	position: absolute;
+	inset-inline-start: 0;
+	top: 0;
+	display: flex;
+	align-items: center;
+	height: 100%;
+	white-space: nowrap;
+	opacity: 0;
+	transform: translate3d(0, 130%, 0);
+}
 
-	.search-showcase-query {
-		position: absolute;
-		inset-inline-start: 0;
-		top: 0;
-		display: flex;
-		align-items: center;
-		height: 100%;
-		white-space: nowrap;
+.search-showcase-query.is-active {
+	animation: search-showcase-query-in 340ms cubic-bezier(0.16, 0.86, 0.3, 1)
+		90ms both;
+}
+
+.search-showcase-query.is-exiting {
+	animation: search-showcase-query-out 220ms cubic-bezier(0.5, 0, 0.85, 0.28)
+		both;
+}
+
+@keyframes search-showcase-query-in {
+	from {
 		opacity: 0;
 		transform: translate3d(0, 130%, 0);
 	}
-
-	.search-showcase-query.is-active {
-		animation: search-showcase-query-in 340ms cubic-bezier(0.16, 0.86, 0.3, 1) 90ms both;
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
 	}
+}
 
-	.search-showcase-query.is-exiting {
-		animation: search-showcase-query-out 220ms cubic-bezier(0.5, 0, 0.85, 0.28) both;
+@keyframes search-showcase-query-out {
+	from {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
 	}
-
-	@keyframes search-showcase-query-in {
-		from {
-			opacity: 0;
-			transform: translate3d(0, 130%, 0);
-		}
-		to {
-			opacity: 1;
-			transform: translate3d(0, 0, 0);
-		}
+	to {
+		opacity: 0;
+		transform: translate3d(0, -130%, 0);
 	}
+}
 
-	@keyframes search-showcase-query-out {
-		from {
-			opacity: 1;
-			transform: translate3d(0, 0, 0);
-		}
-		to {
-			opacity: 0;
-			transform: translate3d(0, -130%, 0);
-		}
-	}
-
-	/* Центральный кадр стоит за поисковой строкой и на телефоне становится нечитаемо узким. */
-	/*
+/* Центральный кадр стоит за поисковой строкой и на телефоне становится нечитаемо узким. */
+/*
 	 * На узком экране панель ниже и уже, поэтому кадры мельче - но все три на
 	 * месте. Раньше средний прятали (`nth-child(3n + 2)`), и композиция из
 	 * трех колонок превращалась в две по краям с дырой посередине. Прятали его
 	 * из-за пилюли: на всю ширину она закрывала средний кадр целиком.
 	 * Теперь пилюля уже, и кадр виден над ней и под ней.
 	 */
-	@media (max-width: 719px) {
-		.search-showcase-panel {
-			aspect-ratio: 4 / 3;
-		}
-
-		.search-showcase-pill {
-			width: 66%;
-			padding: 0.72em 0.9em;
-			font-size: clamp(0.72rem, 3vw, 0.95rem);
-		}
+@media (max-width: 719px) {
+	.search-showcase-panel {
+		aspect-ratio: 4 / 3;
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.search-showcase-panel,
-		.search-showcase-frame,
-		.search-showcase-photo,
-		.search-showcase-query {
-			transition: none !important;
-			animation: none !important;
-		}
-
-		.search-showcase-frame {
-			transform: none;
-			visibility: hidden;
-		}
-
-		.search-showcase-frame.is-active {
-			visibility: visible;
-		}
-
-		.search-showcase-query {
-			opacity: 0;
-			transform: none;
-		}
-
-		.search-showcase-query.is-active {
-			opacity: 1;
-		}
+	.search-showcase-pill {
+		width: 66%;
+		padding: 0.72em 0.9em;
+		font-size: clamp(0.72rem, 3vw, 0.95rem);
 	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.search-showcase-panel,
+	.search-showcase-frame,
+	.search-showcase-photo,
+	.search-showcase-query {
+		transition: none !important;
+		animation: none !important;
+	}
+
+	.search-showcase-frame {
+		transform: none;
+		visibility: hidden;
+	}
+
+	.search-showcase-frame.is-active {
+		visibility: visible;
+	}
+
+	.search-showcase-query {
+		opacity: 0;
+		transform: none;
+	}
+
+	.search-showcase-query.is-active {
+		opacity: 1;
+	}
+}
 </style>
 
 <script>
-	/*
-	 * Все кадры всех слайдов отрисованы сразу и запаркованы за краем панели;
-	 * скрипт только переносит классы `is-active` / `is-exiting` между группами
-	 * `data-slide`, сам переход целиком на CSS.
-	 */
-	const roots = document.querySelectorAll<HTMLElement>("[data-search-showcase]");
+/*
+ * Все кадры всех слайдов отрисованы сразу и запаркованы за краем панели;
+ * скрипт только переносит классы `is-active` / `is-exiting` между группами
+ * `data-slide`, сам переход целиком на CSS.
+ */
+const roots = document.querySelectorAll<HTMLElement>("[data-search-showcase]");
 
-	for (const root of roots) {
-		const panel = root.querySelector<HTMLElement>("[data-panel]");
-		const frames = Array.from(root.querySelectorAll<HTMLElement>("[data-frame]"));
-		const queries = Array.from(root.querySelectorAll<HTMLElement>("[data-query]"));
-		const duration = Number(root.dataset.duration || "2500");
-		const backgrounds = queries.map((query) => query.dataset.background || "");
+for (const root of roots) {
+	const panel = root.querySelector<HTMLElement>("[data-panel]");
+	const frames = Array.from(root.querySelectorAll<HTMLElement>("[data-frame]"));
+	const queries = Array.from(
+		root.querySelectorAll<HTMLElement>("[data-query]"),
+	);
+	const duration = Number(root.dataset.duration || "2500");
+	const backgrounds = queries.map((query) => query.dataset.background || "");
 
-		if (!panel || backgrounds.length < 2) continue;
+	if (!panel || backgrounds.length < 2) continue;
 
-		const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-		let activeIndex = 0;
-		let timerId = 0;
+	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+	let activeIndex = 0;
+	let timerId = 0;
 
-		const groupFor = (elements: HTMLElement[], index: number) =>
-			elements.filter((element) => Number(element.dataset.slide) === index);
+	const groupFor = (elements: HTMLElement[], index: number) =>
+		elements.filter((element) => Number(element.dataset.slide) === index);
 
-		const showSlide = (nextIndex: number) => {
-			const previousIndex = activeIndex;
-			activeIndex = nextIndex;
+	const showSlide = (nextIndex: number) => {
+		const previousIndex = activeIndex;
+		activeIndex = nextIndex;
 
-			panel.style.backgroundColor = backgrounds[activeIndex] ?? "";
+		panel.style.backgroundColor = backgrounds[activeIndex] ?? "";
 
-			const leaving = [...groupFor(frames, previousIndex), ...groupFor(queries, previousIndex)];
-			const entering = [...groupFor(frames, activeIndex), ...groupFor(queries, activeIndex)];
+		const leaving = [
+			...groupFor(frames, previousIndex),
+			...groupFor(queries, previousIndex),
+		];
+		const entering = [
+			...groupFor(frames, activeIndex),
+			...groupFor(queries, activeIndex),
+		];
 
+		for (const element of leaving) {
+			element.classList.remove("is-active");
+			element.classList.add("is-exiting");
+		}
+
+		for (const element of entering) {
+			element.classList.remove("is-exiting");
+			element.classList.add("is-active");
+		}
+
+		window.setTimeout(() => {
 			for (const element of leaving) {
-				element.classList.remove("is-active");
-				element.classList.add("is-exiting");
-			}
-
-			for (const element of entering) {
-				element.classList.remove("is-exiting");
-				element.classList.add("is-active");
-			}
-
-			window.setTimeout(() => {
-				for (const element of leaving) {
-					if (!element.classList.contains("is-active")) {
-						element.classList.remove("is-exiting");
-					}
+				if (!element.classList.contains("is-active")) {
+					element.classList.remove("is-exiting");
 				}
-			}, 900);
-		};
-
-		const stop = () => {
-			if (timerId) {
-				window.clearInterval(timerId);
-				timerId = 0;
 			}
-		};
+		}, 900);
+	};
 
-		const start = () => {
-			if (timerId || reduceMotion.matches) return;
-			timerId = window.setInterval(() => {
-				showSlide((activeIndex + 1) % backgrounds.length);
-			}, duration);
-		};
+	const stop = () => {
+		if (timerId) {
+			window.clearInterval(timerId);
+			timerId = 0;
+		}
+	};
 
-		const observer = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting) start();
-					else stop();
-				}
-			},
-			{ threshold: 0.15 },
-		);
+	const start = () => {
+		if (timerId || reduceMotion.matches) return;
+		timerId = window.setInterval(() => {
+			showSlide((activeIndex + 1) % backgrounds.length);
+		}, duration);
+	};
 
-		observer.observe(root);
-		reduceMotion.addEventListener("change", () => {
-			stop();
-			start();
-		});
-	}
+	const observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting) start();
+				else stop();
+			}
+		},
+		{ threshold: 0.15 },
+	);
+
+	observer.observe(root);
+	reduceMotion.addEventListener("change", () => {
+		stop();
+		start();
+	});
+}
 </script>

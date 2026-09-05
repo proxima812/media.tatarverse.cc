@@ -1,10 +1,10 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import { cn } from "cn";
 import { type CardWithLogo, driftVars } from "@/components/partials/drift";
 import type { LocaleCode } from "@/config/types";
 import { usePlural, useTranslations } from "@/i18n";
-import { cn } from "cn";
 
 interface Props {
 	locale: LocaleCode;
@@ -47,8 +47,14 @@ const number = new Intl.NumberFormat(locale);
  */
 const stats = [
 	{ key: "stats.projects", value: cards.length },
-	{ key: "stats.categories", value: new Set(cards.flatMap((card) => card.data.categories)).size },
-	{ key: "stats.peoples", value: new Set(cards.flatMap((card) => card.data.peoples)).size },
+	{
+		key: "stats.categories",
+		value: new Set(cards.flatMap((card) => card.data.categories)).size,
+	},
+	{
+		key: "stats.peoples",
+		value: new Set(cards.flatMap((card) => card.data.peoples)).size,
+	},
 ].map((stat) => `${number.format(stat.value)} ${plural(stat.key, stat.value)}`);
 
 /**
@@ -114,7 +120,9 @@ const placed = TILES.map((tile) => {
 		);
 	}
 	if (!card.data.logo) {
-		throw new Error(`StatField: у карточки "${tile.id}" нет логотипа - выберите другую в TILES`);
+		throw new Error(
+			`StatField: у карточки "${tile.id}" нет логотипа - выберите другую в TILES`,
+		);
 	}
 
 	return { tile, card: card as CardWithLogo };
@@ -145,9 +153,11 @@ const PUSH_Y = 26;
 >
 	<div class="stat-field-track" data-stat-track>
 		<div class="stat-field-stage" data-stat-stage>
-			<div class="stat-field-zone pointer-events-none absolute" aria-hidden="true">
-				{
-					placed.map(({ tile, card }) => (
+			<div
+				class="stat-field-zone pointer-events-none absolute"
+				aria-hidden="true"
+			>
+				{placed.map(({ tile, card }) => (
 						<div
 							class:list={["stat-slot absolute", tile.mid && "stat-slot-mid"]}
 							style={[
@@ -179,8 +189,7 @@ const PUSH_Y = 26;
 								/>
 							</div>
 						</div>
-					))
-				}
+					))}
 			</div>
 
 			<div class="relative grid justify-items-center gap-2 text-center">
@@ -189,13 +198,11 @@ const PUSH_Y = 26;
 				</p>
 
 				<div class="grid justify-items-center">
-					{
-						stats.map((stat) => (
+					{stats.map((stat) => (
 							<div class="stat-line font-bold tracking-tight tabular-nums" data-stat-line>
 								{stat}
 							</div>
-						))
-					}
+						))}
 				</div>
 			</div>
 		</div>
@@ -203,56 +210,56 @@ const PUSH_Y = 26;
 </section>
 
 <style>
-	/*
+/*
 	 * На узком экране секция выходит из колонки контента на всю ширину.
 	 * Колонка держит `px-5`, а сцена режет по себе (`overflow: hidden`), и
 	 * логотипы обрывались по линии в 20px от края - это читается как обрез, а
 	 * не как прием. `margin-inline: calc(50% - 50vw)` растягивает секцию до
 	 * краев вьюпорта независимо от того, какие отступы у родителя.
 	 */
-	@media (max-width: 43.999rem) {
-		.stat-field {
-			width: 100vw;
-			margin-inline: calc(50% - 50vw);
-		}
+@media (max-width: 43.999rem) {
+	.stat-field {
+		width: 100vw;
+		margin-inline: calc(50% - 50vw);
+	}
 
-		/*
+	/*
 		 * И заодно рабочая зона вылезает за экран на 1rem: крайние плитки
 		 * стоят на 4% и 96% ее ширины, поэтому их центры оказываются ровно на
 		 * границе вьюпорта, и логотип уходит за край наполовину. Обрыв
 		 * получается намеренным, а не случайным - остальные плитки при этом
 		 * остаются целиком на экране.
 		 */
-		.stat-field-zone {
-			inset-inline: -1rem;
-		}
+	.stat-field-zone {
+		inset-inline: -1rem;
 	}
+}
 
-	.stat-field-track {
-		/* Сцену держат по шагу на строку, так что расстояние прокрутки - это и есть расписание. */
-		height: calc(var(--stat-stage) + var(--stat-travel));
-	}
+.stat-field-track {
+	/* Сцену держат по шагу на строку, так что расстояние прокрутки - это и есть расписание. */
+	height: calc(var(--stat-stage) + var(--stat-travel));
+}
 
-	/*
+/*
 	 * Сцена прилипает по середине экрана, а не к его верху. Это и есть ответ на
 	 * «показ начинается слишком поздно»: при `top: 0` секцию надо было домотать
 	 * до самого верха окна, то есть прокрутить почти целый экран впустую. С
 	 * серединой она закрепляется ровно тогда, когда попадает в фокус, и первая
 	 * строка идет сразу (скрипт ниже стартует расписание еще чуть раньше).
 	 */
-	.stat-field-stage {
-		container-type: inline-size;
-		position: sticky;
-		top: max(0px, calc((100svh - var(--stat-stage)) / 2));
-		display: grid;
-		place-items: center;
-		height: var(--stat-stage);
-		overflow: hidden;
-		padding: 2.5rem 1rem;
-		isolation: isolate;
-	}
+.stat-field-stage {
+	container-type: inline-size;
+	position: sticky;
+	top: max(0px, calc((100svh - var(--stat-stage)) / 2));
+	display: grid;
+	place-items: center;
+	height: var(--stat-stage);
+	overflow: hidden;
+	padding: 2.5rem 1rem;
+	isolation: isolate;
+}
 
-	/*
+/*
 	 * Отступ рабочей зоны от краев сцены: логотипы раскиданы по всей ширине, но
 	 * не липнут к границе экрана. На широком - около 150px, на узком ужимается,
 	 * иначе зона схлопнулась бы в полоску.
@@ -261,16 +268,16 @@ const PUSH_Y = 26;
 	 * меряются по ближайшему контейнеру-предку, а контейнер тут - сцена, то есть
 	 * родитель этого элемента. На секции они бы упали в размер вьюпорта.
 	 */
-	.stat-field-zone {
-		inset-block: 0;
-		inset-inline: clamp(1rem, 12cqi, 150px);
-	}
+.stat-field-zone {
+	inset-block: 0;
+	inset-inline: clamp(1rem, 12cqi, 150px);
+}
 
-	.stat-eyebrow {
-		font-size: clamp(0.75rem, 1.9cqi, 0.875rem);
-	}
+.stat-eyebrow {
+	font-size: clamp(0.75rem, 1.9cqi, 0.875rem);
+}
 
-	/*
+/*
 	 * Слот отвечает за место логотипа, сам логотип - только за свой вид и
 	 * движение. Разделено потому, что слот двигает `translate`, а траектория
 	 * идет через `transform`: на одном элементе анимация затерла бы позицию.
@@ -278,23 +285,24 @@ const PUSH_Y = 26;
 	 * `--q` - общий прогресс показа, его пишет скрипт. По умолчанию 0, поэтому
 	 * без JS поле просто стоит на своих местах.
 	 */
-	.stat-slot {
-		translate: calc(-50% + var(--q, 0) * var(--push-x)) calc(-50% + var(--q, 0) * var(--push-y));
-		will-change: translate;
-	}
+.stat-slot {
+	translate: calc(-50% + var(--q, 0) * var(--push-x))
+		calc(-50% + var(--q, 0) * var(--push-y));
+	will-change: translate;
+}
 
-	/* Средняя полоса вровень с цифрами - на узкой сцене там нет места. */
+/* Средняя полоса вровень с цифрами - на узкой сцене там нет места. */
+.stat-slot-mid {
+	display: none;
+}
+
+@container (min-width: 44rem) {
 	.stat-slot-mid {
-		display: none;
+		display: block;
 	}
+}
 
-	@container (min-width: 44rem) {
-		.stat-slot-mid {
-			display: block;
-		}
-	}
-
-	/*
+/*
 	 * `--tile` - размер в rem при опорной ширине сцены 48rem.
 	 *
 	 * Нижняя граница считается от `--tile`, а не фиксированные 2rem: на узкой
@@ -302,155 +310,173 @@ const PUSH_Y = 26;
 	 * плитки садились на одну и ту же границу. Разнобой размеров, ради
 	 * которого набиралась раскладка, на телефоне пропадал целиком.
 	 */
-	.stat-tile {
-		--tile-size: clamp(
-			calc(var(--tile) * 0.8rem),
-			calc(var(--tile) * 2.083cqi),
-			calc(var(--tile) * 1rem)
-		);
-		width: var(--tile-size);
-		height: var(--tile-size);
-		box-shadow: 0 14px 30px -14px rgb(9 9 11 / 0.45);
-	}
+.stat-tile {
+	--tile-size: clamp(
+		calc(var(--tile) * 0.8rem),
+		calc(var(--tile) * 2.083cqi),
+		calc(var(--tile) * 1rem)
+	);
+	width: var(--tile-size);
+	height: var(--tile-size);
+	box-shadow: 0 14px 30px -14px rgb(9 9 11 / 0.45);
+}
 
-	/*
+/*
 	 * Хаотичное движение «на месте»: три точки траектории приходят инлайновыми
 	 * переменными (`partials/drift.ts`), поэтому один @keyframes обслуживает все
 	 * логотипы, а разными их делают длительность и отрицательная задержка.
 	 * Анимируется только transform - без layout и paint.
 	 */
-	.drift {
-		animation: drift var(--drift-duration) ease-in-out var(--drift-delay) infinite;
-		will-change: transform;
-	}
+.drift {
+	animation: drift var(--drift-duration) ease-in-out var(--drift-delay) infinite;
+	will-change: transform;
+}
 
-	@keyframes drift {
-		0%,
-		100% {
-			transform: translate3d(0, 0, 0) rotate(0deg);
-		}
-		25% {
-			transform: translate3d(var(--dx-1), var(--dy-1), 0) rotate(var(--rot-1));
-		}
-		50% {
-			transform: translate3d(var(--dx-2), var(--dy-2), 0) rotate(var(--rot-2));
-		}
-		75% {
-			transform: translate3d(var(--dx-3), var(--dy-3), 0) rotate(var(--rot-3));
-		}
+@keyframes drift {
+	0%,
+	100% {
+		transform: translate3d(0, 0, 0) rotate(0deg);
 	}
+	25% {
+		transform: translate3d(var(--dx-1), var(--dy-1), 0) rotate(var(--rot-1));
+	}
+	50% {
+		transform: translate3d(var(--dx-2), var(--dy-2), 0) rotate(var(--rot-2));
+	}
+	75% {
+		transform: translate3d(var(--dx-3), var(--dy-3), 0) rotate(var(--rot-3));
+	}
+}
 
-	/*
+/*
 	 * `--p` - собственный прогресс строки, его пишет скрипт ниже. Все остальное
 	 * выводится из него, поэтому прокрутка вверх бесплатно отыгрывает появление
 	 * назад. Без скрипта - и при `prefers-reduced-motion` - `--p` остается
 	 * единицей, и стопка просто стоит на месте целиком.
 	 */
-	.stat-line {
-		--p: 1;
-		/* `--ink` отстает от `--p`: строка сначала встает на место и только потом набирает цвет. */
-		--ink: clamp(0, (var(--p) - 0.45) * 1.8, 1);
-		/* А проявляется, наоборот, сразу: строка почти весь путь едет уже видимой, светло-серой. */
-		--fade: clamp(0, var(--p) * 3.5, 1);
+.stat-line {
+	--p: 1;
+	/* `--ink` отстает от `--p`: строка сначала встает на место и только потом набирает цвет. */
+	--ink: clamp(0, (var(--p) - 0.45) * 1.8, 1);
+	/* А проявляется, наоборот, сразу: строка почти весь путь едет уже видимой, светло-серой. */
+	--fade: clamp(0, var(--p) * 3.5, 1);
 
-		/* Цифры держатся около 60% ширины сцены - это и не пускает логотипы к тексту. */
-		font-size: clamp(1.375rem, 8cqi, 3.75rem);
-		line-height: 1.08;
-		opacity: var(--fade);
-		/*
+	/* Цифры держатся около 60% ширины сцены - это и не пускает логотипы к тексту. */
+	font-size: clamp(1.375rem, 8cqi, 3.75rem);
+	line-height: 1.08;
+	opacity: var(--fade);
+	/*
 		 * Строка приходит издалека - примерно на две с половиной своих высоты ниже
 		 * места, а не подрагивает у него: в оригинале видно, как она поднимается
 		 * снизу сцены, и короткий ход читается как дрожание, а не как приезд.
 		 */
-		transform: translateY(calc((1 - var(--p)) * 2.6em));
-		color: color-mix(in oklab, var(--color-border), var(--color-foreground) calc(var(--ink) * 100%));
-		will-change: transform, opacity;
-	}
+	transform: translateY(calc((1 - var(--p)) * 2.6em));
+	color: color-mix(
+		in oklab,
+		var(--color-border),
+		var(--color-foreground) calc(var(--ink) * 100%)
+	);
+	will-change: transform, opacity;
+}
 
-	/* Поле стоит на месте, стопка остается собранной - скрипт ниже сам не запускается. */
-	@media (prefers-reduced-motion: reduce) {
-		.drift {
-			animation: none;
-		}
+/* Поле стоит на месте, стопка остается собранной - скрипт ниже сам не запускается. */
+@media (prefers-reduced-motion: reduce) {
+	.drift {
+		animation: none;
 	}
+}
 </style>
 
 <script>
-	/** Правда, когда между дорожкой и страницей ничто не обрезает и не скроллит - значит `sticky` удержит. */
-	function isPinnable(node: HTMLElement) {
-		for (let el = node.parentElement; el && el !== document.body; el = el.parentElement) {
-			const { overflowX, overflowY } = getComputedStyle(el);
-			if (overflowX !== "visible" || overflowY !== "visible") return false;
-		}
-		return true;
+/** Правда, когда между дорожкой и страницей ничто не обрезает и не скроллит - значит `sticky` удержит. */
+function isPinnable(node: HTMLElement) {
+	for (
+		let el = node.parentElement;
+		el && el !== document.body;
+		el = el.parentElement
+	) {
+		const { overflowX, overflowY } = getComputedStyle(el);
+		if (overflowX !== "visible" || overflowY !== "visible") return false;
 	}
+	return true;
+}
 
-	/**
-	 * Насколько раньше закрепления сцены начинается показ. Пока секция въезжает
-	 * снизу, она уже в фокусе - ждать, когда она встанет на место, значит
-	 * потратить впустую половину экрана прокрутки.
-	 */
-	const LEAD = 140;
+/**
+ * Насколько раньше закрепления сцены начинается показ. Пока секция въезжает
+ * снизу, она уже в фокусе - ждать, когда она встанет на место, значит
+ * потратить впустую половину экрана прокрутки.
+ */
+const LEAD = 140;
 
-	function initStatField() {
-		if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+function initStatField() {
+	if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-		for (const field of document.querySelectorAll<HTMLElement>("[data-stat-field]")) {
-			if (field.dataset.statReady === "true") continue;
-			field.dataset.statReady = "true";
+	for (const field of document.querySelectorAll<HTMLElement>(
+		"[data-stat-field]",
+	)) {
+		if (field.dataset.statReady === "true") continue;
+		field.dataset.statReady = "true";
 
-			const track = field.querySelector<HTMLElement>("[data-stat-track]");
-			const stage = field.querySelector<HTMLElement>("[data-stat-stage]");
-			const lines = [...field.querySelectorAll<HTMLElement>("[data-stat-line]")];
-			if (!track || !stage || lines.length === 0) continue;
+		const track = field.querySelector<HTMLElement>("[data-stat-track]");
+		const stage = field.querySelector<HTMLElement>("[data-stat-stage]");
+		const lines = [...field.querySelectorAll<HTMLElement>("[data-stat-line]")];
+		if (!track || !stage || lines.length === 0) continue;
 
-			/*
-			 * Сцена прилипает только к настоящему скроллпорту. Внутри обрезанного
-			 * контейнера она не прилипнет никогда, и показ отыграл бы, когда блок
-			 * уже уехал с экрана - поэтому схлопываем запас прокрутки и оставляем
-			 * `--p` единицей, то есть собранную стопку.
-			 */
-			if (!isPinnable(track)) {
-				track.style.height = "auto";
-				continue;
-			}
-
-			const step =
-				Number.parseFloat(getComputedStyle(field).getPropertyValue("--stat-step")) || 240;
-			/** Столько от своего шага строка входит - чтобы успеть встать до начала следующей. */
-			const ramp = step * 0.7;
-			let frame = 0;
-
-			const update = () => {
-				frame = 0;
-
-				/* Отступ закрепления читается из стиля: он зависит от высоты окна и меняется с ней. */
-				const pin = Number.parseFloat(getComputedStyle(stage).top) || 0;
-				const rect = track.getBoundingClientRect();
-				const room = Math.max(rect.height - stage.offsetHeight, 0);
-				/** Сколько прокрутки уже отсчитано - те самые пиксели, по которым расписан показ. */
-				const held = Math.min(Math.max(pin + LEAD - rect.top, 0), room);
-
-				/* Общий прогресс показа - на нем расходится поле логотипов. */
-				const span = Math.max(lines.length * step, 1);
-				field.style.setProperty("--q", Math.min(Math.max(held / span, 0), 1).toFixed(4));
-
-				lines.forEach((line, index) => {
-					const progress = (held - index * step) / ramp;
-					line.style.setProperty("--p", String(Math.min(Math.max(progress, 0), 1)));
-				});
-			};
-
-			const request = () => {
-				if (frame === 0) frame = requestAnimationFrame(update);
-			};
-
-			addEventListener("scroll", request, { passive: true });
-			addEventListener("resize", request);
-			update();
+		/*
+		 * Сцена прилипает только к настоящему скроллпорту. Внутри обрезанного
+		 * контейнера она не прилипнет никогда, и показ отыграл бы, когда блок
+		 * уже уехал с экрана - поэтому схлопываем запас прокрутки и оставляем
+		 * `--p` единицей, то есть собранную стопку.
+		 */
+		if (!isPinnable(track)) {
+			track.style.height = "auto";
+			continue;
 		}
-	}
 
-	initStatField();
-	document.addEventListener("astro:page-load", initStatField);
+		const step =
+			Number.parseFloat(
+				getComputedStyle(field).getPropertyValue("--stat-step"),
+			) || 240;
+		/** Столько от своего шага строка входит - чтобы успеть встать до начала следующей. */
+		const ramp = step * 0.7;
+		let frame = 0;
+
+		const update = () => {
+			frame = 0;
+
+			/* Отступ закрепления читается из стиля: он зависит от высоты окна и меняется с ней. */
+			const pin = Number.parseFloat(getComputedStyle(stage).top) || 0;
+			const rect = track.getBoundingClientRect();
+			const room = Math.max(rect.height - stage.offsetHeight, 0);
+			/** Сколько прокрутки уже отсчитано - те самые пиксели, по которым расписан показ. */
+			const held = Math.min(Math.max(pin + LEAD - rect.top, 0), room);
+
+			/* Общий прогресс показа - на нем расходится поле логотипов. */
+			const span = Math.max(lines.length * step, 1);
+			field.style.setProperty(
+				"--q",
+				Math.min(Math.max(held / span, 0), 1).toFixed(4),
+			);
+
+			lines.forEach((line, index) => {
+				const progress = (held - index * step) / ramp;
+				line.style.setProperty(
+					"--p",
+					String(Math.min(Math.max(progress, 0), 1)),
+				);
+			});
+		};
+
+		const request = () => {
+			if (frame === 0) frame = requestAnimationFrame(update);
+		};
+
+		addEventListener("scroll", request, { passive: true });
+		addEventListener("resize", request);
+		update();
+	}
+}
+
+initStatField();
+document.addEventListener("astro:page-load", initStatField);
 </script>

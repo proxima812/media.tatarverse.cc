@@ -1,5 +1,5 @@
-import type { PageLocale } from "@/components/pages/pageLocale";
 import { config } from "main.config";
+import type { PageLocale } from "@/components/pages/pageLocale";
 
 /**
  * Тексты главной страницы по локалям - одним модулем.
@@ -25,7 +25,10 @@ interface FaqItem {
 }
 
 interface HomeContent {
-	readonly features: { readonly heading: string; readonly items: readonly HomeItem[] };
+	readonly features: {
+		readonly heading: string;
+		readonly items: readonly HomeItem[];
+	};
 	readonly faq: { readonly title: string; readonly items: readonly FaqItem[] };
 	readonly instFollows: { readonly title: string };
 	readonly quote: {

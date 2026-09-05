@@ -39,7 +39,6 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-
 	<div class="flex items-center justify-between px-6">
 		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
 			{t("saved.title")}
@@ -77,7 +76,6 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 				</div>
 			))}
 	</div>
-
 </Layout>
 
 <script>

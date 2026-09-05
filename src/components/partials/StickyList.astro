@@ -1,10 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import type { LocaleCode } from "@/config/types";
-import { defaultLocale, usePlural } from "@/i18n";
 import { Icon } from "astro-icon/components";
 import { cn } from "cn";
+import type { LocaleCode } from "@/config/types";
+import { defaultLocale, usePlural } from "@/i18n";
 
 interface Props {
 	locale: LocaleCode;

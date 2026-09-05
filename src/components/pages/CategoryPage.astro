@@ -1,10 +1,10 @@
 ---
-import { categoryIcon, categoryLabel } from "@/components/Catalog/taxonomy";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
 import { cardsByCategory } from "@/components/Catalog/categories";
 import type { Category } from "@/components/Catalog/taxonomy";
+import { categoryIcon, categoryLabel } from "@/components/Catalog/taxonomy";
 import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
@@ -44,11 +44,17 @@ const heading = `${t("catalog.byCategoryPrefix")} ${categoryLabel(locale, catego
 					class="size-4.5 text-muted-foreground"
 					aria-hidden="true"
 				/>
-				<span class=" text-muted-foreground">{categoryLabel(locale, category)}</span>
+				<span class=" text-muted-foreground"
+					>{categoryLabel(locale, category)}</span
+				>
 			</div>
 		</div>
 		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
-			<Icon name="mdi:card-multiple-outline" class="size-4.5" aria-hidden="true" />
+			<Icon
+				name="mdi:card-multiple-outline"
+				class="size-4.5"
+				aria-hidden="true"
+			/>
 			<span>{filtered.length}</span>
 		</div>
 	</div>
