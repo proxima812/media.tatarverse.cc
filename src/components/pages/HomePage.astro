@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import authorPhoto from "@/assets/author.jpg";
+import { localizeCards } from "@/components/Catalog/localize";
+import MainTitle from "@/components/MainTitle.astro";
+import { homeContent } from "@/components/pages/homeContent";
+import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import DepthDeck from "@/components/partials/DepthDeck.astro";
+import FAQ from "@/components/partials/FAQ.astro";
+import Features from "@/components/partials/Features.astro";
+import InstFollows from "@/components/partials/InstFollows.astro";
+import LogoMarquee from "@/components/partials/LogoMarquee.astro";
+import LogoStack from "@/components/partials/LogoStack.astro";
+import Quote from "@/components/partials/Quote.astro";
+import SearchShowcase from "@/components/partials/SearchShowcase.astro";
+import StatField from "@/components/partials/StatField.astro";
+import StepRail from "@/components/partials/StepRail.astro";
+import StickyList from "@/components/partials/StickyList.astro";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: PageLocale;
+}
+
+const { locale } = Astro.props;
+
+const t = useTranslations(locale);
+const cards = await localizeCards(await getCollection("cards"), locale);
+const content = homeContent(locale);
+
+/** Markdown-двойник главной: `/index.md` для русской, `/en.md` для английской. */
+const markdownURL = locale === "en" ? "/en.md" : "/index.md";
+---
+
+<Layout
+	title={t("meta.title")}
+	description={t("meta.description")}
+	htmlLang={locale}
+	locale={ogLocale(locale)}
+	alternates={buildAlternates(Astro.url.pathname)}
+	markdownURL={markdownURL}
+>
+	<LogoStack />
+	<MainTitle locale={locale} />
+	<SearchShowcase />
+	<Features heading={content.features.heading} items={[...content.features.items]} />
+	<StatField locale={locale} cards={cards} />
+	<StepRail locale={locale} />
+	<StickyList locale={locale} cards={cards} />
+	<Quote photo={authorPhoto} {...content.quote} />
+	<DepthDeck locale={locale} cards={cards} />
+	<LogoMarquee locale={locale} cards={cards} />
+	<InstFollows title={content.instFollows.title} />
+	<FAQ title={content.faq.title} items={[...content.faq.items]} />
+</Layout>
