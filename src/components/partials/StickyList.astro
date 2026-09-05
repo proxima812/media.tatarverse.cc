@@ -3,7 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import type { LocaleCode } from "@/config/types";
 import { defaultLocale, usePlural } from "@/i18n";
-import { cn } from "@/utils/lib/cn";
+import { cn } from "cn";
 
 interface Props {
 	locale: LocaleCode;

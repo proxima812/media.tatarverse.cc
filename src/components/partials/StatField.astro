@@ -4,7 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import { type CardWithLogo, driftVars } from "@/components/partials/drift";
 import type { LocaleCode } from "@/config/types";
 import { usePlural, useTranslations } from "@/i18n";
-import { cn } from "@/utils/lib/cn";
+import { cn } from "cn";
 
 interface Props {
 	locale: LocaleCode;
