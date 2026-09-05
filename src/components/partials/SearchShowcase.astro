@@ -1,178 +1,173 @@
 ---
-type Frame = {
-	alt: string;
-	image: string;
-	/** Положение и размер внутри панели, в процентах от ее габарита. */
+import { type Category, categoryLabel } from "@/components/Catalog/taxonomy";
+import type { LocaleCode } from "@/config/types";
+
+/**
+ * Витрина поиска на главной: пилюля с запросом и три кадра, которые
+ * сменяются вместе с ним.
+ *
+ * Запрос - подпись категории каталога из реестра `taxonomy.ts`, а не строка
+ * руками: он сам переводится и не разъедется с составом каталога. Кадры
+ * привязаны к той же категории, поэтому картинка всегда отвечает запросу.
+ */
+
+/** Место кадра внутри панели, в процентах от ее габарита. */
+type Tile = {
 	left: number;
 	top: number;
 	width: number;
 	height: number;
 };
 
-type Slide = {
-	query: string;
-	background: string;
-	frames: [Frame, Frame, Frame];
+type Photo = {
+	/** Идентификатор снимка на Unsplash - часть `photo-...` из адреса картинки. */
+	id: string;
+	alt: { ru: string; en: string };
 };
 
 interface Props {
+	locale: LocaleCode;
 	/** Сколько один слайд держится на экране, мс. */
 	duration?: number;
 	class?: string;
 }
 
-const { duration = 2500, class: className = "" } = Astro.props;
+const { locale, duration = 2500, class: className = "" } = Astro.props;
 
-const photo = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`;
+const photoSrc = (id: string) =>
+	`https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`;
 
-const slides: Slide[] = [
+/*
+ * Три колонки разной высоты со сдвигом по вертикали. Средний кадр ниже
+ * соседей: ровно по его центру идет пилюля поиска.
+ */
+const TILES: [Tile, Tile, Tile] = [
+	{ left: 0, top: 0, width: 29.4, height: 100 },
+	{ left: 39.7, top: 19.5, width: 20.5, height: 60 },
+	{ left: 71.9, top: 14.3, width: 20.4, height: 70 },
+];
+
+/*
+ * Слайды идут по категориям каталога - тем, что человек и правда ищет.
+ * Фон переезжает вместе с запросом; цвета подобраны под настроение кадров.
+ */
+const SLIDES: {
+	category: Category;
+	background: string;
+	photos: [Photo, Photo, Photo];
+}[] = [
 	{
-		query: "portraiture",
-		background: "#2a4561",
-		frames: [
+		category: "media",
+		background: "#2a2f45",
+		photos: [
 			{
-				alt: "Studio portrait against a charcoal backdrop",
-				image: photo("photo-1524504388940-b1c1722653e1"),
-				left: 0,
-				top: 0,
-				width: 29.4,
-				height: 100,
+				id: "photo-1478737270239-2f02b77fc618",
+				alt: { ru: "Микрофоны в студии звукозаписи", en: "Microphones in a recording studio" },
 			},
 			{
-				alt: "Beauty portrait on a soft pink backdrop",
-				image: photo("photo-1531746020798-e6953c6e8e04"),
-				left: 39.7,
-				top: 19.5,
-				width: 20.5,
-				height: 60,
+				id: "photo-1485579149621-3123dd979885",
+				alt: { ru: "Винтажный микрофон на сцене", en: "Vintage microphone on a stage" },
 			},
 			{
-				alt: "Outdoor portrait in golden evening light",
-				image: photo("photo-1544005313-94ddf0286df2"),
-				left: 71.9,
-				top: 14.3,
-				width: 20.4,
-				height: 70,
+				id: "photo-1511671782779-c97d3d27a1d4",
+				alt: { ru: "Микрофон в огнях вечернего эфира", en: "Microphone against evening studio lights" },
 			},
 		],
 	},
 	{
-		query: "art",
-		background: "#b66b7f",
-		frames: [
+		category: "lessons",
+		background: "#3b3226",
+		photos: [
 			{
-				alt: "Weathered mural of a face on a wooden wall",
-				image: photo("photo-1547891654-e66ed7ebb968"),
-				left: 0,
-				top: 21.5,
-				width: 29.2,
-				height: 55,
+				id: "photo-1462642109801-4ac2971a3a51",
+				alt: { ru: "Тетрадь с рукописным текстом и перьевая ручка", en: "Notebook with handwriting and a fountain pen" },
 			},
 			{
-				alt: "Abstract canvas in blue, red and yellow blocks",
-				image: photo("photo-1531913764164-f85c52e6e654"),
-				left: 36.6,
-				top: 15.5,
-				width: 20.8,
-				height: 73,
+				id: "photo-1473186505569-9c61870c11f9",
+				alt: { ru: "Две ручки на исписанном листе", en: "Two pens resting on a written page" },
 			},
 			{
-				alt: "Thick impasto painting in teal and vermilion",
-				image: photo("photo-1541961017774-22349e4a1262"),
-				left: 69.6,
-				top: 0,
-				width: 30.4,
-				height: 100,
+				id: "photo-1585178332093-1dfaa3998f6b",
+				alt: { ru: "Раскрытый блокнот с записями в руке", en: "An open handwritten notebook held in a hand" },
 			},
 		],
 	},
 	{
-		query: "future home",
-		background: "#979781",
-		frames: [
+		category: "channel",
+		background: "#24333a",
+		photos: [
 			{
-				alt: "Sunlit living room with a curved sand-toned sofa",
-				image: photo("photo-1691036561573-4b76998b60de"),
-				left: 5.7,
-				top: 13.8,
-				width: 24.4,
-				height: 73,
+				id: "photo-1440404653325-ab127d49abc1",
+				alt: { ru: "Катушки с кинопленкой и старая аппаратура", en: "Film reels and vintage equipment" },
 			},
 			{
-				alt: "Pale living room with a black sofa and dried grasses",
-				image: photo("photo-1513694203232-719a280e022f"),
-				left: 40.3,
-				top: 22.8,
-				width: 18.2,
-				height: 55,
+				id: "photo-1493804714600-6edb1cd93080",
+				alt: { ru: "Ретро-камера в руке на голубом фоне", en: "A retro camera held against a blue backdrop" },
 			},
 			{
-				alt: "Bright open-plan lounge with an arc floor lamp",
-				image: photo("photo-1524758631624-e2822e304c36"),
-				left: 69.9,
-				top: 14.5,
-				width: 23.8,
-				height: 71.5,
+				id: "photo-1495121553079-4c61bcce1894",
+				alt: { ru: "Двухобъективная пленочная камера", en: "A twin-lens film camera" },
 			},
 		],
 	},
 	{
-		query: "runway editorial",
-		background: "#3e2022",
-		frames: [
+		category: "language",
+		background: "#33261f",
+		photos: [
 			{
-				alt: "Model in a trailing red gown on the runway",
-				image: photo("photo-1733322991133-2de13aa12c57"),
-				left: 7.25,
-				top: 16,
-				width: 21.5,
-				height: 69,
+				id: "photo-1455390582262-044cdead277a",
+				alt: { ru: "Перо выводит строчку на бумаге", en: "A nib writing a line on paper" },
 			},
 			{
-				alt: "Black and white runway shot of an oversized fur coat",
-				image: photo("photo-1733322980454-62a1d5727460"),
-				left: 41.4,
-				top: 21.7,
-				width: 16.6,
-				height: 57.5,
+				id: "photo-1502485019198-a625bd53ceb7",
+				alt: { ru: "Зал старой библиотеки с книжными полками", en: "A hall of an old library lined with books" },
 			},
 			{
-				alt: "Translucent organza dress under runway lights",
-				image: photo("photo-1650057947130-9d465d4f240f"),
-				left: 71.3,
-				top: 0,
-				width: 28.7,
-				height: 100,
+				id: "photo-1576414160011-98dfab3aa889",
+				alt: { ru: "Стопка старых книг в кожаных переплетах", en: "A stack of old leather-bound books" },
 			},
 		],
 	},
 ];
 
+const altLocale = locale === "en" ? "en" : "ru";
+
+const slides = SLIDES.map((slide) => ({
+	query: categoryLabel(locale, slide.category),
+	background: slide.background,
+	frames: TILES.map((tile, column) => ({
+		tile,
+		photo: slide.photos[column] as Photo,
+	})),
+}));
+
 /** Смещение (в процентах от высоты самого кадра), паркующее его сразу за краем панели. */
-const exitOffset = (frame: Frame) => -(((frame.top + frame.height) / frame.height) * 100 + 6);
-const enterOffset = (frame: Frame) => ((100 - frame.top) / frame.height) * 100 + 6;
+const exitOffset = (tile: Tile) => -(((tile.top + tile.height) / tile.height) * 100 + 6);
+const enterOffset = (tile: Tile) => ((100 - tile.top) / tile.height) * 100 + 6;
 
 const columnDelay = 70;
 ---
 
+
+
 <section class:list={["w-full", className]} data-search-showcase data-duration={String(duration)}>
 	<div
 		class="search-showcase-panel relative w-full overflow-hidden rounded-[1.25rem]"
-		style={`background-color:${slides[0].background};`}
+		style={`background-color:${slides[0]?.background ?? "transparent"};`}
 		data-panel
 	>
 		{
 			slides.map((slide, slideIndex) =>
-				slide.frames.map((frame, columnIndex) => (
+				slide.frames.map(({ tile, photo }, columnIndex) => (
 					<figure
 						class:list={["search-showcase-frame", { "is-active": slideIndex === 0 }]}
 						data-frame
 						data-slide={String(slideIndex)}
-						style={`left:${frame.left}%;top:${frame.top}%;width:${frame.width}%;height:${frame.height}%;--frame-exit:${exitOffset(frame).toFixed(2)}%;--frame-enter:${enterOffset(frame).toFixed(2)}%;--frame-delay:${columnIndex * columnDelay}ms;`}
+						style={`left:${tile.left}%;top:${tile.top}%;width:${tile.width}%;height:${tile.height}%;--frame-exit:${exitOffset(tile).toFixed(2)}%;--frame-enter:${enterOffset(tile).toFixed(2)}%;--frame-delay:${columnIndex * columnDelay}ms;`}
 					>
 						<img
-							src={frame.image}
-							alt={frame.alt}
+							src={photoSrc(photo.id)}
+							alt={photo.alt[altLocale]}
 							loading={slideIndex === 0 ? "eager" : "lazy"}
 							decoding="async"
 							class="search-showcase-photo h-full w-full object-cover"
@@ -357,18 +352,22 @@ const columnDelay = 70;
 	}
 
 	/* Центральный кадр стоит за поисковой строкой и на телефоне становится нечитаемо узким. */
+	/*
+	 * На узком экране панель ниже и уже, поэтому кадры мельче - но все три на
+	 * месте. Раньше средний прятали (`nth-child(3n + 2)`), и композиция из
+	 * трех колонок превращалась в две по краям с дырой посередине. Прятали его
+	 * из-за пилюли: на всю ширину она закрывала средний кадр целиком.
+	 * Теперь пилюля уже, и кадр виден над ней и под ней.
+	 */
 	@media (max-width: 719px) {
 		.search-showcase-panel {
 			aspect-ratio: 4 / 3;
 		}
 
-		.search-showcase-frame:nth-child(3n + 2) {
-			display: none;
-		}
-
 		.search-showcase-pill {
-			width: 78%;
-			font-size: clamp(0.8rem, 3.4vw, 1rem);
+			width: 66%;
+			padding: 0.72em 0.9em;
+			font-size: clamp(0.72rem, 3vw, 0.95rem);
 		}
 	}
 
@@ -429,7 +428,7 @@ const columnDelay = 70;
 			const previousIndex = activeIndex;
 			activeIndex = nextIndex;
 
-			panel.style.backgroundColor = backgrounds[activeIndex];
+			panel.style.backgroundColor = backgrounds[activeIndex] ?? "";
 
 			const leaving = [...groupFor(frames, previousIndex), ...groupFor(queries, previousIndex)];
 			const entering = [...groupFor(frames, activeIndex), ...groupFor(queries, activeIndex)];
