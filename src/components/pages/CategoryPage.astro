@@ -1,11 +1,13 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
 import { cardsByCategory } from "@/components/Catalog/categories";
 import type { Category } from "@/components/Catalog/taxonomy";
 import { categoryIcon, categoryLabel } from "@/components/Catalog/taxonomy";
 import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -23,6 +25,7 @@ const filtered = cardsByCategory(cards, category);
 
 /** "Карточки по {категория} ({count})" - заголовок и `<title>` в одном месте. */
 const heading = `${t("catalog.byCategoryPrefix")} ${categoryLabel(locale, category)} (${filtered.length})`;
+const catalogHref = getRelativeLocaleUrl(locale, "catalog");
 ---
 
 <Layout
@@ -31,6 +34,15 @@ const heading = `${t("catalog.byCategoryPrefix")} ${categoryLabel(locale, catego
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
+	<Breadcrumbs
+		locale={locale}
+		items={[
+			{ label: t("nav.catalog"), href: catalogHref },
+			{ label: categoryLabel(locale, category) },
+		]}
+		class="px-6"
+	/>
+
 	<div class="px-6 flex justify-between items-center">
 		<div class="flex space-x-6 items-center">
 			<h1 class="font-bold text-3xl text-balance sm:text-4xl">

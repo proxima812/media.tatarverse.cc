@@ -1,8 +1,11 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import CardDetail from "@/components/Catalog/CardDetail.astro";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
+import { categoryLabel } from "@/components/Catalog/taxonomy";
 import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -14,6 +17,18 @@ interface Props {
 
 const { locale, card, related } = Astro.props;
 const t = useTranslations(locale);
+
+/*
+ * В крошках стоит первая категория карточки: порядок в фронтматтере
+ * заводит человек, значит первая - главная по смыслу. Путь обязан быть
+ * один, поэтому остальные категории сюда не попадают - они рядом,
+ * пилюлями в самой карточке.
+ */
+const [mainCategory] = card.data.categories;
+const catalogHref = getRelativeLocaleUrl(locale, "catalog");
+const categoryHref = mainCategory
+	? getRelativeLocaleUrl(locale, `catalog/${mainCategory}`)
+	: undefined;
 ---
 
 <Layout
@@ -23,13 +38,40 @@ const t = useTranslations(locale);
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
+	<Breadcrumbs
+		locale={locale}
+		items={[
+			{ label: t("nav.catalog"), href: catalogHref },
+			...(mainCategory && categoryHref
+				? [{ label: categoryLabel(locale, mainCategory), href: categoryHref }]
+				: []),
+			{ label: card.data.name },
+		]}
+		class="px-1"
+	/>
+
 	<CardDetail card={card} locale={locale} />
 
 	{related.length > 0 && (
 			<section>
-				<h2 class="text-center font-bold text-2xl text-balance">
-					{t("card.related")}
-				</h2>
+				<div class="flex flex-wrap items-baseline justify-between gap-3">
+					<h2 class="font-bold text-2xl text-balance">{t("card.related")}</h2>
+
+					<!--
+					     Похожих ровно три, и без этой ссылки страница кончается
+					     тупиком: дальше идти некуда. Ссылка на категорию делает из
+					     конца страницы развилку.
+					-->
+					{mainCategory && categoryHref && (
+						<a
+							href={categoryHref}
+							class="text-muted-foreground text-sm underline underline-offset-4 transition hover:text-foreground"
+						>
+							{t("card.allInCategory")} {categoryLabel(locale, mainCategory)}
+						</a>
+					)}
+				</div>
+
 				<div class="mt-8 grid gap-8 sm:grid-cols-3">
 					{related.map((relatedCard) => (
 						<CatalogCard card={relatedCard} />

@@ -8,10 +8,24 @@ interface Props {
 	cardId: string;
 	locale: LocaleCode;
 	size?: "sm" | "md";
+	/**
+	 * Показать подпись рядом с иконкой. Нужна там, где кнопка стоит одна и
+	 * человек видит ее впервые - на странице проекта; в сетке каталога для
+	 * подписи нет места, и там работает подсказка с `aria-label`.
+	 */
+	withLabel?: boolean;
 }
 
-const { cardId, locale, size = "sm" } = Astro.props;
+const { cardId, locale, size = "sm", withLabel = false } = Astro.props;
 const t = useTranslations(locale);
+
+/** Иконка в кружке, если подписи нет, и пилюля с текстом, если есть. */
+const sizes = {
+	sm: withLabel ? "h-9 gap-2 px-3.5" : "size-9",
+	md: withLabel ? "h-10 gap-2 px-4" : "size-10",
+} as const;
+
+const icon = size === "md" ? "size-5" : "size-4.5";
 ---
 
 <button
@@ -20,133 +34,147 @@ const t = useTranslations(locale);
 	data-card-id={cardId}
 	aria-pressed="false"
 	aria-label={t("saved.add")}
-	class={`group relative inline-flex cursor-pointer shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground shadow-sm ring-1 ring-border/50 transition hover:text-foreground size-10`}
+	class={`group relative inline-flex cursor-pointer shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground text-sm shadow-sm ring-1 ring-border/50 transition hover:text-foreground ${sizes[size]}`}
 >
 	<Icon
 		name="mdi:heart-outline"
-		class={`size-5 group-aria-pressed:hidden`}
+		class={`${icon} group-aria-pressed:hidden`}
 		aria-hidden="true"
 	/>
 	<Icon
 		name="mdi:cards-heart"
-		class={`hidden text-red-500 size-5 group-aria-pressed:block`}
+		class={`hidden text-red-500 group-aria-pressed:block ${icon}`}
 		aria-hidden="true"
 	/>
+
+	{withLabel && (
+			<>
+				<span class="group-aria-pressed:hidden">{t("saved.add")}</span>
+				<span class="hidden group-aria-pressed:inline">{t("card.saved")}</span>
+			</>
+		)}
 
 	<!-- Две подписи вместо одной: текст зависит от состояния кнопки, а состояние
 	     переключает клиентский скрипт через `aria-pressed` - так подпись меняется
 	     без участия JS. -->
-	<Tooltip label={t("saved.add")} class="group-aria-pressed:hidden" />
-	<Tooltip label={t("saved.remove")} class="hidden group-aria-pressed:block" />
+	{!withLabel && (
+			<>
+				<Tooltip label={t("saved.add")} class="group-aria-pressed:hidden" />
+				<Tooltip label={t("saved.remove")} class="hidden group-aria-pressed:block" />
+			</>
+		)}
 </button>
 
 <script>
-	/*
-	 * Закладки - только в localStorage: сайт статический, аккаунтов нет.
-	 * Формат - плоский массив id карточек, тот же прием, что у `catalog:view`
-	 * в `Catalog.astro`. Кнопка сама переключает свое состояние и все свои
-	 * копии на странице (одна и та же карточка может стоять и в каталоге,
-	 * и на странице проекта одновременно - оба места должны быть в courant).
-	 *
-	 * `catalog:saved-change` - кастомное событие для страницы `/saved`: она
-	 * не может держать собственный список карточек синхронно с localStorage
-	 * без него, а перезагружать страницу ради снятия одной закладки не нужно.
-	 */
-	const STORAGE_KEY = "catalog:saved";
+/*
+ * Закладки - только в localStorage: сайт статический, аккаунтов нет.
+ * Формат - плоский массив id карточек, тот же прием, что у `catalog:view`
+ * в `Catalog.astro`. Кнопка сама переключает свое состояние и все свои
+ * копии на странице (одна и та же карточка может стоять и в каталоге,
+ * и на странице проекта одновременно - оба места должны быть в courant).
+ *
+ * `catalog:saved-change` - кастомное событие для страницы `/saved`: она
+ * не может держать собственный список карточек синхронно с localStorage
+ * без него, а перезагружать страницу ради снятия одной закладки не нужно.
+ */
+const STORAGE_KEY = "catalog:saved";
 
-	function getSaved(): string[] {
-		try {
-			const raw = localStorage.getItem(STORAGE_KEY);
-			const parsed = raw ? JSON.parse(raw) : [];
-			return Array.isArray(parsed) ? parsed : [];
-		} catch {
-			return [];
+function getSaved(): string[] {
+	try {
+		const raw = localStorage.getItem(STORAGE_KEY);
+		const parsed = raw ? JSON.parse(raw) : [];
+		return Array.isArray(parsed) ? parsed : [];
+	} catch {
+		return [];
+	}
+}
+
+function setSaved(ids: string[]) {
+	localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+}
+
+function applyState(button: HTMLButtonElement, saved: string[]) {
+	button.setAttribute(
+		"aria-pressed",
+		String(saved.includes(button.dataset.cardId ?? "")),
+	);
+}
+
+function toggle(button: HTMLButtonElement) {
+	const id = button.dataset.cardId;
+	if (!id) return;
+
+	const saved = getSaved();
+	const index = saved.indexOf(id);
+	const nowSaved = index === -1;
+	if (nowSaved) saved.push(id);
+	else saved.splice(index, 1);
+	setSaved(saved);
+
+	for (const match of document.querySelectorAll<HTMLButtonElement>(
+		`[data-save-button][data-card-id="${CSS.escape(id)}"]`,
+	)) {
+		applyState(match, saved);
+	}
+
+	window.dispatchEvent(
+		new CustomEvent("catalog:saved-change", {
+			detail: { id, saved: nowSaved },
+		}),
+	);
+}
+
+/** Проставляет актуальное состояние всем кнопкам внутри узла (и ему самому). */
+function syncButtons(nodes: Iterable<Element>) {
+	const saved = getSaved();
+
+	for (const node of nodes) {
+		if (node.matches("[data-save-button]")) {
+			applyState(node as HTMLButtonElement, saved);
 		}
-	}
 
-	function setSaved(ids: string[]) {
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-	}
-
-	function applyState(button: HTMLButtonElement, saved: string[]) {
-		button.setAttribute("aria-pressed", String(saved.includes(button.dataset.cardId ?? "")));
-	}
-
-	function toggle(button: HTMLButtonElement) {
-		const id = button.dataset.cardId;
-		if (!id) return;
-
-		const saved = getSaved();
-		const index = saved.indexOf(id);
-		const nowSaved = index === -1;
-		if (nowSaved) saved.push(id);
-		else saved.splice(index, 1);
-		setSaved(saved);
-
-		for (const match of document.querySelectorAll<HTMLButtonElement>(
-			`[data-save-button][data-card-id="${CSS.escape(id)}"]`,
+		for (const button of node.querySelectorAll<HTMLButtonElement>(
+			"[data-save-button]",
 		)) {
-			applyState(match, saved);
-		}
-
-		window.dispatchEvent(
-			new CustomEvent("catalog:saved-change", {
-				detail: { id, saved: nowSaved },
-			}),
-		);
-	}
-
-	/** Проставляет актуальное состояние всем кнопкам внутри узла (и ему самому). */
-	function syncButtons(nodes: Iterable<Element>) {
-		const saved = getSaved();
-
-		for (const node of nodes) {
-			if (node.matches("[data-save-button]")) {
-				applyState(node as HTMLButtonElement, saved);
-			}
-
-			for (const button of node.querySelectorAll<HTMLButtonElement>(
-				"[data-save-button]",
-			)) {
-				applyState(button, saved);
-			}
+			applyState(button, saved);
 		}
 	}
+}
 
-	/*
-	 * Клик ловится делегированием на документе, а не подпиской на каждую
-	 * кнопку. Каталог отдает в DOM только первую порцию карточек, остальные
-	 * лежат в `<template>` и вставляются по скроллу (`CatalogGrid.astro`):
-	 * их кнопок в момент запуска скрипта еще не существует, и обход
-	 * `querySelectorAll` их не увидел бы. Делегирование работает независимо
-	 * от того, когда узел появился.
-	 */
-	document.addEventListener("click", (event) => {
-		const target = event.target;
-		if (!(target instanceof Element)) return;
+/*
+ * Клик ловится делегированием на документе, а не подпиской на каждую
+ * кнопку. Каталог отдает в DOM только первую порцию карточек, остальные
+ * лежат в `<template>` и вставляются по скроллу (`CatalogGrid.astro`):
+ * их кнопок в момент запуска скрипта еще не существует, и обход
+ * `querySelectorAll` их не увидел бы. Делегирование работает независимо
+ * от того, когда узел появился.
+ */
+document.addEventListener("click", (event) => {
+	const target = event.target;
+	if (!(target instanceof Element)) return;
 
-		const button = target.closest<HTMLButtonElement>("[data-save-button]");
-		if (button) toggle(button);
-	});
+	const button = target.closest<HTMLButtonElement>("[data-save-button]");
+	if (button) toggle(button);
+});
 
-	syncButtons([document.body]);
+syncButtons([document.body]);
 
-	/*
-	 * Состояние - вторая половина той же проблемы: подгруженная карточка
-	 * приезжает из шаблона с `aria-pressed="false"`, даже если проект уже в
-	 * закладках. Наблюдатель проставляет его в момент вставки.
-	 */
-	const observer = new MutationObserver((records) => {
-		const added: Element[] = [];
+/*
+ * Состояние - вторая половина той же проблемы: подгруженная карточка
+ * приезжает из шаблона с `aria-pressed="false"`, даже если проект уже в
+ * закладках. Наблюдатель проставляет его в момент вставки.
+ */
+const observer = new MutationObserver((records) => {
+	const added: Element[] = [];
 
-		for (const record of records) {
-			for (const node of record.addedNodes) {
-				if (node instanceof Element) added.push(node);
-			}
+	for (const record of records) {
+		for (const node of record.addedNodes) {
+			if (node instanceof Element) added.push(node);
 		}
+	}
 
-		if (added.length > 0) syncButtons(added);
-	});
+	if (added.length > 0) syncButtons(added);
+});
 
-	observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, { childList: true, subtree: true });
 </script>

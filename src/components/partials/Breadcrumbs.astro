@@ -1,0 +1,73 @@
+---
+import { Icon } from "astro-icon/components";
+import { config } from "main.config";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+/**
+ * Путь до текущей страницы. Это контекст «где я нахожусь», а не кнопка
+ * «назад»: половина посетителей приходит на страницу проекта из поиска и
+ * про каталог ничего не знает (см. `docs/adr/0001-...`).
+ *
+ * Последний элемент - сама страница, поэтому он без ссылки и помечен
+ * `aria-current`. Разметка `nav` с подписью нужна скринридеру: без нее
+ * список ссылок ничем не отличается от любого другого.
+ */
+
+export interface Crumb {
+	label: string;
+	/** Нет адреса - это текущая страница, она не ссылка. */
+	href?: string;
+}
+
+interface Props {
+	locale: LocaleCode;
+	items: Crumb[];
+	class?: string;
+}
+
+const { locale, items, class: className = "" } = Astro.props;
+const t = useTranslations(locale);
+
+/*
+ * Тот же путь уходит в JSON-LD: поиск показывает его под ссылкой в выдаче
+ * вместо голого адреса. Абсолютные адреса обязательны - `item` в схеме
+ * это идентификатор страницы, а не путь внутри сайта.
+ */
+const site = new URL(config.site.url);
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	itemListElement: items.map((crumb, index) => ({
+		"@type": "ListItem",
+		position: index + 1,
+		name: crumb.label,
+		...(crumb.href ? { item: new URL(crumb.href, site).href } : {}),
+	})),
+};
+---
+
+<nav aria-label={t("card.breadcrumbs")} class={className}>
+	<ol class="flex flex-wrap items-center gap-1 text-muted-foreground text-sm">
+		{items.map((crumb, index) => (
+			<li class="flex items-center gap-1">
+				{index > 0 && (
+					<Icon name="mdi:chevron-right" class="size-4 opacity-60" aria-hidden="true" />
+				)}
+				{crumb.href ? (
+					<a href={crumb.href} class="transition hover:text-foreground">
+						{crumb.label}
+					</a>
+				) : (
+					<span class="text-foreground" aria-current="page">{crumb.label}</span>
+				)}
+			</li>
+		))}
+	</ol>
+</nav>
+
+<script
+	type="application/ld+json"
+	set:html={JSON.stringify(jsonLd)}
+	is:inline
+/>

@@ -140,6 +140,12 @@ export interface SiteConfig {
 	readonly verifications: readonly SiteVerification[];
 	readonly analytics: AnalyticsConfig;
 	readonly quote: QuoteConfig;
+	/**
+	 * Репозиторий проекта. Пустая строка - ссылки «предложить правку» на
+	 * страницах карточек не рендерятся: у форка стартера своего репозитория
+	 * может и не быть.
+	 */
+	readonly repository: string;
 }
 
 export interface AppConfig {
