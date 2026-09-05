@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import type { LocaleCode } from "@/config/types";
 import { defaultLocale, usePlural } from "@/i18n";
+import { Icon } from "astro-icon/components";
 import { cn } from "cn";
 
 interface Props {
@@ -36,13 +37,15 @@ const totals = [
  * друга по скроллу, поэтому в кадре всегда ровно одна мысль. Отсюда и длина
  * текста - два-три предложения, больше не читается за проход.
  *
- * Градиенты - оформление, они одни на все локали; переводится только текст.
+ * Иконки - оформление, они одни на все локали; переводится только текст.
+ * Фон карточек обязан быть непрозрачным: карточки наезжают друг на друга, и
+ * сквозь полупрозрачную просвечивала бы предыдущая.
  */
-const GRADIENTS = [
-	"linear-gradient(150deg, #f59e0b 0%, #ea580c 55%, #b45309 100%)",
-	"linear-gradient(150deg, #14b8a6 0%, #0f766e 55%, #115e59 100%)",
-	"linear-gradient(150deg, #6366f1 0%, #4338ca 55%, #312e81 100%)",
-	"linear-gradient(150deg, #fb7185 0%, #e11d48 55%, #9f1239 100%)",
+const ICONS = [
+	"mdi:map-marker-question-outline",
+	"mdi:view-grid-outline",
+	"mdi:source-branch",
+	"mdi:account-multiple-plus-outline",
 ];
 
 interface Statement {
@@ -76,7 +79,7 @@ const COPY = {
 			},
 			{
 				eyebrow: "04 · Кто его пополняет",
-				text: "Любой желающий. Знаете проект, которого здесь нет, - заведите карточку по образцу и отправьте pull request.",
+				text: "Любой желающий. Знаете проект, которого здесь нет, - заполните форму на странице «Добавить проект». Удобнее работать с кодом - пришлите pull request.",
 			},
 		],
 	},
@@ -98,7 +101,7 @@ const COPY = {
 			},
 			{
 				eyebrow: "04 · Who keeps it growing",
-				text: "Anyone. Know a project that is missing - fill in a card following the existing ones and send a pull request.",
+				text: 'Anyone. Know a project that is missing - fill in the form on the "Add a project" page. If you prefer working with code, send a pull request.',
 			},
 		],
 	},
@@ -111,8 +114,8 @@ const addHref = getRelativeLocaleUrl(locale, "add");
 
 const statements = copy.statements(totals).map((statement, index) => ({
 	...statement,
-	gradient: GRADIENTS[index],
-	...(index === GRADIENTS.length - 1 && { cta: { href: addHref, label: copy.cta } }),
+	icon: ICONS[index] ?? ICONS[0],
+	...(index === ICONS.length - 1 && { cta: { href: addHref, label: copy.cta } }),
 }));
 ---
 
@@ -133,12 +136,16 @@ const statements = copy.statements(totals).map((statement, index) => ({
 	}
 	<ol class="mt-12 flex flex-col gap-8">
 		{
-			statements.map((item) => (
+			statements.map((item, index) => (
 				<li
-					class="sticky top-[calc(var(--sticky-top))] grid aspect-square place-content-center gap-4 rounded-3xl corner-squircle p-10 text-white sm:p-12"
-					style={`background-image:${item.gradient}`}
+					class="depth-card sticky top-[calc(var(--sticky-top))] grid aspect-square place-content-center gap-5 rounded-3xl corner-squircle border border-border p-10 text-foreground sm:p-12"
+					style={`--depth:${index}`}
 				>
-					<p class="font-semibold text-xs uppercase tracking-[0.14em] opacity-80">
+					<span class="flex size-12 items-center justify-center rounded-2xl corner-squircle border border-border bg-background text-muted-foreground">
+						<Icon name={item.icon} class="size-6" aria-hidden="true" />
+					</span>
+
+					<p class="font-semibold text-muted-foreground text-xs uppercase tracking-[0.14em]">
 						{item.eyebrow}
 					</p>
 					<p class="text-balance font-medium text-xl leading-snug sm:text-3xl sm:leading-tight">
@@ -147,7 +154,7 @@ const statements = copy.statements(totals).map((statement, index) => ({
 					{item.cta && (
 						<a
 							href={item.cta.href}
-							class="w-fit rounded-full bg-white/15 px-4 py-2 font-semibold text-sm ring-1 ring-white/25 backdrop-blur transition hover:bg-white/25"
+							class="w-fit rounded-full bg-foreground px-4 py-2 font-semibold text-background text-sm transition hover:opacity-90"
 						>
 							{item.cta.label}
 						</a>
@@ -162,6 +169,27 @@ const statements = copy.statements(totals).map((statement, index) => ({
 	section {
 		/* Шапка перекрывает прилипшую карточку, если не отступить на ее высоту. */
 		--sticky-top: 6rem;
+	}
+
+	/*
+	 * Каждая следующая карточка на ступеньку темнее предыдущей: они наезжают
+	 * друг на друга, и одинаковый фон склеивал бы стопку в одно пятно - край
+	 * прилипшей карточки был бы виден только по рамке.
+	 *
+	 * Ступенька считается смешением токенов, а не берется из палитры вида
+	 * `depth-200 ... depth-700`: у стартера семантические токены, и смешение
+	 * само перевернется, если фон и текст поменяются местами в темной теме.
+	 * `--depth` - номер карточки, его ставит разметка.
+	 *
+	 * Фон обязан быть непрозрачным: сквозь полупрозрачный просвечивала бы
+	 * предыдущая карточка.
+	 */
+	.depth-card {
+		background-color: color-mix(
+			in oklab,
+			var(--color-background),
+			var(--color-foreground) calc(3% + var(--depth, 0) * 4%)
+		);
 	}
 
 	/*
