@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { type Category, categoryLabel } from "@/components/Catalog/taxonomy";
 import type { LocaleCode } from "@/config/types";
 
@@ -9,6 +10,12 @@ import type { LocaleCode } from "@/config/types";
  * Запрос - подпись категории каталога из реестра `taxonomy.ts`, а не строка
  * руками: он сам переводится и не разъедется с составом каталога. Кадры
  * привязаны к той же категории, поэтому картинка всегда отвечает запросу.
+ *
+ * Снимки лежат в репозитории, а не грузятся с images.unsplash.com. Квоту
+ * хотлинк не тратил (лимиты Unsplash висят на api.unsplash.com, не на CDN),
+ * но это были двенадцать запросов к чужому домену в первом экране, три из
+ * них - в LCP главной. Локальные файлы отдает `astro:assets`: webp, размеры
+ * под плотность экрана, неизменяемый адрес с хешем и наш собственный кеш.
  */
 
 /** Место кадра внутри панели, в процентах от ее габарита. */
@@ -20,8 +27,8 @@ type Tile = {
 };
 
 type Photo = {
-	/** Идентификатор снимка на Unsplash - часть `photo-...` из адреса картинки. */
-	id: string;
+	/** Имя файла в `src/assets/images/showcase/` без расширения. */
+	file: string;
 	alt: { ru: string; en: string };
 };
 
@@ -34,8 +41,18 @@ interface Props {
 
 const { locale, duration = 2500, class: className = "" } = Astro.props;
 
-const photoSrc = (id: string) =>
-	`https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`;
+/*
+ * Кадры подхватываются `import.meta.glob`, а не обычным `import`: файл может
+ * отсутствовать (переименовали, вырезали из репозитория), и статический
+ * импорт в этом случае роняет всю сборку - тот же прием, что в `Features`.
+ */
+const files = import.meta.glob<{ default: ImageMetadata }>(
+	"/src/assets/images/showcase/*.{jpg,jpeg,png,webp}",
+	{ eager: true },
+);
+
+const photoSrc = (file: string): ImageMetadata | undefined =>
+	files[`/src/assets/images/showcase/${file}.jpg`]?.default;
 
 /*
  * Три колонки разной высоты со сдвигом по вертикали. Средний кадр ниже
@@ -61,21 +78,21 @@ const SLIDES: {
 		background: "#2a2f45",
 		photos: [
 			{
-				id: "photo-1478737270239-2f02b77fc618",
+				file: "media-1",
 				alt: {
 					ru: "Микрофоны в студии звукозаписи",
 					en: "Microphones in a recording studio",
 				},
 			},
 			{
-				id: "photo-1485579149621-3123dd979885",
+				file: "media-2",
 				alt: {
 					ru: "Винтажный микрофон на сцене",
 					en: "Vintage microphone on a stage",
 				},
 			},
 			{
-				id: "photo-1511671782779-c97d3d27a1d4",
+				file: "media-3",
 				alt: {
 					ru: "Микрофон в огнях вечернего эфира",
 					en: "Microphone against evening studio lights",
@@ -88,21 +105,21 @@ const SLIDES: {
 		background: "#3b3226",
 		photos: [
 			{
-				id: "photo-1462642109801-4ac2971a3a51",
+				file: "lessons-1",
 				alt: {
 					ru: "Тетрадь с рукописным текстом и перьевая ручка",
 					en: "Notebook with handwriting and a fountain pen",
 				},
 			},
 			{
-				id: "photo-1473186505569-9c61870c11f9",
+				file: "lessons-2",
 				alt: {
 					ru: "Две ручки на исписанном листе",
 					en: "Two pens resting on a written page",
 				},
 			},
 			{
-				id: "photo-1585178332093-1dfaa3998f6b",
+				file: "lessons-3",
 				alt: {
 					ru: "Раскрытый блокнот с записями в руке",
 					en: "An open handwritten notebook held in a hand",
@@ -115,21 +132,21 @@ const SLIDES: {
 		background: "#24333a",
 		photos: [
 			{
-				id: "photo-1440404653325-ab127d49abc1",
+				file: "channel-1",
 				alt: {
 					ru: "Катушки с кинопленкой и старая аппаратура",
 					en: "Film reels and vintage equipment",
 				},
 			},
 			{
-				id: "photo-1493804714600-6edb1cd93080",
+				file: "channel-2",
 				alt: {
 					ru: "Ретро-камера в руке на голубом фоне",
 					en: "A retro camera held against a blue backdrop",
 				},
 			},
 			{
-				id: "photo-1495121553079-4c61bcce1894",
+				file: "channel-3",
 				alt: {
 					ru: "Двухобъективная пленочная камера",
 					en: "A twin-lens film camera",
@@ -142,21 +159,21 @@ const SLIDES: {
 		background: "#33261f",
 		photos: [
 			{
-				id: "photo-1455390582262-044cdead277a",
+				file: "language-1",
 				alt: {
 					ru: "Перо выводит строчку на бумаге",
 					en: "A nib writing a line on paper",
 				},
 			},
 			{
-				id: "photo-1502485019198-a625bd53ceb7",
+				file: "language-2",
 				alt: {
 					ru: "Зал старой библиотеки с книжными полками",
 					en: "A hall of an old library lined with books",
 				},
 			},
 			{
-				id: "photo-1576414160011-98dfab3aa889",
+				file: "language-3",
 				alt: {
 					ru: "Стопка старых книг в кожаных переплетах",
 					en: "A stack of old leather-bound books",
@@ -203,13 +220,18 @@ const columnDelay = 70;
 						data-slide={String(slideIndex)}
 						style={`left:${tile.left}%;top:${tile.top}%;width:${tile.width}%;height:${tile.height}%;--frame-exit:${exitOffset(tile).toFixed(2)}%;--frame-enter:${enterOffset(tile).toFixed(2)}%;--frame-delay:${columnIndex * columnDelay}ms;`}
 					>
-						<img
-							src={photoSrc(photo.id)}
-							alt={photo.alt[altLocale]}
-							loading={slideIndex === 0 ? "eager" : "lazy"}
-							decoding="async"
-							class="search-showcase-photo h-full w-full object-cover"
-						/>
+						{photoSrc(photo.file) && (
+							<Image
+								src={photoSrc(photo.file)!}
+								alt={photo.alt[altLocale]}
+								widths={[320, 640, 960]}
+								sizes="(min-width: 720px) 30vw, 45vw"
+								format="webp"
+								loading={slideIndex === 0 ? "eager" : "lazy"}
+								decoding="async"
+								class="search-showcase-photo h-full w-full object-cover"
+							/>
+						)}
 					</figure>
 				)),
 			)}
