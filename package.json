@@ -19,7 +19,8 @@
 		"validate:seo": "node scripts/validate-seo.mjs",
 		"check:seo": "bun run build && bun run validate:seo",
 		"check:i18n": "node scripts/validate-cards-i18n.mjs",
-		"verify": "bun run lint && bun run check && bun run check:seo && bun run check:i18n"
+		"test": "bun test",
+		"verify": "bun run lint && bun run check && bun run test && bun run check:seo && bun run check:i18n"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "8.0.0",

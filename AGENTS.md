@@ -96,8 +96,9 @@ bun install
 bun dev
 bun run lint        # biome check .
 bun run check       # типы
+bun run test        # bun test - чистые модули каталога
 bun run build
 bun run check:seo   # build + проверка dist/
 bun run check:i18n  # у всех новых карточек есть EN-перевод
-bun run verify      # все сразу (lint + check + check:seo + check:i18n)
+bun run verify      # все сразу (lint + check + test + check:seo + check:i18n)
 ```
