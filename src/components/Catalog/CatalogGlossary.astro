@@ -1,8 +1,9 @@
 ---
+import { categoryLabel, tagLabel } from "@/components/Catalog/taxonomy";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { categoryLabel, peopleLabel, tagLabel } from "@/components/Catalog/labels";
+import { peopleLabel } from "@/components/Catalog/labels";
 import { searchHaystack } from "@/components/Catalog/searchText";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";

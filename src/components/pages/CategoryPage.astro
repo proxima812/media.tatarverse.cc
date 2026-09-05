@@ -1,10 +1,9 @@
 ---
+import { categoryIcon, categoryLabel } from "@/components/Catalog/taxonomy";
 import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
 import { cardsByCategory } from "@/components/Catalog/categories";
-import { categoryIcon } from "@/components/Catalog/categoryIcons";
-import { categoryLabel } from "@/components/Catalog/labels";
 import type { Category } from "@/components/Catalog/taxonomy";
 import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
 import { buildAlternates, useTranslations } from "@/i18n";

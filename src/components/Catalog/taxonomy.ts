@@ -1,3 +1,5 @@
+import type { LocaleCode } from "@/config/types";
+
 export const CATEGORY_VALUES = [
 	"channel",
 	"author",
@@ -335,17 +337,32 @@ export const TAG_DEFINITIONS = {
 	nonprofit: tag("features", "Некоммерческий", "Nonprofit"),
 } satisfies Record<Tag, TagDefinition>;
 
-export function categoryLabel(
-	locale: TaxonomyLocale,
-	category: Category,
-): string {
-	return CATEGORY_DEFINITIONS[category].labels[locale];
+/**
+ * `LocaleCode` - это произвольная строка (см. `src/config/types.ts`), а у
+ * реестра подписи есть ровно для двух локалей. Сужение живет здесь, в одном
+ * месте: раньше его повторяли три обертки в `labels.ts`, а без них тернарник
+ * разъехался бы по всем вызывающим компонентам.
+ */
+function taxonomyLocale(locale: LocaleCode): TaxonomyLocale {
+	return locale === "en" ? "en" : "ru";
 }
 
-export function tagLabel(locale: TaxonomyLocale, value: Tag): string {
-	return TAG_DEFINITIONS[value].labels[locale];
+export function categoryLabel(locale: LocaleCode, category: Category): string {
+	return CATEGORY_DEFINITIONS[category].labels[taxonomyLocale(locale)];
 }
 
-export function tagGroupLabel(locale: TaxonomyLocale, group: TagGroup): string {
-	return TAG_GROUP_LABELS[group][locale];
+export function tagLabel(locale: LocaleCode, value: Tag): string {
+	return TAG_DEFINITIONS[value].labels[taxonomyLocale(locale)];
+}
+
+export function tagGroupLabel(locale: LocaleCode, group: TagGroup): string {
+	return TAG_GROUP_LABELS[group][taxonomyLocale(locale)];
+}
+
+/**
+ * Иконка категории. Лежит в том же определении, что и подписи: отдельный
+ * модуль вокруг одного обращения к полю прятал бы реестр, а не сложность.
+ */
+export function categoryIcon(category: Category): string {
+	return CATEGORY_DEFINITIONS[category].icon;
 }

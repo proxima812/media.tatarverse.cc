@@ -1,11 +1,8 @@
 ---
+import { categoryLabel, tagLabel } from "@/components/Catalog/taxonomy";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import {
-	categoryLabel,
-	peopleLabel,
-	tagLabel,
-} from "@/components/Catalog/labels";
+import { peopleLabel } from "@/components/Catalog/labels";
 
 interface Props {
 	card: CollectionEntry<"cards">;
