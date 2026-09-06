@@ -98,4 +98,12 @@ bun run build
 bun run check:seo   # build + проверка dist/
 bun run check:i18n  # у всех новых карточек есть EN-перевод
 bun run verify      # все сразу (check + check:seo + check:i18n)
+bun run cf:deploy   # verify + выкатка на Cloudflare Pages
 ```
+
+Деплой - Cloudflare Pages через `wrangler`, вручную и только с машины
+разработчика. Git-интеграции и деплой-воркфлоу в Actions нет намеренно:
+Cloudflare ставит зависимости через npm, а он падает на peer-конфликте
+`@dualmark/astro` (просит astro `^6.1.10` при нашем `7.3.1`). Не заводите
+деплой по пушу, не разобравшись с этим - иначе рядом с рабочим сайтом
+появится вечно красная сборка.

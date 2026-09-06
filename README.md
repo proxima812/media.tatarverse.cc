@@ -116,6 +116,8 @@ bun run check       # astro check - типы .astro и .ts
 bun run check:seo   # build + проверка каждой страницы в dist/
 bun run check:i18n  # у всех карточек есть EN-перевод
 bun run verify      # все сразу
+bun run cf:preview  # сборка + локальный просмотр через wrangler
+bun run cf:deploy   # verify + выкатка на Cloudflare Pages
 ```
 
 `bun run check:seo` проверяет каждую собранную страницу: `<title>`, description,
@@ -127,10 +129,28 @@ canonical, набор Open Graph, валидность JSON-LD, `<html lang>`, �
 переформатировал SVG в `public/`) - стиль держится ревью и тем, как написан
 соседний код.
 
+## Деплой
+
+Cloudflare Pages, выкатка вручную через `wrangler`:
+
+```bash
+bun run cf:deploy
+```
+
+Сборку делает bun локально, Cloudflare получает готовый `dist/`. Git-интеграция
+намеренно не подключена: на стороне Cloudflare ставится npm, а он падает на
+peer-конфликте `@dualmark/astro` (просит astro `^6.1.10` при нашем `7.3.1`) -
+bun ставит это без ошибок по `bun.lock`. Пуш в `main` сам по себе ничего не
+выкатывает.
+
+`cf:deploy` прогоняет `verify` перед выкаткой, так что красная проверка
+останавливает деплой. Имя проекта - в `wrangler.jsonc`, account id - только в
+скрипте `cf:deploy:dist`.
+
 ## Первый запуск сайта
 
-Шаги, которые может сделать только человек - подключение хостинга, привязка
-домена, коды подтверждения владения в поисковых консолях, ключ IndexNow -
+Шаги, которые может сделать только человек - первый деплой, привязка
+поддомена, коды подтверждения владения в поисковых консолях, ключ IndexNow -
 собраны в интерактивный визард:
 
 ```bash
@@ -167,7 +187,8 @@ src/
   integrations/           robots.txt, ai.txt, manifest, IndexNow, markdown-двойники
   pages/                  маршруты (en/ - вторая локаль)
   styles/tailwind.css     тема и семантические токены
-scripts/launch-wizard.sh  визард первого запуска: хостинг, домен, консоли
+wrangler.jsonc            Cloudflare Pages: имя проекта и dist/ как источник
+scripts/launch-wizard.sh  визард первого запуска: деплой, домен, консоли
 docs/adr/                 принятые решения и их причины
 CONTEXT.md                глоссарий домена
 AGENTS.md                 правила репозитория

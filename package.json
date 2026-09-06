@@ -16,7 +16,10 @@
 		"validate:seo": "node scripts/validate-seo.mjs",
 		"check:seo": "bun run build && bun run validate:seo",
 		"check:i18n": "node scripts/validate-cards-i18n.mjs",
-		"verify": "bun run check && bun run check:seo && bun run check:i18n"
+		"verify": "bun run check && bun run check:seo && bun run check:i18n",
+		"cf:preview": "bun run build && wrangler pages dev ./dist",
+		"cf:deploy": "bun run verify && bun run cf:deploy:dist",
+		"cf:deploy:dist": "CLOUDFLARE_ACCOUNT_ID=711d25ce64e87b4faeb50022b3e63631 wrangler pages deploy --branch main"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "8.0.0",
@@ -39,6 +42,7 @@
 		"@iconify-json/tabler": "^1.2.38",
 		"@tailwindcss/typography": "^0.5.20",
 		"@toolwind/corner-shape": "^0.0.8-3",
-		"esbuild": "^0.28.2"
+		"esbuild": "^0.28.2",
+		"wrangler": "^4.92.0"
 	}
 }

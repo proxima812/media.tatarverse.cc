@@ -247,29 +247,35 @@ PY
 banner "media.tatarverse.cc - выход на люди"
 
 # ── 1 ─────────────────────────────────────────────────────────────────────
-stage "Cloudflare Pages: проект"
-say "Статику собирает Astro в dist/. Подключаем репозиторий к Pages."
-open_url "https://dash.cloudflare.com/?to=/:account/pages/new/provider/github"
-step "Connect to Git → выберите репозиторий proxima812/media.tatarverse.cc."
-step "Production branch: main"
-step "Framework preset: Astro (или None - важны две строки ниже)."
-step "Build command:        bun run build"
-step "Build output directory: dist"
-note "Переменные окружения сборке не нужны: конфигурация лежит в main.config.ts."
-step "Save and Deploy - дождитесь, пока первая сборка станет зеленой."
-ask PAGES_PROJECT "Как назвали проект в Pages (например media-tatarverse-cc):"
-write_env PAGES_PROJECT "$PAGES_PROJECT"
-pause "Сборка прошла и сайт открывается на *.pages.dev?"
+stage "Cloudflare: первый деплой через wrangler"
+say "Сборку делает bun локально, Cloudflare получает готовый dist/."
+say "Git-интеграция намеренно не используется: на их стороне ставится npm,"
+say "а он падает на peer-конфликте @dualmark/astro (просит astro ^6.1.10"
+say "при нашем 7.3.1). bun ставит это без ошибок по bun.lock."
+printf '\n'
+step "Авторизуйтесь в Cloudflare, если этого еще не было:"
+note "  bunx wrangler login"
+step "Затем соберите и выкатите:"
+note "  bun run cf:deploy"
+note "Имя проекта - media-tatarverse из wrangler.jsonc; если такого проекта"
+note "в аккаунте нет, wrangler создаст его при первом деплое."
+printf '\n'
+warn "Если проект уже был создан через git-интеграцию и падает на сборке -"
+warn "отключите ее: Pages → проект → Settings → Builds → Disconnect,"
+warn "иначе каждый пуш будет давать красный деплой рядом с рабочим."
+pause "Деплой прошел и сайт открывается на media-tatarverse.pages.dev?"
 
 # ── 2 ─────────────────────────────────────────────────────────────────────
-stage "Домен media.tatarverse.cc"
-say "site.url в main.config.ts уже прописан как $SITE_URL - домен обязан"
+stage "Поддомен media.tatarverse.cc"
+say "media.tatarverse.cc - поддомен зоны tatarverse.cc, а она уже в этом же"
+say "аккаунте Cloudflare (там живет сайт tatarverse). Поэтому DNS-запись"
+say "создастся сама - руками CNAME добавлять не нужно."
+say "site.url в main.config.ts прописан как $SITE_URL - домен обязан"
 say "совпадать, иначе canonical, sitemap и hreflang будут врать."
-open_url "https://dash.cloudflare.com/?to=/:account/pages/view/$PAGES_PROJECT/domains"
-step "Custom domains → Set up a custom domain → media.tatarverse.cc"
-step "Если домен уже в этом аккаунте Cloudflare - запись CNAME создастся сама."
-step "Если домен у другого регистратора - перенесите NS на Cloudflare либо"
-step "  добавьте CNAME media.tatarverse.cc → <проект>.pages.dev вручную."
+open_url "https://dash.cloudflare.com/?to=/:account/pages/view/media-tatarverse/domains"
+step "Custom domains → Set up a custom domain"
+step "Введите media.tatarverse.cc и подтвердите."
+step "Cloudflare покажет CNAME на media-tatarverse.pages.dev - согласитесь."
 note "Выпуск сертификата занимает от минуты до получаса."
 pause "https://media.tatarverse.cc/ открывается по HTTPS?"
 
@@ -349,11 +355,16 @@ if confirm "Закоммитить main.config.ts и запушить в main?";
   (cd "$REPO_ROOT" && git add main.config.ts && \
     git commit -q -m "chore: коды подтверждения владения доменом и ключ IndexNow" && \
     git push origin main)
-  say "Запушено. Cloudflare Pages подхватит коммит и пересоберет сайт."
 else
-  SKIPPED+=("коммит и пуш main.config.ts - сделайте вручную, иначе теги не уедут на сайт")
+  SKIPPED+=("коммит и пуш main.config.ts - сделайте вручную")
 fi
-pause "Дождитесь зеленого деплоя в Cloudflare Pages, потом Enter."
+printf '\n'
+say "Пуш сам по себе ничего не выкатывает - деплой всегда ручной."
+if confirm "Выкатить на Cloudflare сейчас (bun run cf:deploy:dist)?"; then
+  (cd "$REPO_ROOT" && bun run cf:deploy:dist)
+else
+  SKIPPED+=("bun run cf:deploy - без него теги не попадут на живой сайт")
+fi
 
 # ── 8 ─────────────────────────────────────────────────────────────────────
 stage "Подтвердить владение в трех консолях"

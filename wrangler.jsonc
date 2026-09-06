@@ -1,0 +1,17 @@
+{
+	// Cloudflare Pages для самого сайта. Воркер `tally-intake` тут ни при чем -
+	// у него свой `workers/tally-intake/wrangler.toml` и свой деплой.
+	//
+	// Сборку делает bun локально (`bun run cf:deploy`), Cloudflare получает
+	// готовый `dist/`. Git-интеграция намеренно не используется: на их стороне
+	// ставится npm, а он падает на peer-конфликте @dualmark/astro (просит
+	// astro ^6.1.10 при нашем 7.3.1) - bun ставит это без ошибок по bun.lock.
+	//
+	// Account id живет только в скрипте `cf:deploy:dist` в package.json.
+	"name": "media-tatarverse",
+	"compatibility_date": "2026-09-06",
+	"pages_build_output_dir": "./dist",
+	"observability": {
+		"enabled": true
+	}
+}
