@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import {
 	CATEGORY_VALUES,
 	TAG_VALUES,
-} from "../src/components/Catalog/taxonomy.ts";
+} from "../src/lib/taxonomy.ts";
 
 const cardsDir = fileURLToPath(new URL("../src/data/cards/", import.meta.url));
 const categories = new Set(CATEGORY_VALUES);

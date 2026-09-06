@@ -4,8 +4,8 @@ import CatalogGrid from "@/components/Catalog/CatalogGrid.astro";
 import CatalogList from "@/components/Catalog/CatalogList.astro";
 import CatalogTagFilter from "@/components/Catalog/CatalogTagFilter.astro";
 import CatalogToolbar from "@/components/Catalog/CatalogToolbar.astro";
-import { getTagCounts } from "@/components/Catalog/categories";
-import type { Category } from "@/components/Catalog/taxonomy";
+import { getTagCounts } from "@/lib/catalog/categories";
+import type { Category } from "@/lib/taxonomy";
 import type { LocaleCode } from "@/config/types";
 
 interface Props {
@@ -51,7 +51,7 @@ const tagCounts = getTagCounts(cards);
 </section>
 
 <script>
-import type { Tag } from "@/components/Catalog/taxonomy";
+import type { Tag } from "@/lib/taxonomy";
 
 const VIEW_STORAGE_KEY = "catalog:view";
 

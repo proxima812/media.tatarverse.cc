@@ -79,7 +79,7 @@ peoples: ["crimean-tatar"]
 - **`facts`** - от трех до четырех коротких фактов. Не рекламные обещания, а
   проверяемые утверждения о проекте.
 - **`categories`, `tags`, `peoples`** - только значения из реестра
-  [`src/components/Catalog/taxonomy.ts`](./src/components/Catalog/taxonomy.ts)
+  [`src/lib/taxonomy.ts`](./src/lib/taxonomy.ts)
   (`peoples`: `tatar`, `bashkir`, `crimean-tatar`). Новое значение - отдельное
   решение, а не побочный эффект новой карточки.
 - **Перевод** - файл с тем же id в `src/data/cards-en/`: только `name`,
@@ -136,7 +136,12 @@ src/
   data/cards/             карточки каталога (RU - источник истины)
   data/cards-en/          английские переводы карточек
   data/markdown/          текстовые страницы: о проекте, правовые, «Добавить»
-  components/Catalog/     каталог, карточки, фильтры, реестр таксономии
+  lib/taxonomy.ts         реестр категорий и тегов - от него зависит схема карточки
+  lib/catalog/            логика каталога: категории, EN-наложение, поиск, фильтры
+  lib/routes/             getStaticPaths и локаль страницы
+  lib/home/               тексты главной по локалям
+  lib/ui/                 логика визуальных эффектов: masonry, градиенты, дрейф
+  components/Catalog/     каталог, карточки, фильтры - разметка
   components/pages/       сборка страниц из компонентов
   components/SEO/         метатеги, JSON-LD, аналитика
   i18n/                   локали, словари, useTranslations/buildAlternates

@@ -1,10 +1,10 @@
 ---
 import { getCollection } from "astro:content";
 import authorPhoto from "@/assets/author.jpg";
-import { localizeCards } from "@/components/Catalog/localize";
+import { localizeCards } from "@/lib/catalog/localize";
 import MainTitle from "@/components/MainTitle.astro";
-import { homeContent } from "@/components/pages/homeContent";
-import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import { homeContent } from "@/lib/home/content";
+import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
 import FAQ from "@/components/partials/FAQ.astro";
 import Features from "@/components/partials/Features.astro";
 import InstFollows from "@/components/partials/InstFollows.astro";

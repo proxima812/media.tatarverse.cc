@@ -19,7 +19,7 @@ import {
 	hueLift,
 	PALETTES,
 	pick,
-} from "@/utils/lib/gradientBase";
+} from "@/lib/ui/gradientBase";
 
 interface Role {
 	readonly lightness: number;

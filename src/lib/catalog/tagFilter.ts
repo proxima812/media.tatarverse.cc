@@ -1,4 +1,4 @@
-import type { Tag } from "@/components/Catalog/taxonomy";
+import type { Tag } from "@/lib/taxonomy";
 
 export function parseTagQuery(
 	raw: string | null,

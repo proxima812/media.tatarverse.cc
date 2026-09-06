@@ -1,13 +1,13 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
-import { CATEGORY_VALUES, TAG_VALUES } from "@/components/Catalog/taxonomy";
+import { CATEGORY_VALUES, TAG_VALUES } from "@/lib/taxonomy";
 
 /**
  * Одна карточка = один проект в каталоге. `peoples` - массив, потому что
  * проект может быть общим (например, языковая платформа для нескольких
  * народов сразу). Русский текст - источник истины: id файла в `cards-en/`
- * должен совпадать с id в `cards/`, см. `src/components/Catalog/localize.ts`.
+ * должен совпадать с id в `cards/`, см. `src/lib/catalog/localize.ts`.
  */
 const cards = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/data/cards/" }),
@@ -32,7 +32,7 @@ const cards = defineCollection({
  * Английский перевод карточек. Только переводимый текст - url, logo,
  * categories, tags и peoples не зависят от языка и берутся из `cards`. Нет файла
  * с тем же id - карточка на /en/ показывается с русским текстом (см.
- * `localizeCards` в `src/components/Catalog/localize.ts`).
+ * `localizeCards` в `src/lib/catalog/localize.ts`).
  */
 const cardsEn = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/data/cards-en/" }),

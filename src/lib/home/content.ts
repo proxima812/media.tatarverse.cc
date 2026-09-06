@@ -1,5 +1,5 @@
 import { config } from "main.config";
-import type { PageLocale } from "@/components/pages/pageLocale";
+import type { PageLocale } from "@/lib/routes/pageLocale";
 
 /**
  * Тексты главной страницы по локалям - одним модулем.

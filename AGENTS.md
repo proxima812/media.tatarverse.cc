@@ -52,7 +52,7 @@ Open source: новые карточки добавляются через:
 источник истины. Перевод живет отдельно, в `src/data/cards-en/<id>.md`
 (тот же id, схема - `name`/`description`/`facts`, без `url`/`logo`/`tags`/
 `peoples`: они не зависят от языка и берутся из русского файла). Слияние -
-`src/components/Catalog/localize.ts`, вызывается на `/en/`-страницах.
+`src/lib/catalog/localize.ts`, вызывается на `/en/`-страницах.
 
 - **Новая карточка добавляется сразу с EN-переводом.** `bun run check:i18n`
   (часть `verify`) падает, если у id нет файла в `cards-en/` и его нет в

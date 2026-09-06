@@ -6,7 +6,7 @@ import {
 	type Tag,
 	tagGroupLabel,
 	tagLabel,
-} from "@/components/Catalog/taxonomy";
+} from "@/lib/taxonomy";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
 
@@ -101,8 +101,8 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 </details>
 
 <script>
-import { parseTagQuery } from "@/components/Catalog/tagFilter";
-import type { Tag } from "@/components/Catalog/taxonomy";
+import { parseTagQuery } from "@/lib/catalog/tagFilter";
+import type { Tag } from "@/lib/taxonomy";
 
 interface FilterDetail {
 	tags: Tag[];

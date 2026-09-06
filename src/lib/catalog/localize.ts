@@ -1,6 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
-import { overlayTranslations } from "@/components/Catalog/overlay";
+import { overlayTranslations } from "@/lib/catalog/overlay";
 import type { LocaleCode } from "@/config/types";
 
 /**

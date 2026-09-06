@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import type { Category, Tag } from "@/components/Catalog/taxonomy";
+import type { Category, Tag } from "@/lib/taxonomy";
 
 export function getAllCategories(
 	cards: CollectionEntry<"cards">[],

@@ -45,7 +45,7 @@
 
 ## Таксономия
 
-Реестр значений - `src/components/Catalog/taxonomy.ts`. Значения, которых
+Реестр значений - `src/lib/taxonomy.ts`. Значения, которых
 там нет, не существуют: Zod-схема их отклоняет на сборке.
 
 **Категория** (category) - крупный тип проекта: `channel`, `author`, `media`,
@@ -68,7 +68,7 @@
 
 **Перевод карточки** - `src/data/cards-en/<id>.md`, только `name`,
 `description`, `facts`. Слияние поверх русской записи - `localizeCards`
-в `src/components/Catalog/localize.ts`.
+в `src/lib/catalog/localize.ts`.
 
 **Текстовая страница** (page) - цельный документ: политика, условия,
 «О проекте», «Добавить проект». `src/data/markdown/` и `src/data/markdown-en/`.

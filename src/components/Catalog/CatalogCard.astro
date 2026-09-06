@@ -9,10 +9,10 @@ import {
 	categoryIcon,
 	categoryLabel,
 	tagLabel,
-} from "@/components/Catalog/taxonomy";
+} from "@/lib/taxonomy";
 import Button from "@/components/partials/Button.astro";
 import { useTranslations } from "@/i18n";
-import { meshGradient } from "@/utils/lib/meshGradient";
+import { meshGradient } from "@/lib/ui/meshGradient";
 
 interface Props {
 	card: CollectionEntry<"cards">;

@@ -2,9 +2,9 @@
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
-import { peopleLabel } from "@/components/Catalog/labels";
-import { searchHaystack } from "@/components/Catalog/searchText";
-import { categoryLabel, tagLabel } from "@/components/Catalog/taxonomy";
+import { peopleLabel } from "@/lib/catalog/labels";
+import { searchHaystack } from "@/lib/catalog/searchText";
+import { categoryLabel, tagLabel } from "@/lib/taxonomy";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
 
@@ -222,7 +222,7 @@ const anchorOf = (letter: string) => `glossary-${letters.indexOf(letter)}`;
  * Запрос складывается к базовым буквам той же функцией, что и строка
  * записи на сборке (`data-search`): «агидел» должно находить «Ағиҙел».
  */
-import { foldSearchText } from "@/components/Catalog/searchText";
+import { foldSearchText } from "@/lib/catalog/searchText";
 
 /*
  * Страница делает две вещи с одним и тем же списком: фильтрует его полем

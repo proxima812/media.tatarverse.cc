@@ -11,7 +11,7 @@ description: Ревью новой или измененной карточки 
 Этот чеклист - то, что проверяет человек.
 
 Источник истины по схеме - `src/content.config.ts`, по словарю категорий и
-тегов - `src/components/Catalog/taxonomy.ts`. Если чеклист разошелся с
+тегов - `src/lib/taxonomy.ts`. Если чеклист разошелся с
 кодом, прав код.
 
 ## Файл и id
@@ -62,7 +62,7 @@ description: Ревью новой или измененной карточки 
   `scripts/cards-i18n-baseline.json`.
 - В `cards-en/<id>.md` только `name`, `description`, `facts`. Ни `url`, ни
   `logo`, ни `categories`, ни `tags`, ни `peoples` - они не зависят от языка
-  и берутся из русского файла (`src/components/Catalog/localize.ts`).
+  и берутся из русского файла (`src/lib/catalog/localize.ts`).
 - Число фактов совпадает с русским файлом, порядок тот же.
 - `name` обычно не переводится, а транслитерируется так, как проект сам себя
   пишет латиницей.

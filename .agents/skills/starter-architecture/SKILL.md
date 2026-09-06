@@ -117,7 +117,7 @@ export default function foo(options: FooOptions): AstroIntegration {
 | Коллекция | Источник | Что это |
 |---|---|---|
 | `cards` | `src/data/cards/` | Карточки каталога (ru, источник истины). |
-| `cardsEn` | `src/data/cards-en/` | Перевод карточек: **только переводимые поля** (`name`, `description`, `facts`). `localizeCards` в `src/components/Catalog/localize.ts` докладывает их поверх русской карточки; нет файла с тем же id - карточка на `/en/` остается русской. |
+| `cardsEn` | `src/data/cards-en/` | Перевод карточек: **только переводимые поля** (`name`, `description`, `facts`). `localizeCards` в `src/lib/catalog/localize.ts` докладывает их поверх русской карточки; нет файла с тем же id - карточка на `/en/` остается русской. |
 | `pages` | `src/data/markdown/` | Цельные текстовые страницы (ru). |
 | `pagesEn` | `src/data/markdown-en/` | Полноценная зеркальная коллекция с целиком переведенным телом - слияние как у `cardsEn` тут не подходит (см. `starter-mdx`). |
 

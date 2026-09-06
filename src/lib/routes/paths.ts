@@ -1,8 +1,8 @@
 import { getCollection } from "astro:content";
-import { getAllCategories } from "@/components/Catalog/categories";
-import { localizeCards } from "@/components/Catalog/localize";
-import { getRelatedCards } from "@/components/Catalog/related";
-import type { PageLocale } from "@/components/pages/pageLocale";
+import { getAllCategories } from "@/lib/catalog/categories";
+import { localizeCards } from "@/lib/catalog/localize";
+import { getRelatedCards } from "@/lib/catalog/related";
+import type { PageLocale } from "@/lib/routes/pageLocale";
 
 /**
  * Наборы путей для динамических маршрутов. `getStaticPaths` Astro читает

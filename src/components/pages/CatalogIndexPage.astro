@@ -2,9 +2,9 @@
 import { getCollection } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
-import { getAllCategories } from "@/components/Catalog/categories";
-import { localizeCards } from "@/components/Catalog/localize";
-import { ogLocale, type PageLocale } from "@/components/pages/pageLocale";
+import { getAllCategories } from "@/lib/catalog/categories";
+import { localizeCards } from "@/lib/catalog/localize";
+import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
