@@ -184,3 +184,7 @@ src/assets/video/original/
 # Как обычные файлы он не коммитится (у него свой .git), а submodule под
 # справочник заводить незачем - история проекта от него не зависит.
 docs/ui/xima-ui
+
+# Локальная память визарда запуска (scripts/launch-wizard.sh):
+# коды подтверждения и ключ IndexNow, боевое место для них - main.config.ts.
+.wizard-launch.env
