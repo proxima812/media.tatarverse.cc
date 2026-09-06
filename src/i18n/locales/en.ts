@@ -57,7 +57,6 @@ export default {
 	"footer.contact": "Contact",
 	"footer.material": "Material",
 	"footer.ecosystem": "Ecosystem",
-	"footer.email": "Email",
 	"footer.external": "External links",
 	"footer.legal": "Legal",
 	"footer.openSource": "Open source",

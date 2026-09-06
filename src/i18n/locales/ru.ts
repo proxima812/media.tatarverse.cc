@@ -63,7 +63,6 @@ export default {
 	"footer.contact": "Связь",
 	"footer.material": "Материал",
 	"footer.ecosystem": "Экосистема",
-	"footer.email": "Почта",
 	"footer.external": "Внешние ссылки",
 	"footer.legal": "Правовая информация",
 	"footer.openSource": "Открытый исходный код",

@@ -65,27 +65,42 @@ const ru: HomeContent = {
 			{
 				question: "Что такое media.tatarverse?",
 				answer:
-					"Открытый каталог проектов о татарском, башкирском и крымскотатарском языках и культуре: языковые приложения, каналы, СМИ, курсы и графика - в одном месте.",
+					"Открытый каталог проектов о татарском, башкирском и крымскотатарском языках и культуре: авторы, каналы, медиа, языковые платформы, уроки и графика - собраны в одном месте, у каждого проекта своя карточка и прямая ссылка на первоисточник.",
 			},
 			{
 				question: "Как добавить свой проект в каталог?",
 				answer:
-					"Через форму на странице «Добавить проект» - заявка уходит на модерацию. Если удобнее работать с кодом, можно прислать pull request в открытом репозитории на GitHub.",
-			},
-			{
-				question: "Это бесплатно?",
-				answer:
-					"Да. Каталог не показывает рекламу и не продает доступ - исходный код открыт, коммерческой модели нет.",
-			},
-			{
-				question: "Кому принадлежат логотипы в карточках?",
-				answer:
-					"Правообладателям перечисленных проектов - мы используем их только для идентификации. Подробности на странице «Источники».",
+					"Заполните форму на странице «Добавить проект» - заявка уходит на модерацию, и карточка обычно появляется в течение суток. Если удобнее работать с кодом, пришлите pull request в открытом репозитории на GitHub.",
 			},
 			{
 				question: "Нашли ошибку в карточке - куда писать?",
 				answer:
-					"Откройте issue в репозитории на GitHub - мы стараемся отвечать быстро.",
+					"Любым удобным способом: ссылка «Предложить правку» внизу страницы проекта, issue или pull request в репозитории на GitHub, Telegram, VK, Instagram или Threads - везде @the_tatarverse. Полный список - на странице «О проекте».",
+			},
+			{
+				question: "Проект закрылся или переехал - что с карточкой?",
+				answer:
+					"Переехал - поправим ссылку, закрылся - уберем карточку: каталог ведет к живым проектам, а не хранит архив мертвых ссылок. Автор проекта может попросить убрать карточку без объяснения причин.",
+			},
+			{
+				question: "Нужна ли регистрация и что с моими данными?",
+				answer:
+					"Регистрации нет. Сохраненные проекты и выбранный вид каталога хранятся только в вашем браузере и никуда не отправляются, веб-аналитика на сайте не подключена. Подробности - в «Политике конфиденциальности».",
+			},
+			{
+				question: "Это бесплатно?",
+				answer:
+					"Да. Каталог некоммерческий: рекламы нет, доступ не продается, исходный код открыт.",
+			},
+			{
+				question: "Можно ли пользоваться данными каталога у себя?",
+				answer:
+					"Да. Код сайта под лицензией MIT, тексты карточек - CC BY 4.0, с указанием источника. Данные лежат обычными файлами в репозитории, выкачивать сайт для этого не нужно.",
+			},
+			{
+				question: "Кому принадлежат логотипы в карточках?",
+				answer:
+					"Правообладателям самих проектов - в каталоге они используются только для того, чтобы обозначить проект, и не означают партнерства или одобрения. Подробности - на странице «Источники».",
 			},
 		],
 	},
@@ -125,27 +140,42 @@ const en: HomeContent = {
 			{
 				question: "What is media.tatarverse?",
 				answer:
-					"An open catalog of projects about the Tatar, Bashkir, and Crimean Tatar languages and cultures: language apps, channels, media outlets, courses, and graphic design work in one place.",
+					"An open catalog of projects about the Tatar, Bashkir and Crimean Tatar languages and cultures: authors, channels, media outlets, language platforms, lessons and graphics - collected in one place, each with its own card and a direct link to the original.",
 			},
 			{
 				question: "How do I add my project to the catalog?",
 				answer:
-					'Through the form on the "Add a project" page - the submission goes to review. If you prefer working with code, send a pull request in the open GitHub repository.',
+					'Fill in the form on the "Add a project" page - the submission goes to review and the card usually appears within a day. If you prefer working with code, send a pull request in the open GitHub repository.',
+			},
+			{
+				question: "Found a mistake in a card - where do I report it?",
+				answer:
+					'Whichever way suits you: the "Suggest an edit" link at the bottom of a project page, an issue or a pull request in the GitHub repository, Telegram, VK, Instagram or Threads - all of them @the_tatarverse. The full list is on the "About" page.',
+			},
+			{
+				question: "A project closed or moved - what happens to its card?",
+				answer:
+					"Moved - we fix the link; closed - we remove the card: the catalog leads to live projects, it is not an archive of dead links. An author can ask us to remove their card without giving a reason.",
+			},
+			{
+				question: "Do I need an account, and what happens to my data?",
+				answer:
+					'There are no accounts. Saved projects and the chosen catalog view are stored in your browser only and are never sent anywhere; web analytics is not enabled on the site. Details are in the "Privacy Policy".',
 			},
 			{
 				question: "Is it free?",
 				answer:
-					"Yes. The catalog shows no ads and doesn't sell access - the source code is open, with no commercial model.",
+					"Yes. The catalog is non-commercial: no ads, no paid access, and the source code is open.",
+			},
+			{
+				question: "Can I reuse the catalog data?",
+				answer:
+					"Yes. The site code is MIT licensed and the card texts are CC BY 4.0, with attribution. The data sits as plain files in the repository, so there is no need to scrape the site.",
 			},
 			{
 				question: "Who owns the logos in the cards?",
 				answer:
-					'The respective project owners - we use them only for identification. See the "Sources" page for details.',
-			},
-			{
-				question: "Found an error in a card - where do I report it?",
-				answer:
-					"Open an issue in the GitHub repository - we try to respond quickly.",
+					'The projects themselves - in the catalog the logos are used only to identify a project and do not imply partnership or endorsement. Details are on the "Sources" page.',
 			},
 		],
 	},
