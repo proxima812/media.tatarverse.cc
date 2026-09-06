@@ -43,7 +43,7 @@ export const config: AppConfig = {
 	// Ключ: https://www.bing.com/indexnow/getstarted
 	// Файл верификации `/<key>.txt` стартер отдает сам.
 	// Включение: { enabled: true, key: "ваш-ключ" }
-	indexNow: { enabled: false },
+	indexNow: { enabled: true, key: "dfe4aa4360f13b45a04036849453d45d", dryRun: true },
 
 	// ── i18n ──────────────────────────────────────────────────────────
 	// `defaultLocale` не получает префикс в URL: `/about`, а не `/ru/about`.
