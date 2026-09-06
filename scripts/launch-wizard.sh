@@ -257,13 +257,13 @@ step "Авторизуйтесь в Cloudflare, если этого еще не 
 note "  bunx wrangler login"
 step "Затем соберите и выкатите:"
 note "  bun run cf:deploy"
-note "Имя проекта - media-tatarverse из wrangler.jsonc; если такого проекта"
+note "Имя проекта - media-tatarverse-cc из wrangler.jsonc; если такого проекта"
 note "в аккаунте нет, wrangler создаст его при первом деплое."
 printf '\n'
 warn "Если проект уже был создан через git-интеграцию и падает на сборке -"
 warn "отключите ее: Pages → проект → Settings → Builds → Disconnect,"
 warn "иначе каждый пуш будет давать красный деплой рядом с рабочим."
-pause "Деплой прошел и сайт открывается на media-tatarverse.pages.dev?"
+pause "Деплой прошел и сайт открывается на media-tatarverse-cc.pages.dev?"
 
 # ── 2 ─────────────────────────────────────────────────────────────────────
 stage "Поддомен media.tatarverse.cc"
@@ -272,10 +272,10 @@ say "аккаунте Cloudflare (там живет сайт tatarverse). Поэ
 say "создастся сама - руками CNAME добавлять не нужно."
 say "site.url в main.config.ts прописан как $SITE_URL - домен обязан"
 say "совпадать, иначе canonical, sitemap и hreflang будут врать."
-open_url "https://dash.cloudflare.com/?to=/:account/pages/view/media-tatarverse/domains"
+open_url "https://dash.cloudflare.com/?to=/:account/pages/view/media-tatarverse-cc/domains"
 step "Custom domains → Set up a custom domain"
 step "Введите media.tatarverse.cc и подтвердите."
-step "Cloudflare покажет CNAME на media-tatarverse.pages.dev - согласитесь."
+step "Cloudflare покажет CNAME на media-tatarverse-cc.pages.dev - согласитесь."
 note "Выпуск сертификата занимает от минуты до получаса."
 pause "https://media.tatarverse.cc/ открывается по HTTPS?"
 
