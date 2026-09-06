@@ -22,8 +22,8 @@ const siteHost = new URL(siteUrl).hostname.replace(/^www\./, "");
  */
 const verifications: SiteVerification[] = [
 	{ name: "yandex-verification", content: "ef2c55e1bcb7f431" },
-	{ name: "google-site-verification", content: "" },
-	{ name: "msvalidate.01", content: "без bing" },
+	{ name: "google-site-verification", content: "ax8dybdaENiWae9wwuPwxMC0GOluT8W9v0yDpIM1AKo" },
+	{ name: "msvalidate.01", content: "" },
 ];
 
 /**
