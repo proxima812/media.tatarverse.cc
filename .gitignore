@@ -188,3 +188,13 @@ docs/ui/xima-ui
 # Локальная память визарда запуска (scripts/launch-wizard.sh):
 # коды подтверждения и ключ IndexNow, боевое место для них - main.config.ts.
 .wizard-launch.env
+
+# =========================
+# IMPECCABLE (дизайн-скилл)
+# =========================
+# `DESIGN.md` и `.impeccable/design.json` - артефакты дизайн-системы, они в репозитории.
+# Локальное состояние live-режима (сессии, чекпойнты, кэш хука) - нет.
+.impeccable/live/sessions/
+.impeccable/live/accept-receipts/
+.impeccable/live/roots.json
+.impeccable/hook.cache.json

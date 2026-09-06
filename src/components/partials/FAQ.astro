@@ -52,12 +52,13 @@ const {
 const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
+
 <section class="mx-auto max-w-3xl px-5 py-16">
-	<h2 class="text-center font-black text-3xl text-balance sm:text-4xl">
+	<h2 class="text-center font-black text-3xl text-balance tracking-tight sm:text-4xl">
 		{title}
 	</h2>
 
-	<div class="mt-10 space-y-3" data-faq>
+	<div class="mt-10 flex flex-col gap-3" data-faq>
 		{items.map((item, index) => {
 				const isOpen = index === defaultOpenIndex;
 				const buttonId = `${idPrefix}-trigger-${index}`;
@@ -65,7 +66,7 @@ const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
 
 				return (
 					<div
-						class="faq-item overflow-hidden rounded-3xl corner-squircle odd:bg-muted/60 even:bg-muted"
+						class="faq-item overflow-hidden rounded-[1.75rem] corner-squircle"
 						data-faq-item
 						data-open={isOpen ? "true" : "false"}
 					>
@@ -76,11 +77,11 @@ const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
 								aria-expanded={isOpen}
 								aria-controls={panelId}
 								data-faq-trigger
-								class="flex w-full items-center justify-between gap-4 px-6 py-5 text-left font-semibold text-foreground sm:px-8 sm:py-6"
+								class="flex w-full items-center justify-between gap-5 px-7 py-6 text-left font-semibold text-foreground text-lg leading-snug tracking-tight focus-visible:outline-none"
 							>
 								{item.question}
 								<svg
-									class="faq-chevron shrink-0 text-foreground"
+									class="faq-chevron shrink-0 text-muted-foreground"
 									width="20"
 									height="20"
 									viewBox="0 0 24 24"
@@ -98,7 +99,7 @@ const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
 
 						<section class="faq-panel" id={panelId} aria-labelledby={buttonId}>
 							<div class="faq-panel-inner">
-								<p class="faq-answer px-6 pb-6 text-muted-foreground sm:px-8 sm:pb-8">
+								<p class="faq-answer px-7 pb-7 text-[1.0625rem] text-muted-foreground leading-relaxed tracking-tight text-pretty">
 									{item.answer}
 								</p>
 							</div>
@@ -110,6 +111,36 @@ const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
 </section>
 
 <style>
+/*
+ * Плашка в покое приглушена, раскрытая - всплывает: фон становится
+ * бумажным, появляется тонкий контур и мягкая тень. Так открытый вопрос
+ * читается как поднятый слой, а не как та же плашка с текстом.
+ *
+ * Контур - `inset ... 0 0 0 1px`, а не `border`: рамка добавила бы плашке
+ * ширину и сдвинула бы соседние на пиксель в момент раскрытия.
+ */
+.faq-item {
+	background-color: color-mix(in oklab, var(--color-muted), transparent 45%);
+	transition:
+		background-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+		box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-item[data-open="true"] {
+	background-color: var(--color-background);
+	box-shadow:
+		inset 0 0 0 1px color-mix(in oklab, var(--color-border), transparent 25%),
+		0 12px 32px -20px rgb(0 0 0 / 0.28);
+}
+
+/*
+ * Фокус рисуется на самой плашке, а не на кнопке: кнопка занимает только
+ * строку вопроса, и кольцо вокруг нее обрезалось бы `overflow: hidden`.
+ */
+.faq-item:has([data-faq-trigger]:focus-visible) {
+	box-shadow: inset 0 0 0 2px var(--color-foreground);
+}
+
 /*
 	 * Высота - через `grid-template-rows: 0fr → 1fr`, а не `max-height` с
 	 * произвольным большим числом и не JS-замер `scrollHeight`: анимируется

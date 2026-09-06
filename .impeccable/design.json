@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-07T00:00:00Z",
+  "title": "Design System: media.tatarverse",
+  "extensions": {
+    "colorMeta": {
+      "background": { "role": "neutral", "displayName": "Бумага", "canonical": "oklch(0.99 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "foreground": { "role": "neutral", "displayName": "Чернильный текст", "canonical": "oklch(0.21 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "primary": { "role": "primary", "displayName": "Чернильный", "canonical": "oklch(0.21 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "primary-foreground": { "role": "primary", "displayName": "Бумага на чернильном", "canonical": "oklch(0.98 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "secondary": { "role": "secondary", "displayName": "Серый камень", "canonical": "oklch(0.91 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "secondary-foreground": { "role": "secondary", "displayName": "Почти черный", "canonical": "oklch(0.17 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "muted": { "role": "neutral", "displayName": "Тихий фон", "canonical": "oklch(0.94 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "muted-foreground": { "role": "neutral", "displayName": "Тихий текст", "canonical": "oklch(0.45 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "border": { "role": "neutral", "displayName": "Граница", "canonical": "oklch(0.87 0 0)", "tonalRamp": ["oklch(0.15 0 0)", "oklch(0.26 0 0)", "oklch(0.37 0 0)", "oklch(0.48 0 0)", "oklch(0.60 0 0)", "oklch(0.71 0 0)", "oklch(0.83 0 0)", "oklch(0.95 0 0)"] },
+      "browser-theme": { "role": "neutral", "displayName": "Тема браузера", "canonical": "#f8fafc", "tonalRamp": [] },
+      "browser-mask": { "role": "neutral", "displayName": "Маска иконки", "canonical": "#0f172a", "tonalRamp": [] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Единственный H1 страницы; часть после тире идет курсивом в обеих локалях." },
+      "headline": { "displayName": "Headline", "purpose": "Заголовки крупных секций." },
+      "title": { "displayName": "Title", "purpose": "Подзаголовки, названия блоков, лид под H1." },
+      "body": { "displayName": "Body", "purpose": "Факты карточки, описания, тело страницы проекта." },
+      "label": { "displayName": "Label", "purpose": "Рубрики над группами таксономии, uppercase с разрядкой." }
+    },
+    "shadows": [
+      { "name": "air-body", "value": "0 10px 36px -14px rgba(0,0,0,0.18)", "purpose": "Воздух под корпусом карточки каталога." },
+      { "name": "air-panel", "value": "0 2px 18px -6px rgba(0,0,0,0.1)", "purpose": "Воздух под внутренней плашкой контента." },
+      { "name": "touch", "value": "var(--tw-shadow-sm)", "purpose": "Касание: кружок логотипа, пилюля названия, активная локаль." },
+      { "name": "floating", "value": "0 10px 15px -3px rgba(0,0,0,0.05)", "purpose": "Шапка и модальные панели - единственное, что действительно висит над страницей." },
+      { "name": "glow-source", "value": "blur(2.5rem) opacity(0.3)", "purpose": "Не тень, а цвет проекта, просочившийся сквозь бумагу под карточкой." }
+    ],
+    "motion": [
+      { "name": "transition-default", "value": "transition (Tailwind: 150ms cubic-bezier(0.4, 0, 0.2, 1))", "purpose": "Все состояния: hover, focus, смена активного пункта." },
+      { "name": "chroma-sweep", "value": "3010ms ease-in-out 180ms 1 forwards", "purpose": "Однократная цветная развертка H1; после animationend класс снимается совсем." },
+      { "name": "reduced-motion", "value": "@media (prefers-reduced-motion: reduce) { animation: none; background-image: none }", "purpose": "Полное отключение развертки, а не замедление." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "container-max", "value": "80rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Основное действие: пилюля чернильного тона. По умолчанию у каждой кнопки сайта.",
+      "html": "<button class=\"ds-btn-solid\">Подробнее</button>",
+      "css": ".ds-btn-solid { display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1.25rem; gap: 0.5rem; white-space: nowrap; border: none; border-radius: 9999px; background: var(--color-primary, oklch(0.21 0 0)); color: var(--color-primary-foreground, oklch(0.98 0 0)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: opacity 150ms cubic-bezier(0.4,0,0.2,1), background 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-solid:hover { opacity: 0.9; } .ds-btn-solid:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background, oklch(0.99 0 0)), 0 0 0 4px var(--color-foreground, oklch(0.21 0 0)); }"
+    },
+    {
+      "name": "Soft Button",
+      "kind": "button",
+      "refersTo": "button-soft",
+      "description": "Вторичное действие на тихом фоне; hover проявляет текст до основного тона.",
+      "html": "<button class=\"ds-btn-soft\">Сохранить</button>",
+      "css": ".ds-btn-soft { display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1.25rem; gap: 0.5rem; border: none; border-radius: 9999px; background: var(--color-muted, oklch(0.94 0 0)); color: var(--color-muted-foreground, oklch(0.45 0 0)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background 150ms, color 150ms; } .ds-btn-soft:hover { background: color-mix(in oklch, var(--color-muted, oklch(0.94 0 0)) 70%, transparent); color: var(--color-foreground, oklch(0.21 0 0)); } .ds-btn-soft:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background, oklch(0.99 0 0)), 0 0 0 4px var(--color-foreground, oklch(0.21 0 0)); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Нейтральное действие с контуром по токену границы.",
+      "html": "<button class=\"ds-btn-outline\">Все разделы</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1.25rem; gap: 0.5rem; border: 1px solid var(--color-border, oklch(0.87 0 0)); border-radius: 9999px; background: var(--color-background, oklch(0.99 0 0)); color: var(--color-foreground, oklch(0.21 0 0)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background 150ms; } .ds-btn-outline:hover { background: var(--color-muted, oklch(0.94 0 0)); } .ds-btn-outline:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-background, oklch(0.99 0 0)), 0 0 0 4px var(--color-foreground, oklch(0.21 0 0)); }"
+    },
+    {
+      "name": "Category Chip",
+      "kind": "chip",
+      "refersTo": "chip-category",
+      "description": "Раздел каталога: единственное место, где чернильный работает полупрозрачной заливкой. Ведет на страницу раздела.",
+      "html": "<a class=\"ds-chip-category\" href=\"#\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 5h16v14H4z\"/><path d=\"M4 10h16\"/></svg>Медиа</a>",
+      "css": ".ds-chip-category { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.625rem; border-radius: 9999px; background: color-mix(in oklch, var(--color-primary, oklch(0.21 0 0)) 10%, transparent); color: var(--color-primary, oklch(0.21 0 0)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; font-weight: 500; text-decoration: none; transition: background 150ms; } .ds-chip-category:hover { background: color-mix(in oklch, var(--color-primary, oklch(0.21 0 0)) 20%, transparent); } .ds-chip-category:focus-visible { outline: 2px solid var(--color-foreground, oklch(0.21 0 0)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Tag Chip",
+      "kind": "chip",
+      "refersTo": "chip-tag",
+      "description": "Тег таксономии с префиксом #; ведет в каталог с включенным фильтром.",
+      "html": "<a class=\"ds-chip-tag\" href=\"#\">#подкаст</a>",
+      "css": ".ds-chip-tag { display: inline-block; padding: 0.25rem 0.625rem; border-radius: 9999px; background: var(--color-muted, oklch(0.94 0 0)); color: var(--color-muted-foreground, oklch(0.45 0 0)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; text-decoration: none; transition: background 150ms, color 150ms; } .ds-chip-tag:hover { background: color-mix(in oklch, var(--color-muted, oklch(0.94 0 0)) 70%, transparent); color: var(--color-foreground, oklch(0.21 0 0)); } .ds-chip-tag:focus-visible { outline: 2px solid var(--color-foreground, oklch(0.21 0 0)); outline-offset: 2px; }"
+    },
+    {
+      "name": "People Badge",
+      "kind": "chip",
+      "refersTo": "chip-tag",
+      "description": "Бейдж народа: белый монохромный знак на темном сквиркл-кружке плюс подпись. Одна и та же форма для всех трех народов.",
+      "html": "<span class=\"ds-people-badge\"><span class=\"ds-people-disc\" aria-hidden=\"true\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"12\" r=\"9\"/></svg></span>Татары</span>",
+      "css": ".ds-people-badge { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.25rem 0.625rem 0.25rem 0.25rem; border-radius: 9999px; background: var(--color-muted, oklch(0.94 0 0)); color: var(--color-muted-foreground, oklch(0.45 0 0)); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.75rem; } .ds-people-disc { display: inline-flex; align-items: center; justify-content: center; width: 1.25rem; height: 1.25rem; border-radius: 9999px; corner-shape: squircle; background: var(--color-foreground, oklch(0.21 0 0)); color: var(--color-background, oklch(0.99 0 0)); }"
+    },
+    {
+      "name": "Catalog Card",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Сигнатурный компонент: цветной ореол под бумагой, корпус, плашка контента и два выноса за края.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-glow\" aria-hidden=\"true\"></div><div class=\"ds-card-head\"><span class=\"ds-card-logo\"></span><h2 class=\"ds-card-title\">Название проекта</h2></div><div class=\"ds-card-body\"><div class=\"ds-card-panel\"><ul class=\"ds-card-facts\"><li>Выходит с 2019 года</li><li>Ведет один автор</li></ul><div class=\"ds-card-foot\"><a class=\"ds-card-domain\" href=\"#\">example.com</a></div></div></div><a class=\"ds-card-cta\" href=\"#\">Подробнее</a></article>",
+      "css": ".ds-card { position: relative; display: flex; flex-direction: column; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-card-glow { position: absolute; inset: 1rem; z-index: -1; border-radius: 1.5rem; opacity: 0.3; filter: blur(2.5rem); background: radial-gradient(closest-side at 30% 35%, oklch(0.64 0.2 20), transparent), radial-gradient(closest-side at 70% 60%, oklch(0.44 0.15 250), transparent); } .ds-card-head { position: relative; z-index: 2; display: flex; height: 4rem; align-items: center; gap: 0.75rem; padding: 0 1.25rem; } .ds-card-logo { width: 2.75rem; height: 2.75rem; flex-shrink: 0; border-radius: 9999px; corner-shape: squircle; background: var(--color-background, oklch(0.99 0 0)); box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px color-mix(in oklch, var(--color-border, oklch(0.87 0 0)) 50%, transparent); } .ds-card-title { flex: 1; min-width: 0; margin: 0; display: flex; align-items: center; border-radius: 1rem; background: var(--color-background, oklch(0.99 0 0)); padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500; color: var(--color-foreground, oklch(0.21 0 0)); box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 0 0 1px color-mix(in oklch, var(--color-border, oklch(0.87 0 0)) 50%, transparent); } .ds-card-body { position: relative; margin-top: -2rem; border-radius: 1.5rem; background: var(--color-background, oklch(0.99 0 0)); padding: 0.625rem; padding-top: 2.25rem; box-shadow: 0 10px 36px -14px rgba(0,0,0,0.18), 0 0 0 1px color-mix(in oklch, var(--color-border, oklch(0.87 0 0)) 40%, transparent); } .ds-card-panel { border-radius: 1rem; background: var(--color-background, oklch(0.99 0 0)); padding: 2.25rem 1.25rem 1.75rem; box-shadow: 0 2px 18px -6px rgba(0,0,0,0.1), 0 0 0 1px color-mix(in oklch, var(--color-border, oklch(0.87 0 0)) 30%, transparent); } .ds-card-facts { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem; color: var(--color-muted-foreground, oklch(0.45 0 0)); } .ds-card-foot { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--color-border, oklch(0.87 0 0)); } .ds-card-domain { font-size: 0.75rem; color: var(--color-muted-foreground, oklch(0.45 0 0)); text-decoration: none; text-underline-offset: 4px; } .ds-card-domain:hover { color: var(--color-foreground, oklch(0.21 0 0)); text-decoration: underline; } .ds-card-cta { position: relative; z-index: 2; margin: -1.5rem auto 0; display: inline-flex; align-items: center; justify-content: center; height: 2.5rem; padding: 0 1.25rem; border-radius: 9999px; background: var(--color-primary, oklch(0.21 0 0)); color: var(--color-primary-foreground, oklch(0.98 0 0)); font-size: 0.875rem; font-weight: 500; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: opacity 150ms; } .ds-card-cta:hover { opacity: 0.9; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Поиск каталога: инверсия тона. Самый темный объект на экране, поэтому собственного фокус-кольца не имеет.",
+      "html": "<div class=\"ds-search\"><svg class=\"ds-search-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input class=\"ds-search-input\" type=\"search\" placeholder=\"Поиск по каталогу\" aria-label=\"Поиск по каталогу\"></div>",
+      "css": ".ds-search { position: relative; width: 100%; max-width: 727px; } .ds-search-icon { position: absolute; top: 50%; left: 1.5rem; transform: translateY(-50%); pointer-events: none; color: color-mix(in oklch, var(--color-background, oklch(0.99 0 0)) 65%, transparent); } .ds-search-input { height: 3.5rem; width: 100%; border: none; border-radius: 20px; background: color-mix(in oklch, var(--color-foreground, oklch(0.21 0 0)) 88%, transparent); backdrop-filter: blur(4px); padding: 0 3rem 0 3.5rem; font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: 1rem; line-height: normal; color: var(--color-background, oklch(0.99 0 0)); outline: none; transition: background 150ms; } .ds-search-input::placeholder { color: color-mix(in oklch, var(--color-background, oklch(0.99 0 0)) 65%, transparent); } .ds-search-input::-webkit-search-cancel-button { appearance: none; }"
+    },
+    {
+      "name": "Floating Header",
+      "kind": "nav",
+      "refersTo": "header-bar",
+      "description": "Плавающая пилюля-шапка: ширина по содержимому от sm, полупрозрачный фон с размытием, сегментированный переключатель локали.",
+      "html": "<header class=\"ds-header\"><a class=\"ds-header-logo\" href=\"#\" aria-label=\"media.tatarverse\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg></a><nav class=\"ds-header-nav\"><a href=\"#\">Каталог</a><a href=\"#\">О проекте</a><a href=\"#\">Добавить</a></nav><div class=\"ds-locale\"><a class=\"ds-locale-item is-active\" href=\"#\">RU</a><a class=\"ds-locale-item\" href=\"#\">EN</a></div></header>",
+      "css": ".ds-header { display: flex; height: 60px; width: fit-content; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 1.25rem; border: 1px solid var(--color-border, oklch(0.87 0 0)); border-radius: 9999px; corner-shape: squircle; background: color-mix(in oklch, var(--color-background, oklch(0.99 0 0)) 90%, transparent); backdrop-filter: blur(12px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-header-logo { display: inline-flex; flex-shrink: 0; color: var(--color-foreground, oklch(0.21 0 0)); } .ds-header-nav { display: flex; align-items: center; gap: 1.5rem; } .ds-header-nav a { white-space: nowrap; font-size: 0.875rem; font-weight: 500; color: var(--color-muted-foreground, oklch(0.45 0 0)); text-decoration: none; transition: color 150ms; } .ds-header-nav a:hover { color: var(--color-foreground, oklch(0.21 0 0)); } .ds-header-nav a:focus-visible { outline: 2px solid var(--color-foreground, oklch(0.21 0 0)); outline-offset: 4px; border-radius: 4px; } .ds-locale { display: flex; align-items: center; gap: 0.125rem; border-radius: 9999px; background: var(--color-muted, oklch(0.94 0 0)); padding: 0.25rem; } .ds-locale-item { border-radius: 9999px; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--color-muted-foreground, oklch(0.45 0 0)); text-decoration: none; transition: color 150ms, background 150ms; } .ds-locale-item:hover { color: var(--color-foreground, oklch(0.21 0 0)); } .ds-locale-item.is-active { background: var(--color-background, oklch(0.99 0 0)); color: var(--color-foreground, oklch(0.21 0 0)); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Атлас народа",
+    "overview": "Это не витрина и не лендинг, а атлас: сетка, систематика и повторяющаяся геометрия, по которой 324 разных проекта читаются как одно поле. Интерфейс намеренно обесцвечен - вся палитра сведена к ахроматической шкале OKLCH от почти белого фона до почти черного текста. Цвет в системе есть, но он не принадлежит интерфейсу: его приносят логотипы проектов и детерминированные мэш-градиенты под ними.\n\nПлотность средняя и дышащая: широкая колонка (max-w-7xl), крупные вертикальные интервалы между блоками, внутри блока - ровный ритм. Формы точные и сдержанные: скругление доведено до предела (пилюля по умолчанию у кнопок, 24px у корпусов), но смягчение достигается геометрией corner-squircle, а не декором. Ничего не блестит, ничего не светится, ни одна поверхность не украшена сверх того, что нужно для разделения слоев.\n\nЗнаки народов (tat, bash, qrim) - единственный собственный изобразительный словарь системы, и он всегда монохромный: белый знак на темном кружке. Три народа получают одинаковую форму, одинаковый размер и одинаковое место; различие несет только сам знак.",
+    "keyCharacteristics": [
+      "Полностью ахроматический интерфейс: ни одного хроматического токена в теме",
+      "Единственный шрифт - Inter переменного начертания 100-900, кириллица и латиница",
+      "Пилюля как форма по умолчанию, corner-squircle вместо обычного радиуса",
+      "Глубина набирается вложенными поверхностями и ring, а не границами",
+      "Цвет и движение допускаются только там, где их источник - контент"
+    ],
+    "rules": [
+      { "name": "Правило чужого голоса", "body": "Цвет в интерфейс приносит только контент: мэш-градиент логотипа карточки и chroma-развертка заголовка. Собственного брендового цвета у системы нет и заводить его без отдельного решения нельзя.", "section": "colors" },
+      { "name": "Правило пары", "body": "Цвета ходят парами «поверхность + текст на ней» (bg-muted → text-muted-foreground), и в разметке используется пара целиком. Хардкод (bg-[#111], text-zinc-900) запрещен: перекраска проекта - это правка значений в src/styles/tailwind.css, и больше нигде.", "section": "colors" },
+      { "name": "Правило одного шрифта", "body": "Второе семейство в систему не вводится. Иерархия строится весом (400 → 600 → 700 → 900) и кеглем; засечки, моноширинный и декоративный шрифт - вне словаря.", "section": "typography" },
+      { "name": "Правило симметрии локалей", "body": "Типографический прием, примененный к русскому тексту, обязан работать и на английском по тому же структурному признаку (курсив после тире - по самому тире, а не по номеру слова).", "section": "typography" },
+      { "name": "Правило одной колонки", "body": "Все содержательное живет в колонке max-w-7xl. Выход за нее - осознанный прием через no-container, а не способ заполнить экран.", "section": "layout" },
+      { "name": "Правило «слои - структура, тень - воздух»", "body": "Тень означает вложенность, а не важность. Ring вместо border, мягкое затухание вместо контурной линии; жесткая тень с видимым краем в систему не входит.", "section": "elevation" },
+      { "name": "Правило сквиркла", "body": "Все, что круглое, - сквиркл. Обычная окружность допустима только там, где элемент меньше 12px и разница не читается.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do брать цвет только из семантических токенов парами «поверхность + текст».",
+      "Do оставлять цвет за контентом: логотип, мэш-градиент, chroma-развертка - и больше ничего.",
+      "Do давать границы через ring, а не border, когда элемент стоит в потоке рядом с другими.",
+      "Do держать corner-squircle на всем круглом.",
+      "Do проверять новый прием на обеих локалях: если он работает только на русском - он не готов.",
+      "Do обесцвечивать собственную графику: знаки народов монохромны и равны между собой.",
+      "Do отключать движение по prefers-reduced-motion полностью, как это сделано в chroma.css."
+    ],
+    "donts": [
+      "Don't вводить хроматический токен в тему ради акцента - собственного бренд-цвета у системы нет.",
+      "Don't добавлять второе шрифтовое семейство.",
+      "Don't ставить темную тему: сайт светлый по существу.",
+      "Don't уводить каталог в таблицу или админскую плотность - карточка и строка списка это уже два предусмотренных режима, третьего «дата-грида» не нужно.",
+      "Don't тянуть SaaS-приемы: градиентные герои, светящиеся кнопки, маркетинговый блеск.",
+      "Don't использовать этно-орнаментику - тугру, тюльпан, национальный узор, флаговые цвета - как декор.",
+      "Don't давать одному народу визуальный приоритет над другими: размер, форма и место знаков одинаковы.",
+      "Don't хардкодить цвета и радиусы в разметке в обход токенов."
+    ]
+  }
+}

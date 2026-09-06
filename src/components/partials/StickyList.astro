@@ -49,7 +49,8 @@ const ICONS = [
 ];
 
 interface Statement {
-	eyebrow: string;
+	/** Заголовок утверждения. Номер сюда не входит: его дает счетчик в разметке. */
+	title: string;
 	text: string;
 }
 
@@ -66,19 +67,19 @@ const COPY = {
 		cta: "Как добавить проект",
 		statements: (totals: string) => [
 			{
-				eyebrow: "01 · Как есть сейчас",
+				title: "Как есть сейчас",
 				text: "Проекты о татарском, башкирском и крымскотатарском разбросаны по десяткам каналов, магазинов приложений и личных страниц. Найти их можно, только если уже знаешь, что ищешь.",
 			},
 			{
-				eyebrow: "02 · Что делает каталог",
+				title: "Что делает каталог",
 				text: `Собирает их в одном месте: ${totals} - у каждого проекта описание, несколько фактов и ссылка на первоисточник.`,
 			},
 			{
-				eyebrow: "03 · Ничего не спрятано",
+				title: "Ничего не спрятано",
 				text: "Сайт и сами карточки лежат в открытом репозитории. Любую правку видно в истории, любую можно оспорить - и никакой рекламы или платного доступа.",
 			},
 			{
-				eyebrow: "04 · Кто его пополняет",
+				title: "Кто его пополняет",
 				text: "Любой желающий. Знаете проект, которого здесь нет, - заполните форму на странице «Добавить проект». Удобнее работать с кодом - пришлите pull request.",
 			},
 		],
@@ -88,19 +89,19 @@ const COPY = {
 		cta: "How to add a project",
 		statements: (totals: string) => [
 			{
-				eyebrow: "01 · How it stands today",
+				title: "How it stands today",
 				text: "Projects about Tatar, Bashkir and Crimean Tatar are scattered across dozens of channels, app stores and personal pages. You can only find them if you already know what you are looking for.",
 			},
 			{
-				eyebrow: "02 · What the catalog does",
+				title: "What the catalog does",
 				text: `It brings them together in one place: ${totals} - each with a description, a few facts and a link to the original source.`,
 			},
 			{
-				eyebrow: "03 · Nothing is hidden",
+				title: "Nothing is hidden",
 				text: "The site and the cards themselves live in an open repository. Every change is visible in the history and open to challenge - and there are no ads and no paywall.",
 			},
 			{
-				eyebrow: "04 · Who keeps it growing",
+				title: "Who keeps it growing",
 				text: 'Anyone. Know a project that is missing - fill in the form on the "Add a project" page. If you prefer working with code, send a pull request.',
 			},
 		],
@@ -112,15 +113,20 @@ const copy: Copy = known[locale] ?? known[defaultLocale] ?? COPY.ru;
 
 const addHref = getRelativeLocaleUrl(locale, "add");
 
+const total = copy.statements(totals).length;
+const pad = (value: number) => String(value).padStart(2, "0");
+
 const statements = copy.statements(totals).map((statement, index) => ({
 	...statement,
 	icon: ICONS[index] ?? ICONS[0],
+	/** Позиция в стопке: «02/04». Порядок здесь значим - это шаги рассказа. */
+	position: `${pad(index + 1)}/${pad(total)}`,
 	...(index === ICONS.length - 1 && { cta: { href: addHref, label: copy.cta } }),
 }));
 ---
 
 <section class={cn("mx-auto max-w-2xl py-16", className)}>
-	<h2 class="text-center font-black text-3xl text-balance sm:text-4xl">
+	<h2 class="text-center font-black text-3xl text-balance tracking-tight sm:text-4xl">
 		{heading ?? copy.heading}
 	</h2>
 
@@ -134,27 +140,44 @@ const statements = copy.statements(totals).map((statement, index) => ({
 		 * прилипшая карточка уезжала бы под нее.
 		 */
 	}
-	<ol class="mt-12 flex flex-col gap-8">
+	<ol class="mt-14 flex flex-col gap-5">
 		{
 			statements.map((item, index) => (
 				<li
-					class="depth-card sticky top-[calc(var(--sticky-top))] grid aspect-square place-content-center gap-5 rounded-3xl corner-squircle border border-border p-10 text-foreground sm:p-12"
+					class="depth-card sticky top-[calc(var(--sticky-top))] grid min-h-[21rem] content-center gap-4 rounded-3xl corner-squircle p-10 text-foreground sm:p-12"
 					style={`--depth:${index}`}
 				>
-					<span class="flex size-12 items-center justify-center rounded-2xl corner-squircle border border-border bg-background text-muted-foreground">
-						<Icon name={item.icon} class="size-6" aria-hidden="true" />
-					</span>
+					{
+						/*
+						 * Шапка карточки: знак, заголовок и позиция в стопке. Подпись
+						 * («Как есть сейчас») - это и есть заголовок утверждения, поэтому
+						 * она набрана заголовком, а не надстрочной рубрикой над текстом.
+						 * Номер из исходной подписи не повторяется словом: его несет
+						 * счетчик справа.
+						 */
+					}
+					<div class="flex items-center gap-3 border-border/65 border-b pb-4">
+						<span class="inline-flex text-muted-foreground">
+							<Icon name={item.icon} class="size-5" aria-hidden="true" />
+						</span>
 
-					<p class="font-semibold text-muted-foreground text-xs uppercase tracking-[0.14em]">
-						{item.eyebrow}
-					</p>
-					<p class="text-balance font-medium text-xl leading-snug sm:text-3xl sm:leading-tight">
+						<h3 class="font-semibold text-2xl leading-tight tracking-tight">
+							{item.title}
+						</h3>
+
+						<span class="ml-auto font-semibold text-muted-foreground text-xs tabular-nums">
+							{item.position}
+						</span>
+					</div>
+
+					<p class="text-lg text-muted-foreground leading-relaxed tracking-tight text-pretty">
 						{item.text}
 					</p>
+
 					{item.cta && (
 						<a
 							href={item.cta.href}
-							class="w-fit rounded-full bg-foreground px-4 py-2 font-semibold text-background text-sm transition hover:opacity-90"
+							class="w-fit rounded-full bg-foreground px-5 py-2.5 font-semibold text-background text-sm transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 						>
 							{item.cta.label}
 						</a>
@@ -182,7 +205,8 @@ const statements = copy.statements(totals).map((statement, index) => ({
 	 * `--depth` - номер карточки, его ставит разметка.
 	 *
 	 * Фон обязан быть непрозрачным: сквозь полупрозрачный просвечивала бы
-	 * предыдущая карточка.
+	 * предыдущая карточка. Рамки у карточки нет: край прилипшей карточки
+	 * читается по самой ступеньке, и лишняя линия только спорила бы с ней.
 	 */
 	.depth-card {
 		background-color: color-mix(
