@@ -4,6 +4,7 @@ import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
 import { getAllCategories } from "@/lib/catalog/categories";
 import { localizeCards } from "@/lib/catalog/localize";
+import { sortByPubDate } from "@/lib/catalog/sort";
 import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
@@ -15,7 +16,9 @@ interface Props {
 const { locale } = Astro.props;
 
 const t = useTranslations(locale);
-const cards = await localizeCards(await getCollection("cards"), locale);
+const cards = sortByPubDate(
+	await localizeCards(await getCollection("cards"), locale),
+);
 const categories = getAllCategories(cards);
 ---
 

@@ -4,6 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
 import { cardsByCategory } from "@/lib/catalog/categories";
+import { sortByPubDate } from "@/lib/catalog/sort";
 import type { Category } from "@/lib/taxonomy";
 import { categoryIcon, categoryLabel } from "@/lib/taxonomy";
 import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
@@ -21,7 +22,7 @@ interface Props {
 const { locale, category, cards, categories } = Astro.props;
 
 const t = useTranslations(locale);
-const filtered = cardsByCategory(cards, category);
+const filtered = sortByPubDate(cardsByCategory(cards, category));
 
 /** "Карточки по {категория} ({count})" - заголовок и `<title>` в одном месте. */
 const heading = `${t("catalog.byCategoryPrefix")} ${categoryLabel(locale, category)} (${filtered.length})`;
