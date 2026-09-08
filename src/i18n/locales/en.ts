@@ -23,6 +23,8 @@ export default {
 	"nav.home": "Home",
 	"catalog.title": "Got something to say — say it.",
 	"catalog.lead": "People. Projects. Ideas.",
+	"catalog.subtitle":
+		"A catalog of Tatar, Bashkir and Crimean Tatar authors and projects.",
 	"catalog.category.label": "Categories",
 	"catalog.category.all": "All projects",
 	"catalog.category.allCategories": "All categories",

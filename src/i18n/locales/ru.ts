@@ -23,6 +23,8 @@ export default {
 	"nav.home": "На главную",
 	"catalog.title": "Есть что сказать — скажи.",
 	"catalog.lead": "Люди. Проекты. Идеи.",
+	"catalog.subtitle":
+		"Каталог авторов и проектов татар, башкир и крымских татар.",
 	"catalog.category.label": "Категории",
 	"catalog.category.all": "Все проекты",
 	"catalog.category.allCategories": "Все категории",

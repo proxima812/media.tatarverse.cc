@@ -32,6 +32,7 @@
 		"astro-icon": "^1.2.0",
 		"astro-pagefind": "^2.0.1",
 		"cn": "^0.2.4",
+		"fuse.js": "^7.5.0",
 		"schema-dts": "^2.0.0",
 		"tailwindcss": "^4.3.3",
 		"typescript": "^6.0.2"

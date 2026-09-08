@@ -147,7 +147,11 @@ const anchorOf = (letter: string) => `glossary-${letters.indexOf(letter)}`;
 
 						<ul class="flex flex-col gap-12">
 							{groups.get(letter)?.map((card) => (
-									<li data-glossary-item data-search={searchIndex(card)}>
+									<li
+										data-glossary-item
+										data-search={searchIndex(card)}
+										data-search-name={searchHaystack(card.data.name)}
+									>
 										<a
 											href={getRelativeLocaleUrl(locale, `projects/${card.id}`)}
 											class="group block"
@@ -222,6 +226,7 @@ const anchorOf = (letter: string) => `glossary-${letters.indexOf(letter)}`;
  * Запрос складывается к базовым буквам той же функцией, что и строка
  * записи на сборке (`data-search`): «агидел» должно находить «Ағиҙел».
  */
+import Fuse from "fuse.js";
 import { foldSearchText } from "@/lib/catalog/searchText";
 
 /*
@@ -312,16 +317,81 @@ const updateCurrent = () => {
 };
 
 /*
- * Фильтр по подстрокам: запрос бьется на слова, и запись остается, если
- * содержит их все. Так «татар канал» находит татарские каналы, а не все,
- * где встретилось хотя бы одно из слов.
+ * Индекс для нечеткого поиска. Строки уже свернуты к базовым буквам на
+ * сборке (`data-search`), поэтому Fuse получает ровно тот же алфавит, что
+ * и запрос.
+ *
+ * Название вынесено отдельным полем с большим весом: «telem» должно
+ * поднимать «TatarTelem», а не карточку, у которой это слово затерялось
+ * в описании.
+ */
+const records = items.map((item, index) => ({
+	index,
+	name: item.dataset.searchName ?? "",
+	text: item.dataset.search ?? "",
+}));
+
+const fuse = new Fuse(records, {
+	keys: [
+		{ name: "name", weight: 3 },
+		{ name: "text", weight: 1 },
+	],
+	/*
+	 * `ignoreLocation` - главный переключатель для этого каталога: по
+	 * умолчанию Fuse ищет совпадение у начала строки, а у нас нужное слово
+	 * стоит и в середине названия («TatarTelem» по запросу «telem»), и в
+	 * конце длинной строки тегов.
+	 */
+	ignoreLocation: true,
+	threshold: 0.34,
+	minMatchCharLength: 2,
+});
+
+/*
+ * Слишком короткий запрос нечеткому поиску отдавать нельзя: на двух буквах
+ * порог ошибок пропускает почти весь каталог. Такие токены остаются на
+ * старом сравнении по вхождению.
+ */
+const FUZZY_MIN_LENGTH = 3;
+
+/** Индексы записей, подходящих одному слову запроса. */
+const matchToken = (token: string): Set<number> => {
+	const matched = new Set<number>();
+
+	/*
+	 * Точное вхождение проверяется всегда и отдельно от Fuse: у длинной
+	 * строки записи нечеткое сравнение может недобрать по порогу там, где
+	 * слово стоит буквально.
+	 */
+	for (const record of records) {
+		if (record.text.includes(token)) matched.add(record.index);
+	}
+
+	if (token.length >= FUZZY_MIN_LENGTH) {
+		for (const result of fuse.search(token)) matched.add(result.item.index);
+	}
+
+	return matched;
+};
+
+/*
+ * Запрос бьется на слова, и запись остается, если подходит каждому из них.
+ * Так «татар канал» находит татарские каналы, а не все, где встретилось
+ * хотя бы одно слово.
  */
 const applyQuery = (raw: string) => {
 	const tokens = foldSearchText(raw).split(/\s+/).filter(Boolean);
 
-	for (const item of items) {
-		const haystack = item.dataset.search ?? "";
-		item.hidden = !tokens.every((token) => haystack.includes(token));
+	if (tokens.length === 0) {
+		for (const item of items) item.hidden = false;
+	} else {
+		const matched = tokens
+			.map(matchToken)
+			.reduce((acc, set) => new Set([...acc].filter((i) => set.has(i))));
+
+		for (const [index, item] of items.entries()) {
+			item.hidden = !matched.has(index);
+		}
 	}
 
 	const shown = new Set<string>();
