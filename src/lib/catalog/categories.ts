@@ -1,10 +1,21 @@
 import type { CollectionEntry } from "astro:content";
-import type { Category, Tag } from "@/lib/taxonomy";
+import { CATEGORY_VALUES, type Category, type Tag } from "@/lib/taxonomy";
 
+/**
+ * Категории каталога - весь реестр, а не только занятые карточками. Раздел
+ * заводится в `taxonomy.ts` раньше, чем в него ложится первая карточка, и
+ * до тех пор у него все равно должны быть страница и место в переключателе:
+ * иначе новую категорию нельзя ни открыть, ни показать автору.
+ *
+ * Порядок - реестровый, поэтому переключатель не переставляется от того,
+ * какая карточка добавилась последней. Аргумент оставлен: вызывающие
+ * страницы передают свой список карточек, и сигнатура переживет возврат к
+ * выборке по содержимому.
+ */
 export function getAllCategories(
-	cards: CollectionEntry<"cards">[],
+	_cards: CollectionEntry<"cards">[],
 ): Category[] {
-	return [...new Set(cards.flatMap((card) => card.data.categories))];
+	return [...CATEGORY_VALUES];
 }
 
 export function cardsByCategory(

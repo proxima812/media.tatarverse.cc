@@ -55,13 +55,19 @@ const photoSrc = (file: string): ImageMetadata | undefined =>
 	files[`/src/assets/images/showcase/${file}.jpg`]?.default;
 
 /*
- * Три колонки разной высоты со сдвигом по вертикали. Средний кадр ниже
- * соседей: ровно по его центру идет пилюля поиска.
+ * Три кадра одной композиции: боковые одинаковые и симметричные
+ * относительно центра панели, средний - шире и ниже их. Пилюля поиска идет
+ * ровно по его центру, поэтому средний кадр не может быть высоким: он
+ * читается как подложка под запросом, а не как третья колонка.
+ *
+ * Раньше левый кадр был вдвое шире правого и лез во всю высоту панели -
+ * композиция валилась влево. Симметрия считается по центрам:
+ * left + width / 2 у боковых в сумме дает 100.
  */
 const TILES: [Tile, Tile, Tile] = [
-	{ left: 0, top: 0, width: 29.4, height: 100 },
-	{ left: 39.7, top: 19.5, width: 20.5, height: 60 },
-	{ left: 71.9, top: 14.3, width: 20.4, height: 70 },
+	{ left: 8, top: 14.3, width: 21, height: 70 },
+	{ left: 37, top: 19.5, width: 26, height: 60 },
+	{ left: 71, top: 14.3, width: 21, height: 70 },
 ];
 
 /*
@@ -273,6 +279,8 @@ const columnDelay = 70;
 .search-showcase-frame {
 	position: absolute;
 	margin: 0;
+	/* 24px - тот же радиус, что у карточек каталога (`rounded-3xl`). */
+	border-radius: 1.5rem;
 	overflow: hidden;
 	transform: translate3d(0, var(--frame-enter), 0);
 	will-change: transform;
@@ -425,6 +433,11 @@ const columnDelay = 70;
 @media (max-width: 719px) {
 	.search-showcase-panel {
 		aspect-ratio: 4 / 3;
+	}
+
+	/* Кадры здесь вдвое мельче, и 24px на них смотрятся как овал. */
+	.search-showcase-frame {
+		border-radius: 1rem;
 	}
 
 	.search-showcase-pill {

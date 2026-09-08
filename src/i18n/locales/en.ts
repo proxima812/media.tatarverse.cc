@@ -32,6 +32,8 @@ export default {
 	"catalog.filter.label": "Tags",
 	"catalog.filter.clear": "Clear",
 	"catalog.filter.selected": "selected",
+	"catalog.category.empty":
+		"This section has no projects yet - it has only just opened.",
 	"catalog.filter.empty": "No projects match all selected tags.",
 	"catalog.byCategoryPrefix": "Projects in",
 	"catalog.view.label": "Catalog view",

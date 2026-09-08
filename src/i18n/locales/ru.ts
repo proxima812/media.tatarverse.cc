@@ -32,6 +32,8 @@ export default {
 	"catalog.filter.label": "Теги",
 	"catalog.filter.clear": "Очистить",
 	"catalog.filter.selected": "выбрано",
+	"catalog.category.empty":
+		"В этом разделе пока нет проектов - он только открылся.",
 	"catalog.filter.empty": "Проекты с таким набором тегов не найдены.",
 	"catalog.byCategoryPrefix": "Проекты в категории",
 	"catalog.view.label": "Вид каталога",

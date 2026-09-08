@@ -8,6 +8,7 @@ export const CATEGORY_VALUES = [
 	"lessons",
 	"graphics",
 	"community",
+	"music",
 ] as const;
 
 export type Category = (typeof CATEGORY_VALUES)[number];
@@ -177,6 +178,10 @@ export const CATEGORY_DEFINITIONS = {
 	community: {
 		labels: labels("Сообщество", "Community"),
 		icon: "mdi:account-group-outline",
+	},
+	music: {
+		labels: labels("Музыка", "Music"),
+		icon: "mdi:music-note-outline",
 	},
 } satisfies Record<Category, CategoryDefinition>;
 

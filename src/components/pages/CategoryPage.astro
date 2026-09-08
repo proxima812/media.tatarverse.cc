@@ -76,10 +76,19 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 		</div>
 	</div>
 
+	<!-- Переключатель категорий рисуется и у пустого раздела: без него со
+	     страницы нового раздела некуда уйти, кроме как назад в браузере.
+	     Сетку заменяет строка о том, что здесь пока пусто. -->
 	<Catalog
 		locale={locale}
 		cards={filtered}
 		categories={categories}
 		activeCategory={category}
 	/>
+
+	{filtered.length === 0 && (
+		<p class="mx-auto max-w-xl px-5 py-16 text-center text-lg text-muted-foreground">
+			{t("catalog.category.empty")}
+		</p>
+	)}
 </Layout>
