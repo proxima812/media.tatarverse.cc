@@ -55,19 +55,20 @@ const photoSrc = (file: string): ImageMetadata | undefined =>
 	files[`/src/assets/images/showcase/${file}.jpg`]?.default;
 
 /*
- * Три кадра одной композиции: боковые одинаковые и симметричные
- * относительно центра панели, средний - шире и ниже их. Пилюля поиска идет
- * ровно по его центру, поэтому средний кадр не может быть высоким: он
- * читается как подложка под запросом, а не как третья колонка.
+ * Боковые кадры прижаты к краям панели и уходят под них по всей высоте -
+ * так композиция держит рамку, а не висит тремя картинками по центру.
+ * Средний стоит свободно между ними: он шире боковых и ниже их, ровно по
+ * его центру идет пилюля поиска.
  *
- * Раньше левый кадр был вдвое шире правого и лез во всю высоту панели -
- * композиция валилась влево. Симметрия считается по центрам:
- * left + width / 2 у боковых в сумме дает 100.
+ * Симметрия считается по краям: левый начинается в 0, правый заканчивается
+ * в 100, ширина у них одна.
  */
+const EDGE_WIDTH = 29.4;
+
 const TILES: [Tile, Tile, Tile] = [
-	{ left: 8, top: 14.3, width: 21, height: 70 },
+	{ left: 0, top: 0, width: EDGE_WIDTH, height: 100 },
 	{ left: 37, top: 19.5, width: 26, height: 60 },
-	{ left: 71, top: 14.3, width: 21, height: 70 },
+	{ left: 100 - EDGE_WIDTH, top: 0, width: EDGE_WIDTH, height: 100 },
 ];
 
 /*
@@ -221,7 +222,14 @@ const columnDelay = 70;
 		{slides.map((slide, slideIndex) =>
 				slide.frames.map(({ tile, photo }, columnIndex) => (
 					<figure
-						class:list={["search-showcase-frame", { "is-active": slideIndex === 0 }]}
+						class:list={[
+							"search-showcase-frame",
+							{
+								"is-active": slideIndex === 0,
+								"is-edge-start": columnIndex === 0,
+								"is-edge-end": columnIndex === 2,
+							},
+						]}
 						data-frame
 						data-slide={String(slideIndex)}
 						style={`left:${tile.left}%;top:${tile.top}%;width:${tile.width}%;height:${tile.height}%;--frame-exit:${exitOffset(tile).toFixed(2)}%;--frame-enter:${enterOffset(tile).toFixed(2)}%;--frame-delay:${columnIndex * columnDelay}ms;`}
@@ -284,6 +292,21 @@ const columnDelay = 70;
 	overflow: hidden;
 	transform: translate3d(0, var(--frame-enter), 0);
 	will-change: transform;
+}
+
+/*
+ * У прижатых к краю кадров скругляется только внутренняя сторона: снаружи
+ * их и так режет скругление самой панели, и второй радиус поверх первого
+ * читался бы как щель между кадром и рамкой.
+ */
+.search-showcase-frame.is-edge-start {
+	border-start-start-radius: 0;
+	border-end-start-radius: 0;
+}
+
+.search-showcase-frame.is-edge-end {
+	border-start-end-radius: 0;
+	border-end-end-radius: 0;
 }
 
 .search-showcase-frame.is-active {
