@@ -65,7 +65,22 @@ const viewClass =
 
 <div class="flex flex-wrap items-center justify-between gap-3 px-5 pb-8">
 	<nav aria-label={t("catalog.category.label")} class="min-w-0 flex-1">
-		<ul data-category-list class="flex items-center gap-2 overflow-hidden">
+		<!--
+			Ряд категорий прокручивается по горизонтали: их число растет с
+			реестром `taxonomy.ts`, и на любой конечной ширине хвост рано или
+			поздно перестает влезать. Раньше здесь стоял `overflow-hidden`, и
+			лишние пилюли на широком экране просто обрезались краем - без
+			скролла и без кнопки, то есть становились недоступны совсем.
+
+			Тень у края - `mask-image`, а не градиентный оверлей поверх: оверлею
+			нужен непрозрачный фон под цвет страницы, и он разъезжается с темой.
+			Ширина растушевки живет в `--fade-start` / `--fade-end`, а скрипт
+			ниже только переключает `data-fade-*` по краям прокрутки - так
+			растушевка появляется ровно с той стороны, куда еще есть куда ехать.
+		-->
+		<ul
+			data-category-list
+			class="flex items-center gap-2 overflow-x-auto overflow-y-hidden scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent_0,black_var(--fade-start,0px),black_calc(100%-var(--fade-end,0px)),transparent_100%)] data-[fade-end=true]:[--fade-end:3rem] data-[fade-start=true]:[--fade-start:3rem] [&::-webkit-scrollbar]:hidden">
 			{entries.map((entry) => (
 					<li data-category-item>
 						<a href={entry.href} class={tabClass} aria-current={entry.active ? "page" : undefined}>
@@ -240,6 +255,37 @@ function setupCategoryOverflow(list: HTMLElement) {
 	window.addEventListener("resize", recalc);
 }
 
+/**
+ * Растушевка у краев ряда категорий. Считается от фактической прокрутки, а
+ * не от «влезло / не влезло»: у края списка тень не нужна - там уже нечего
+ * показывать, и постоянная тень читалась бы как обрезанная пилюля.
+ *
+ * Порог в пиксель, а не строгое сравнение с нулем: дробный `scrollLeft`
+ * получается и от масштаба страницы, и от прокрутки тачпадом.
+ */
+function setupCategoryScroll(list: HTMLElement) {
+	const EDGE_PX = 1;
+
+	const update = () => {
+		const max = list.scrollWidth - list.clientWidth;
+		list.dataset.fadeStart = String(list.scrollLeft > EDGE_PX);
+		list.dataset.fadeEnd = String(list.scrollLeft < max - EDGE_PX);
+	};
+
+	update();
+	list.addEventListener("scroll", update, { passive: true });
+	window.addEventListener("resize", update);
+
+	/*
+	 * Активная категория может стоять за краем: на странице раздела ряд
+	 * открывается прокрученным к ней, иначе непонятно, где ты находишься.
+	 * `block: "nearest"` - чтобы не тянуть вертикально всю страницу.
+	 */
+	list
+		.querySelector<HTMLElement>('[aria-current="page"]')
+		?.scrollIntoView({ inline: "center", block: "nearest" });
+}
+
 /** `aria-controls` указывает на id диалога - та же связка, что у мобильного меню в `Header.astro`. */
 function setupCategoriesDialog(openButton: HTMLButtonElement) {
 	const dialog = document.getElementById(
@@ -274,6 +320,7 @@ for (const list of document.querySelectorAll<HTMLElement>(
 	"[data-category-list]",
 )) {
 	setupCategoryOverflow(list);
+	setupCategoryScroll(list);
 }
 for (const openButton of document.querySelectorAll<HTMLButtonElement>(
 	"[data-categories-open]",
