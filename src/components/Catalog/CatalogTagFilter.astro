@@ -38,6 +38,13 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 	>
 		<span class="flex items-center gap-2">
 			{t("catalog.filter.label")}
+			<!--
+				Число тегов, а не карточек: справа в строке уже стоит счетчик
+				результатов, и одно и то же число по обе стороны заголовка
+				читалось как ошибка. Здесь оно постоянное - это размер словаря,
+				по которому фильтруют.
+			-->
+			<span class="font-normal text-muted-foreground text-sm">{tags.length}</span>
 			<span
 				data-tag-filter-count
 				hidden

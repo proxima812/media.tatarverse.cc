@@ -29,9 +29,9 @@ const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
 const domain = new URL(url).hostname.replace(/^www\./, "");
 
 /*
- * Раскладка по макету: шапка (лого + пилюля с названием) и кнопка «подробнее»
- * выступают за края корпуса. Вынос сделан отрицательными отступами в потоке,
- * а не absolute, - высота карточки остается равной содержимому.
+ * Раскладка по макету: за край корпуса выступает только шапка (лого + пилюля
+ * с названием). Вынос сделан отрицательным отступом в потоке, а не absolute, -
+ * высота карточки остается равной содержимому.
  *
  * Глубина набирается мягкими тенями и тонким `ring` (не `border` - он не
  * съедает раскладку соседним контентом), а не сплошными границами: подложка
@@ -66,10 +66,10 @@ const glow = meshGradient(name);
 
 	<div class="-mt-8 relative">
 		<div
-			class="flex flex-col gap-4 rounded-3xl bg-background p-2.5 pt-9 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
+			class="flex flex-col gap-1.5 rounded-3xl bg-background p-2.5 pt-9 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
 		>
 			<div
-				class="flex flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-7 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
+				class="flex flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-6 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
 			>
 				<div class="flex flex-wrap items-center gap-1.5">
 					{categories.map((category) => (
@@ -106,26 +106,36 @@ const glow = meshGradient(name);
 							</li>
 						))}
 				</ul>
+			</div>
 
-				<div class="mt-auto border-border border-t pt-3">
-					<a
-						href={url}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="block truncate text-muted-foreground text-xs underline-offset-4 hover:text-foreground hover:underline"
-					>
-						{domain}
-					</a>
-				</div>
+			<!--
+				Подвал - слой корпуса, а не плашки контента: действия карточки
+				(уйти на страницу проекта, уйти на сам проект) стоят рядом и
+				отделены от текста тем же отступом `p-2.5`, что держит плашку.
+
+				Раньше «Подробнее» выступала за нижний край корпуса, а домен
+				лежал внутри контента отдельной строкой - два действия в двух
+				разных слоях, между ними край карточки.
+			-->
+			<div class="flex items-center justify-between gap-3 px-2.5 pt-1 pb-1.5">
+				<Button href={href} preset="solid" size="sm" radius="md">
+					{t("card.more")}
+				</Button>
+
+				<a
+					href={url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs underline-offset-4 transition hover:text-foreground hover:underline"
+				>
+					<span class="truncate">{domain}</span>
+					<Icon
+						name="mdi:open-in-new"
+						class="size-3.5 shrink-0"
+						aria-hidden="true"
+					/>
+				</a>
 			</div>
 		</div>
 	</div>
-
-	<Button
-		href={href}
-		preset="solid"
-		class="-mt-6 relative z-20 mx-auto shadow-md"
-	>
-		{t("card.more")}
-	</Button>
 </article>
