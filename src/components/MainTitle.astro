@@ -22,12 +22,12 @@ const emphasis = dashIndex === -1 ? "" : title.slice(dashIndex + 3);
 			{lead}{emphasis && <em class="italic">{emphasis}</em>}
 		</span>
 	</h1>
-	<p class="text-center font-medium text-2xl text-balance text-primary/40 sm:text-4xl">
+  <p class="mx-auto max-w-2xl text-center text-base text-balance text-muted-foreground sm:text-lg">
+    {t("catalog.subtitle")}
+  </p>
+	<!-- <p class="text-center font-medium text-2xl text-balance text-primary/40 sm:text-4xl">
 		{t("catalog.lead")}
-	</p>
-	<p class="mx-auto max-w-2xl text-center text-base text-balance text-muted-foreground sm:text-lg">
-		{t("catalog.subtitle")}
-	</p>
+	</p> -->
 </div>
 
 <script>
