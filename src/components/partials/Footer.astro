@@ -97,11 +97,24 @@ const ecosystemLinks = [
 ];
 
 /*
+ * «Сотрудничество» - прямая почта редакции: у соцсетей и issue разная
+ * аудитория, а предложение о совместной работе пишут письмом.
+ */
+const collaborationLinks = [
+	{
+		href: "mailto:ilnur.mirikhan@gmail.com",
+		network: "Email",
+		label: t("footer.writeEmail"),
+		icon: "mdi:email-outline",
+	},
+];
+
+/*
  * Связь - под «Разделами», отдельным блоком: это одна строка, не колонка.
  * Это тот же аккаунт, что первым идет в соцсетях, поэтому берем сам элемент,
  * а не копию: иначе один хендл разъезжается в подписи между двумя блоками.
- * Почты здесь нет намеренно: личный адрес на статической странице
- * собирается ботами, а Telegram и issue дают тот же результат.
+ * Почта - не здесь, а в «Сотрудничестве»: сюда приходят с вопросом по
+ * каталогу, а письмо пишут по другому поводу.
  */
 const contactLinks = socialLinks.slice(0, 1);
 
@@ -249,6 +262,24 @@ const headingClass =
 									class={cn("flex items-center gap-2", linkClass)}
 									target="_blank"
 									rel="noopener noreferrer"
+								>
+									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
+									{link.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+
+				<h2 class={cn(headingClass, "mt-8")}>{t("footer.collaboration")}</h2>
+				<ul class="space-y-3">
+					{
+						collaborationLinks.map((link) => (
+							<li>
+								<a
+									href={link.href}
+									class={cn("flex items-center gap-2", linkClass)}
+									aria-label={`${link.network}: ${link.label}`}
 								>
 									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
 									{link.label}
