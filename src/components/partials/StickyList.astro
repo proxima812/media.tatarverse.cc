@@ -41,6 +41,22 @@ const totals = [
  * Фон карточек обязан быть непрозрачным: карточки наезжают друг на друга, и
  * сквозь полупрозрачную просвечивала бы предыдущая.
  */
+/*
+ * Кастомная палитра из UI-кита (`/docs/ui-kit`, `paletteColors`): пара
+ * «пастельная поверхность + темный текст на ней». Карточки наезжают друг на
+ * друга, и раньше ступеньку давало смешение серых токенов - теперь каждая
+ * карточка своего цвета, так край прилипшей читается однозначно.
+ *
+ * Цвета взяты парами и хардкодятся здесь намеренно: это не семантика
+ * проекта, а конкретные оттенки кита, и вне этой стопки они не переиспользуются.
+ */
+const PALETTE = [
+	{ name: "amber", bg: "#FFECD4", fg: "#8A5A07" },
+	{ name: "mint", bg: "#D2FBF0", fg: "#007563" },
+	{ name: "cherry", bg: "#FFE8EE", fg: "#9D335F" },
+	{ name: "grape", bg: "#EEEDFF", fg: "#5F4CB7" },
+] as const;
+
 const ICONS = [
 	"mdi:map-marker-question-outline",
 	"mdi:view-grid-outline",
@@ -119,13 +135,14 @@ const pad = (value: number) => String(value).padStart(2, "0");
 const statements = copy.statements(totals).map((statement, index) => ({
 	...statement,
 	icon: ICONS[index] ?? ICONS[0],
+	color: PALETTE[index % PALETTE.length],
 	/** Позиция в стопке: «02/04». Порядок здесь значим - это шаги рассказа. */
 	position: `${pad(index + 1)}/${pad(total)}`,
 	...(index === ICONS.length - 1 && { cta: { href: addHref, label: copy.cta } }),
 }));
 ---
 
-<section class={cn("mx-auto max-w-2xl py-16", className)}>
+<section class={cn("mx-auto w-full max-w-3xl px-4 py-16 sm:px-8", className)}>
 	<h2 class="text-center font-black text-3xl text-balance tracking-tight sm:text-4xl">
 		{heading ?? copy.heading}
 	</h2>
@@ -144,8 +161,8 @@ const statements = copy.statements(totals).map((statement, index) => ({
 		{
 			statements.map((item, index) => (
 				<li
-					class="depth-card sticky top-[calc(var(--sticky-top))] grid min-h-[21rem] content-center gap-4 rounded-3xl corner-squircle p-10 text-foreground sm:p-12"
-					style={`--depth:${index}`}
+					class="palette-card sticky grid min-h-[21rem] content-center gap-4 rounded-3xl corner-squircle p-10 sm:p-12"
+					style={`--card-bg:${item.color.bg};--card-fg:${item.color.fg};--i:${index};--behind:${total - 1 - index}`}
 				>
 					{
 						/*
@@ -156,8 +173,8 @@ const statements = copy.statements(totals).map((statement, index) => ({
 						 * счетчик справа.
 						 */
 					}
-					<div class="flex items-center gap-3 border-border/65 border-b pb-4">
-						<span class="inline-flex text-muted-foreground">
+					<div class="flex items-center gap-3 border-b border-[color-mix(in_oklab,var(--card-fg),transparent_75%)] pb-4">
+						<span class="inline-flex text-[color-mix(in_oklab,var(--card-fg),transparent_20%)]">
 							<Icon name={item.icon} class="size-5" aria-hidden="true" />
 						</span>
 
@@ -165,19 +182,19 @@ const statements = copy.statements(totals).map((statement, index) => ({
 							{item.title}
 						</h3>
 
-						<span class="ml-auto font-semibold text-muted-foreground text-xs tabular-nums">
+						<span class="ml-auto font-semibold text-[color-mix(in_oklab,var(--card-fg),transparent_35%)] text-xs tabular-nums">
 							{item.position}
 						</span>
 					</div>
 
-					<p class="text-lg text-muted-foreground leading-relaxed tracking-tight text-pretty">
+					<p class="text-[color-mix(in_oklab,var(--card-fg),transparent_12%)] text-lg leading-relaxed tracking-tight text-pretty">
 						{item.text}
 					</p>
 
 					{item.cta && (
 						<a
 							href={item.cta.href}
-							class="w-fit rounded-full bg-foreground px-5 py-2.5 font-semibold text-background text-sm transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+							class="w-fit rounded-full bg-[var(--card-fg)] px-5 py-2.5 font-semibold text-[var(--card-bg)] text-sm transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--card-fg)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--card-bg)]"
 						>
 							{item.cta.label}
 						</a>
@@ -192,37 +209,52 @@ const statements = copy.statements(totals).map((statement, index) => ({
 	section {
 		/* Шапка перекрывает прилипшую карточку, если не отступить на ее высоту. */
 		--sticky-top: 6rem;
+		/* Насколько ниже прилипает каждая следующая карточка - кромка колоды. */
+		--stack-step: 0.85rem;
 	}
 
 	/*
-	 * Каждая следующая карточка на ступеньку темнее предыдущей: они наезжают
-	 * друг на друга, и одинаковый фон склеивал бы стопку в одно пятно - край
-	 * прилипшей карточки был бы виден только по рамке.
-	 *
-	 * Ступенька считается смешением токенов, а не берется из палитры вида
-	 * `depth-200 ... depth-700`: у стартера семантические токены, и смешение
-	 * само перевернется, если фон и текст поменяются местами в темной теме.
-	 * `--depth` - номер карточки, его ставит разметка.
+	 * Пара «поверхность + текст» приходит в `--card-bg` / `--card-fg` из
+	 * разметки (кастомная палитра UI-кита). Все остальное в карточке -
+	 * иконка, счетчик, текст, кнопка - считается смешением `--card-fg` с
+	 * прозрачностью, поэтому смена пары перекрашивает карточку целиком.
 	 *
 	 * Фон обязан быть непрозрачным: сквозь полупрозрачный просвечивала бы
-	 * предыдущая карточка. Рамки у карточки нет: край прилипшей карточки
-	 * читается по самой ступеньке, и лишняя линия только спорила бы с ней.
+	 * предыдущая карточка стопки. Рамки нет - край прилипшей карточки
+	 * читается по смене цвета.
 	 */
-	.depth-card {
-		background-color: color-mix(
-			in oklab,
-			var(--color-background),
-			var(--color-foreground) calc(3% + var(--depth, 0) * 4%)
-		);
+	.palette-card {
+		background-color: var(--card-bg);
+		color: var(--card-fg);
+	}
+
+	/*
+	 * Эффект стопки: у каждой следующей карточки `top` на ступеньку ниже, а
+	 * сама она на столько же меньше - поэтому у прилипших видно верхние
+	 * кромки, и пачка читается колодой, а не одной карточкой.
+	 *
+	 * Ступенька считается из `--i` (номер карточки) и `--behind` (сколько
+	 * карточек за ней): считать в CSS дешевле, чем плодить классы под каждый
+	 * номер, и порядок задан одним местом - разметкой.
+	 *
+	 * Сдвиг делается `top`, а не `transform`: `transform` у прилипшего
+	 * элемента ломает саму привязку - карточка едет вместе со страницей.
+	 */
+	.palette-card {
+		top: calc(var(--sticky-top) + var(--i, 0) * var(--stack-step));
+		scale: calc(1 - var(--behind, 0) * 0.012);
+		transform-origin: 50% 0;
 	}
 
 	/*
 	 * Прилипание - это движение, привязанное к прокрутке, а не автоплей:
-	 * при `reduce` карточки просто идут списком, ничего не наезжает.
+	 * при `reduce` карточки просто идут списком, ничего не наезжает и
+	 * колода не собирается.
 	 */
 	@media (prefers-reduced-motion: reduce) {
-		li {
+		.palette-card {
 			position: static;
+			scale: 1;
 		}
 	}
 </style>

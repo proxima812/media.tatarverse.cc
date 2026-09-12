@@ -35,40 +35,24 @@ const chunks: CollectionEntry<"cards">[][] = [];
 for (let i = 0; i < rest.length; i += chunk) {
 	chunks.push(rest.slice(i, i + chunk));
 }
-
-/**
- * Пороги для `MasonryGrid` - под брейкпоинты Tailwind (`sm` = 640px,
- * `lg` = 1024px): 1 колонка уже, 2 - начиная с `sm`, 3 - начиная с `lg`.
- */
-const MASONRY_BREAKPOINTS = { default: 3, 1023: 2, 639: 1 };
 ---
 
 <div data-catalog-lazy class="group-data-[view=list]/catalog:hidden">
 	<!--
-		До инициализации `MasonryGrid` карточки лежат плоским списком, и с
-		`flex` без переноса они выстраивались в одну строку, уезжающую за
-		правый край экрана. На быстрой машине это мелькало кадр, на
-		медленной сети - секунды.
-
-		Поэтому исходное состояние - обычные CSS-колонки (`columns-*`):
-		браузер раскладывает их сам, еще до всякого JS, и выглядит это почти
-		как итоговая раскладка. Скрипт ставит контейнеру `data-ready`,
-		переключая его на flex-колонки - их строит уже сам `MasonryGrid`
-		(зачем ему свои колонки вместо `columns`, объяснено в `masonry.ts`).
-
-		Прятать карточки до готовности нельзя: без JS каталог остался бы
-		пустой страницей.
+		Раскладка - CSS Grid, а не масонри: колонки строит сам браузер, без
+		JS и без промежуточного состояния верстки. Ряд растягивает все свои
+		карточки до одной высоты (`items-stretch` по умолчанию), поэтому
+		карточки в строке выглядят единым рядом, а не лестницей.
 	-->
 	<div
 		data-catalog-items
-		data-masonry-breakpoints={JSON.stringify(MASONRY_BREAKPOINTS)}
-		class="group/masonry gap-8 px-5 not-data-ready:columns-1 data-ready:flex data-ready:items-start sm:not-data-ready:columns-2 lg:not-data-ready:columns-3"
+		class="grid grid-cols-1 gap-8 px-5 sm:grid-cols-2 lg:grid-cols-3"
 	>
 		{head.map((card) => (
 				<div
 					data-catalog-item
 					data-tags={card.data.tags.join(",")}
-					class="break-inside-avoid not-group-data-ready/masonry:mb-8 [&[hidden]]:hidden"
+					class="flex [&[hidden]]:hidden"
 				>
 					<CatalogCard card={card} />
 				</div>
@@ -78,7 +62,11 @@ const MASONRY_BREAKPOINTS = { default: 3, 1023: 2, 639: 1 };
 	{chunks.map((group) => (
 			<template data-catalog-chunk>
 				{group.map((card) => (
-						<div data-catalog-item data-tags={card.data.tags.join(",")} class="[&[hidden]]:hidden">
+						<div
+							data-catalog-item
+							data-tags={card.data.tags.join(",")}
+							class="flex [&[hidden]]:hidden"
+						>
 							<CatalogCard card={card} />
 						</div>
 					))}
@@ -91,8 +79,6 @@ const MASONRY_BREAKPOINTS = { default: 3, 1023: 2, 639: 1 };
 </div>
 
 <script>
-import { type MasonryBreakpoints, MasonryGrid } from "@/lib/ui/masonry";
-
 /*
  * Порог `rootMargin` намеренно большой: порция должна успеть появиться до
  * того, как пользователь доскроллит до конца, иначе видно пустоту.
@@ -102,27 +88,7 @@ const PRELOAD_MARGIN = "1200px";
 function setupCatalogGrid(root: HTMLElement) {
 	const container = root.querySelector<HTMLElement>("[data-catalog-items]");
 	const sentinel = root.querySelector<HTMLElement>("[data-catalog-sentinel]");
-	if (!container) return;
-
-	/*
-	 * Карточки приходят в DOM плоским списком (порядок из `cards`) - колонки
-	 * появляются только в браузере, их создает `MasonryGrid`. Ссылки на
-	 * исходные узлы снимаются до конструктора: он сразу очищает контейнер
-	 * под свои колонки, а без сохраненных ссылок начальную порцию было бы
-	 * нечем в них раскладывать.
-	 */
-	const initialItems = Array.from(container.children) as HTMLElement[];
-
-	// Разметка из `MASONRY_BREAKPOINTS` приходит тем же HTML в data-атрибуте -
-	// без отдельного запроса и без риска рассинхронизации с версткой.
-	const breakpoints = JSON.parse(
-		container.dataset.masonryBreakpoints ?? "{}",
-	) as MasonryBreakpoints;
-
-	const masonry = new MasonryGrid(container, breakpoints);
-	for (const item of initialItems) masonry.addItem(item);
-
-	if (!sentinel) return;
+	if (!container || !sentinel) return;
 
 	const chunks = [
 		...root.querySelectorAll<HTMLTemplateElement>("[data-catalog-chunk]"),
@@ -135,9 +101,8 @@ function setupCatalogGrid(root: HTMLElement) {
 		if (!template) return false;
 		next += 1;
 
-		const items = Array.from(template.content.children) as HTMLElement[];
+		container.append(template.content);
 		template.remove();
-		for (const item of items) masonry.addItem(item);
 		return true;
 	};
 

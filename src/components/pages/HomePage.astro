@@ -13,7 +13,6 @@ import LogoStack from "@/components/partials/LogoStack.astro";
 import Quote from "@/components/partials/Quote.astro";
 import SearchShowcase from "@/components/partials/SearchShowcase.astro";
 import StatField from "@/components/partials/StatField.astro";
-import StepRail from "@/components/partials/StepRail.astro";
 import StickyList from "@/components/partials/StickyList.astro";
 import { buildAlternates, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
@@ -48,7 +47,6 @@ const markdownURL = locale === "en" ? "/en.md" : "/index.md";
 		items={[...content.features.items]}
 	/>
 	<StatField locale={locale} cards={cards} />
-	<StepRail locale={locale} />
 	<StickyList locale={locale} cards={cards} />
 	<Quote photo={authorPhoto} {...content.quote} />
 	<LogoMarquee locale={locale} cards={cards} />

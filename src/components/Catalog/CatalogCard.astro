@@ -41,7 +41,7 @@ const domain = new URL(url).hostname.replace(/^www\./, "");
 const glow = meshGradient(name);
 ---
 
-<article class="group relative flex flex-col">
+<article class="group relative flex w-full flex-col">
 	<div
 		class="-z-10 absolute inset-4 rounded-3xl opacity-30 blur-2xl"
 		style={glow}
@@ -64,12 +64,12 @@ const glow = meshGradient(name);
 		<SaveButton cardId={card.id} locale={locale} />
 	</div>
 
-	<div class="-mt-8 relative">
+	<div class="-mt-8 relative flex flex-1 flex-col">
 		<div
-			class="flex flex-col gap-1.5 rounded-3xl bg-background p-2.5 pt-9 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
+			class="flex flex-1 flex-col gap-1.5 rounded-3xl bg-background p-2.5 pt-9 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
 		>
 			<div
-				class="flex flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-6 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
+				class="flex flex-1 flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-6 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
 			>
 				<div class="flex flex-wrap items-center gap-1.5">
 					{categories.map((category) => (
