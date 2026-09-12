@@ -68,7 +68,14 @@ export async function artistPaths(locale: PageLocale) {
 				artists[(index + 1) % artists.length],
 				artists[(index + 2) % artists.length],
 				artists[(index + 3) % artists.length],
-			].filter((other) => other !== undefined && other.id !== artist.id),
+			].filter(
+				/*
+				 * Явный type predicate: без него `undefined` остается в типе
+				 * соседей, и `astro check` роняет сборку на странице артиста.
+				 */
+				(other): other is (typeof artists)[number] =>
+					other !== undefined && other.id !== artist.id,
+			),
 		},
 	}));
 }

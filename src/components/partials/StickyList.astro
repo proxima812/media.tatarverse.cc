@@ -135,7 +135,7 @@ const pad = (value: number) => String(value).padStart(2, "0");
 const statements = copy.statements(totals).map((statement, index) => ({
 	...statement,
 	icon: ICONS[index] ?? ICONS[0],
-	color: PALETTE[index % PALETTE.length],
+	color: PALETTE[index % PALETTE.length] ?? PALETTE[0],
 	/** Позиция в стопке: «02/04». Порядок здесь значим - это шаги рассказа. */
 	position: `${pad(index + 1)}/${pad(total)}`,
 	...(index === ICONS.length - 1 && { cta: { href: addHref, label: copy.cta } }),
