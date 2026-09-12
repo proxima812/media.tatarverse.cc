@@ -1,0 +1,133 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Artist } from "@/lib/music/artists";
+import { trackClipboardText } from "@/lib/music/artists";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+	artist: Artist;
+	locale: LocaleCode;
+}
+
+const { artist, locale } = Astro.props;
+const t = useTranslations(locale);
+const { name, tracks } = artist.data;
+
+/*
+ * Что копируется, решает `trackClipboardText` на сборке, а не скрипт в
+ * браузере: строка уже лежит в `data-copy`, и клиенту остается один вызов
+ * буфера обмена. Иначе логику «ссылка или Артист — Трек» пришлось бы
+ * держать в двух местах.
+ */
+---
+
+{tracks.length === 0 ? (
+		<p class="rounded-3xl corner-squircle bg-muted/50 px-6 py-10 text-center text-muted-foreground">
+			{t("music.tracks.empty")}
+		</p>
+	) : (
+		<ol class="flex flex-col gap-1" data-track-list>
+			{tracks.map((track, index) => (
+				<li
+					class="flex items-center gap-4 rounded-2xl px-4 py-3 transition hover:bg-muted/60"
+				>
+					<span
+						class="w-5 shrink-0 text-right font-medium text-muted-foreground text-sm tabular-nums"
+						aria-hidden="true"
+					>
+						{index + 1}
+					</span>
+
+					<div class="min-w-0 flex-1">
+						{track.url ? (
+							<a
+								href={track.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="truncate font-medium text-foreground underline-offset-4 hover:underline"
+							>
+								{track.title}
+							</a>
+						) : (
+							<p class="truncate font-medium text-foreground">{track.title}</p>
+						)}
+						{track.year !== undefined && (
+							<p class="text-muted-foreground text-xs">{track.year}</p>
+						)}
+					</div>
+
+					<!--
+					     Кнопка копирования - не `Button`: у нее два состояния
+					     (иконка копии и галочка после нажатия), и обе иконки
+					     лежат в разметке сразу, чтобы после клика не дорисовывать
+					     DOM.
+					-->
+					<button
+						type="button"
+						data-copy={trackClipboardText(name, track)}
+						class="group/copy inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition hover:bg-muted/70 hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 data-[copied]:bg-primary/10 data-[copied]:text-primary"
+						aria-label={`${t("music.copy")}: ${track.title}`}
+					>
+						<Icon
+							name="mdi:content-copy"
+							class="size-4 group-data-[copied]/copy:hidden"
+							aria-hidden="true"
+						/>
+						<Icon
+							name="mdi:check"
+							class="hidden size-4 group-data-[copied]/copy:block"
+							aria-hidden="true"
+						/>
+					</button>
+				</li>
+			))}
+		</ol>
+	)}
+
+<script>
+/*
+ * Один обработчик на список, а не по слушателю на кнопку: треков у артиста
+ * десятки, и делегирование дешевле. Состояние «скопировано» живет две
+ * секунды и снимается таймером, который перезапускается при повторном
+ * клике по той же кнопке.
+ */
+const RESET_MS = 2000;
+const timers = new WeakMap<HTMLElement, number>();
+
+function markCopied(button: HTMLElement) {
+	button.dataset.copied = "";
+	const previous = timers.get(button);
+	if (previous !== undefined) clearTimeout(previous);
+	timers.set(
+		button,
+		window.setTimeout(() => {
+			delete button.dataset.copied;
+			timers.delete(button);
+		}, RESET_MS),
+	);
+}
+
+for (const list of document.querySelectorAll<HTMLElement>("[data-track-list]")) {
+	list.addEventListener("click", async (event) => {
+		const button = (event.target as HTMLElement).closest<HTMLElement>(
+			"[data-copy]",
+		);
+		if (!button) return;
+
+		const text = button.dataset.copy;
+		if (!text) return;
+
+		try {
+			await navigator.clipboard.writeText(text);
+			markCopied(button);
+		} catch {
+			/*
+			 * Буфер недоступен (нет HTTPS, отказ в разрешении) - показывать
+			 * галочку нельзя, она соврала бы. Молча ничего не делаем:
+			 * ссылка на трек рядом и остается рабочей.
+			 */
+		}
+	});
+}
+</script>

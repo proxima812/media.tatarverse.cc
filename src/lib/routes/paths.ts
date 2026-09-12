@@ -2,6 +2,7 @@ import { getCollection } from "astro:content";
 import { getAllCategories } from "@/lib/catalog/categories";
 import { localizeCards } from "@/lib/catalog/localize";
 import { getRelatedCards } from "@/lib/catalog/related";
+import { localizeArtists, sortByName } from "@/lib/music/artists";
 import type { PageLocale } from "@/lib/routes/pageLocale";
 
 /**
@@ -21,14 +22,54 @@ export async function cardPaths(locale: PageLocale) {
 	}));
 }
 
-/** Страницы категорий: `/catalog/<category>` и `/en/catalog/<category>`. */
+/**
+ * Страницы категорий: `/catalog/<category>` и `/en/catalog/<category>`.
+ *
+ * Кроме `music`: у музыки собственный каталог артистов
+ * (`src/pages/catalog/music/`) по тому же адресу, поэтому общий маршрут
+ * категории его бы дублировал. Из реестра категорию не убираем - она
+ * остается в переключателе и ведет туда же.
+ */
 export async function categoryPaths(locale: PageLocale) {
 	const cards = await localizeCards(await getCollection("cards"), locale);
 	const categories = getAllCategories(cards);
 
-	return categories.map((category) => ({
-		params: { category },
-		props: { category, cards, categories },
+	/*
+	 * Фильтр только на адресах, не на списке в пропсах: переключатель
+	 * категорий должен показывать музыку на любой странице каталога, просто
+	 * ведет эта вкладка на собственный маршрут `catalog/music/index.astro`.
+	 */
+	return categories
+		.filter((category) => category !== "music")
+		.map((category) => ({
+			params: { category },
+			props: { category, cards, categories },
+		}));
+}
+
+/** Страницы артистов: `/catalog/music/<id>` и `/en/catalog/music/<id>`. */
+export async function artistPaths(locale: PageLocale) {
+	const artists = sortByName(
+		localizeArtists(await getCollection("artists"), locale),
+		locale,
+	);
+
+	return artists.map((artist, index) => ({
+		params: { artist: artist.id },
+		props: {
+			artist,
+			/*
+			 * Соседи по алфавиту вместо «похожих»: у артиста нет таксономии,
+			 * по которой можно было бы посчитать близость, а тупиком страница
+			 * кончаться не должна. Список закольцован - у первого и последнего
+			 * соседи тоже есть.
+			 */
+			others: [
+				artists[(index + 1) % artists.length],
+				artists[(index + 2) % artists.length],
+				artists[(index + 3) % artists.length],
+			].filter((other) => other !== undefined && other.id !== artist.id),
+		},
 	}));
 }
 

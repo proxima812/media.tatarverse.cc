@@ -1,0 +1,78 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import MusicCard from "@/components/Music/MusicCard.astro";
+import CatalogToolbar from "@/components/Catalog/CatalogToolbar.astro";
+import { getAllCategories } from "@/lib/catalog/categories";
+import { localizeArtists, sortByName } from "@/lib/music/artists";
+import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
+import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: PageLocale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const artists = sortByName(
+	localizeArtists(await getCollection("artists"), locale),
+	locale,
+);
+
+/*
+ * Переключатель категорий здесь тот же, что во всем каталоге: музыка -
+ * раздел каталога, а не отдельный сайт, и уйти отсюда в «Медиа» или
+ * «Авторов» надо тем же движением. Фильтра по тегам нет - у артиста нет
+ * таксономии карточек.
+ */
+const categories = getAllCategories([]);
+const catalogHref = getRelativeLocaleUrl(locale, "catalog");
+---
+
+<Layout
+	title={t("music.pageTitle")}
+	description={t("meta.music.description")}
+	htmlLang={locale}
+	locale={ogLocale(locale)}
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+	<Breadcrumbs
+		locale={locale}
+		items={[
+			{ label: t("nav.catalog"), href: catalogHref },
+			{ label: t("music.pageTitle") },
+		]}
+		class="px-6"
+	/>
+
+	<div class="flex flex-wrap items-center justify-between gap-3 px-6">
+		<div>
+			<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
+				{t("music.pageTitle")}
+			</h1>
+			<p class="mt-2 max-w-2xl text-muted-foreground">{t("music.lead")}</p>
+		</div>
+		<div class="flex items-center space-x-2 font-medium text-muted-foreground">
+			<Icon name="mdi:music-note-outline" class="size-4.5" aria-hidden="true" />
+			<span>{artists.length}</span>
+		</div>
+	</div>
+
+	<CatalogToolbar
+		locale={locale}
+		categories={categories}
+		activeCategory="music"
+	/>
+
+	<div
+		class="grid grid-cols-2 gap-4 px-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+	>
+		{artists.map((artist) => (
+			<MusicCard artist={artist} locale={locale} />
+		))}
+	</div>
+</Layout>

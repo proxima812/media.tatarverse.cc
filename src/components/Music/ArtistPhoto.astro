@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import type { Artist } from "@/lib/music/artists";
+import { meshGradient } from "@/lib/ui/meshGradient";
+
+interface Props {
+	name: string;
+	photo?: Artist["data"]["photo"];
+	size?: "card" | "page";
+	/** Фото над сгибом (страница артиста) - грузим сразу, оно и есть LCP. */
+	priority?: boolean;
+	class?: string;
+}
+
+const {
+	name,
+	photo,
+	size = "card",
+	priority = false,
+	class: className = "",
+} = Astro.props;
+
+/*
+ * Фото артиста, в отличие от логотипа проекта, - не квадратная иконка:
+ * карточка музыкального каталога держит портретный кадр 3:4, поэтому
+ * `CardLogo` здесь не переиспользуется.
+ *
+ * Нет фото - тот же мэш-градиент, что у карточек без логотипа, а поверх
+ * инициалы: знака народа у артиста нет, а пустое цветное пятно в сетке из
+ * тридцати карточек не опознается.
+ */
+const pixels = size === "page" ? 480 : 640;
+
+/** Инициалы - по первым буквам первых двух слов имени: «Гузель Уразова» → «ГУ». */
+const initials = name
+	.split(/\s+/)
+	.slice(0, 2)
+	.map((word) => word[0] ?? "")
+	.join("")
+	.toUpperCase();
+---
+
+{photo ? (
+		<Image
+			src={photo}
+			alt={name}
+			width={pixels}
+			height={Math.round((pixels * 4) / 3)}
+			densities={[1, 2]}
+			format="webp"
+			loading={priority ? "eager" : "lazy"}
+			decoding="async"
+			fetchpriority={priority ? "high" : "auto"}
+			class={`h-full w-full object-cover ${className}`}
+		/>
+	) : (
+		<div
+			class={`relative flex h-full w-full items-center justify-center ${className}`}
+			style={meshGradient(name)}
+		>
+			<span
+				class="font-bold text-3xl text-white/90 drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]"
+				aria-hidden="true"
+			>
+				{initials}
+			</span>
+		</div>
+	)}

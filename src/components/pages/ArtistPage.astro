@@ -1,0 +1,191 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import ArtistPhoto from "@/components/Music/ArtistPhoto.astro";
+import MusicCard from "@/components/Music/MusicCard.astro";
+import TrackList from "@/components/Music/TrackList.astro";
+import type { Artist } from "@/lib/music/artists";
+import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
+import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
+import Button from "@/components/partials/Button.astro";
+import { buildAlternates, useTranslations } from "@/i18n";
+import Layout from "@/layouts/Layout.astro";
+
+interface Props {
+	locale: PageLocale;
+	artist: Artist;
+	others: Artist[];
+}
+
+const { locale, artist, others } = Astro.props;
+const t = useTranslations(locale);
+const {
+	name,
+	description,
+	photo,
+	links,
+	photoCredit,
+	photoCaption,
+	photoLicense,
+	photoLicenseUrl,
+	photoSource,
+} = artist.data;
+
+const catalogHref = getRelativeLocaleUrl(locale, "catalog");
+const musicHref = getRelativeLocaleUrl(locale, "catalog/music");
+
+const metaDescription = description ?? `${name} — ${t("meta.music.artist")}`;
+---
+
+<Layout
+	title={name}
+	description={metaDescription}
+	htmlLang={locale}
+	locale={ogLocale(locale)}
+	alternates={buildAlternates(Astro.url.pathname)}
+>
+	<div class="flex flex-wrap items-center gap-3 px-1">
+		<Button href={musicHref} preset="soft" size="sm">
+			<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
+			{t("music.back")}
+		</Button>
+
+		<Breadcrumbs
+			locale={locale}
+			items={[
+				{ label: t("nav.catalog"), href: catalogHref },
+				{ label: t("music.pageTitle"), href: musicHref },
+				{ label: name },
+			]}
+			class="ml-auto"
+		/>
+	</div>
+
+	<!--
+	     Слева - кадр и внешние площадки, справа - треки. На узком экране
+	     колонки складываются в столбец, и фото остается первым: оно и есть
+	     заглавие страницы.
+	-->
+	<div class="grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+		<aside class="lg:sticky lg:top-24">
+			<div
+				class="aspect-[3/4] w-full overflow-hidden rounded-4xl corner-squircle bg-muted shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
+			>
+				<ArtistPhoto name={name} photo={photo} size="page" priority />
+			</div>
+
+			<!--
+			     Подпись под фото - не украшение, а условие лицензии: снимки
+			     с Викисклада под CC BY-SA можно ставить, только назвав автора
+			     и лицензию. Нет данных об авторе - подписи нет (свое фото или
+			     фото без требований к атрибуции).
+			-->
+			{photoCaption && (
+				<p class="mt-2 text-muted-foreground text-xs">
+					{photoSource ? (
+						<a
+							href={photoSource}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="underline underline-offset-2 hover:text-foreground"
+						>
+							{photoCaption}
+						</a>
+					) : (
+						photoCaption
+					)}
+				</p>
+			)}
+
+			{photoCredit && (
+				<p class="mt-2 text-muted-foreground text-xs">
+					{t("music.photo.by")} {photoSource ? (
+						<a
+							href={photoSource}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="underline underline-offset-2 hover:text-foreground"
+						>
+							{photoCredit}
+						</a>
+					) : (
+						photoCredit
+					)}
+					{photoLicense && (
+						<>
+							{", "}
+							{photoLicenseUrl ? (
+								<a
+									href={photoLicenseUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="underline underline-offset-2 hover:text-foreground"
+								>
+									{photoLicense}
+								</a>
+							) : (
+								photoLicense
+							)}
+						</>
+					)}
+				</p>
+			)}
+
+			{links.length > 0 && (
+				<div class="mt-4 flex flex-wrap gap-2">
+					{links.map((link) => (
+						<a
+							href={link.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground text-xs transition hover:text-foreground"
+						>
+							{link.label}
+							<Icon name="mdi:open-in-new" class="size-3.5" aria-hidden="true" />
+						</a>
+					))}
+				</div>
+			)}
+		</aside>
+
+		<div class="flex flex-col gap-6">
+			<div>
+				<h1 class="font-bold text-3xl text-balance sm:text-4xl">{name}</h1>
+				{description && (
+					<p class="mt-3 max-w-2xl text-muted-foreground">{description}</p>
+				)}
+			</div>
+
+			<section class="flex flex-col gap-4">
+				<div class="flex flex-wrap items-baseline justify-between gap-3">
+					<h2 class="font-bold text-2xl text-balance">
+						{t("music.popular")}
+					</h2>
+					<p class="text-muted-foreground text-xs">{t("music.copy.hint")}</p>
+				</div>
+
+				<TrackList artist={artist} locale={locale} />
+			</section>
+		</div>
+	</div>
+
+	{others.length > 0 && (
+		<section>
+			<div class="flex flex-wrap items-baseline justify-between gap-3">
+				<h2 class="font-bold text-2xl text-balance">{t("music.others")}</h2>
+				<a
+					href={musicHref}
+					class="text-muted-foreground text-sm underline underline-offset-4 transition hover:text-foreground"
+				>
+					{t("music.all")}
+				</a>
+			</div>
+
+			<div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+				{others.map((other) => (
+					<MusicCard artist={other} locale={locale} />
+				))}
+			</div>
+		</section>
+	)}
+</Layout>

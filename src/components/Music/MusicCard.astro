@@ -1,0 +1,60 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import ArtistPhoto from "@/components/Music/ArtistPhoto.astro";
+import type { Artist } from "@/lib/music/artists";
+import type { LocaleCode } from "@/config/types";
+import { usePlural } from "@/i18n";
+
+interface Props {
+	artist: Artist;
+	locale: LocaleCode;
+}
+
+const { artist, locale } = Astro.props;
+const { name, photo, tracks } = artist.data;
+
+const plural = usePlural(locale);
+const href = getRelativeLocaleUrl(locale, `catalog/music/${artist.id}`);
+
+/*
+ * Карточка музыки - не карточка проекта: здесь нет фактов, тегов и домена,
+ * только кадр и имя. Поэтому вся карточка - одна ссылка, а не корпус с
+ * двумя действиями внутри: кликать больше не во что.
+ *
+ * Имя лежит поверх кадра на градиентной подложке, а не под ним: так в сетке
+ * из тридцати карточек ряды остаются одной высоты независимо от длины имени.
+ */
+---
+
+<a
+	href={href}
+	class="group relative block overflow-hidden rounded-3xl corner-squircle bg-muted shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40 transition hover:ring-border focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+>
+	<div class="aspect-[3/4] w-full overflow-hidden">
+		<ArtistPhoto
+			name={name}
+			photo={photo}
+			class="transition duration-500 group-hover:scale-105"
+		/>
+	</div>
+
+	<div
+		class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/80 via-black/45 to-transparent p-4 pt-12"
+	>
+		<div class="min-w-0">
+			<h2 class="truncate font-medium text-white">{name}</h2>
+			{tracks.length > 0 && (
+				<p class="mt-0.5 text-white/70 text-xs">
+					{tracks.length} {plural("music.tracks", tracks.length)}
+				</p>
+			)}
+		</div>
+
+		<Icon
+			name="mdi:arrow-top-right"
+			class="size-5 shrink-0 text-white/70 transition group-hover:text-white"
+			aria-hidden="true"
+		/>
+	</div>
+</a>

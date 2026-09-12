@@ -48,6 +48,23 @@ export default {
 	"search.index": "Alphabetical index",
 	"search.browse": "The whole catalog, A to Z",
 	"stats.label": "A growing library of",
+	/* Music catalog: /en/catalog/music/ and artist pages. */
+	"music.pageTitle": "Music",
+	"music.lead":
+		"Artists who sing and write in Tatar and the languages of neighbouring peoples.",
+	"music.back": "Back to music",
+	"music.popular": "Popular tracks",
+	"music.others": "Other artists",
+	"music.all": "All artists",
+	"music.copy": "Copy track",
+	"music.copy.hint": "The button next to a track copies it to the clipboard",
+	"music.photo.by": "Photo:",
+	"music.tracks.empty": "Tracks for this artist are not collected yet.",
+	"music.tracks.one": "track",
+	"music.tracks.other": "tracks",
+	"meta.music.description":
+		"A catalog of artists: Tatar music and music of neighbouring peoples, with each performer's popular tracks.",
+	"meta.music.artist": "an artist from the music catalog.",
 	"stats.projects.one": "project",
 	"stats.projects.other": "projects",
 	"stats.categories.one": "category",

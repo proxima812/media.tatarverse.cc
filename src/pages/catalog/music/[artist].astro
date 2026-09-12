@@ -1,0 +1,10 @@
+---
+import ArtistPage from "@/components/pages/ArtistPage.astro";
+import { artistPaths } from "@/lib/routes/paths";
+
+export const getStaticPaths = () => artistPaths("ru");
+
+const { artist, others } = Astro.props;
+---
+
+<ArtistPage locale="ru" artist={artist} others={others} />
