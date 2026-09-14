@@ -1,11 +1,12 @@
 ---
-import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
 import Button from "@/components/partials/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
+import { sortByPubDate } from "@/lib/catalog/sort";
 
 type Card = CollectionEntry<"cards">;
 
@@ -14,60 +15,8 @@ interface Props {
 	cards: Card[];
 }
 
-/** Одна плитка ленты. */
-interface Tile {
-	/** id карточки - имя файла в `src/data/cards/` без расширения. */
-	readonly id: string;
-	/**
-	 * Подпись в ленте. Отдельно от `name` карточки: в каталоге имя полное,
-	 * а в ленте плитка должна быть короткой - длинная подпись растягивает
-	 * строку и ускоряет ее (см. про длительность ниже).
-	 *
-	 * Подпись одна на обе локали и перекрывает перевод из `cards-en/`,
-	 * поэтому сокращать стоит так, чтобы читалось и на `/en/`.
-	 */
-	readonly title: string;
-}
-
-/*
- * Состав ленты задан руками, а не выборкой по данным: лента стоит на главной,
- * и в ней должны быть узнаваемые проекты всех трех народов, а не то, что
- * последним попало в каталог.
- *
- * Суммарная длина подписей по строкам должна быть примерно равна, и это не
- * косметика: `--marquee-duration` у строки фиксирована, а дорожка за цикл
- * проезжает половину своей ширины - значит строка с более длинными подписями
- * едет заметно быстрее соседних.
- */
-const PROJECTS: readonly (readonly Tile[])[] = [
-	// Строка 1
-	[
-		{ id: "intertat-media", title: "Интертат" },
-		{ id: "tamyr-channel-channel", title: "Тамыр" },
-		{ id: "atr-channel-channel", title: "ATR" },
-		{ id: "azatliq-radiosy-media", title: "Азатлык" },
-		{ id: "qha-media", title: "QHA" },
-		{ id: "media-tatarverse-media", title: "media.tatarverse.cc" },
-	],
-	// Строка 2
-	[
-		{ id: "tatarcha-youtube-channel", title: "tatarcha" },
-		{ id: "tatartelem-school-lessons", title: "TatarTelem" },
-		{ id: "idel-realii-media", title: "Idel.Реалии" },
-		{ id: "millattashlar-media", title: "Милләттәшләр" },
-		{ id: "qaradeniz-production-channel", title: "Qaradeniz" },
-		// { id: "bashlang-language", title: "Интерактивный башкирский" },
-	],
-	// Строка 3
-	[
-		{ id: "bulbul-lessons", title: "BÜLBÜL" },
-		{ id: "qirim-news-media", title: "QIRIM.Media" },
-		{ id: "kazan-utlary-media", title: "Казан утлары" },
-		{ id: "tatar-radiosy-media", title: "Татар радиосы" },
-		{ id: "bashkir-video-channel", title: "Bashkir Video" },
-		{ id: "tatarverse-community", title: "tatarverse.cc" },
-	],
-];
+/** Сколько плиток в одной строке ленты. */
+const PER_ROW = 7;
 
 /*
  * Три строки, направления чередуются: влево → вправо → влево. Разные
@@ -83,41 +32,17 @@ const ROWS = [
 const { locale, cards } = Astro.props;
 const t = useTranslations(locale);
 
-const cardsById = new Map(cards.map((card) => [card.id, card]));
-
 /*
- * Опечатка в id или карточка без логотипа роняют сборку. Тихо пропущенная
- * плитка - это дырка в ленте, которую заметишь только глазами на проде, а
- * логотип обязателен: без него на его месте была бы монограмма, в ленте это шум.
+ * Лента показывает последние добавленные проекты - те же, что открывают
+ * каталог. Карточка без логотипа не пропускается: `CardLogo` рисует
+ * детерминированный градиент со знаком народа, и дырки в ленте не будет.
  */
-const rows = ROWS.map((row, rowIndex) => {
-	const tiles = PROJECTS[rowIndex];
-	if (!tiles) {
-		throw new Error(
-			`LogoMarquee: в PROJECTS нет строки ${rowIndex + 1} - строк должно быть ${ROWS.length}`,
-		);
-	}
+const latest = sortByPubDate(cards).slice(0, ROWS.length * PER_ROW);
 
-	return {
-		...row,
-		items: tiles.map((tile) => {
-			const card = cardsById.get(tile.id);
-			if (!card) {
-				throw new Error(
-					`LogoMarquee: карточки «${tile.id}» нет в src/data/cards/`,
-				);
-			}
-			if (!card.data.logo) {
-				throw new Error(`LogoMarquee: у карточки «${tile.id}» нет логотипа`);
-			}
-
-			return { id: tile.id, title: tile.title, logo: card.data.logo };
-		}),
-	};
-});
-
-/** Максимальный css-размер плитки - от него считается исходник растра. */
-const LOGO_PX = 120;
+const rows = ROWS.map((row, rowIndex) => ({
+	...row,
+	items: latest.slice(rowIndex * PER_ROW, (rowIndex + 1) * PER_ROW),
+}));
 ---
 
 <section class="mx-auto max-w-2xl text-center">
@@ -133,7 +58,7 @@ const LOGO_PX = 120;
 		<Button
 			href={getRelativeLocaleUrl(locale, "catalog")}
 			preset="solid"
-			radius="lg"
+			radius="sm"
 			size="md"
 		>
 			<Icon name="mdi:view-grid-outline" class="size-4" aria-hidden="true" />
@@ -142,7 +67,7 @@ const LOGO_PX = 120;
 		<Button
 			href={getRelativeLocaleUrl(locale, "add")}
 			preset="outline"
-			radius="lg"
+			radius="sm"
 			size="md"
 		>
 			<Icon name="mdi:plus" class="size-4" aria-hidden="true" />
@@ -176,25 +101,22 @@ const LOGO_PX = 120;
 						 */}
 						{[false, true].map((isClone) => (
 							<div class="marquee__group" aria-hidden={isClone ? "true" : undefined}>
-								{row.items.map((tile) => (
+								{row.items.map((card) => (
 									<a
-										href={getRelativeLocaleUrl(locale, `projects/${tile.id}`)}
-										class="flex shrink-0 items-center gap-3 rounded-2xl px-2 py-1 transition hover:bg-muted/60"
+										href={getRelativeLocaleUrl(locale, `projects/${card.id}`)}
+										class="flex shrink-0 items-center gap-3 rounded-md corner-squircle px-2 py-1 transition hover:bg-muted/60"
 										tabindex={isClone ? -1 : undefined}
 									>
-										<Image
-											src={tile.logo}
-											alt={tile.title}
-											width={LOGO_PX}
-											height={LOGO_PX}
-											densities={[1, 2]}
-											format="webp"
-											loading="lazy"
-											decoding="async"
-											class="corner-squircle shrink-0 rounded-full border border-border bg-background object-cover size-20"
-										/>
-										<span class="whitespace-nowrap font-semibold text-foreground text-2xl tracking-tight">
-											{tile.title}
+										<div class="shrink-0 overflow-hidden rounded-full corner-squircle border border-border bg-background">
+											<CardLogo
+												name={card.data.name}
+												logo={card.data.logo}
+												peoples={card.data.peoples}
+												size="md"
+											/>
+										</div>
+										<span class="whitespace-nowrap font-semibold text-foreground text-xl tracking-tight">
+											{card.data.name}
 										</span>
 									</a>
 								))}

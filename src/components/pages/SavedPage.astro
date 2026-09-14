@@ -71,9 +71,16 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 		</Button>
 	</div>
 
-	<div class="columns-1 gap-8 sm:columns-2 lg:columns-3">
+	<!--
+		Та же сетка, что в каталоге (`CatalogGrid`): колонки гридом, карточки
+		тянутся на всю высоту строки. `[&[hidden]]:hidden` обязателен -
+		карточки прячутся атрибутом `hidden`, а `flex` в классе перебил бы
+		его `display: none` из UA-стилей, и несохраненные проекты остались бы
+		на экране.
+	-->
+	<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 		{cards.map((card) => (
-				<div data-saved-item={card.id} hidden class="mb-8 break-inside-avoid">
+				<div data-saved-item={card.id} hidden class="flex [&[hidden]]:hidden">
 					<CatalogCard card={card} />
 				</div>
 			))}

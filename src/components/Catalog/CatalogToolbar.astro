@@ -59,20 +59,20 @@ const entries = [
  * читались как другой элемент управления.
  */
 const tabClass =
-	"inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-xl px-4 py-2 font-medium text-muted-foreground text-sm transition hover:text-foreground aria-[current=page]:bg-background aria-[current=page]:text-foreground aria-[current=page]:shadow-sm";
+	"inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-4 py-2 font-medium text-muted-foreground text-sm transition hover:text-foreground aria-[current=page]:bg-background aria-[current=page]:text-foreground";
 
 /** Пункт того же списка тегов, но в диалоге - строкой на всю ширину. */
 const dialogLinkClass =
-	"flex items-center gap-2 rounded-xl px-3 py-2 font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground";
+	"flex items-center gap-2 rounded-sm px-3 py-2 font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground";
 
 const viewClass =
-	"group relative rounded-xl p-2 text-muted-foreground transition hover:text-foreground aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-sm";
+	"group relative rounded-sm p-2 text-muted-foreground transition hover:text-foreground aria-pressed:bg-background aria-pressed:text-foreground";
 ---
 
 <div class="flex flex-wrap items-center justify-between gap-3 pb-8">
 	<nav
 		aria-label={t("catalog.category.label")}
-		class="min-w-0 flex-1 rounded-2xl bg-muted p-1.5"
+		class="min-w-0 flex-1 rounded-md corner-squircle bg-muted p-1.5"
 	>
 		<!--
 			Ряд категорий прокручивается по горизонтали: их число растет с
@@ -109,7 +109,7 @@ const viewClass =
 			<li class="sm:hidden">
 				<Button
 					preset="outline"
-					radius="lg"
+					radius="sm"
 					data-categories-open
 					aria-haspopup="dialog"
 					aria-controls="catalog-categories-dialog"
@@ -134,7 +134,7 @@ const viewClass =
 		</ul>
 	</nav>
 
-	<fieldset class="flex items-center gap-1 rounded-2xl bg-muted p-1.5">
+	<fieldset class="flex items-center gap-1 rounded-md corner-squircle bg-muted p-1.5">
 		<legend class="sr-only">{t("catalog.view.label")}</legend>
 
 		<button
@@ -188,7 +188,7 @@ const viewClass =
 <dialog
 	id="catalog-categories-dialog"
 	data-categories-dialog
-	class="m-auto max-h-[70vh] w-[calc(100%-2rem)] max-w-sm overflow-y-auto rounded-3xl border border-border bg-background p-4 shadow-black/10 shadow-lg backdrop:bg-background/70 backdrop:backdrop-blur-sm"
+	class="m-auto max-h-[70vh] w-[calc(100%-2rem)] max-w-sm overflow-y-auto rounded-lg corner-squircle border border-border bg-background p-4 shadow-black/10 shadow-lg backdrop:bg-background/70 backdrop:backdrop-blur-sm"
 >
 	<div class="flex items-center justify-between gap-4 pb-3">
 		<p class="font-semibold text-foreground">{t("catalog.category.label")}</p>

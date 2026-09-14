@@ -161,7 +161,7 @@ const statements = copy.statements(totals).map((statement, index) => ({
 		{
 			statements.map((item, index) => (
 				<li
-					class="palette-card sticky grid min-h-[21rem] content-center gap-4 rounded-3xl corner-squircle p-10 sm:p-12"
+					class="palette-card sticky grid min-h-[21rem] content-center gap-4 rounded-lg corner-squircle p-10 sm:p-12"
 					style={`--card-bg:${item.color.bg};--card-fg:${item.color.fg};--i:${index};--behind:${total - 1 - index}`}
 				>
 					{

@@ -1,5 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
 import { cn } from "cn";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -22,27 +21,56 @@ const t = useTranslations(locale);
  * страницу по индексу и покажи выдачу», - и его выпадающий список
  * подменял бы собой сам список каталога вместо того, чтобы его сужать.
  *
- * Размеры пилюли (727×68, радиус 20, иконка 20px на отступе 40px)
- * повторяют оригинал, по которому ее просили сделать.
+ * Размеры пилюли (727×68, радиус 20) повторяют оригинал, по которому ее
+ * просили сделать. Знак поиска - не иконка из набора, а собственный
+ * штриховой глиф: он должен совпадать по весу с крестиком очистки, а
+ * `mdi:magnify` заливной и рядом с ним читался как чужой набор.
  */
 ---
 
 <search class={cn("w-full", className)}>
-	<div class="relative mx-auto w-full max-w-[727px]">
+	<div class="group relative mx-auto w-full max-w-[727px]">
 		<label class="sr-only" for="catalog-search">
 			{t("catalog.search.placeholder")}
 		</label>
 
-		<!-- `z-10` обязателен: у поля стоит `backdrop-blur-sm`, а backdrop-filter
-		     заводит собственный контекст наложения и красит поле как `z-index: 0`.
-		     Иконка лежит в разметке раньше поля, поэтому без явного z-index она
-		     оказывалась под его фоном - лупы на странице просто не было видно. -->
-		<Icon
-			name="mdi:magnify"
-			class="pointer-events-none absolute top-1/2 left-6 z-10 size-5 -translate-y-1/2 text-background/65 sm:left-10"
+		<!-- `z-10` обязателен: у поля стоит `backdrop-filter`, а он заводит
+		     собственный контекст наложения и красит поле как `z-index: 0`.
+		     Плашка со знаком и линейка лежат в разметке раньше поля, поэтому
+		     без явного z-index они оказывались под его фоном. -->
+		<span
+			class="pointer-events-none absolute top-1/2 left-2.5 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-sm bg-background/13 text-background transition group-focus-within:bg-background group-focus-within:text-foreground sm:left-3.5 sm:size-11 sm:rounded-md"
 			aria-hidden="true"
-		/>
+		>
+			<!-- Лупа штриховая, вес 2 - тот же, что у крестика очистки справа:
+			     заливной глиф рядом со штриховым читался как два разных набора. -->
+			<svg
+				class="size-4.5 sm:size-5"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+			>
+				<circle cx="10.5" cy="10.5" r="6.5"></circle>
+				<path d="M15.6 15.6 21 21"></path>
+			</svg>
+		</span>
 
+		<!-- Волосяная линейка отделяет зону знака от зоны текста. -->
+		<span
+			class="pointer-events-none absolute top-1/2 left-13.5 z-10 h-6 w-px -translate-y-1/2 bg-background/16 sm:left-17 sm:h-7"
+			aria-hidden="true"
+		></span>
+
+		<!--
+			Заливка 70%, а не 88%: при 88% сквозь поле проходит 12% фона и
+			размывать backdrop-filter было нечего - эффект был объявлен, но не
+			виден. Вместе с заливкой поднят и радиус размытия.
+
+			Внутренний блик сверху дает стеклу край: без него полупрозрачная
+			плита выглядит как просто темный прямоугольник.
+		-->
 		<input
 			id="catalog-search"
 			data-glossary-search
@@ -50,7 +78,7 @@ const t = useTranslations(locale);
 			autocomplete="off"
 			spellcheck="false"
 			placeholder={t("catalog.search.placeholder")}
-			class="h-14 w-full rounded-[20px] bg-foreground/88 pr-12 pl-14 text-background text-base leading-normal outline-none backdrop-blur-sm transition placeholder:text-background/65 focus:outline-none focus-visible:outline-none sm:h-17 sm:pr-14 sm:pl-17 sm:text-xl [&::-webkit-search-cancel-button]:appearance-none"
+			class="h-14 w-full rounded-lg corner-squircle bg-foreground/70 pr-12 pl-17 text-background text-base leading-normal shadow-[inset_0_1px_0_color-mix(in_oklab,var(--color-background)_16%,transparent)] outline-none backdrop-blur-[24px] backdrop-saturate-150 transition placeholder:text-background/58 focus:outline-none focus-visible:outline-none sm:h-17 sm:pr-14 sm:pl-21 sm:text-xl [&::-webkit-search-cancel-button]:appearance-none"
 		>
 
 		<!-- Кнопка очистки поверх поля: нативный крестик `type="search"`

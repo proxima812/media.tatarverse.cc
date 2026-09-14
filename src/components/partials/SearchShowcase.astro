@@ -215,7 +215,7 @@ const columnDelay = 70;
 	data-duration={String(duration)}
 >
 	<div
-		class="search-showcase-panel relative w-full overflow-hidden rounded-[1.25rem]"
+		class="search-showcase-panel relative w-full overflow-hidden rounded-lg corner-squircle"
 		style={`background-color:${slides[0]?.background ?? "transparent"};`}
 		data-panel
 	>
@@ -287,8 +287,9 @@ const columnDelay = 70;
 .search-showcase-frame {
 	position: absolute;
 	margin: 0;
-	/* 24px - тот же радиус, что у карточек каталога (`rounded-3xl`). */
-	border-radius: 1.5rem;
+	/* Тот же шаг шкалы, что у корпусов карточек каталога (`rounded-lg`). */
+	border-radius: var(--radius-lg);
+	corner-shape: squircle;
 	overflow: hidden;
 	transform: translate3d(0, var(--frame-enter), 0);
 	will-change: transform;
@@ -376,7 +377,7 @@ const columnDelay = 70;
 	width: min(32%, 26rem);
 	overflow: hidden;
 	padding: 0.9em 1.15em;
-	border-radius: 999px;
+	border-radius: 9999px;
 	background-color: rgb(0 0 0 / 0.24);
 	font-size: clamp(0.78rem, 1.15vw, 1.02rem);
 	line-height: 1;
@@ -458,9 +459,9 @@ const columnDelay = 70;
 		aspect-ratio: 4 / 3;
 	}
 
-	/* Кадры здесь вдвое мельче, и 24px на них смотрятся как овал. */
+	/* Кадры здесь вдвое мельче, и 24px на них смотрятся как овал - шаг ниже. */
 	.search-showcase-frame {
-		border-radius: 1rem;
+		border-radius: var(--radius-md);
 	}
 
 	.search-showcase-pill {

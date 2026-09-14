@@ -27,7 +27,7 @@ const { label, placement = "bottom", class: className } = Astro.props;
 <span
 	aria-hidden="true"
 	class={cn(
-		"pointer-events-none absolute left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg bg-foreground px-2 py-1 font-medium text-background text-xs opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100",
+		"pointer-events-none absolute left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-xs bg-foreground px-2 py-1 font-medium text-background text-xs opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100",
 		placement === "bottom" ? "top-full mt-2" : "bottom-full mb-2",
 		className,
 	)}

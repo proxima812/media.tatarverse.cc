@@ -44,7 +44,7 @@ const glow = meshGradient(name);
 
 <article class="group relative flex w-full flex-col">
 	<div
-		class="-z-10 absolute inset-4 rounded-3xl opacity-30 blur-2xl"
+		class="-z-10 absolute inset-4 rounded-lg corner-squircle opacity-30 blur-2xl"
 		style={glow}
 		aria-hidden="true"
 	></div>
@@ -57,7 +57,7 @@ const glow = meshGradient(name);
 		</div>
 
 		<h2
-			class="flex min-w-0 text-sm flex-1 items-center rounded-2xl bg-background px-4 py-2 font-medium text-foreground ring-1 ring-border"
+			class="flex min-w-0 text-sm flex-1 items-center rounded-md corner-squircle bg-background px-4 py-2 font-medium text-foreground ring-1 ring-border"
 		>
 			<span class="truncate">{name}</span>
 		</h2>
@@ -67,32 +67,27 @@ const glow = meshGradient(name);
 
 	<div class="-mt-8 relative flex flex-1 flex-col">
 		<div
-			class="flex flex-1 flex-col gap-1.5 rounded-3xl bg-background p-2.5 pt-9 ring-1 ring-border/70"
+			class="flex flex-1 flex-col gap-1.5 rounded-lg corner-squircle bg-background p-2.5 pt-9 ring-1 ring-border/70"
 		>
 			<div
-				class="flex flex-1 flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-6 ring-1 ring-border/40"
+				class="flex flex-1 flex-col gap-4 rounded-md corner-squircle bg-background px-5 pt-9 pb-6 ring-1 ring-border/40"
 			>
 				<div class="flex flex-wrap items-center gap-1.5">
 					{categories.map((category) => (
-							<span class="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
+							<span class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
 								<Icon name={categoryIcon(category)} class="size-3.5" aria-hidden="true" />
 								{categoryLabel(locale, category)}
 							</span>
 						))}
 
 					{tags.map((tag) => (
-							<span class="rounded-lg bg-muted px-2 py-0.5 text-muted-foreground text-xs">
+							<span class="rounded-full bg-muted px-2 py-0.5 text-muted-foreground text-xs">
 								#{tagLabel(locale, tag)}
 							</span>
 						))}
 
 					{peoples.map((people) => (
-							<PeopleBadge
-								locale={locale}
-								people={people}
-								size="sm"
-								class="rounded-lg"
-							/>
+							<PeopleBadge locale={locale} people={people} size="sm" />
 						))}
 				</div>
 
@@ -119,7 +114,7 @@ const glow = meshGradient(name);
 				разных слоях, между ними край карточки.
 			-->
 			<div class="flex items-center justify-between gap-3 px-2.5 pt-1 pb-1.5">
-				<Button href={href} preset="solid" size="sm" radius="lg">
+				<Button href={href} preset="solid" size="sm" radius="sm">
 					{t("card.more")}
 				</Button>
 

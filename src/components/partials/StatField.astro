@@ -1,10 +1,11 @@
 ---
-import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { cn } from "cn";
-import { type CardWithLogo, driftVars } from "@/lib/ui/drift";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import { driftVars } from "@/lib/ui/drift";
 import type { LocaleCode } from "@/config/types";
 import { usePlural, useTranslations } from "@/i18n";
+import { sortByPubDate } from "@/lib/catalog/sort";
 
 interface Props {
 	locale: LocaleCode;
@@ -70,7 +71,6 @@ const stats = [
  *   сцене такому нет места, и он прячется.
  */
 interface Tile {
-	id: string;
 	x: number;
 	y: number;
 	size: number;
@@ -87,45 +87,36 @@ interface Tile {
  * логотипа по самым краям.
  */
 const TILES: Tile[] = [
-	{ id: "idel-realii-media", x: 4, y: -11.2, size: 3.5 },
-	{ id: "tatarverse-community", x: 18, y: -14.1, size: 4.5 },
-	{ id: "neurotatarlar-language", x: 32, y: -9.4, size: 3.25 },
-	{ id: "kazan-utlary-media", x: 49, y: -13.4, size: 4.75 },
-	{ id: "tamyr-channel-channel", x: 64, y: -10.1, size: 3.75 },
-	{ id: "qirim-junior-language", x: 80, y: -14.6, size: 4.25 },
-	{ id: "emel-zhurnal-media", x: 96, y: -9.8, size: 3.5 },
+	{ x: 4, y: -11.2, size: 3.5 },
+	{ x: 18, y: -14.1, size: 4.5 },
+	{ x: 32, y: -9.4, size: 3.25 },
+	{ x: 49, y: -13.4, size: 4.75 },
+	{ x: 64, y: -10.1, size: 3.75 },
+	{ x: 80, y: -14.6, size: 4.25 },
+	{ x: 96, y: -9.8, size: 3.5 },
 
-	{ id: "ana-yurt-language", x: 1, y: -1.4, size: 4.5, mid: true },
-	{ id: "qha-media", x: 99, y: 2.2, size: 4.25, mid: true },
+	{ x: 1, y: -1.4, size: 4.5, mid: true },
+	{ x: 99, y: 2.2, size: 4.25, mid: true },
 
-	{ id: "bashkir-teacher-app-language", x: 8, y: 13.4, size: 4 },
-	{ id: "tatar-radiosy-media", x: 26, y: 10.2, size: 3.5 },
-	{ id: "media-tatarverse-media", x: 44, y: 14.8, size: 4.5 },
-	{ id: "idel-zhurnal-media", x: 62, y: 10.6, size: 3.25 },
-	{ id: "qaradeniz-production-channel", x: 84, y: 13.9, size: 4.25 },
+	{ x: 8, y: 13.4, size: 4 },
+	{ x: 26, y: 10.2, size: 3.5 },
+	{ x: 44, y: 14.8, size: 4.5 },
+	{ x: 62, y: 10.6, size: 3.25 },
+	{ x: 84, y: 13.9, size: 4.25 },
 ];
 
 /*
- * Неизвестный id роняет сборку, а не тихо пропускает слот: карточку могли
- * переименовать или удалить, и дырка в витрине заметна куда позже, чем ошибка
- * сборки.
+ * Витрина показывает последние добавленные проекты: раскладка слотов ручная, а
+ * кто в них стоит - решают данные, и подновлять список руками больше не нужно.
+ * Карточка без логотипа слот не теряет - `CardLogo` рисует градиент со знаком
+ * народа. Слотов больше, чем карточек, быть не должно, но если каталог совсем
+ * мал, лишние слоты просто остаются пустыми.
  */
-const byId = new Map(cards.map((card) => [card.id, card]));
+const latest = sortByPubDate(cards).slice(0, TILES.length);
 
-const placed = TILES.map((tile) => {
-	const card = byId.get(tile.id);
-	if (!card) {
-		throw new Error(
-			`StatField: карточки "${tile.id}" нет в коллекции cards - проверьте TILES в этом файле`,
-		);
-	}
-	if (!card.data.logo) {
-		throw new Error(
-			`StatField: у карточки "${tile.id}" нет логотипа - выберите другую в TILES`,
-		);
-	}
-
-	return { tile, card: card as CardWithLogo };
+const placed = TILES.flatMap((tile, index) => {
+	const card = latest[index];
+	return card ? [{ tile, card }] : [];
 });
 
 /** Стопка выше трех строк выталкивает поле наружу, иначе ближние логотипы достанут до цифр. */
@@ -133,9 +124,6 @@ const lift = Math.max(stats.length - 3, 0) * 1.1;
 
 /** По шагу на строку плюс последний - чтобы собранную стопку подержали перед тем, как сцена отлипнет. */
 const travel = (stats.length + 1) * step;
-
-/** Максимальный css-размер плитки (`--tile` в rem) - от него считается исходник растра. */
-const BASE_PX = 80;
 
 /**
  * На сколько поле расходится от центра за весь показ. Смысл движения - дать
@@ -175,18 +163,22 @@ const PUSH_Y = 26;
 							 * стабильные между сборками, поэтому статика не «дергается».
 							 */}
 							<div
-								class="stat-tile drift overflow-hidden rounded-[28%] corner-squircle border border-border bg-background"
-								style={`--tile:${tile.size};${driftVars(tile.id)}`}
+								class="stat-tile drift overflow-hidden rounded-md corner-squircle border border-border bg-background"
+								style={`--tile:${tile.size};${driftVars(card.id)}`}
 							>
-								<Image
-									src={card.data.logo}
-									alt=""
-									width={Math.round(BASE_PX * (tile.size / 4.75))}
-									height={Math.round(BASE_PX * (tile.size / 4.75))}
-									densities={[1, 2]}
-									format="webp"
-									class="h-full w-full object-cover"
-								/>
+								{/*
+								 * `CardLogo` дает фиксированные размеры (md/lg/xl), а плитка
+								 * здесь тянется от `--tile`, поэтому размер задает обертка, а
+								 * логотипу велено ее заполнить.
+								 */}
+								<div class="stat-tile-logo h-full w-full">
+									<CardLogo
+										name={card.data.name}
+										logo={card.data.logo}
+										peoples={card.data.peoples}
+										size="lg"
+									/>
+								</div>
 							</div>
 						</div>
 					))}
@@ -319,6 +311,17 @@ const PUSH_Y = 26;
 	width: var(--tile-size);
 	height: var(--tile-size);
 	box-shadow: 0 14px 30px -14px rgb(9 9 11 / 0.45);
+}
+
+/*
+	 * `CardLogo` приходит со своими `w-14 h-14`, а плитка витрины тянется от
+	 * `--tile`. Перебиваем размер у прямого потомка - и логотип, и заглушка с
+	 * градиентом заполняют плитку целиком.
+	 */
+.stat-tile-logo > :global(*) {
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
 }
 
 /*
