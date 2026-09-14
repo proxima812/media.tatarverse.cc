@@ -3,13 +3,16 @@ import { basename, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
 	CATEGORY_VALUES,
+	TAG_DEFINITIONS,
 	TAG_VALUES,
 } from "../src/lib/taxonomy.ts";
 
 const cardsDir = fileURLToPath(new URL("../src/data/cards/", import.meta.url));
 const categories = new Set(CATEGORY_VALUES);
 const allowedTags = new Set(TAG_VALUES);
-const roleTags = new Set(TAG_VALUES.slice(0, 28));
+const roleTags = new Set(
+	TAG_VALUES.filter((value) => TAG_DEFINITIONS[value].group === "roles"),
+);
 
 const rules = [
 	["blogger", /блогер|блогерк|видеоблогер|тиктокер|инстаблогер/i],

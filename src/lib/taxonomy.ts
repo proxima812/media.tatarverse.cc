@@ -1,143 +1,6 @@
 import type { LocaleCode } from "@/config/types";
 
-export const CATEGORY_VALUES = [
-	"channel",
-	"author",
-	"media",
-	"language",
-	"lessons",
-	"graphics",
-	"community",
-	"music",
-] as const;
-
-export type Category = (typeof CATEGORY_VALUES)[number];
-
-export const TAG_GROUP_VALUES = [
-	"roles",
-	"topics",
-	"formats",
-	"language-technologies",
-	"audiences",
-	"features",
-] as const;
-
-export type TagGroup = (typeof TAG_GROUP_VALUES)[number];
-
-export const TAG_VALUES = [
-	"blogger",
-	"journalist",
-	"editor",
-	"writer",
-	"poet",
-	"playwright",
-	"translator",
-	"teacher",
-	"linguist",
-	"researcher",
-	"historian",
-	"local-historian",
-	"musician",
-	"performer",
-	"songwriter",
-	"composer",
-	"producer",
-	"director",
-	"actor",
-	"presenter",
-	"podcaster",
-	"artist",
-	"illustrator",
-	"designer",
-	"photographer",
-	"craftsperson",
-	"developer",
-	"activist",
-	"language",
-	"literature",
-	"poetry",
-	"music",
-	"history",
-	"culture",
-	"traditions",
-	"folklore",
-	"heritage",
-	"identity",
-	"religion",
-	"education",
-	"science",
-	"news",
-	"politics",
-	"society",
-	"travel",
-	"cuisine",
-	"fashion",
-	"art",
-	"design",
-	"architecture",
-	"theatre",
-	"cinema",
-	"humor",
-	"children",
-	"youth",
-	"technology",
-	"artificial-intelligence",
-	"website",
-	"app",
-	"mobile-app",
-	"bot",
-	"blog",
-	"video",
-	"podcast",
-	"radio",
-	"television",
-	"newspaper",
-	"magazine",
-	"newsletter",
-	"book",
-	"audiobook",
-	"library",
-	"archive",
-	"database",
-	"encyclopedia",
-	"map",
-	"course",
-	"school",
-	"event",
-	"festival",
-	"museum",
-	"performance",
-	"shop",
-	"dictionary",
-	"text-corpus",
-	"translator-tool",
-	"transliteration",
-	"keyboard",
-	"font",
-	"ocr",
-	"speech-recognition",
-	"text-to-speech",
-	"language-model",
-	"dataset",
-	"for-children",
-	"for-youth",
-	"for-adults",
-	"for-beginners",
-	"for-advanced-learners",
-	"for-teachers",
-	"for-researchers",
-	"for-diaspora",
-	"open-source",
-	"free",
-	"bilingual",
-	"multilingual",
-	"interactive",
-	"educational",
-	"nonprofit",
-] as const;
-
-export type Tag = (typeof TAG_VALUES)[number];
-export type TaxonomyLocale = "ru" | "en";
+type TaxonomyLocale = "ru" | "en";
 
 interface Definition {
 	readonly labels: Readonly<Record<TaxonomyLocale, string>>;
@@ -153,7 +16,33 @@ interface TagDefinition extends Definition {
 
 const labels = (ru: string, en: string): Definition["labels"] => ({ ru, en });
 
-export const CATEGORY_DEFINITIONS = {
+/*
+ * Реестры ниже - единственный источник правды таксономии: и набор значений,
+ * и подписи, и группы. Массивы `*_VALUES` и типы выводятся из ключей, поэтому
+ * новый тег или категория добавляются ровно в одном месте. Порядок ключей
+ * значим - он задает порядок в фильтрах и при сортировке тегов карточки.
+ */
+
+const TAG_GROUP_LABELS = {
+	roles: labels("Роли", "Roles"),
+	topics: labels("Темы", "Topics"),
+	formats: labels("Форматы", "Formats"),
+	"language-technologies": labels(
+		"Языковые технологии",
+		"Language technologies",
+	),
+	audiences: labels("Аудитория", "Audience"),
+	features: labels("Особенности", "Features"),
+} satisfies Record<string, Definition["labels"]>;
+
+export type TagGroup = keyof typeof TAG_GROUP_LABELS;
+
+export const TAG_GROUP_VALUES = Object.keys(TAG_GROUP_LABELS) as [
+	TagGroup,
+	...TagGroup[],
+];
+
+const CATEGORY_DEFINITIONS = {
 	channel: { labels: labels("Канал", "Channel"), icon: "mdi:broadcast" },
 	author: {
 		labels: labels("Автор", "Author"),
@@ -183,24 +72,19 @@ export const CATEGORY_DEFINITIONS = {
 		labels: labels("Музыка", "Music"),
 		icon: "mdi:music-note-outline",
 	},
-} satisfies Record<Category, CategoryDefinition>;
+} satisfies Record<string, CategoryDefinition>;
+
+export type Category = keyof typeof CATEGORY_DEFINITIONS;
+
+export const CATEGORY_VALUES = Object.keys(CATEGORY_DEFINITIONS) as [
+	Category,
+	...Category[],
+];
 
 const tag = (group: TagGroup, ru: string, en: string): TagDefinition => ({
 	group,
 	labels: labels(ru, en),
 });
-
-export const TAG_GROUP_LABELS = {
-	roles: labels("Роли", "Roles"),
-	topics: labels("Темы", "Topics"),
-	formats: labels("Форматы", "Formats"),
-	"language-technologies": labels(
-		"Языковые технологии",
-		"Language technologies",
-	),
-	audiences: labels("Аудитория", "Audience"),
-	features: labels("Особенности", "Features"),
-} satisfies Record<TagGroup, Definition["labels"]>;
 
 export const TAG_DEFINITIONS = {
 	blogger: tag("roles", "Блогер", "Blogger"),
@@ -340,7 +224,11 @@ export const TAG_DEFINITIONS = {
 	interactive: tag("features", "Интерактивный", "Interactive"),
 	educational: tag("features", "Образовательный", "Educational"),
 	nonprofit: tag("features", "Некоммерческий", "Nonprofit"),
-} satisfies Record<Tag, TagDefinition>;
+} satisfies Record<string, TagDefinition>;
+
+export type Tag = keyof typeof TAG_DEFINITIONS;
+
+export const TAG_VALUES = Object.keys(TAG_DEFINITIONS) as [Tag, ...Tag[]];
 
 /**
  * `LocaleCode` - это произвольная строка (см. `src/config/types.ts`), а у
