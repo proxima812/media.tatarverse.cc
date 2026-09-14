@@ -4,7 +4,7 @@ import authorPhoto from "@/assets/author.jpg";
 import { localizeCards } from "@/lib/catalog/localize";
 import MainTitle from "@/components/MainTitle.astro";
 import { homeContent } from "@/lib/home/content";
-import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
+import type { PageLocale } from "@/lib/routes/pageLocale";
 import FAQ from "@/components/partials/FAQ.astro";
 import Features from "@/components/partials/Features.astro";
 import LogoMarquee from "@/components/partials/LogoMarquee.astro";
@@ -13,7 +13,7 @@ import Quote from "@/components/partials/Quote.astro";
 import SearchShowcase from "@/components/partials/SearchShowcase.astro";
 import StatField from "@/components/partials/StatField.astro";
 import StickyList from "@/components/partials/StickyList.astro";
-import { buildAlternates, useTranslations } from "@/i18n";
+import { useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -33,9 +33,6 @@ const markdownURL = locale === "en" ? "/en.md" : "/index.md";
 <Layout
 	title={t("meta.title")}
 	description={t("meta.description")}
-	htmlLang={locale}
-	locale={ogLocale(locale)}
-	alternates={buildAlternates(Astro.url.pathname)}
 	markdownURL={markdownURL}
 >
 	<LogoStack />

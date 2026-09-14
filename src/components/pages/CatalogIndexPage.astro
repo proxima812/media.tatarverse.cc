@@ -5,8 +5,8 @@ import Catalog from "@/components/Catalog/Catalog.astro";
 import { getAllCategories } from "@/lib/catalog/categories";
 import { localizeCards } from "@/lib/catalog/localize";
 import { sortByPubDate } from "@/lib/catalog/sort";
-import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
-import { buildAlternates, useTranslations } from "@/i18n";
+import type { PageLocale } from "@/lib/routes/pageLocale";
+import { useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -25,9 +25,6 @@ const categories = getAllCategories(cards);
 <Layout
 	title={t("catalog.pageTitle")}
 	description={t("meta.catalog.description")}
-	htmlLang={locale}
-	locale={ogLocale(locale)}
-	alternates={buildAlternates(Astro.url.pathname)}
 >
 	<div class="flex flex-wrap items-center justify-between gap-3">
 		<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">

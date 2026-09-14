@@ -5,10 +5,10 @@ import ArtistPhoto from "@/components/Music/ArtistPhoto.astro";
 import MusicCard from "@/components/Music/MusicCard.astro";
 import TrackList from "@/components/Music/TrackList.astro";
 import type { Artist } from "@/lib/music/artists";
-import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
+import type { PageLocale } from "@/lib/routes/pageLocale";
 import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
 import Button from "@/components/partials/Button.astro";
-import { buildAlternates, useTranslations } from "@/i18n";
+import { useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -40,9 +40,6 @@ const metaDescription = description ?? `${name} — ${t("meta.music.artist")}`;
 <Layout
 	title={name}
 	description={metaDescription}
-	htmlLang={locale}
-	locale={ogLocale(locale)}
-	alternates={buildAlternates(Astro.url.pathname)}
 >
 	<div class="flex flex-wrap items-center gap-3">
 		<Button href={musicHref} preset="soft" size="sm">

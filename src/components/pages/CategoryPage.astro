@@ -7,9 +7,9 @@ import { cardsByCategory } from "@/lib/catalog/categories";
 import { sortByPubDate } from "@/lib/catalog/sort";
 import type { Category } from "@/lib/taxonomy";
 import { categoryIcon, categoryLabel } from "@/lib/taxonomy";
-import { ogLocale, type PageLocale } from "@/lib/routes/pageLocale";
+import type { PageLocale } from "@/lib/routes/pageLocale";
 import Breadcrumbs from "@/components/partials/Breadcrumbs.astro";
-import { buildAlternates, useTranslations } from "@/i18n";
+import { useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -35,9 +35,6 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 <Layout
 	title={heading}
 	description={metaDescription}
-	htmlLang={locale}
-	locale={ogLocale(locale)}
-	alternates={buildAlternates(Astro.url.pathname)}
 >
 	<Breadcrumbs
 		locale={locale}

@@ -11,6 +11,8 @@ import "@/styles/tailwind.css";
 import { config } from "main.config";
 import Footer from "@/components/partials/Footer.astro";
 import Header from "@/components/partials/Header.astro";
+import { buildAlternates, isLocale } from "@/i18n";
+import { ogLocale } from "@/lib/routes/pageLocale";
 
 interface Props {
 	title?: string;
@@ -22,12 +24,18 @@ interface Props {
 	keywords?: SeoKeywords;
 	ogImage?: string;
 	canonicalURL?: string | URL;
+	/** og:locale; по умолчанию выводится из локали маршрута. */
 	locale?: string;
 	name?: string;
 	author?: string;
+	/** `lang` для `<html>`; по умолчанию - локаль маршрута. */
 	htmlLang?: string;
 	markdownURL?: string | URL;
-	alternates?: Array<{ hreflang: string; href: string | URL }>;
+	/**
+	 * hreflang-альтернативы. По умолчанию строятся из пути страницы;
+	 * `false` отключает их совсем (например, для 404).
+	 */
+	alternates?: Array<{ hreflang: string; href: string | URL }> | false;
 	/** Классы для контейнера содержимого. */
 	class?: string;
 	gap?: string;
@@ -61,8 +69,18 @@ const {
  * Локаль шапки и подвала берется из URL, а не из пропса: страницы под `/en/`
  * должны получать `en` сами, иначе каждую пришлось бы помнить передать локаль
  * руками - и один забытый проп дал бы русское меню на английской странице.
+ * По той же причине og:locale и hreflang-альтернативы вычисляются здесь,
+ * а пропы `locale`/`htmlLang`/`alternates` остались только как override.
  */
-const currentLocale = Astro.currentLocale ?? config.i18n.defaultLocale;
+const rawLocale = Astro.currentLocale;
+const currentLocale = isLocale(rawLocale)
+	? rawLocale
+	: config.i18n.defaultLocale;
+
+const resolvedAlternates =
+	alternates === false
+		? undefined
+		: (alternates ?? buildAlternates(Astro.url.pathname));
 
 const seoProps = {
 	title,
@@ -74,11 +92,11 @@ const seoProps = {
 	...(datePublished && { datePublished }),
 	...(dateModified && { dateModified }),
 	...(canonicalURL && { canonicalURL }),
-	...(locale && { locale }),
+	locale: locale ?? ogLocale(currentLocale),
 	...(name && { name }),
 	...(author && { author }),
 	...(markdownURL && { markdownURL }),
-	...(alternates && { alternates }),
+	...(resolvedAlternates && { alternates: resolvedAlternates }),
 };
 
 const containerAttrs = {
