@@ -30,7 +30,6 @@ interface HomeContent {
 		readonly items: readonly HomeItem[];
 	};
 	readonly faq: { readonly title: string; readonly items: readonly FaqItem[] };
-	readonly instFollows: { readonly title: string };
 	readonly quote: {
 		readonly quote: string;
 		readonly name: string;
@@ -104,7 +103,6 @@ const ru: HomeContent = {
 			},
 		],
 	},
-	instFollows: { title: "Спасибо Вам за поддержку." },
 	/*
 	 * Русская цитата читается из `main.config.ts`: он остается единственным
 	 * файлом, который правят под новый проект. Перевод живет здесь, рядом с
@@ -179,7 +177,6 @@ const en: HomeContent = {
 			},
 		],
 	},
-	instFollows: { title: "Thank you for your support." },
 	/*
 	 * Реальные слова автора проекта, а не маркетинговый текст: переведены
 	 * дословно, а не переписаны.
