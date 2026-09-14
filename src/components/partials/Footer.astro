@@ -1,11 +1,10 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { Icon } from "astro-icon/components";
 import BigWordBottom from "@/components/partials/BigWordBottom.astro";
+import FooterLinkGroup from "@/components/partials/FooterLinkGroup.astro";
 import Tooltip from "@/components/partials/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
-import { cn } from "cn";
 
 interface Props {
 	locale: LocaleCode;
@@ -133,9 +132,35 @@ const year = new Date().getFullYear();
 
 const linkClass = "text-primary-foreground/70 transition hover:text-primary-foreground";
 
-/** Заголовок колонки: приглушен и разряжен, чтобы не спорить со ссылками. */
-const headingClass =
-	"mb-4 font-semibold text-primary-foreground/50 text-xs uppercase tracking-wider";
+/*
+ * Три колонки навигации, в каждой - одна-две группы «заголовок + список».
+ * Сама группа отрисовывается в `FooterLinkGroup.astro`, здесь остаются
+ * только данные и порядок.
+ */
+const columns = [
+	{
+		label: t("footer.sections"),
+		groups: [
+			{ heading: t("footer.sections"), links: sectionLinks },
+			{ heading: t("footer.contact"), links: contactLinks },
+		],
+	},
+	{
+		label: t("footer.social"),
+		groups: [
+			{ heading: t("footer.social"), links: socialLinks },
+			{ heading: t("footer.useful"), links: usefulLinks },
+		],
+	},
+	{
+		label: t("footer.material"),
+		groups: [
+			{ heading: t("footer.material"), links: materialLinks },
+			{ heading: t("footer.ecosystem"), links: ecosystemLinks },
+			{ heading: t("footer.collaboration"), links: collaborationLinks },
+		],
+	},
+];
 ---
 
 <footer
@@ -165,130 +190,19 @@ const headingClass =
 				</p>
 			</div>
 
-			<nav aria-label={t("footer.sections")} class="lg:min-w-44">
-				<h2 class={headingClass}>{t("footer.sections")}</h2>
-				<ul class="space-y-3">
-					{
-						sectionLinks.map((link) => (
-							<li>
-								<a href={link.href} class={linkClass}>
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-
-				<h2 class={cn(headingClass, "mt-8")}>{t("footer.contact")}</h2>
-				<ul class="space-y-3">
-					{
-						contactLinks.map((link) => (
-							<li>
-								<a
-									href={link.href}
-									class={cn("flex items-center gap-2", linkClass)}
-									aria-label={`${link.network}: ${link.label}`}
-								>
-									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</nav>
-
-			<nav aria-label={t("footer.social")} class="lg:min-w-44">
-				<h2 class={headingClass}>{t("footer.social")}</h2>
-				<ul class="space-y-3">
-					{
-						socialLinks.map((link) => (
-							<li>
-								<a
-									href={link.href}
-									class={cn("flex items-center gap-2", linkClass)}
-									aria-label={`${link.network}: ${link.label}`}
-									target={link.href.startsWith("mailto:") ? undefined : "_blank"}
-									rel={link.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-								>
-									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-
-				<h2 class={cn(headingClass, "mt-8")}>{t("footer.useful")}</h2>
-				<ul class="space-y-3">
-					{
-						usefulLinks.map((link) => (
-							<li>
-								<a href={link.href} class={linkClass}>
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</nav>
-
-			<nav aria-label={t("footer.material")} class="lg:min-w-44">
-				<h2 class={headingClass}>{t("footer.material")}</h2>
-				<ul class="space-y-3">
-					{
-						materialLinks.map((link) => (
-							<li>
-								<a
-									href={link.href}
-									class={cn("flex items-center gap-2", linkClass)}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-				<h2 class={cn(headingClass, "mt-8")}>{t("footer.ecosystem")}</h2>
-				<ul class="space-y-3">
-					{
-						ecosystemLinks.map((link) => (
-							<li>
-								<a
-									href={link.href}
-									class={cn("flex items-center gap-2", linkClass)}
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-
-				<h2 class={cn(headingClass, "mt-8")}>{t("footer.collaboration")}</h2>
-				<ul class="space-y-3">
-					{
-						collaborationLinks.map((link) => (
-							<li>
-								<a
-									href={link.href}
-									class={cn("flex items-center gap-2", linkClass)}
-									aria-label={`${link.network}: ${link.label}`}
-								>
-									<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
-									{link.label}
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</nav>
+			{
+				columns.map((column) => (
+					<nav aria-label={column.label} class="lg:min-w-44">
+						{column.groups.map((group, index) => (
+							<FooterLinkGroup
+								heading={group.heading}
+								links={group.links}
+								class={index > 0 ? "mt-8" : undefined}
+							/>
+						))}
+					</nav>
+				))
+			}
 		</div>
 
 		<div

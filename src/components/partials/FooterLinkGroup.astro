@@ -1,0 +1,60 @@
+---
+import { Icon } from "astro-icon/components";
+import { cn } from "cn";
+
+/**
+ * Одна группа ссылок подвала: заголовок колонки плюс список. Раньше семь
+ * таких блоков были расписаны в `Footer.astro` вручную и отличались только
+ * данными - иконкой, `aria-label` и `target` для внешних ссылок.
+ */
+export interface FooterLink {
+	href: string;
+	label: string;
+	/** Иконка `astro-icon`; без нее ссылка рисуется простым текстом. */
+	icon?: string;
+	/** Имя площадки для скринридера: подпись - хендл, площадку дает иконка. */
+	network?: string;
+}
+
+interface Props {
+	heading: string;
+	links: FooterLink[];
+	class?: string | undefined;
+}
+
+const { heading, links, class: className } = Astro.props;
+
+const linkClass =
+	"text-primary-foreground/70 transition hover:text-primary-foreground";
+
+/** Заголовок колонки: приглушен и разряжен, чтобы не спорить со ссылками. */
+const headingClass =
+	"mb-4 font-semibold text-primary-foreground/50 text-xs uppercase tracking-wider";
+
+/** Внешние ссылки уходят в новую вкладку; `mailto:` и свои пути - нет. */
+const isExternal = (href: string) => href.startsWith("http");
+---
+
+<h2 class={cn(headingClass, className)}>{heading}</h2>
+<ul class="space-y-3">
+	{
+		links.map((link) => (
+			<li>
+				<a
+					href={link.href}
+					class={cn(link.icon && "flex items-center gap-2", linkClass)}
+					aria-label={
+						link.network ? `${link.network}: ${link.label}` : undefined
+					}
+					target={isExternal(link.href) ? "_blank" : undefined}
+					rel={isExternal(link.href) ? "noopener noreferrer" : undefined}
+				>
+					{link.icon && (
+						<Icon name={link.icon} class="size-4 shrink-0" aria-hidden="true" />
+					)}
+					{link.label}
+				</a>
+			</li>
+		))
+	}
+</ul>
