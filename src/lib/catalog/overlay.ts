@@ -13,7 +13,7 @@ import type { CollectionEntry } from "astro:content";
  * `peoples` от языка не зависят и берутся из русской записи - см. схему
  * `cardsEn` в `src/content.config.ts`.
  */
-export type CardTranslation = CollectionEntry<"cardsEn">["data"];
+type CardTranslation = CollectionEntry<"cardsEn">["data"];
 
 /**
  * Накладывает перевод на карточки по совпадению id. Нет перевода для карточки

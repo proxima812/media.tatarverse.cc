@@ -14,7 +14,7 @@
  * sRGB - отсюда и насыщенность.
  */
 
-export interface Palette {
+interface Palette {
 	/** Название - для чтения диффов, в CSS не попадает. */
 	readonly name: string;
 	/**
@@ -129,11 +129,3 @@ export function oklch(
 	return alpha === 1 ? `oklch(${value})` : `oklch(${value} / ${alpha})`;
 }
 
-/**
- * Собирает готовую декларацию. `background-image` принимает только
- * значения-изображения - сплошной цвет туда подмешать нельзя, поэтому
- * подложка идет отдельным свойством.
- */
-export function declaration(base: string, layers: readonly string[]): string {
-	return `background-color: ${base}; background-image: ${layers.join(", ")};`;
-}

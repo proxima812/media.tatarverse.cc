@@ -16,10 +16,3 @@ export function parseTagQuery(
 	return [...selected];
 }
 
-export function cardsWithAllTags<
-	T extends { readonly data: { readonly tags: readonly Tag[] } },
->(cards: readonly T[], selected: readonly Tag[]): T[] {
-	return cards.filter((card) =>
-		selected.every((value) => card.data.tags.includes(value)),
-	);
-}

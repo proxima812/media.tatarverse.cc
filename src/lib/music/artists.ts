@@ -12,7 +12,7 @@ export type Track = Artist["data"]["tracks"][number];
  * дороже, чем польза от нее, - поэтому перевод лежит рядом, в `nameEn`
  * и `descriptionEn`.
  */
-export function localizeArtist(artist: Artist, locale: PageLocale): Artist {
+function localizeArtist(artist: Artist, locale: PageLocale): Artist {
 	if (locale !== "en") return artist;
 
 	return {

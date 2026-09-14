@@ -4,14 +4,6 @@
  * каталоге: раскладка плиток и траектория движения читаются вместе.
  */
 
-import type { CollectionEntry } from "astro:content";
-
-type Card = CollectionEntry<"cards">;
-
-/** Карточка, у которой логотип точно есть: без него рисуется монограмма, а в витрине она шум. */
-export type CardWithLogo = Card & {
-	data: Card["data"] & { logo: NonNullable<Card["data"]["logo"]> };
-};
 
 /** FNV-1a: нужен не криптостойкий хеш, а стабильное между билдами число из id. */
 function hash(input: string): number {

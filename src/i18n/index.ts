@@ -22,11 +22,6 @@ export function isLocale(
 	return Boolean(value) && locales.includes(value as LocaleCode);
 }
 
-/** Локаль текущего маршрута по первому сегменту пути, иначе дефолтная. */
-export function getLocaleFromUrl(url: URL): LocaleCode {
-	const segment = url.pathname.split("/").filter(Boolean)[0];
-	return isLocale(segment) ? segment : defaultLocale;
-}
 
 export function useTranslations(locale: LocaleCode) {
 	const dict = dictionaries[locale] ?? dictionaries[defaultLocale];
