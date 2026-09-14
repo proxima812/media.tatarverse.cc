@@ -44,7 +44,7 @@ const metaDescription = description ?? `${name} — ${t("meta.music.artist")}`;
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<div class="flex flex-wrap items-center gap-3 px-1">
+	<div class="flex flex-wrap items-center gap-3">
 		<Button href={musicHref} preset="soft" size="sm">
 			<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
 			{t("music.back")}
@@ -57,7 +57,7 @@ const metaDescription = description ?? `${name} — ${t("meta.music.artist")}`;
 				{ label: t("music.pageTitle"), href: musicHref },
 				{ label: name },
 			]}
-			class="ml-auto"
+			class="sm:ml-auto"
 		/>
 	</div>
 

@@ -46,10 +46,9 @@ const catalogHref = getRelativeLocaleUrl(locale, "catalog");
 			{ label: t("nav.catalog"), href: catalogHref },
 			{ label: t("music.pageTitle") },
 		]}
-		class="px-6"
 	/>
 
-	<div class="flex flex-wrap items-center justify-between gap-3 px-6">
+	<div class="flex flex-wrap items-center justify-between gap-3">
 		<div>
 			<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
 				{t("music.pageTitle")}
@@ -69,7 +68,7 @@ const catalogHref = getRelativeLocaleUrl(locale, "catalog");
 	/>
 
 	<div
-		class="grid grid-cols-2 gap-4 px-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+		class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
 	>
 		{artists.map((artist) => (
 			<MusicCard artist={artist} locale={locale} />

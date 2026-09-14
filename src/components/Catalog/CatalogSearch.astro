@@ -33,9 +33,13 @@ const t = useTranslations(locale);
 			{t("catalog.search.placeholder")}
 		</label>
 
+		<!-- `z-10` обязателен: у поля стоит `backdrop-blur-sm`, а backdrop-filter
+		     заводит собственный контекст наложения и красит поле как `z-index: 0`.
+		     Иконка лежит в разметке раньше поля, поэтому без явного z-index она
+		     оказывалась под его фоном - лупы на странице просто не было видно. -->
 		<Icon
 			name="mdi:magnify"
-			class="pointer-events-none absolute top-1/2 left-6 size-5 -translate-y-1/2 text-background/65 sm:left-10"
+			class="pointer-events-none absolute top-1/2 left-6 z-10 size-5 -translate-y-1/2 text-background/65 sm:left-10"
 			aria-hidden="true"
 		/>
 
@@ -57,7 +61,7 @@ const t = useTranslations(locale);
 			data-glossary-search-clear
 			hidden
 			aria-label={t("search.clear")}
-			class="-translate-y-1/2 absolute top-1/2 right-4 flex size-8 cursor-pointer items-center justify-center rounded-full text-background/65 transition hover:bg-background/10 hover:text-background sm:right-6"
+			class="-translate-y-1/2 absolute top-1/2 right-4 z-10 flex size-8 cursor-pointer items-center justify-center rounded-full text-background/65 transition hover:bg-background/10 hover:text-background sm:right-6"
 		>
 			<svg
 				width="16"

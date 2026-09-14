@@ -45,7 +45,7 @@ const categoryHref = mainCategory
 	     Слева кнопка «как отсюда уйти», справа крошки «где я». Гость из
 	     поиска видит оба ответа до того, как начнет читать карточку.
 	-->
-	<div class="flex flex-wrap items-center gap-3 px-1">
+	<div class="flex flex-wrap items-center gap-3">
 		<Button href={catalogHref} preset="soft" size="sm">
 			<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
 			{t("card.back")}
@@ -60,7 +60,7 @@ const categoryHref = mainCategory
 					: []),
 				{ label: card.data.name },
 			]}
-			class="ml-auto"
+			class="sm:ml-auto"
 		/>
 	</div>
 

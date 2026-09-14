@@ -45,10 +45,9 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 			{ label: t("nav.catalog"), href: catalogHref },
 			{ label: categoryLabel(locale, category) },
 		]}
-		class="px-6"
 	/>
 
-	<div class="flex flex-wrap items-center justify-between gap-3 px-6">
+	<div class="flex flex-wrap items-center justify-between gap-3">
 		<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
 			<h1 class="font-bold text-3xl text-balance sm:text-4xl">
 				{t("catalog.byCategoryPrefix")}
@@ -87,7 +86,7 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 	/>
 
 	{filtered.length === 0 && (
-		<p class="mx-auto max-w-xl px-5 py-16 text-center text-lg text-muted-foreground">
+		<p class="mx-auto max-w-xl py-16 text-center text-lg text-muted-foreground">
 			{t("catalog.category.empty")}
 		</p>
 	)}

@@ -33,10 +33,11 @@ const domain = new URL(url).hostname.replace(/^www\./, "");
  * с названием). Вынос сделан отрицательным отступом в потоке, а не absolute, -
  * высота карточки остается равной содержимому.
  *
- * Глубина набирается мягкими тенями и тонким `ring` (не `border` - он не
- * съедает раскладку соседним контентом), а не сплошными границами: подложка
- * (мэш-градиент лого, размытый) → корпус → плашка контента, каждый слой
- * светлее и мягче предыдущего.
+ * Глубина набирается только слоями `ring` (не `border` - он не съедает
+ * раскладку соседним контентом) и не тенями: подложка (мэш-градиент лого,
+ * размытый) → корпус → плашка контента. Чем слой глубже, тем слабее его
+ * контур - порядок читается по силе линии, а не по размытому пятну под
+ * карточкой.
  */
 const glow = meshGradient(name);
 ---
@@ -50,13 +51,13 @@ const glow = meshGradient(name);
 
 	<div class="relative z-20 flex h-16 items-center gap-3 px-5">
 		<div
-			class="shrink-0 rounded-full corner-squircle bg-background shadow-sm ring-1 ring-border/50"
+			class="shrink-0 rounded-full corner-squircle bg-background ring-1 ring-border"
 		>
 			<CardLogo size="lg" name={name} logo={logo} peoples={peoples} />
 		</div>
 
 		<h2
-			class="flex min-w-0 text-sm flex-1 items-center rounded-2xl bg-background px-4 py-2 font-medium text-foreground shadow-sm ring-1 ring-border/50"
+			class="flex min-w-0 text-sm flex-1 items-center rounded-2xl bg-background px-4 py-2 font-medium text-foreground ring-1 ring-border"
 		>
 			<span class="truncate">{name}</span>
 		</h2>
@@ -66,10 +67,10 @@ const glow = meshGradient(name);
 
 	<div class="-mt-8 relative flex flex-1 flex-col">
 		<div
-			class="flex flex-1 flex-col gap-1.5 rounded-3xl bg-background p-2.5 pt-9 shadow-[0_10px_36px_-14px_rgba(0,0,0,0.18)] ring-1 ring-border/40"
+			class="flex flex-1 flex-col gap-1.5 rounded-3xl bg-background p-2.5 pt-9 ring-1 ring-border/70"
 		>
 			<div
-				class="flex flex-1 flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-6 shadow-[0_2px_18px_-6px_rgba(0,0,0,0.1)] ring-1 ring-border/30"
+				class="flex flex-1 flex-col gap-4 rounded-2xl bg-background px-5 pt-9 pb-6 ring-1 ring-border/40"
 			>
 				<div class="flex flex-wrap items-center gap-1.5">
 					{categories.map((category) => (

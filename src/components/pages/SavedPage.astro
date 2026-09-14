@@ -41,7 +41,7 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 	locale={ogLocale(locale)}
 	alternates={buildAlternates(Astro.url.pathname)}
 >
-	<div class="flex items-center justify-between px-6">
+	<div class="flex items-center justify-between">
 		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
 			{t("saved.title")}
 		</h1>
@@ -57,7 +57,7 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 
 	<div
 		data-saved-empty
-		class="mx-auto flex max-w-md flex-col items-center gap-4 px-5 py-24 text-center"
+		class="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center"
 	>
 		<Icon
 			name="mdi:bookmark-outline"
@@ -71,7 +71,7 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 		</Button>
 	</div>
 
-	<div class="columns-1 gap-8 px-5 sm:columns-2 lg:columns-3">
+	<div class="columns-1 gap-8 sm:columns-2 lg:columns-3">
 		{cards.map((card) => (
 				<div data-saved-item={card.id} hidden class="mb-8 break-inside-avoid">
 					<CatalogCard card={card} />

@@ -10,7 +10,7 @@ const { cards } = Astro.props;
 ---
 
 <div
-	class="mx-auto w-full max-w-6xl border-border border-t px-5 group-data-[view=grid]/catalog:hidden"
+	class="mx-auto w-full max-w-6xl border-border border-t group-data-[view=grid]/catalog:hidden"
 >
 	{cards.map((card) => <CatalogRow card={card} />)}
 </div>

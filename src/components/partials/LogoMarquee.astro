@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
 import Button from "@/components/partials/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -135,6 +136,7 @@ const LOGO_PX = 120;
 			radius="lg"
 			size="md"
 		>
+			<Icon name="mdi:view-grid-outline" class="size-4" aria-hidden="true" />
 			{t("marquee.cta.catalog")}
 		</Button>
 		<Button
@@ -143,6 +145,7 @@ const LOGO_PX = 120;
 			radius="lg"
 			size="md"
 		>
+			<Icon name="mdi:plus" class="size-4" aria-hidden="true" />
 			{t("marquee.cta.add")}
 		</Button>
 	</div>
