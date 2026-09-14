@@ -85,20 +85,10 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 </Layout>
 
 <script>
-const STORAGE_KEY = "catalog:saved";
-
-function getSaved(): Set<string> {
-	try {
-		const raw = localStorage.getItem(STORAGE_KEY);
-		const parsed = raw ? JSON.parse(raw) : [];
-		return new Set(Array.isArray(parsed) ? parsed : []);
-	} catch {
-		return new Set();
-	}
-}
+import { onSavedChange, readSaved } from "@/lib/catalog/savedStore";
 
 function render() {
-	const saved = getSaved();
+	const saved = new Set(readSaved());
 	const items = document.querySelectorAll<HTMLElement>("[data-saved-item]");
 	let visible = 0;
 
@@ -119,5 +109,5 @@ function render() {
 render();
 
 /** Снятие закладки прямо на этой странице прячет карточку без перезагрузки. */
-window.addEventListener("catalog:saved-change", render);
+onSavedChange(render);
 </script>

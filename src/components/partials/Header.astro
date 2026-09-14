@@ -378,20 +378,10 @@ const localeOptions = locales.map((code) => ({
  *
  * Ноль не показывается: пустой бейдж - это шум, а не информация.
  */
-const SAVED_KEY = "catalog:saved";
-
-function readSavedCount(): number {
-	try {
-		const raw = localStorage.getItem(SAVED_KEY);
-		const parsed = raw ? JSON.parse(raw) : [];
-		return Array.isArray(parsed) ? parsed.length : 0;
-	} catch {
-		return 0;
-	}
-}
+import { onSavedChange, readSaved, SAVED_KEY } from "@/lib/catalog/savedStore";
 
 function renderSavedCount() {
-	const count = readSavedCount();
+	const count = readSaved().length;
 
 	for (const badge of document.querySelectorAll<HTMLElement>(
 		"[data-saved-count]",
@@ -402,7 +392,7 @@ function renderSavedCount() {
 }
 
 renderSavedCount();
-window.addEventListener("catalog:saved-change", renderSavedCount);
+onSavedChange(renderSavedCount);
 window.addEventListener("storage", (event) => {
 	if (event.key === null || event.key === SAVED_KEY) renderSavedCount();
 });
