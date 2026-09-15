@@ -1,0 +1,60 @@
+---
+import { Icon } from "astro-icon/components";
+import {
+	type Category,
+	categoryIcon,
+	categoryLabel,
+	type Tag,
+	tagLabel,
+} from "@/lib/taxonomy";
+import type { LocaleCode } from "@/config/types";
+import { cn } from "cn";
+
+/**
+ * Чип категории или тега - один источник вида для карточки и страницы
+ * проекта. Раньше та же пилюля была расписана в `CatalogCard` и
+ * `CardTaxonomy` по отдельности, и паддинги с hover успели разъехаться.
+ *
+ * `href` делает чип ссылкой с hover; без него это просто `<span>`
+ * (в карточке ссылкой служит сама карточка). `size="sm"` - плотный
+ * вариант для карточки, тот же прием, что у `PeopleBadge`.
+ */
+
+type Props = {
+	locale: LocaleCode;
+	size?: "sm" | "md";
+	href?: string | undefined;
+} & ({ kind: "category"; value: Category } | { kind: "tag"; value: Tag });
+
+const { locale, size = "md", href, kind, value } = Astro.props;
+
+const padding = size === "sm" ? "px-2 py-0.5" : "px-2.5 py-1";
+
+const chipClass =
+	kind === "category"
+		? cn(
+				"inline-flex items-center gap-1 rounded-full bg-primary/10 font-medium text-primary text-xs",
+				padding,
+				href && "transition hover:bg-primary/20",
+			)
+		: cn(
+				"inline-block rounded-full bg-muted text-muted-foreground text-xs",
+				padding,
+				href && "transition hover:bg-muted/70 hover:text-foreground",
+			);
+
+const Element = href ? "a" : "span";
+---
+
+<Element href={href} class={chipClass}>
+	{
+		kind === "category" ? (
+			<>
+				<Icon name={categoryIcon(value)} class="size-3.5" aria-hidden="true" />
+				{categoryLabel(locale, value)}
+			</>
+		) : (
+			`#${tagLabel(locale, value)}`
+		)
+	}
+</Element>
