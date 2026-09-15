@@ -195,6 +195,8 @@ export const LOGOS: readonly LogoSlot[] = [
 </style>
 
 <script>
+import { prefersReducedMotion } from "@/lib/ui/dom";
+
 	/** Пауза между сменами логотипов и длительность самой смены. */
 	const CYCLE_MS = 2000;
 	const SWAP_MS = 250;
@@ -237,7 +239,7 @@ export const LOGOS: readonly LogoSlot[] = [
 
 		const shims = Array.from(stack.querySelectorAll<HTMLElement>(".logo-stack__shim"));
 
-		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		const reducedMotion = prefersReducedMotion();
 
 		let activeIndex = 0;
 

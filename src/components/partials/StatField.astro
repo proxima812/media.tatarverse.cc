@@ -391,6 +391,8 @@ const PUSH_Y = 26;
 </style>
 
 <script>
+import { prefersReducedMotion } from "@/lib/ui/dom";
+
 /** Правда, когда между дорожкой и страницей ничто не обрезает и не скроллит - значит `sticky` удержит. */
 function isPinnable(node: HTMLElement) {
 	for (
@@ -412,7 +414,7 @@ function isPinnable(node: HTMLElement) {
 const LEAD = 140;
 
 function initStatField() {
-	if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+	if (prefersReducedMotion()) return;
 
 	for (const field of document.querySelectorAll<HTMLElement>(
 		"[data-stat-field]",

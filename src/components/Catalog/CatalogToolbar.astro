@@ -228,6 +228,8 @@ const viewClass =
 </dialog>
 
 <script>
+import { onResize } from "@/lib/ui/dom";
+
 /**
  * Хвост тегов, которые не влезли в строку на мобильном, прячется - не
  * горизонтальным скроллом (был обрезанный по высоте край и лишний скролл
@@ -262,7 +264,7 @@ function setupCategoryOverflow(list: HTMLElement) {
 	};
 
 	recalc();
-	window.addEventListener("resize", recalc);
+	onResize(recalc);
 }
 
 /**
@@ -284,7 +286,7 @@ function setupCategoryScroll(list: HTMLElement) {
 
 	update();
 	list.addEventListener("scroll", update, { passive: true });
-	window.addEventListener("resize", update);
+	onResize(update);
 
 	/*
 	 * Активная категория может стоять за краем: на странице раздела ряд

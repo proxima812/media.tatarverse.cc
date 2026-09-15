@@ -354,6 +354,8 @@ const columnDelay = 70;
 </style>
 
 <script>
+import { reducedMotionQuery } from "@/lib/ui/dom";
+
 /*
  * Все кадры всех слайдов отрисованы сразу и запаркованы за краем панели;
  * скрипт только переносит классы `is-active` / `is-exiting` между группами
@@ -372,7 +374,7 @@ for (const root of roots) {
 
 	if (!panel || backgrounds.length < 2) continue;
 
-	const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+	const reduceMotion = reducedMotionQuery();
 	let activeIndex = 0;
 	let timerId = 0;
 
