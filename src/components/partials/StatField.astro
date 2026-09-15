@@ -417,9 +417,6 @@ function initStatField() {
 	for (const field of document.querySelectorAll<HTMLElement>(
 		"[data-stat-field]",
 	)) {
-		if (field.dataset.statReady === "true") continue;
-		field.dataset.statReady = "true";
-
 		const track = field.querySelector<HTMLElement>("[data-stat-track]");
 		const stage = field.querySelector<HTMLElement>("[data-stat-stage]");
 		const lines = [...field.querySelectorAll<HTMLElement>("[data-stat-line]")];
@@ -481,5 +478,4 @@ function initStatField() {
 }
 
 initStatField();
-document.addEventListener("astro:page-load", initStatField);
 </script>

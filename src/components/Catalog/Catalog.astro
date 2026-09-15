@@ -5,6 +5,7 @@ import CatalogList from "@/components/Catalog/CatalogList.astro";
 import CatalogTagFilter from "@/components/Catalog/CatalogTagFilter.astro";
 import CatalogToolbar from "@/components/Catalog/CatalogToolbar.astro";
 import { getTagCounts } from "@/lib/catalog/categories";
+import { useTranslations } from "@/i18n";
 import type { Category } from "@/lib/taxonomy";
 import type { LocaleCode } from "@/config/types";
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const { locale, cards, categories, activeCategory } = Astro.props;
+const t = useTranslations(locale);
 const tagCounts = getTagCounts(cards);
 
 /*
@@ -46,7 +48,7 @@ const tagCounts = getTagCounts(cards);
 		hidden
 		class="mx-auto max-w-xl py-16 text-center text-muted-foreground"
 	>
-		{locale === "en" ? "No projects match all selected tags." : "Проекты с таким набором тегов не найдены."}
+		{t("catalog.filter.empty")}
 	</p>
 </section>
 
