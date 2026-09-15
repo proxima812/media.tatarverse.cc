@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
+import StrokeIcon from "@/components/partials/StrokeIcon.astro";
 import Button from "@/components/partials/Button.astro";
 import Tooltip from "@/components/partials/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
@@ -258,20 +259,11 @@ const localeOptions = locales.map((code) => ({
 		     `data-pressed`, `data-hover`, и вся анимация знака висит на
 		     `group-data-[open=true]`, а не на классах, которые дописывает
 		     скрипт. `aria-expanded` рядом - для скринридера. -->
-		<svg
-			width="20"
-			height="20"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
+		<StrokeIcon
+			name="chevron"
+			size={20}
 			class="transition-transform duration-200 group-data-[open=true]:rotate-180"
-			aria-hidden="true"
-		>
-			<path d="M6 9l6 6 6-6"></path>
-		</svg>
+		/>
 	</Button>
 
 </header>

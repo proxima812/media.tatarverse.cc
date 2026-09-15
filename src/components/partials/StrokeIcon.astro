@@ -1,0 +1,44 @@
+---
+/**
+ * Штриховые UI-глифы: шеврон, крестик, лупа, вид списком и сеткой.
+ *
+ * Это не дубликаты mdi, а осознанный набор: глифы интерфейса нарисованы
+ * штрихом веса 2 под currentColor, потому что заливной глиф рядом со
+ * штриховым читается как два разных набора (см. комментарий у поиска
+ * каталога). Раньше каждый компонент держал свой `<svg>` с тем же path -
+ * теперь разметка одна, а места отличаются только именем и размером.
+ *
+ * Иконки содержимого (категории, соцсети) - по-прежнему `astro-icon`/mdi.
+ */
+
+const GLYPHS = {
+	chevron: '<path d="M6 9l6 6 6-6" />',
+	close: '<path d="M6 6l12 12M18 6L6 18" />',
+	magnify: '<circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.6 15.6 21 21" />',
+	list: '<path d="M4 6h.01M4 12h.01M4 18h.01M9 6h11M9 12h11M9 18h11" />',
+	grid: '<rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />',
+} as const;
+
+interface Props {
+	name: keyof typeof GLYPHS;
+	/** Сторона в px; классы размера (`size-*`) в `class` имеют приоритет. */
+	size?: number;
+	class?: string | undefined;
+}
+
+const { name, size = 18, class: className } = Astro.props;
+---
+
+<svg
+	width={size}
+	height={size}
+	viewBox="0 0 24 24"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="2"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+	class={className}
+	aria-hidden="true"
+	set:html={GLYPHS[name]}
+/>

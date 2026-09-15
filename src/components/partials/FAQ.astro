@@ -1,4 +1,6 @@
 ---
+import StrokeIcon from "@/components/partials/StrokeIcon.astro";
+
 interface Item {
 	question: string;
 	answer: string;
@@ -80,20 +82,11 @@ const idPrefix = `faq-${Math.random().toString(36).slice(2, 8)}`;
 								class="flex w-full items-center justify-between gap-5 px-7 py-6 text-left font-semibold text-foreground text-lg leading-snug tracking-tight focus-visible:outline-none"
 							>
 								{item.question}
-								<svg
+								<StrokeIcon
+									name="chevron"
+									size={20}
 									class="faq-chevron shrink-0 text-muted-foreground"
-									width="20"
-									height="20"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									aria-hidden="true"
-								>
-									<path d="M6 9l6 6 6-6" />
-								</svg>
+								/>
 							</button>
 						</h3>
 
