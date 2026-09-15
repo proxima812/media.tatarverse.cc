@@ -48,7 +48,7 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 				class="size-5"
 				aria-hidden="true"
 			/>
-			<span data-saved-count>0</span>
+			<span data-saved-visible>0</span>
 		</div>
 	</div>
 
@@ -102,7 +102,14 @@ function render() {
 		.querySelector("[data-saved-empty]")
 		?.toggleAttribute("hidden", visible > 0);
 
-	const count = document.querySelector("[data-saved-count]");
+	/*
+	 * У счетчика страницы свой атрибут: `[data-saved-count]` занят бейджем в
+	 * шапке, и querySelector находил именно его - число страницы улетало в
+	 * шапку, а та перезаписывала его своим правилом (общее число, ноль
+	 * прячется). Смыслы у счетчиков разные: шапка считает все закладки,
+	 * страница - видимые карточки.
+	 */
+	const count = document.querySelector("[data-saved-visible]");
 	if (count) count.textContent = String(visible);
 }
 
