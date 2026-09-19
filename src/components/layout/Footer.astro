@@ -1,8 +1,8 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
-import BigWordBottom from "@/components/partials/BigWordBottom.astro";
-import FooterLinkGroup from "@/components/partials/FooterLinkGroup.astro";
-import Tooltip from "@/components/partials/Tooltip.astro";
+import FooterBrand from "@/components/layout/FooterBrand.astro";
+import FooterLinkGroup from "@/components/layout/FooterLinkGroup.astro";
+import Tooltip from "@/components/ui/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
 
@@ -227,7 +227,7 @@ const columns = [
 </footer>
 
 <div class="no-container bg-primary">
-	<BigWordBottom
+	<FooterBrand
 		text="Муэллиф"
 		color1="from-primary-foreground"
 		color2="to-primary-foreground/25"

@@ -6,7 +6,7 @@ import CardLogo from "@/components/Catalog/CardLogo.astro";
 import PeopleBadge from "@/components/Catalog/PeopleBadge.astro";
 import SaveButton from "@/components/Catalog/SaveButton.astro";
 import TaxonomyChip from "@/components/Catalog/TaxonomyChip.astro";
-import Button from "@/components/partials/Button.astro";
+import Button from "@/components/ui/Button.astro";
 import { useTranslations } from "@/i18n";
 import { meshGradient } from "@/lib/ui/meshGradient";
 
@@ -24,17 +24,6 @@ const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
 /** Домен вместо полного URL: на карточке важен источник, а не путь. */
 const domain = new URL(url).hostname.replace(/^www\./, "");
 
-/*
- * Раскладка по макету: за край корпуса выступает только шапка (лого + пилюля
- * с названием). Вынос сделан отрицательным отступом в потоке, а не absolute, -
- * высота карточки остается равной содержимому.
- *
- * Глубина набирается только слоями `ring` (не `border` - он не съедает
- * раскладку соседним контентом) и не тенями: подложка (мэш-градиент лого,
- * размытый) → корпус → плашка контента. Чем слой глубже, тем слабее его
- * контур - порядок читается по силе линии, а не по размытому пятну под
- * карточкой.
- */
 const glow = meshGradient(name);
 ---
 
@@ -94,16 +83,6 @@ const glow = meshGradient(name);
 						))}
 				</ul>
 			</div>
-
-			<!--
-				Подвал - слой корпуса, а не плашки контента: действия карточки
-				(уйти на страницу проекта, уйти на сам проект) стоят рядом и
-				отделены от текста тем же отступом `p-2.5`, что держит плашку.
-
-				Раньше «Подробнее» выступала за нижний край корпуса, а домен
-				лежал внутри контента отдельной строкой - два действия в двух
-				разных слоях, между ними край карточки.
-			-->
 			<div class="flex items-center justify-between gap-3 px-2.5 pt-1 pb-1.5">
 				<Button href={href} preset="solid" size="sm" radius="sm">
 					{t("card.more")}

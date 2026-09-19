@@ -1,0 +1,122 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import { prepareGlossary } from "@/lib/catalog/glossary";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+	locale: LocaleCode;
+	cards: CollectionEntry<"cards">[];
+}
+
+const { locale, cards } = Astro.props;
+const t = useTranslations(locale);
+
+const groups = prepareGlossary(cards, locale);
+---
+
+<div data-glossary>
+	<div class="relative">
+		<h2 class="sr-only">{t("search.browse")}</h2>
+
+		<nav
+			aria-label={t("search.index")}
+			class="-mx-5 sticky top-24 z-30 mb-8 bg-background/85 px-5 py-2 backdrop-blur-md lg:hidden"
+		>
+			<ul class="flex items-center gap-0.5 overflow-x-auto">
+				{groups.map(({ letter, anchor }) => (
+						<li data-glossary-jump={letter}>
+							<a
+								href={`#${anchor}`}
+								class="flex size-8 shrink-0 items-center justify-center rounded-full font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground"
+							>
+								{letter}
+							</a>
+						</li>
+					))}
+			</ul>
+		</nav>
+
+		<div class="mx-auto flex w-full max-w-[727px] flex-col gap-12">
+			{groups.map(({ letter, anchor, cards }) => (
+					<section
+						id={anchor}
+						data-glossary-section={letter}
+						aria-labelledby={`${anchor}-title`}
+						class="scroll-mt-32 grid gap-x-0 gap-y-6 pb-8 [&[hidden]]:hidden sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-y-0"
+					>
+						<h3
+							id={`${anchor}-title`}
+							class="font-medium text-5xl text-foreground leading-none tracking-tight sm:text-[62px] sm:leading-[66px]"
+						>
+							{letter}
+						</h3>
+
+						<ul class="flex flex-col gap-12">
+							{cards.map(({ card, search, searchName }) => (
+									<li
+										data-glossary-item
+										data-search={search}
+										data-search-name={searchName}
+									>
+										<a
+											href={getRelativeLocaleUrl(locale, `projects/${card.id}`)}
+											class="group block"
+										>
+											<div class="flex items-center gap-3">
+												<div class="shrink-0"><CardLogo size="md" name={card.data.name} logo={card.data.logo} peoples={card.data.peoples} /></div>
+
+												<h4 class="min-w-0 font-medium text-2xl text-foreground leading-tight tracking-tight transition group-hover:text-primary sm:text-[32px] sm:leading-9">
+													{card.data.name}
+												</h4>
+											</div>
+											<p class="mt-4 line-clamp-2 font-light text-base text-foreground/80 leading-relaxed sm:text-lg sm:leading-[26px]">
+												{card.data.description}
+											</p>
+										</a>
+									</li>
+								))}
+						</ul>
+					</section>
+				))}
+		</div>
+
+		<p
+			data-glossary-empty
+			hidden
+			class="mx-auto w-full max-w-[727px] py-16 text-center text-lg text-muted-foreground"
+		>
+			{t("search.empty")}
+		</p>
+
+		<nav
+			aria-label={t("search.index")}
+			class="pointer-events-none absolute inset-y-0 right-0 hidden w-14 lg:block"
+		>
+			<ul
+				data-glossary-rail
+				class="pointer-events-auto sticky top-32 flex max-h-[calc(100vh-12rem)] flex-col overflow-y-auto pl-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+			>
+				{groups.map(({ letter, anchor }) => (
+						<li data-glossary-jump={letter}>
+							<a
+								href={`#${anchor}`}
+								data-glossary-rail-link={letter}
+								class="flex h-8 w-6 items-center border-transparent border-r font-medium text-base text-muted-foreground/70 transition aria-[current=true]:border-foreground aria-[current=true]:text-foreground hover:text-foreground"
+							>
+								{letter}
+							</a>
+						</li>
+					))}
+			</ul>
+		</nav>
+	</div>
+</div>
+
+<script>
+import { initAlphabeticalCatalog } from "./alphabeticalCatalog.client";
+
+initAlphabeticalCatalog();
+</script>

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
-import CatalogGlossary from "@/components/Catalog/CatalogGlossary.astro";
-import CatalogSearch from "@/components/Catalog/CatalogSearch.astro";
+import AlphabeticalCatalog from "@/components/search/AlphabeticalCatalog.astro";
+import SearchInput from "@/components/search/SearchInput.astro";
 import { localizeCards } from "@/lib/catalog/localize";
 import type { PageLocale } from "@/lib/routes/pageLocale";
 import { useTranslations } from "@/i18n";
@@ -37,8 +37,8 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 			{t("search.letters")}
 		</span>
 
-		<CatalogSearch locale={locale} class="relative z-10" />
+		<SearchInput locale={locale} class="relative z-10" />
 	</section>
 
-	<CatalogGlossary locale={locale} cards={cards} />
+	<AlphabeticalCatalog locale={locale} cards={cards} />
 </Layout>
