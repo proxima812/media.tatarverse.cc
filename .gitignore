@@ -198,3 +198,5 @@ docs/ui/xima-ui
 .impeccable/live/accept-receipts/
 .impeccable/live/roots.json
 .impeccable/hook.cache.json
+# Интерактивные вопросы скилла: pid, порт и heartbeat живого процесса.
+.impeccable/questions/
