@@ -8,6 +8,7 @@ import SaveButton from "@/components/Catalog/SaveButton.astro";
 import Button from "@/components/ui/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
+import { meshGradient } from "@/lib/ui/meshGradient";
 
 interface Props {
 	card: CollectionEntry<"cards">;
@@ -30,6 +31,18 @@ const dateLabel = new Intl.DateTimeFormat(locale, {
 	year: "numeric",
 }).format(pubDate);
 
+/** `datetime` у `<time>`: «29 августа 2026 г.» машина не разбирает. */
+const dateValue = pubDate.toISOString().slice(0, 10);
+
+/*
+ * Ореол под логотипом - тот же детерминированный мэш по имени карточки, что
+ * стоит под карточкой в каталоге. Своего цвета у интерфейса нет, весь он
+ * приходит от проекта, и на странице одного проекта отсутствовал вовсе:
+ * логотип лежал на бумаге без единого следа. Градиент берется по имени, а не
+ * из логотипа, - тогда пятно у проекта одно и то же и в списке, и здесь.
+ */
+const glow = meshGradient(name);
+
 /*
  * Правка ведется в файле той локали, которую человек читает: он видит
  * опечатку в английском тексте и должен попасть туда, где она есть.
@@ -45,12 +58,26 @@ const editHref = config.site.repository
 ---
 
 <article
-	class="rounded-xl corner-squircle bg-background p-6 shadow-xs sm:p-10"
+	class="rounded-xl corner-squircle bg-background p-6 shadow-body ring-1 ring-border/40 sm:p-10"
 	data-pagefind-body
 >
 	<div class="flex flex-col items-center gap-5 text-center">
-		<div class="rounded-full corner-squircle bg-background shadow-sm">
-			<CardLogo name={name} logo={logo} peoples={peoples} size="xl" priority />
+		<div class="relative">
+			<!--
+			     Ореол стоит соседом, а не `-z-10`, как в карточке каталога: там
+			     корпус прозрачный, а у этой статьи есть свой `bg-background`, и
+			     отрицательный z спрятал бы пятно под него.
+			-->
+			<div
+				class="pointer-events-none absolute -inset-4 rounded-full opacity-40 blur-2xl"
+				style={glow}
+				aria-hidden="true"
+			>
+			</div>
+
+			<div class="relative rounded-full corner-squircle bg-background shadow-sm">
+				<CardLogo name={name} logo={logo} peoples={peoples} size="xl" priority />
+			</div>
 		</div>
 
 		<h1 class="font-bold text-3xl text-balance sm:text-4xl">{name}</h1>
@@ -59,60 +86,66 @@ const editHref = config.site.repository
 	<!--
 	     Ниже шапки текст выравнивается влево: описание и факты читают, а у
 	     центрированного текста нет левого края, за который цепляется глаз
-	     при переходе на следующую строку.
+	     при переходе на следующую строку. Колонка одна на весь текст: ширина
+	     `max-w-2xl` была расписана по трем блокам отдельно, и каждый
+	     следующий блок приходилось помнить выровнять по предыдущему.
 	-->
-	<div class="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-6">
-		<p class="text-lg text-muted-foreground">{description}</p>
+	<div class="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-10">
+		<div class="flex flex-col gap-6">
+			<p class="text-lg text-muted-foreground">{description}</p>
 
-		<div class="flex flex-wrap items-center gap-3">
-			<Button href={url} preset="solid" external>
-				{host}
-				<Icon name="mdi:open-in-new" class="size-4" aria-hidden="true" />
-			</Button>
+			<div class="flex flex-wrap items-center gap-3">
+				<Button href={url} preset="solid" external>
+					{host}
+					<Icon name="mdi:open-in-new" class="size-4" aria-hidden="true" />
+				</Button>
 
-			<SaveButton cardId={card.id} locale={locale} size="md" withLabel />
+				<SaveButton cardId={card.id} locale={locale} size="md" withLabel />
+			</div>
 		</div>
-	</div>
 
-	<section class="mx-auto mt-10 w-full max-w-2xl">
-		<h2 class="font-semibold text-lg">{t("card.facts")}</h2>
+		<section>
+			<h2 class="font-semibold text-lg">{t("card.facts")}</h2>
+
+			<!--
+			     Факты не нумеруются: это независимые утверждения о проекте, а не
+			     шаги и не рейтинг - цифры навязали бы им несуществующий порядок.
+			-->
+			<ul class="mt-4 grid gap-3">
+				{facts.map((fact) => (
+					<li class="flex gap-3 text-sm">
+						<span
+							class="mt-2 size-1.5 shrink-0 rounded-full bg-border"
+							aria-hidden="true"
+						></span>
+						{fact}
+					</li>
+				))}
+			</ul>
+		</section>
 
 		<!--
-		     Факты не нумеруются: это независимые утверждения о проекте, а не
-		     шаги и не рейтинг - цифры навязали бы им несуществующий порядок.
+		     Служебная подпись: дата и приглашение поправить. Гостю из поиска
+		     неоткуда узнать, что за карточками стоят живые люди, а данные могут
+		     устареть.
 		-->
-		<ul class="mt-4 grid gap-3">
-			{facts.map((fact) => (
-				<li class="flex gap-3 text-sm">
-					<span
-						class="mt-2 size-1.5 shrink-0 rounded-full bg-border"
-						aria-hidden="true"
-					></span>
-					{fact}
-				</li>
-			))}
-		</ul>
-	</section>
-
-	<!--
-	     Служебная подпись: дата и приглашение поправить. Гостю из поиска
-	     неоткуда узнать, что за карточками стоят живые люди, а данные могут
-	     устареть.
-	-->
-	<footer
-		class="mx-auto mt-10 flex w-full max-w-2xl flex-wrap items-center gap-x-3 gap-y-1 border-border/60 border-t pt-5 text-muted-foreground text-xs"
-	>
-		<span>{t("card.added")} {dateLabel}</span>
-		{editHref && (
-			<a
-				href={editHref}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="inline-flex items-center gap-1 underline underline-offset-4 transition hover:text-foreground"
-			>
-				<Icon name="mdi:pencil-outline" class="size-3.5" aria-hidden="true" />
-				{t("card.edit")}
-			</a>
-		)}
-	</footer>
+		<footer
+			class="flex flex-wrap items-center gap-x-3 gap-y-1 border-border/60 border-t pt-5 text-muted-foreground text-xs"
+		>
+			<span>
+				{t("card.added")} <time datetime={dateValue}>{dateLabel}</time>
+			</span>
+			{editHref && (
+				<a
+					href={editHref}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center gap-1 underline underline-offset-4 transition hover:text-foreground"
+				>
+					<Icon name="mdi:pencil-outline" class="size-3.5" aria-hidden="true" />
+					{t("card.edit")}
+				</a>
+			)}
+		</footer>
+	</div>
 </article>

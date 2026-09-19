@@ -66,21 +66,25 @@ const categoryHref = mainCategory
 	     разных колонках.
 	-->
 	<div class="grid gap-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start">
+		<CardDetail card={card} locale={locale} />
+
 		<!--
-		     Aside стоит первым в разметке, но на узком экране это лишний экран
-		     пилюль перед самим проектом - поэтому там он уезжает вниз порядком.
+		     Проект идет первым в разметке, а в левую колонку aside уезжает
+		     порядком: заголовки «Разделы», «Народы» и «Теги» - это h2, и до
+		     правки они стояли в документе перед h1 самого проекта. Гость из
+		     поиска слышал три служебные рубрики раньше, чем имя проекта.
+		     Визуально ничего не меняется: на узком экране выходы в каталог
+		     и так идут после рассказа, на широком - `lg:order-first`.
 		-->
-		<aside class="order-last lg:order-first lg:sticky lg:top-24">
+		<aside class="lg:order-first lg:sticky lg:top-24">
 			<CardTaxonomy
 				locale={locale}
 				categories={card.data.categories}
 				tags={card.data.tags}
 				peoples={card.data.peoples}
-				class="rounded-xl corner-squircle bg-background p-6 shadow-xs"
+				class="rounded-xl corner-squircle bg-background p-6 shadow-body ring-1 ring-border/40"
 			/>
 		</aside>
-
-		<CardDetail card={card} locale={locale} />
 	</div>
 
 	{related.length > 0 && (
@@ -103,7 +107,15 @@ const categoryHref = mainCategory
 					)}
 				</div>
 
-				<div class="mt-8 grid gap-8 sm:grid-cols-3">
+				<!--
+				     `grid-cols-1` тут обязателен, а не «для порядка»: без него
+				     единственная колонка получает ширину `auto`, то есть
+				     min-content самой широкой карточки (446px), и на телефоне
+				     карточки уезжали за правый край. Незаметно это было
+				     только потому, что `overflow-x: clip` на `html` гасит
+				     горизонтальную прокрутку - вместе с ней гасился и симптом.
+				-->
+				<div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
 					{related.map((relatedCard) => (
 						<CatalogCard card={relatedCard} />
 					))}
