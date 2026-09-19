@@ -16,6 +16,7 @@
 		"validate:seo": "node scripts/validate-seo.mjs",
 		"check:seo": "bun run build && bun run validate:seo",
 		"check:i18n": "node scripts/validate-cards-i18n.mjs",
+		"suggest:card": "bun scripts/suggest-card-taxonomy.mjs",
 		"verify": "bun run check && bun run check:seo && bun run check:i18n",
 		"cf:preview": "bun run build && wrangler pages dev ./dist",
 		"cf:deploy": "bun run verify && bun run cf:deploy:dist",
@@ -43,6 +44,7 @@
 		"@iconify-json/tabler": "^1.2.38",
 		"@tailwindcss/typography": "^0.5.20",
 		"@toolwind/corner-shape": "^0.0.8-3",
+		"@typesafe-ai/sdk": "^0.6.0",
 		"esbuild": "^0.28.2",
 		"wrangler": "^4.92.0"
 	}
