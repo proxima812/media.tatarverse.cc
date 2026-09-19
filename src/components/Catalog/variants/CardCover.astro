@@ -1,0 +1,115 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import SaveButton from "@/components/Catalog/SaveButton.astro";
+import { useTranslations } from "@/i18n";
+import { peopleLabel } from "@/lib/catalog/labels";
+import { categoryLabel, tagLabel } from "@/lib/taxonomy";
+import { meshGradient } from "@/lib/ui/meshGradient";
+
+/**
+ * Вариант B - «Обложка».
+ *
+ * Единственный цвет в системе приносят сами проекты, поэтому логотип
+ * получает свое место, а не угол размером 56px: сверху идет полоса с
+ * приглушенным мэш-градиентом карточки, по центру - знак проекта на
+ * белой плитке. Сетка каталога начинает читаться брендами, и человек
+ * узнает знакомый проект раньше, чем прочитает название.
+ *
+ * Градиент приглушен до четверти: на полной насыщенности он спорил бы с
+ * логотипом и ломал ахроматический интерфейс. У карточки без логотипа
+ * `CardLogo` сам рисует градиентную заглушку со знаком народа - поэтому
+ * полоса и остается тихой подложкой, а не вторым пятном того же веса.
+ */
+
+interface Props {
+	card: CollectionEntry<"cards">;
+}
+
+const { card } = Astro.props;
+const { name, description, logo, url, categories, tags, peoples } = card.data;
+
+const locale = Astro.currentLocale ?? "ru";
+const t = useTranslations(locale);
+const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
+const domain = new URL(url).hostname.replace(/^www\./, "");
+
+const glow = meshGradient(name);
+
+const VISIBLE_TAGS = 3;
+const shownTags = tags.slice(0, VISIBLE_TAGS);
+const hiddenTags = tags.length - shownTags.length;
+
+const kicker = [
+	...categories.map((category) => categoryLabel(locale, category)),
+	...peoples.map((people) => peopleLabel(locale, people)),
+].join(" · ");
+---
+
+<article
+	class="group relative flex h-full w-full flex-col overflow-hidden rounded-lg corner-squircle bg-background ring-1 ring-border transition duration-200 hover:-translate-y-0.5 hover:ring-foreground/25"
+>
+	<div
+		class="relative flex h-32 shrink-0 items-center justify-center border-border/60 border-b"
+	>
+		<div class="absolute inset-0 opacity-25" style={glow} aria-hidden="true"></div>
+
+		<div
+			class="relative rounded-md corner-squircle bg-background p-2.5 ring-1 ring-border/60"
+		>
+			<CardLogo size="lg" name={name} logo={logo} peoples={peoples} />
+		</div>
+
+		<div class="absolute top-3 right-3 z-10">
+			<SaveButton cardId={card.id} locale={locale} />
+		</div>
+	</div>
+
+	<div class="flex flex-1 flex-col px-5 pt-4">
+		<p class="truncate font-medium text-muted-foreground text-xs">{kicker}</p>
+
+		<h2 class="mt-1.5 line-clamp-2 font-semibold text-base text-foreground leading-snug">
+			<a href={href} class="after:absolute after:inset-0 after:content-['']">
+				{name}
+			</a>
+		</h2>
+
+		<p class="mt-2 line-clamp-2 text-muted-foreground text-sm leading-relaxed">
+			{description}
+		</p>
+
+		<div
+			class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-4 pb-4 text-muted-foreground/80 text-xs"
+		>
+			{shownTags.map((tag) => <span>#{tagLabel(locale, tag)}</span>)}
+			{hiddenTags > 0 && <span class="text-muted-foreground/50">+{hiddenTags}</span>}
+		</div>
+	</div>
+
+	<div
+		class="flex items-center justify-between gap-3 border-border/70 border-t px-5 py-3.5"
+	>
+		<a
+			href={url}
+			target="_blank"
+			rel="noopener noreferrer"
+			class="relative z-10 inline-flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs underline-offset-4 transition hover:text-foreground hover:underline"
+		>
+			<span class="truncate">{domain}</span>
+			<Icon name="mdi:open-in-new" class="size-3.5 shrink-0" aria-hidden="true" />
+		</a>
+
+		<span
+			class="inline-flex shrink-0 items-center gap-1 font-medium text-foreground text-xs"
+		>
+			{t("card.more")}
+			<Icon
+				name="mdi:arrow-right"
+				class="size-3.5 transition group-hover:translate-x-0.5"
+				aria-hidden="true"
+			/>
+		</span>
+	</div>
+</article>

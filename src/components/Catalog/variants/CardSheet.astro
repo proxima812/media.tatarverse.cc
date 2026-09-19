@@ -1,0 +1,112 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import SaveButton from "@/components/Catalog/SaveButton.astro";
+import { useTranslations } from "@/i18n";
+import { peopleLabel } from "@/lib/catalog/labels";
+import { categoryLabel, tagLabel } from "@/lib/taxonomy";
+
+/**
+ * Вариант A - «Лист».
+ *
+ * Одна поверхность и одна рамка. Внутри карточки нет вложенных плашек:
+ * слои разделяет ритм и одна волосяная линия перед подвалом, а не три
+ * кольца подряд.
+ *
+ * Вместо списка фактов - `description`: в сетке из трех колонок связная
+ * фраза читается быстрее, чем четыре обрубленных пункта. Теги ушли вниз
+ * и стали простым текстом: до сих пор восемь пилюль одного веса занимали
+ * верхнюю треть карточки и спорили с названием.
+ *
+ * Ссылкой служит заголовок, растянутый псевдоэлементом на всю карточку -
+ * кликается любое место, но в списке ссылок у страницы остается одно
+ * осмысленное имя, а не «Подробнее» тридцать раз.
+ */
+
+interface Props {
+	card: CollectionEntry<"cards">;
+}
+
+const { card } = Astro.props;
+const { name, description, logo, url, categories, tags, peoples } = card.data;
+
+const locale = Astro.currentLocale ?? "ru";
+const t = useTranslations(locale);
+const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
+const domain = new URL(url).hostname.replace(/^www\./, "");
+
+/** Больше трех тегов в строку не помещается - остальные сворачиваются в «+N». */
+const VISIBLE_TAGS = 3;
+const shownTags = tags.slice(0, VISIBLE_TAGS);
+const hiddenTags = tags.length - shownTags.length;
+
+/** Раздел и народ - одна подпись под названием, а не две пилюли. */
+const subtitle = [
+	...categories.map((category) => categoryLabel(locale, category)),
+	...peoples.map((people) => peopleLabel(locale, people)),
+].join(" · ");
+---
+
+<article
+	class="group relative flex h-full w-full flex-col rounded-lg corner-squircle bg-background ring-1 ring-border transition duration-200 hover:-translate-y-0.5 hover:ring-foreground/25"
+>
+	<div class="flex items-start gap-3.5 p-5 pb-3.5">
+		<div class="shrink-0">
+			<CardLogo size="md" name={name} logo={logo} peoples={peoples} />
+		</div>
+
+		<div class="min-w-0 flex-1">
+			<h2 class="line-clamp-2 font-semibold text-base text-foreground leading-snug">
+				<a href={href} class="after:absolute after:inset-0 after:content-['']">
+					{name}
+				</a>
+			</h2>
+
+			<p class="mt-1 truncate text-muted-foreground text-xs">{subtitle}</p>
+		</div>
+
+		<div class="relative z-10 shrink-0">
+			<SaveButton cardId={card.id} locale={locale} />
+		</div>
+	</div>
+
+	<p class="line-clamp-3 px-5 text-muted-foreground text-sm leading-relaxed">
+		{description}
+	</p>
+
+	<div class="mt-auto">
+		<div
+			class="flex flex-wrap items-center gap-x-2 gap-y-1 px-5 pt-4 pb-4 text-muted-foreground/80 text-xs"
+		>
+			{shownTags.map((tag) => <span>#{tagLabel(locale, tag)}</span>)}
+			{hiddenTags > 0 && <span class="text-muted-foreground/50">+{hiddenTags}</span>}
+		</div>
+
+		<div
+			class="flex items-center justify-between gap-3 border-border/70 border-t px-5 py-3.5"
+		>
+			<a
+				href={url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="relative z-10 inline-flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs underline-offset-4 transition hover:text-foreground hover:underline"
+			>
+				<span class="truncate">{domain}</span>
+				<Icon name="mdi:open-in-new" class="size-3.5 shrink-0" aria-hidden="true" />
+			</a>
+
+			<span
+				class="inline-flex shrink-0 items-center gap-1 font-medium text-foreground text-xs"
+			>
+				{t("card.more")}
+				<Icon
+					name="mdi:arrow-right"
+					class="size-3.5 transition group-hover:translate-x-0.5"
+					aria-hidden="true"
+				/>
+			</span>
+		</div>
+	</div>
+</article>

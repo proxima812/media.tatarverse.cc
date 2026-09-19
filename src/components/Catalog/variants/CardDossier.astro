@@ -1,0 +1,119 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import SaveButton from "@/components/Catalog/SaveButton.astro";
+import { useTranslations } from "@/i18n";
+import { peopleLabel } from "@/lib/catalog/labels";
+import { categoryIcon, categoryLabel, tagLabel } from "@/lib/taxonomy";
+
+/**
+ * Вариант C - «Досье».
+ *
+ * Для тех, кому факты на карточке нужнее описания. Порядок чтения задан
+ * не рамками, а типографикой: мелкая прописная строка раздела, крупное
+ * название, факты, и только в самом низу - служебная строка с народом и
+ * тегами.
+ *
+ * Факты показываются первые три из четырех: четвертый почти всегда
+ * уводит карточку на лишнюю строку, а в сетке из трех колонок разнобой
+ * высот заметнее, чем потеря одного пункта - на странице проекта он
+ * никуда не делся.
+ */
+
+interface Props {
+	card: CollectionEntry<"cards">;
+}
+
+const { card } = Astro.props;
+const { name, facts, logo, url, categories, tags, peoples } = card.data;
+
+const locale = Astro.currentLocale ?? "ru";
+const t = useTranslations(locale);
+const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
+const domain = new URL(url).hostname.replace(/^www\./, "");
+
+const VISIBLE_FACTS = 3;
+const VISIBLE_TAGS = 3;
+const shownTags = tags.slice(0, VISIBLE_TAGS);
+const hiddenTags = tags.length - shownTags.length;
+
+/** Раздел один на карточку - первый; остальные видно на странице проекта. */
+const category = categories[0];
+
+const meta = [
+	...peoples.map((people) => peopleLabel(locale, people)),
+	...shownTags.map((tag) => `#${tagLabel(locale, tag)}`),
+	...(hiddenTags > 0 ? [`+${hiddenTags}`] : []),
+].join("  ");
+---
+
+<article
+	class="group relative flex h-full w-full flex-col rounded-lg corner-squircle bg-background ring-1 ring-border transition duration-200 hover:-translate-y-0.5 hover:ring-foreground/25"
+>
+	<div class="flex items-center justify-between gap-3 px-5 pt-4">
+		{category && (
+			<span
+				class="inline-flex min-w-0 items-center gap-1.5 font-semibold text-[0.6875rem] text-muted-foreground uppercase tracking-[0.08em]"
+			>
+				<Icon name={categoryIcon(category)} class="size-3.5 shrink-0" aria-hidden="true" />
+				<span class="truncate">{categoryLabel(locale, category)}</span>
+			</span>
+		)}
+
+		<div class="relative z-10 shrink-0">
+			<SaveButton cardId={card.id} locale={locale} />
+		</div>
+	</div>
+
+	<div class="flex items-center gap-3 px-5 pt-2">
+		<div class="shrink-0">
+			<CardLogo size="md" name={name} logo={logo} peoples={peoples} />
+		</div>
+
+		<h2 class="line-clamp-2 font-semibold text-foreground text-lg leading-tight">
+			<a href={href} class="after:absolute after:inset-0 after:content-['']">
+				{name}
+			</a>
+		</h2>
+	</div>
+
+	<ul class="mt-4 space-y-2 px-5 text-muted-foreground text-sm">
+		{facts.slice(0, VISIBLE_FACTS).map((fact) => (
+			<li class="flex gap-2.5 leading-snug">
+				<span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-border" aria-hidden="true" />
+				<span class="min-w-0">{fact}</span>
+			</li>
+		))}
+	</ul>
+
+	<div class="mt-auto">
+		<p class="truncate px-5 pt-4 pb-4 text-muted-foreground/70 text-xs">{meta}</p>
+
+		<div
+			class="flex items-center justify-between gap-3 border-border/70 border-t px-5 py-3.5"
+		>
+			<a
+				href={url}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="relative z-10 inline-flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs underline-offset-4 transition hover:text-foreground hover:underline"
+			>
+				<span class="truncate">{domain}</span>
+				<Icon name="mdi:open-in-new" class="size-3.5 shrink-0" aria-hidden="true" />
+			</a>
+
+			<span
+				class="inline-flex shrink-0 items-center gap-1 font-medium text-foreground text-xs"
+			>
+				{t("card.more")}
+				<Icon
+					name="mdi:arrow-right"
+					class="size-3.5 transition group-hover:translate-x-0.5"
+					aria-hidden="true"
+				/>
+			</span>
+		</div>
+	</div>
+</article>

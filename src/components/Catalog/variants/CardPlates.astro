@@ -1,0 +1,132 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import SaveButton from "@/components/Catalog/SaveButton.astro";
+import TaxonomyChip from "@/components/Catalog/TaxonomyChip.astro";
+import { useTranslations } from "@/i18n";
+import { peopleLabel } from "@/lib/catalog/labels";
+import { tagLabel } from "@/lib/taxonomy";
+import { meshGradient } from "@/lib/ui/meshGradient";
+
+/**
+ * Вариант D - «Плашки»: та же идея, что у нынешней карточки, но без ее
+ * трех бед.
+ *
+ * Шапка по-прежнему выезжает из корпуса отдельными плашками - прием
+ * узнаваемый, и от него не отказываемся. Разница в трех местах:
+ *
+ * 1. Один корпус вместо трех вложенных колец. Раньше на двух сантиметрах
+ *    было четыре границы подряд, и вложенность не означала ничего.
+ * 2. Нет провала сверху. Шапка перекрывала корпус на 32px, а корпус
+ *    отступал на 36+36px - между названием и содержимым висело пустое
+ *    поле в половину карточки. Теперь перекрытие и отступ согласованы.
+ * 3. Таксономия сведена к разделу и двум тегам. Восемь пилюль одного
+ *    веса забирали верх карточки себе; народ ушел в нижнюю строку.
+ */
+
+interface Props {
+	card: CollectionEntry<"cards">;
+}
+
+const { card } = Astro.props;
+const { name, facts, logo, url, categories, tags, peoples } = card.data;
+
+const locale = Astro.currentLocale ?? "ru";
+const t = useTranslations(locale);
+const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
+const domain = new URL(url).hostname.replace(/^www\./, "");
+
+const glow = meshGradient(name);
+
+const VISIBLE_FACTS = 3;
+const VISIBLE_TAGS = 2;
+const shownTags = tags.slice(0, VISIBLE_TAGS);
+const hiddenTags = tags.length - shownTags.length;
+
+const category = categories[0];
+const peoplesLine = peoples.map((people) => peopleLabel(locale, people)).join(", ");
+---
+
+<article class="group relative flex h-full w-full flex-col">
+	<div
+		class="-z-10 absolute inset-8 rounded-lg corner-squircle opacity-25 blur-2xl transition duration-300 group-hover:opacity-40"
+		style={glow}
+		aria-hidden="true"
+	></div>
+
+	<div class="relative z-20 flex items-center gap-2.5 px-4">
+		<div class="shrink-0 rounded-full corner-squircle bg-background p-1 ring-1 ring-border">
+			<CardLogo size="md" name={name} logo={logo} peoples={peoples} />
+		</div>
+
+		<h2
+			class="flex h-11 min-w-0 flex-1 items-center rounded-full bg-background px-4 font-semibold text-foreground text-sm ring-1 ring-border"
+		>
+			<a href={href} class="truncate after:absolute after:inset-0 after:content-['']">
+				{name}
+			</a>
+		</h2>
+
+		<div class="relative z-10 shrink-0">
+			<SaveButton cardId={card.id} locale={locale} />
+		</div>
+	</div>
+
+	<div
+		class="-mt-6 flex flex-1 flex-col rounded-lg corner-squircle bg-background pt-9 ring-1 ring-border"
+	>
+		<div class="flex flex-wrap items-center gap-1.5 px-5">
+			{category && (
+				<TaxonomyChip locale={locale} kind="category" value={category} size="sm" />
+			)}
+			{shownTags.map((tag) => (
+				<TaxonomyChip locale={locale} kind="tag" value={tag} size="sm" />
+			))}
+			{hiddenTags > 0 && (
+				<span class="text-muted-foreground/60 text-xs">+{hiddenTags}</span>
+			)}
+		</div>
+
+		<ul class="mt-4 space-y-2 px-5 text-muted-foreground text-sm">
+			{facts.slice(0, VISIBLE_FACTS).map((fact) => (
+				<li class="flex gap-2.5 leading-snug">
+					<span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-border" aria-hidden="true" />
+					<span class="min-w-0">{fact}</span>
+				</li>
+			))}
+		</ul>
+
+		<div class="mt-auto">
+			<p class="truncate px-5 pt-4 pb-3.5 text-muted-foreground/70 text-xs">
+				{peoplesLine}
+			</p>
+
+			<div
+				class="flex items-center justify-between gap-3 border-border/70 border-t px-5 py-3.5"
+			>
+				<a
+					href={url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="relative z-10 inline-flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs underline-offset-4 transition hover:text-foreground hover:underline"
+				>
+					<span class="truncate">{domain}</span>
+					<Icon name="mdi:open-in-new" class="size-3.5 shrink-0" aria-hidden="true" />
+				</a>
+
+				<span
+					class="inline-flex shrink-0 items-center gap-1 font-medium text-foreground text-xs"
+				>
+					{t("card.more")}
+					<Icon
+						name="mdi:arrow-right"
+						class="size-3.5 transition group-hover:translate-x-0.5"
+						aria-hidden="true"
+					/>
+				</span>
+			</div>
+		</div>
+	</div>
+</article>
