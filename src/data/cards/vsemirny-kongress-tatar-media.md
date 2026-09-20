@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["culture", "news", "society"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/vsemirny-kongress-tatar-media.png"
 ---

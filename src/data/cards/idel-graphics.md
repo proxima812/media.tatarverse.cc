@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["graphics"]
 tags: ["fashion", "design"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/idel-graphics.png"
 ---

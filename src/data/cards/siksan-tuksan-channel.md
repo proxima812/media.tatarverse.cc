@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["humor"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/siksan-tuksan-channel.png"
 ---

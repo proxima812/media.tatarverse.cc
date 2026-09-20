@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel", "community"]
 tags: ["society", "bilingual"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatariya-channel.png"
 ---

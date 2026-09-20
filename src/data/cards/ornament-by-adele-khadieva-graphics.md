@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["graphics", "author"]
 tags: ["designer", "fashion", "design", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ornament-by-adele-khadieva-graphics.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["society", "for-diaspora"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ekatatar-channel.png"
 ---

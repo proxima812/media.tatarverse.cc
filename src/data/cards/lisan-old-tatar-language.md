@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language"]
 peoples: ["tatar", "bashkir"]
+logo: "../../assets/images/logo/lisan-old-tatar-language.png"
 ---

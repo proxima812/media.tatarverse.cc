@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["community", "media"]
 tags: ["news", "society", "event"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/piter-tatar-community.png"
 ---

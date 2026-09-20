@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["journalist", "cinema", "magazine"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/baron-author.png"
 ---

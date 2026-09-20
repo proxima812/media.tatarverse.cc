@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["music", "news", "video", "podcast"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/urducktv-channel.png"
 ---

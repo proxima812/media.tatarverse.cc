@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author", "channel"]
 tags: ["language", "literature", "podcast"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/bookhane-author.png"
 ---

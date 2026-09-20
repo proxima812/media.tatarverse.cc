@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons", "channel"]
 tags: ["language", "history", "culture", "education", "blog", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/tuvgan-tilim-lessons.png"
 ---

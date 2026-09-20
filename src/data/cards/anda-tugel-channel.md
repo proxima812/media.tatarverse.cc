@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["language", "cuisine", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/anda-tugel-channel.png"
 ---

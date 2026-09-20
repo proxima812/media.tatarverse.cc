@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["musician", "music"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/provulok-author.png"
 ---

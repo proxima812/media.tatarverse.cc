@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["writer", "literature", "society", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/millet-haberlare-author.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["blogger", "linguist", "musician", "language", "music", "blog", "video"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/bulat-shaymi-author.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["language", "culture", "identity", "video", "podcast"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/into-the-tatarverse-channel.png"
 ---

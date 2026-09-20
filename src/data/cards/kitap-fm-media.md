@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media"]
 tags: ["literature", "music", "radio", "book", "audiobook"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/kitap-fm-media.png"
 ---

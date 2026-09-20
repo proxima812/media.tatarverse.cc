@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["musician", "composer", "folklore", "video"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/usein-bekirov-author.png"
 ---

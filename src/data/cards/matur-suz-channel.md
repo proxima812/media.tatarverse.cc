@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/matur-suz-channel.png"
 ---

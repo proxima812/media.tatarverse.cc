@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["blogger", "researcher", "culture", "travel", "blog"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/rais-gabitov-author.png"
 ---

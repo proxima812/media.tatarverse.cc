@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author", "lessons"]
 tags: ["teacher", "language", "education", "blog", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/15-daqqa-author.png"
 ---

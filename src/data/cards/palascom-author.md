@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["humor", "video"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/palascom-author.png"
 ---

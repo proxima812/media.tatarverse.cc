@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["for-diaspora", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/q-hub-crimean-platform.png"
 ---

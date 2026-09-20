@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons"]
 tags: ["language", "education", "app", "mobile-app", "school", "educational"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/bashbatyr-lessons.png"
 ---

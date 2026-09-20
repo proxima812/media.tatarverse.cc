@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons", "channel"]
 tags: ["language", "education", "video", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/ave-team-qirim-lessons.png"
 ---

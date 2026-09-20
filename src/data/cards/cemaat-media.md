@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["culture", "identity", "society"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/cemaat-media.png"
 ---

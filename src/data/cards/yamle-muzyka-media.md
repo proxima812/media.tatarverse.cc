@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media"]
 tags: ["music"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/yamle-muzyka-media.png"
 ---

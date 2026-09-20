@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons", "language"]
 tags: ["language", "education", "library", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/basqala-project-lessons.png"
 ---

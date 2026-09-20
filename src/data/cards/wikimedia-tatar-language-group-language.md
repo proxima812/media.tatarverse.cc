@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language", "society", "encyclopedia"]
 peoples: ["tatar", "bashkir"]
+logo: "../../assets/images/logo/wikimedia-tatar-language-group-language.png"
 ---

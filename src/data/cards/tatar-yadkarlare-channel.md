@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["history", "traditions", "heritage"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-yadkarlare-channel.png"
 ---

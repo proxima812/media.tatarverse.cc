@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons"]
 tags: ["language", "education", "app", "mobile-app", "interactive", "educational"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/bash-ort-lessons.png"
 ---

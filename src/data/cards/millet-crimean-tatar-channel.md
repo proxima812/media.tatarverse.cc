@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["culture", "news", "society", "technology", "television"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/millet-crimean-tatar-channel.png"
 ---

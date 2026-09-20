@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["society", "newsletter"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/american-tatar-association-newsletter-media.png"
 ---

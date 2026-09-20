@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["musician", "presenter", "music", "radio"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/aivaz-radiosy-author.png"
 ---

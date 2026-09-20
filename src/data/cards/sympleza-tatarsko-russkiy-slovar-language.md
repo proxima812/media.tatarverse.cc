@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["language"]
 tags: ["language", "mobile-app", "dictionary", "free"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/sympleza-tatarsko-russkiy-slovar-language.png"
 ---

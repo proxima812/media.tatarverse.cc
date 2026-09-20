@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["language"]
 tags: ["language", "dictionary"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/slovar-ganieva-language.png"
 ---

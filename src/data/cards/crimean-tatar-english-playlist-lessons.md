@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["lessons"]
 tags: ["language", "education", "video", "course", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/crimean-tatar-english-playlist-lessons.png"
 ---

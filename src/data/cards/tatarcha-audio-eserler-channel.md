@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media", "language"]
 tags: ["language", "literature", "book", "audiobook"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatarcha-audio-eserler-channel.png"
 ---

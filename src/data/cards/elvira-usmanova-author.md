@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author", "graphics"]
 tags: ["designer", "fashion", "design", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/elvira-usmanova-author.png"
 ---

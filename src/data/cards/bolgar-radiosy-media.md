@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["music", "culture", "news", "technology", "radio"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/bolgar-radiosy-media.png"
 ---

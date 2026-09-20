@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["activist", "language", "identity", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-prince-author.png"
 ---

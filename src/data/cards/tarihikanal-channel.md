@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["history", "heritage", "archive"]
 peoples: ["tatar", "bashkir"]
+logo: "../../assets/images/logo/tarihikanal-channel.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media", "language"]
 tags: ["language", "magazine", "book", "library"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-kniga-media.png"
 ---

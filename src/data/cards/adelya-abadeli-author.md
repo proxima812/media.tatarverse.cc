@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["performer", "language", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/adelya-abadeli-author.png"
 ---

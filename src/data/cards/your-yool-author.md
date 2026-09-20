@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author", "graphics"]
 tags: ["identity", "fashion", "art", "design", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/your-yool-author.png"
 ---

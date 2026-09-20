@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["language"]
 tags: ["language", "app", "mobile-app", "keyboard"]
 peoples: ["tatar", "bashkir"]
+logo: "../../assets/images/logo/tatarskaya-i-bashkirskaya-klaviatura-pro-language.png"
 ---

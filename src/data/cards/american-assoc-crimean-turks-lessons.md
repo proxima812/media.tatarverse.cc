@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["culture", "religion", "society", "for-diaspora"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/american-assoc-crimean-turks-lessons.png"
 ---

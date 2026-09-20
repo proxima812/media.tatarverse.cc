@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["community"]
 tags: ["history", "culture", "society", "youth", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/marifet-community.png"
 ---

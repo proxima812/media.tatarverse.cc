@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["language", "cinema", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-multfilm-channel.png"
 ---

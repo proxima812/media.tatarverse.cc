@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["history"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/arhiufa-channel.png"
 ---

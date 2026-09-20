@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["politics", "society"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatpolit-author.png"
 ---

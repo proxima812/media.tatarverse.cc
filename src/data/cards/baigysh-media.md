@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "book", "library"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/baigysh-media.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["blogger", "language", "humor", "blog", "video"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ilnar-idrisov-author.png"
 ---

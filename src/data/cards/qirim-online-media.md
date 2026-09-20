@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["music", "heritage", "archive"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/qirim-online-media.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["history", "heritage", "news", "society", "event"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ztrp-editorial-channel.png"
 ---

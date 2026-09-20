@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media", "community"]
 tags: ["language", "history", "culture", "heritage", "society", "archive"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/vatan-kirim-media.png"
 ---

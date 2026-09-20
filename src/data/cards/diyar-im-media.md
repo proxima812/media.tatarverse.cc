@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "history", "culture", "education", "library", "course", "dictionary", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/diyar-im-media.png"
 ---

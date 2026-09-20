@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["language", "education", "society", "course", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/north-american-tatar-summit-language.png"
 ---

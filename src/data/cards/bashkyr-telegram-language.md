@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/bashkyr-telegram-language.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media"]
 tags: ["literature", "music", "history", "culture"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/d-rt-media.png"
 ---

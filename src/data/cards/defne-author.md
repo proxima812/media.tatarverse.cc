@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["performer", "music", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/defne-author.png"
 ---

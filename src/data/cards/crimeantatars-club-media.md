@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media", "lessons"]
 tags: ["education", "video", "television", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/crimeantatars-club-media.png"
 ---

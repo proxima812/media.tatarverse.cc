@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["history", "culture", "identity", "video"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-lane-channel.png"
 ---

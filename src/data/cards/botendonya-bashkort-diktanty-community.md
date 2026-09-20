@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["community", "lessons"]
 tags: ["language", "education", "society", "educational"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/botendonya-bashkort-diktanty-community.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["museum"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/tamirlar-media.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["language", "lessons"]
 tags: ["language", "education", "mobile-app", "interactive", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/trenazher-tatarskogo-yazyka-language.png"
 ---

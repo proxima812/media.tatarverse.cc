@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["culture", "news", "society", "newspaper"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/kyzyl-tan-media.png"
 ---

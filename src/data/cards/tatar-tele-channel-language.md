@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["language"]
 tags: ["language", "music", "video", "book"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-tele-channel-language.png"
 ---

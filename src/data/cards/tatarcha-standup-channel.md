@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["language", "humor"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatarcha-standup-channel.png"
 ---

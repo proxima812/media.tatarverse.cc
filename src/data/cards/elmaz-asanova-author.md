@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["journalist", "history", "cinema", "television", "magazine"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/elmaz-asanova-author.png"
 ---

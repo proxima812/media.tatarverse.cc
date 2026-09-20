@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "history", "culture", "society"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/vilnius-tatar-community-publications.png"
 ---

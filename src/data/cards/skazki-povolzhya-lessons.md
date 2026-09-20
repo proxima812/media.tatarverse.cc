@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["lessons"]
 tags: ["folklore", "education", "library", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/skazki-povolzhya-lessons.png"
 ---

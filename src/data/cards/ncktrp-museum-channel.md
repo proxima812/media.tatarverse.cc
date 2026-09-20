@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["culture", "society", "museum", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ncktrp-museum-channel.png"
 ---

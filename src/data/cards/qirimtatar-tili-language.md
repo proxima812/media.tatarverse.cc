@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language", "education", "website", "library", "course", "dictionary", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/qirimtatar-tili-language.png"
 ---

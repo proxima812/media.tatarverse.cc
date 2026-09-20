@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["blogger", "language", "humor", "youth", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-malay-author.png"
 ---

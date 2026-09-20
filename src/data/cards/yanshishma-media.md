@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "children", "newspaper", "for-children"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/yanshishma-media.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["graphics"]
 tags: ["society", "design", "app", "keyboard", "font", "free"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/bashkort-fonts-graphics.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons"]
 tags: ["education", "children", "app", "mobile-app", "for-children", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/alifba-lessons.png"
 ---

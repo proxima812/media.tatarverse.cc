@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["language", "culture"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/mincult-rt-channel.png"
 ---

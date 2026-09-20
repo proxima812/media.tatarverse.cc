@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["blogger", "humor", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/azat-kashapov-author.png"
 ---

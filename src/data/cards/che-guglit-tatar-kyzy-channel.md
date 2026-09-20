@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["humor"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/che-guglit-tatar-kyzy-channel.png"
 ---

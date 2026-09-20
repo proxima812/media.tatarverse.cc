@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["blogger", "culture", "identity", "blog", "video"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/elza-is-author.png"
 ---

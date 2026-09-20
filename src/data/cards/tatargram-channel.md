@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel", "community"]
 tags: ["society"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatargram-channel.png"
 ---

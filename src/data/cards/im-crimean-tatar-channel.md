@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["culture", "heritage", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/im-crimean-tatar-channel.png"
 ---

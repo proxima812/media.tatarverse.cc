@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["culture", "magazine", "festival"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tabris-radif-channel.png"
 ---

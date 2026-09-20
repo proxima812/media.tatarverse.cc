@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["language", "culture", "news", "technology", "video", "television"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tnv-tatarstan-channel.png"
 ---

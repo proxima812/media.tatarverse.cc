@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "news"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-inform-media.png"
 ---

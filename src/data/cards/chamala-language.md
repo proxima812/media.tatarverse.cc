@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["language", "lessons"]
 tags: ["language", "education", "app", "mobile-app", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/chamala-language.png"
 ---

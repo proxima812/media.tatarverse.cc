@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["history", "architecture"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/arhitekturasi-channel.png"
 ---

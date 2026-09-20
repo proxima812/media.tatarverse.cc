@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["music", "education", "podcast", "radio", "course", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/canli-radio-media.png"
 ---

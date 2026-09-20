@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["history", "culture", "traditions", "society", "for-diaspora"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/american-turko-tatar-association-channel.png"
 ---

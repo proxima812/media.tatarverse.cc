@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["researcher", "religion", "society"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/diana-chester-brooklyn-tatars-author.png"
 ---

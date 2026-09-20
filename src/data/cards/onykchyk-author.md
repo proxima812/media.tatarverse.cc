@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["blogger", "language", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/onykchyk-author.png"
 ---

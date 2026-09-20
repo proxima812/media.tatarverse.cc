@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["history", "heritage", "news", "society", "archive"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/kirim-dernegi-editorial-channel.png"
 ---

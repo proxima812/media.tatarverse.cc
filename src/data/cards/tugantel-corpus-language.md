@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language", "technology"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tugantel-corpus-language.png"
 ---

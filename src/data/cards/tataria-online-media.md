@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["history", "culture", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tataria-online-media.png"
 ---

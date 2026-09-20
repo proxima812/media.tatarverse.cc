@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["media"]
 tags: ["music", "children", "radio", "for-children"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/saf-radio-media.png"
 ---

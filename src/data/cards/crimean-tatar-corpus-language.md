@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language", "technology"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/crimean-tatar-corpus-language.png"
 ---

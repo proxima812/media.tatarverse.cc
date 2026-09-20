@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["artist", "traditions", "identity", "art", "design", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/renata-asanova-author.png"
 ---

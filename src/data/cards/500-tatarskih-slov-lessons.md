@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons"]
 tags: ["education", "app", "mobile-app", "free", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/500-tatarskih-slov-lessons.png"
 ---

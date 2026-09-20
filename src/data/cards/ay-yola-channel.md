@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["video"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/ay-yola-channel.png"
 ---

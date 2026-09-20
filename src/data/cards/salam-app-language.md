@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["lessons"]
 tags: ["language", "education", "app", "mobile-app", "for-beginners", "interactive", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/salam-app-language.png"
 ---

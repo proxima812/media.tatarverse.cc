@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["graphics"]
 tags: ["art", "design", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/eldar-guseinov-ceramics-graphics.png"
 ---

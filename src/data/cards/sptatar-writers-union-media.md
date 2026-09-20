@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["literature", "news", "website"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/sptatar-writers-union-media.png"
 ---

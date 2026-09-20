@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["graphics"]
 tags: ["traditions", "design"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/ornek-alem-graphics.png"
 ---

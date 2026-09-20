@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["lessons", "media"]
 tags: ["language", "education", "children", "magazine", "for-children", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/armanchyk-lessons.png"
 ---

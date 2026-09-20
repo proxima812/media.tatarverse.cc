@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "literature", "culture", "magazine"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/bashkortostan-kyzy-media.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["community"]
 tags: ["literature", "poetry", "education", "society", "blog", "course", "festival", "educational"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/krimskiy-inzhir-community.png"
 ---

@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["news", "audiobook"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ipteshler-tatarlar-channel.png"
 ---

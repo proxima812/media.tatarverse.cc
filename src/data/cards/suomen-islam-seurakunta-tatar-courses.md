@@ -11,4 +11,5 @@ pubDate: "2026-08-21"
 categories: ["lessons"]
 tags: ["language", "history", "culture", "religion", "education", "society", "course", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/suomen-islam-seurakunta-tatar-courses.png"
 ---

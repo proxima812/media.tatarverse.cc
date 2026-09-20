@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["language", "history", "culture", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/qirimname-channel.png"
 ---

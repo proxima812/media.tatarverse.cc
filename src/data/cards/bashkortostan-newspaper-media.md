@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "politics", "society", "website", "newspaper"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/bashkortostan-newspaper-media.png"
 ---

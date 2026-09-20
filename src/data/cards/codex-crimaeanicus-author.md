@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["blogger", "language", "blog", "video"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/codex-crimaeanicus-author.png"
 ---

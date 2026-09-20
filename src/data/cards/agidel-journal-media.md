@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["literature", "politics", "society", "magazine"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/agidel-journal-media.png"
 ---

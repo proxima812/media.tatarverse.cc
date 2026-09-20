@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["identity", "cuisine", "blog"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/yuk-bar-channel.png"
 ---

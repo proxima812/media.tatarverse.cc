@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author", "language"]
 tags: ["linguist", "language", "literature", "technology", "keyboard", "ocr", "open-source"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/ilshat-s-etov-author.png"
 ---

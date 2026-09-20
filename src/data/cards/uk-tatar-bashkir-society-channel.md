@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["history", "culture", "society", "event", "for-diaspora"]
 peoples: ["tatar", "bashkir"]
+logo: "../../assets/images/logo/uk-tatar-bashkir-society-channel.png"
 ---

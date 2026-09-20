@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["author"]
 tags: ["blogger", "language", "traditions", "cuisine", "blog", "video"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-sylu-author.png"
 ---

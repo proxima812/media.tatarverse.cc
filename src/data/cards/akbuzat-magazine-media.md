@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["media"]
 tags: ["language", "literature", "poetry", "children", "magazine", "for-children"]
 peoples: ["bashkir"]
+logo: "../../assets/images/logo/akbuzat-magazine-media.png"
 ---

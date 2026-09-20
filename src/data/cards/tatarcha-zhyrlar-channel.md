@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["music"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatarcha-zhyrlar-channel.png"
 ---

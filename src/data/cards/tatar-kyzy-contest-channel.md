@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["channel"]
 tags: ["traditions", "education", "course", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/tatar-kyzy-contest-channel.png"
 ---

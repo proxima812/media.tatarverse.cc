@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["language", "travel", "blog"]
 peoples: ["crimean-tatar"]
+logo: "../../assets/images/logo/seyahat-delisi-author.png"
 ---

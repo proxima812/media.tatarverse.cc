@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["language"]
 tags: ["language", "technology", "language-model"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/written-tatar-corpus-language.png"
 ---

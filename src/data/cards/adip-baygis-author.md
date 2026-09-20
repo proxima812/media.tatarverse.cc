@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["writer", "translator", "language"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/adip-baygis-author.png"
 ---

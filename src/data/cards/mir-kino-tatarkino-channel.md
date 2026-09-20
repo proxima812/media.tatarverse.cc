@@ -10,4 +10,5 @@ pubDate: "2026-08-21"
 categories: ["channel"]
 tags: ["theatre", "cinema", "performance"]
 peoples: ["tatar", "bashkir"]
+logo: "../../assets/images/logo/mir-kino-tatarkino-channel.png"
 ---

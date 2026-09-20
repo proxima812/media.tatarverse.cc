@@ -10,4 +10,5 @@ pubDate: "2026-08-29"
 categories: ["author"]
 tags: ["language", "education", "website", "course", "educational"]
 peoples: ["tatar"]
+logo: "../../assets/images/logo/learn-tatar-author.png"
 ---
