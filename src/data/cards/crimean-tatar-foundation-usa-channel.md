@@ -6,7 +6,7 @@ facts:
   - "Организация основана в 2023 году"
   - "В направления работы входят исследования и документирование"
   - "Фонд сотрудничает с университетами и международными организациями"
-url: "https://crimeantatarfoundation.org/"
+url: "https://www.instagram.com/crimeantatar_foundation/"
 pubDate: "2026-08-21"
 categories: ["community"]
 tags: ["language", "history", "culture", "identity", "society"]
