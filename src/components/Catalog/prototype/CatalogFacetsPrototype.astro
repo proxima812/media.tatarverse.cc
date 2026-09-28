@@ -1,0 +1,418 @@
+---
+/*
+ * PROTOTYPE - выбросить после решения. Ветка `prototype/catalog-facets`.
+ *
+ * Вопрос: как должна выглядеть единая страница каталога - поиск + фасеты
+ * (народ, категория, группы тегов) + сортировка + чипы + состояние в URL.
+ * Три варианта на `/catalog?variant=A|B|C`, `?variant=current` - текущий каталог.
+ * Рендер целиком на клиенте из JSON-острова: это прототип, не production.
+ */
+import type { CollectionEntry } from "astro:content";
+import { getImage } from "astro:assets";
+import { peopleLabel } from "@/lib/catalog/labels";
+import {
+	CATEGORY_VALUES,
+	TAG_DEFINITIONS,
+	TAG_GROUP_VALUES,
+	categoryLabel,
+	tagGroupLabel,
+	tagLabel,
+	type Tag,
+} from "@/lib/taxonomy";
+
+interface Props {
+	cards: CollectionEntry<"cards">[];
+}
+
+const { cards } = Astro.props;
+const locale = "ru";
+
+const items = await Promise.all(
+	cards.map(async (card) => ({
+		id: card.id,
+		name: card.data.name,
+		description: card.data.description,
+		url: card.data.url,
+		date: card.data.pubDate.toISOString().slice(0, 10),
+		categories: card.data.categories,
+		tags: card.data.tags,
+		peoples: card.data.peoples,
+		logo: card.data.logo
+			? (await getImage({ src: card.data.logo, width: 96, format: "webp" })).src
+			: null,
+	})),
+);
+
+const data = {
+	items,
+	peoples: (["tatar", "bashkir", "crimean-tatar"] as const).map((id) => ({
+		id,
+		label: peopleLabel(locale, id),
+	})),
+	categories: CATEGORY_VALUES.map((id) => ({ id, label: categoryLabel(locale, id) })),
+	groups: TAG_GROUP_VALUES.map((id) => ({
+		id,
+		label: tagGroupLabel(locale, id),
+		tags: (Object.keys(TAG_DEFINITIONS) as Tag[])
+			.filter((tag) => TAG_DEFINITIONS[tag].group === id)
+			.map((tag) => ({ id: tag, label: tagLabel(locale, tag) })),
+	})),
+};
+---
+
+<div id="proto-root" hidden></div>
+<script type="application/json" id="proto-data" set:html={JSON.stringify(data)} />
+
+<div
+	id="proto-switcher"
+	class="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-1 rounded-full bg-[#ff3d00] px-2 py-1.5 font-mono text-sm text-white shadow-2xl"
+>
+	<button data-proto-step="-1" class="rounded-full px-3 py-1 hover:bg-white/20">←</button>
+	<span id="proto-label" class="min-w-56 text-center"></span>
+	<button data-proto-step="1" class="rounded-full px-3 py-1 hover:bg-white/20">→</button>
+</div>
+
+<script>
+type Item = {
+	id: string; name: string; description: string; url: string; date: string;
+	categories: string[]; tags: string[]; peoples: string[]; logo: string | null;
+};
+type Opt = { id: string; label: string };
+type Data = {
+	items: Item[]; peoples: Opt[]; categories: Opt[];
+	groups: (Opt & { tags: Opt[] })[];
+};
+
+const data: Data = JSON.parse(document.getElementById("proto-data")!.textContent!);
+const root = document.getElementById("proto-root")!;
+const current = document.querySelector<HTMLElement>("[data-proto-current]");
+
+const VARIANTS = [
+	["current", "текущий каталог"],
+	["A", "боковая панель фасетов"],
+	["B", "народы + выпадающие фильтры"],
+	["C", "поиск-первым, плотный список"],
+] as const;
+
+const tagLabel = new Map(data.groups.flatMap((g) => g.tags.map((t) => [t.id, t.label])));
+const tagGroup = new Map(data.groups.flatMap((g) => g.tags.map((t) => [t.id, g.id])));
+const catLabel = new Map(data.categories.map((c) => [c.id, c.label]));
+const peopleLabel = new Map(data.peoples.map((p) => [p.id, p.label]));
+
+const YO = String.fromCharCode(1105);
+const fold = (s: string) => s.toLowerCase().replaceAll(YO, "е");
+const hay = new Map(
+	data.items.map((i) => [
+		i.id,
+		fold([i.name, i.description, ...i.tags.map((t) => tagLabel.get(t) ?? ""), ...i.categories.map((c) => catLabel.get(c) ?? "")].join(" ")),
+	]),
+);
+
+function platform(url: string): string {
+	const host = new URL(url).hostname.replace(/^www\./, "");
+	const map: [RegExp, string][] = [
+		[/instagram/, "Instagram"], [/youtu/, "YouTube"], [/t\.me|telegram/, "Telegram"],
+		[/vk\.com|vkontakte/, "VK"], [/tiktok/, "TikTok"], [/music\.yandex|spotify|apple\.com/, "Музыка"],
+		[/dzen/, "Дзен"], [/facebook/, "Facebook"],
+	];
+	return map.find(([re]) => re.test(host))?.[1] ?? "Сайт";
+}
+
+/* ---------- состояние в URL ---------- */
+type State = {
+	variant: string; q: string; people: string[]; cat: string[]; tag: string[];
+	sort: "new" | "az"; view: "grid" | "list" | "az";
+};
+
+function readState(): State {
+	const p = new URLSearchParams(location.search);
+	const list = (k: string) => (p.get(k) ?? "").split(",").filter(Boolean);
+	return {
+		variant: p.get("variant") ?? "A",
+		q: p.get("q") ?? "",
+		people: list("people"), cat: list("cat"), tag: list("tag"),
+		sort: p.get("sort") === "az" ? "az" : "new",
+		view: (["grid", "list", "az"].includes(p.get("view") ?? "") ? p.get("view") : "grid") as State["view"],
+	};
+}
+
+let state = readState();
+
+function writeState() {
+	const p = new URLSearchParams();
+	p.set("variant", state.variant);
+	if (state.q) p.set("q", state.q);
+	for (const k of ["people", "cat", "tag"] as const) if (state[k].length) p.set(k, state[k].join(","));
+	if (state.sort !== "new") p.set("sort", state.sort);
+	if (state.view !== "grid") p.set("view", state.view);
+	history.replaceState(null, "", `${location.pathname}?${p.toString().replaceAll("%2C", ",")}`);
+}
+
+/* ---------- фильтрация и счетчики ---------- */
+type Dim = "q" | "people" | "cat" | "tag";
+
+function matches(i: Item, skip?: Dim): boolean {
+	if (skip !== "q" && state.q) {
+		const words = fold(state.q).split(/\s+/).filter(Boolean);
+		const h = hay.get(i.id)!;
+		if (!words.every((w) => h.includes(w))) return false;
+	}
+	if (skip !== "people" && state.people.length && !state.people.some((p) => i.peoples.includes(p))) return false;
+	if (skip !== "cat" && state.cat.length && !state.cat.some((c) => i.categories.includes(c))) return false;
+	if (skip !== "tag" && !state.tag.every((t) => i.tags.includes(t))) return false;
+	return true;
+}
+
+function results(): Item[] {
+	const list = data.items.filter((i) => matches(i));
+	return state.sort === "az"
+		? list.sort((a, b) => a.name.localeCompare(b.name, "ru"))
+		: list.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/** Счетчик значения - сколько карточек будет, если значение учесть, при прочих фильтрах. */
+function counts(dim: "people" | "cat" | "tag", field: "peoples" | "categories" | "tags") {
+	const base = data.items.filter((i) => matches(i, dim === "tag" ? undefined : dim));
+	const m = new Map<string, number>();
+	for (const i of base) for (const v of i[field]) m.set(v, (m.get(v) ?? 0) + 1);
+	return m;
+}
+
+const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
+const isNew = (date: string) => Date.now() - Date.parse(date) < 30 * 864e5;
+const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+/* ---------- общие кусочки ---------- */
+function logo(i: Item, size = "size-12") {
+	return i.logo
+		? `<img src="${i.logo}" alt="" loading="lazy" class="${size} shrink-0 rounded-full corner-squircle object-cover bg-muted">`
+		: `<div class="${size} shrink-0 rounded-full corner-squircle bg-muted grid place-items-center font-bold text-muted-foreground">${esc(i.name[0] ?? "")}</div>`;
+}
+
+function badge(text: string, cls = "bg-muted text-muted-foreground") {
+	return `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${cls}">${esc(text)}</span>`;
+}
+
+function meta(i: Item) {
+	return [
+		badge(platform(i.url), "bg-foreground/5 text-foreground"),
+		...i.peoples.map((p) => badge(peopleLabel.get(p) ?? p)),
+		isNew(i.date) ? badge("новое", "bg-emerald-600 text-white") : "",
+	].join(" ");
+}
+
+function gridCard(i: Item) {
+	return `<a href="/projects/${i.id}" class="group flex flex-col gap-3 rounded-lg corner-squircle border border-border bg-background p-4 transition hover:border-foreground/30 hover:shadow-md">
+		<div class="flex items-center gap-3">${logo(i)}<div class="min-w-0"><div class="truncate font-semibold">${esc(i.name)}</div><div class="text-xs text-muted-foreground">${esc(i.categories.map((c) => catLabel.get(c)).join(" · "))}</div></div></div>
+		<p class="line-clamp-2 text-sm text-muted-foreground">${esc(i.description)}</p>
+		<div class="mt-auto flex flex-wrap gap-1">${meta(i)}</div></a>`;
+}
+
+function listRow(i: Item) {
+	return `<a href="/projects/${i.id}" class="flex items-center gap-4 border-b border-border py-3 transition hover:bg-muted/60 px-2 rounded-sm">
+		${logo(i, "size-10")}
+		<div class="min-w-0 flex-1"><div class="flex items-center gap-2"><span class="font-semibold">${esc(i.name)}</span>${isNew(i.date) ? badge("новое", "bg-emerald-600 text-white") : ""}</div>
+		<p class="truncate text-sm text-muted-foreground">${esc(i.description)}</p></div>
+		<div class="hidden shrink-0 gap-1 md:flex">${badge(platform(i.url), "bg-foreground/5 text-foreground")}${i.peoples.map((p) => badge(peopleLabel.get(p) ?? p)).join("")}</div></a>`;
+}
+
+function azIndex(list: Item[]) {
+	const by = new Map<string, Item[]>();
+	for (const i of [...list].sort((a, b) => a.name.localeCompare(b.name, "ru"))) {
+		const l = (i.name[0] ?? "#").toUpperCase();
+		by.set(l, [...(by.get(l) ?? []), i]);
+	}
+	return `<nav class="sticky top-16 z-10 mb-4 flex flex-wrap gap-1 bg-background/90 py-2 backdrop-blur">${[...by.keys()].map((l) => `<a href="#az-${l}" class="rounded-sm px-2 py-1 text-sm font-medium hover:bg-muted">${l}</a>`).join("")}</nav>
+	<div class="columns-1 gap-8 sm:columns-2 lg:columns-3">${[...by].map(([l, is]) => `<section id="az-${l}" class="mb-6 break-inside-avoid"><h3 class="mb-1 text-2xl font-bold">${l}</h3>${is.map((i) => `<a href="/projects/${i.id}" class="flex items-baseline justify-between gap-2 py-0.5 text-sm hover:underline"><span>${esc(i.name)}</span><span class="text-xs text-muted-foreground">${esc(platform(i.url))}</span></a>`).join("")}</section>`).join("")}</div>`;
+}
+
+function renderResults(list: Item[]) {
+	if (!list.length)
+		return `<div class="py-20 text-center text-muted-foreground">Ничего не нашлось. <button data-action="reset" class="underline">Сбросить фильтры</button></div>`;
+	if (state.view === "list") return `<div>${list.map(listRow).join("")}</div>`;
+	if (state.view === "az") return azIndex(list);
+	return `<div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">${list.map(gridCard).join("")}</div>`;
+}
+
+function chips() {
+	const all = [
+		...state.people.map((v) => ["people", v, peopleLabel.get(v)]),
+		...state.cat.map((v) => ["cat", v, catLabel.get(v)]),
+		...state.tag.map((v) => ["tag", v, tagLabel.get(v)]),
+	];
+	if (state.q) all.unshift(["q", "", `«${state.q}»`]);
+	if (!all.length) return "";
+	return `<div class="flex flex-wrap items-center gap-2">${all
+		.map(([k, v, l]) => `<button data-action="remove" data-dim="${k}" data-value="${v}" class="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-sm text-primary-foreground hover:opacity-80">${esc(l ?? v!)} <span aria-hidden="true">×</span></button>`)
+		.join("")}<button data-action="reset" class="text-sm text-muted-foreground underline hover:text-foreground">Сбросить все</button></div>`;
+}
+
+function search(cls = "") {
+	return `<label class="relative block ${cls}"><span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">⌕</span>
+		<input data-search type="search" value="${esc(state.q)}" placeholder="Название, тема, роль…" class="w-full rounded-md corner-squircle border border-border bg-background py-3 pl-10 pr-4 outline-none focus:border-foreground"></label>`;
+}
+
+function segmented(name: string, options: [string, string][], value: string) {
+	return `<div class="inline-flex rounded-md corner-squircle bg-muted p-1">${options
+		.map(([v, l]) => `<button data-action="${name}" data-value="${v}" aria-pressed="${v === value}" class="rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground aria-pressed:bg-background aria-pressed:text-foreground">${l}</button>`)
+		.join("")}</div>`;
+}
+
+const sortCtl = () => segmented("sort", [["new", "Новые"], ["az", "А-Я"]], state.sort);
+const viewCtl = () => segmented("view", [["grid", "Плитка"], ["list", "Список"], ["az", "Указатель"]], state.view);
+
+function checkRow(dim: string, o: Opt, n: number, on: boolean) {
+	return `<button data-action="toggle" data-dim="${dim}" data-value="${o.id}" aria-pressed="${on}" ${!n && !on ? "disabled" : ""}
+		class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-muted disabled:opacity-35 disabled:hover:bg-transparent">
+		<span class="grid size-4 shrink-0 place-items-center rounded-[4px] border border-border ${on ? "bg-primary border-primary text-primary-foreground" : ""} text-[10px]">${on ? "✓" : ""}</span>
+		<span class="flex-1">${esc(o.label)}</span><span class="tabular-nums text-xs text-muted-foreground">${n}</span></button>`;
+}
+
+/* ---------- Вариант A: боковая панель ---------- */
+function variantA() {
+	const list = results();
+	const pc = counts("people", "peoples"), cc = counts("cat", "categories"), tc = counts("tag", "tags");
+	const groups = data.groups
+		.map((g) => {
+			const opts = g.tags.filter((t) => tc.get(t.id) || state.tag.includes(t.id)).sort((a, b) => (tc.get(b.id) ?? 0) - (tc.get(a.id) ?? 0));
+			if (!opts.length) return "";
+			const open = opts.some((t) => state.tag.includes(t.id)) || g.id === "topics";
+			return `<details ${open ? "open" : ""} class="border-t border-border py-2"><summary class="cursor-pointer py-1 text-sm font-semibold">${esc(g.label)}</summary>
+				<div class="max-h-64 overflow-y-auto">${opts.map((t) => checkRow("tag", t, tc.get(t.id) ?? 0, state.tag.includes(t.id))).join("")}</div></details>`;
+		})
+		.join("");
+	return `<div class="grid gap-8 lg:grid-cols-[260px_1fr]">
+		<aside class="lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:self-start lg:overflow-y-auto pr-2">
+			<div class="pb-3"><div class="pb-1 text-sm font-semibold">Народ</div>${data.peoples.map((p) => checkRow("people", p, pc.get(p.id) ?? 0, state.people.includes(p.id))).join("")}</div>
+			<div class="border-t border-border py-3"><div class="pb-1 text-sm font-semibold">Категория</div>${data.categories.map((c) => checkRow("cat", c, cc.get(c.id) ?? 0, state.cat.includes(c.id))).join("")}</div>
+			${groups}
+		</aside>
+		<div class="flex min-w-0 flex-col gap-4">
+			${search()}
+			<div class="flex flex-wrap items-center justify-between gap-3"><div class="text-sm text-muted-foreground"><b class="text-foreground">${list.length}</b> из ${data.items.length}</div><div class="flex gap-2">${sortCtl()}${viewCtl()}</div></div>
+			${chips()}
+			${renderResults(list)}
+		</div></div>`;
+}
+
+/* ---------- Вариант B: народы крупно + выпадающие фильтры ---------- */
+function variantB() {
+	const list = results();
+	const pc = counts("people", "peoples"), cc = counts("cat", "categories"), tc = counts("tag", "tags");
+	const peopleCards = [["", "Все народы", data.items.filter((i) => matches(i, "people")).length] as const, ...data.peoples.map((p) => [p.id, p.label, pc.get(p.id) ?? 0] as const)]
+		.map(([id, l, n]) => {
+			const on = id ? state.people.includes(id) : !state.people.length;
+			return `<button data-action="people-only" data-value="${id}" aria-pressed="${on}" class="flex flex-col items-start rounded-lg corner-squircle border border-border p-4 text-left transition hover:border-foreground/40 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground">
+				<span class="text-lg font-semibold first-letter:uppercase">${esc(l)}</span><span class="text-sm opacity-70">${n} проектов</span></button>`;
+		}).join("");
+	const dropdown = (label: string, dim: string, opts: Opt[], m: Map<string, number>, sel: string[]) =>
+		`<details class="relative" data-dropdown><summary class="flex cursor-pointer list-none items-center gap-1 rounded-full border px-4 py-2 text-sm font-medium ${sel.length ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-foreground/40"}">${esc(label)}${sel.length ? ` · ${sel.length}` : ""} <span class="text-xs">▾</span></summary>
+		<div class="absolute left-0 top-full z-30 mt-2 max-h-80 w-64 overflow-y-auto rounded-md corner-squircle border border-border bg-background p-2 shadow-xl">${opts.filter((o) => m.get(o.id) || sel.includes(o.id)).map((o) => checkRow(dim, o, m.get(o.id) ?? 0, sel.includes(o.id))).join("") || '<div class="p-2 text-sm text-muted-foreground">Нет вариантов</div>'}</div></details>`;
+	return `<div class="flex flex-col gap-5">
+		<div class="grid grid-cols-2 gap-3 md:grid-cols-4">${peopleCards}</div>
+		<div class="flex flex-wrap items-center gap-2">
+			${search("min-w-64 flex-1")}
+			${dropdown("Категория", "cat", data.categories, cc, state.cat)}
+			${data.groups.map((g) => dropdown(g.label, "tag", g.tags, tc, state.tag.filter((t) => tagGroup.get(t) === g.id))).join("")}
+		</div>
+		<div class="flex flex-wrap items-center justify-between gap-3">${chips() || '<span></span>'}<div class="flex items-center gap-2"><span class="text-sm text-muted-foreground">${list.length} проектов</span>${sortCtl()}${viewCtl()}</div></div>
+		${renderResults(list)}</div>`;
+}
+
+/* ---------- Вариант C: поиск-первым ---------- */
+function variantC() {
+	const list = results();
+	const q = fold(state.q.trim());
+	const suggest: [string, string, string][] = q.length >= 2
+		? [
+				...data.peoples.filter((p) => fold(p.label).includes(q)).map((p) => ["people", p.id, `Народ: ${p.label}`] as [string, string, string]),
+				...data.categories.filter((c) => fold(c.label).includes(q)).map((c) => ["cat", c.id, `Категория: ${c.label}`] as [string, string, string]),
+				...data.groups.flatMap((g) => g.tags.filter((t) => fold(t.label).includes(q)).map((t) => ["tag", t.id, `${g.label}: ${t.label}`] as [string, string, string])),
+			].slice(0, 6)
+		: [];
+	const tc = counts("tag", "tags");
+	const popular = [...tc].sort((a, b) => b[1] - a[1]).filter(([t]) => !state.tag.includes(t)).slice(0, 14);
+	const byCat = new Map<string, Item[]>();
+	for (const i of list) { const c = i.categories[0]!; byCat.set(c, [...(byCat.get(c) ?? []), i]); }
+	const body = state.view === "list" || state.view === "grid"
+		? [...byCat].map(([c, is]) => `<section class="mb-8"><h2 class="sticky top-16 z-10 mb-1 flex items-baseline gap-2 bg-background/90 py-2 text-lg font-bold backdrop-blur">${esc(catLabel.get(c) ?? c)}<span class="text-sm font-normal text-muted-foreground">${is.length}</span></h2>${is.map(listRow).join("")}</section>`).join("") || renderResults([])
+		: renderResults(list);
+	return `<div class="mx-auto flex max-w-3xl flex-col gap-4">
+		<div class="relative">${search("text-lg")}
+			${suggest.length ? `<div class="mt-2 flex flex-wrap gap-2">${suggest.map(([d, v, l]) => `<button data-action="apply-suggest" data-dim="${d}" data-value="${v}" class="rounded-full border border-dashed border-foreground/40 px-3 py-1 text-sm hover:bg-muted">+ ${esc(l)}</button>`).join("")}</div>` : ""}
+		</div>
+		<div class="flex flex-wrap gap-2">${segmented("people-only", [["", "Все"], ...data.peoples.map((p) => [p.id, p.label] as [string, string])], state.people[0] ?? "")}</div>
+		${chips()}
+		<div class="flex flex-wrap gap-1.5">${popular.map(([t, n]) => `<button data-action="toggle" data-dim="tag" data-value="${t}" class="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground hover:text-foreground">${esc(tagLabel.get(t) ?? t)} <span class="text-xs opacity-60">${n}</span></button>`).join("")}</div>
+		<div class="flex items-center justify-between gap-2 border-b border-border pb-3"><span class="text-sm text-muted-foreground">${list.length} проектов · сгруппировано по категории</span><div class="flex gap-2">${sortCtl()}${segmented("view", [["list", "Группы"], ["az", "Указатель"]], state.view === "az" ? "az" : "list")}</div></div>
+		${body}</div>`;
+}
+
+/* ---------- рендер и события ---------- */
+const RENDER: Record<string, () => string> = { A: variantA, B: variantB, C: variantC };
+
+function render() {
+	const label = VARIANTS.find(([k]) => k === state.variant) ?? VARIANTS[1];
+	document.getElementById("proto-label")!.textContent = `${label[0]} (${label[1]})`;
+	const isCurrent = state.variant === "current";
+	if (current) current.hidden = !isCurrent;
+	root.hidden = isCurrent;
+	if (isCurrent) return writeState();
+
+	const focused = document.activeElement?.matches("[data-search]");
+	const caret = (document.activeElement as HTMLInputElement | null)?.selectionStart ?? null;
+	const openDropdowns = [...root.querySelectorAll("details[data-dropdown]")].map((d, n) => ((d as HTMLDetailsElement).open ? n : -1));
+	root.innerHTML = (RENDER[state.variant] ?? variantA)();
+	root.querySelectorAll<HTMLDetailsElement>("details[data-dropdown]").forEach((d, n) => { if (openDropdowns.includes(n)) d.open = true; });
+	if (focused) {
+		const input = root.querySelector<HTMLInputElement>("[data-search]")!;
+		input.focus();
+		if (caret !== null) input.setSelectionRange(caret, caret);
+	}
+	writeState();
+}
+
+function update(patch: Partial<State>) { state = { ...state, ...patch }; render(); }
+
+root.addEventListener("input", (e) => {
+	const t = e.target as HTMLElement;
+	if (t.matches("[data-search]")) update({ q: (t as HTMLInputElement).value });
+});
+
+root.addEventListener("click", (e) => {
+	const b = (e.target as HTMLElement).closest<HTMLElement>("[data-action]");
+	if (!b) return;
+	const { action, dim, value = "" } = b.dataset;
+	const key = dim as "people" | "cat" | "tag";
+	switch (action) {
+		case "toggle": return update({ [key]: toggle(state[key], value) });
+		case "apply-suggest": return update({ [key]: toggle(state[key], value), q: "" });
+		case "remove": return dim === "q" ? update({ q: "" }) : update({ [key]: state[key].filter((v) => v !== value) });
+		case "reset": return update({ q: "", people: [], cat: [], tag: [] });
+		case "people-only": return update({ people: value ? [value] : [] });
+		case "sort": return update({ sort: value as State["sort"] });
+		case "view": return update({ view: value as State["view"] });
+	}
+});
+
+// закрывать выпадашки варианта B по клику снаружи
+document.addEventListener("click", (e) => {
+	for (const d of root.querySelectorAll<HTMLDetailsElement>("details[data-dropdown][open]"))
+		if (!d.contains(e.target as Node)) d.open = false;
+});
+
+function step(dir: number) {
+	const i = VARIANTS.findIndex(([k]) => k === state.variant);
+	update({ variant: VARIANTS[(i + dir + VARIANTS.length) % VARIANTS.length]![0] });
+	scrollTo({ top: 0 });
+}
+
+document.querySelectorAll<HTMLElement>("[data-proto-step]").forEach((b) => b.addEventListener("click", () => step(Number(b.dataset.protoStep))));
+document.addEventListener("keydown", (e) => {
+	if ((e.target as HTMLElement).closest("input, textarea, [contenteditable]")) return;
+	if (e.key === "ArrowLeft") step(-1);
+	if (e.key === "ArrowRight") step(1);
+});
+
+render();
+</script>

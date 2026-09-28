@@ -8,6 +8,7 @@ import { sortByPubDate } from "@/lib/catalog/sort";
 import type { PageLocale } from "@/lib/routes/pageLocale";
 import { useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
+import CatalogFacetsPrototype from "@/components/Catalog/prototype/CatalogFacetsPrototype.astro";
 
 interface Props {
 	locale: PageLocale;
@@ -26,6 +27,7 @@ const categories = getAllCategories(cards);
 	title={t("catalog.pageTitle")}
 	description={t("meta.catalog.description")}
 >
+	<div data-proto-current hidden={import.meta.env.DEV}>
 	<div class="flex flex-wrap items-center justify-between gap-3">
 		<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
 			{t("catalog.pageTitle")}
@@ -40,4 +42,6 @@ const categories = getAllCategories(cards);
 		</div>
 	</div>
 	<Catalog locale={locale} cards={cards} categories={categories} />
+	</div>
+	{import.meta.env.DEV && locale === "ru" && <CatalogFacetsPrototype cards={cards} />}
 </Layout>
