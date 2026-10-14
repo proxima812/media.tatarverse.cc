@@ -34,16 +34,16 @@ const icon = size === "md" ? "size-5" : "size-4.5";
 	data-card-id={cardId}
 	aria-pressed="false"
 	aria-label={t("saved.add")}
-	class={`group relative inline-flex cursor-pointer shrink-0 items-center justify-center rounded-full bg-background text-muted-foreground text-sm ring-1 ring-border transition hover:text-foreground ${sizes[size]}`}
+	class={`group relative inline-flex cursor-pointer shrink-0 items-center justify-center rounded-full bg-background/90 text-muted-foreground text-sm ring-1 ring-border-strong ring-inset backdrop-blur-sm transition duration-150 ease-snappy hover:text-foreground active:scale-[0.92] aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:ring-transparent motion-reduce:active:scale-100 ${sizes[size]}`}
 >
 	<Icon
-		name="mdi:heart-outline"
+		name="tabler:bookmark"
 		class={`${icon} group-aria-pressed:hidden`}
 		aria-hidden="true"
 	/>
 	<Icon
-		name="mdi:cards-heart"
-		class={`hidden text-red-500 group-aria-pressed:block ${icon}`}
+		name="tabler:bookmark-filled"
+		class={`hidden group-aria-pressed:block ${icon}`}
 		aria-hidden="true"
 	/>
 

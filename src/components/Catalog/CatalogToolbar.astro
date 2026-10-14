@@ -1,10 +1,11 @@
 ---
-import { categoryIcon, categoryLabel } from "@/lib/taxonomy";
+import { categoryLabel } from "@/lib/taxonomy";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import StrokeIcon from "@/components/ui/StrokeIcon.astro";
 import type { Category } from "@/lib/taxonomy";
 import Button from "@/components/ui/Button.astro";
+import CategoryTile from "@/components/ui/CategoryTile.astro";
 import Tooltip from "@/components/ui/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -25,13 +26,13 @@ const entries = [
 	{
 		href: getRelativeLocaleUrl(locale, "catalog"),
 		label: t("catalog.category.all"),
-		icon: "mdi:view-grid-outline",
+		category: undefined,
 		active: activeCategory === undefined,
 	},
 	...categories.map((category) => ({
 		href: getRelativeLocaleUrl(locale, `catalog/${category}`),
 		label: categoryLabel(locale, category),
-		icon: categoryIcon(category),
+		category,
 		active: category === activeCategory,
 	})),
 ];
@@ -54,26 +55,25 @@ const entries = [
  * рисовалась на несколько px выше своего же layout-бокса.
  */
 /*
- * Категории и переключатель вида - один и тот же сегментед-контрол: серая
- * дорожка, на ней активный сегмент белой плашкой. Раньше вкладки были
- * отдельными серыми пилюлями с черной активной, и рядом с переключателем
- * читались как другой элемент управления.
+ * Категории - контурные чипы с иконкой в тон категории; активная залита
+ * основным цветом. Цветной квадрат остается и на активном чипе: по нему
+ * категория узнается в шапке страницы, в рядах главной и здесь одинаково.
  */
 const tabClass =
-	"inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-4 py-2 font-medium text-muted-foreground text-sm transition hover:text-foreground aria-[current=page]:bg-background aria-[current=page]:text-foreground";
+	"inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full pr-3.5 pl-2 text-muted-foreground text-sm ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.97] aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground aria-[current=page]:ring-transparent motion-reduce:active:scale-100";
 
 /** Пункт того же списка тегов, но в диалоге - строкой на всю ширину. */
 const dialogLinkClass =
-	"flex items-center gap-2 rounded-sm px-3 py-2 font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground";
+	"flex items-center gap-2.5 rounded-sm px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:font-medium aria-[current=page]:text-foreground";
 
 const viewClass =
-	"group relative rounded-sm p-2 text-muted-foreground transition hover:text-foreground aria-pressed:bg-background aria-pressed:text-foreground";
+	"group relative rounded-full p-2 text-muted-foreground transition-colors hover:text-foreground aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs";
 ---
 
-<div class="flex flex-wrap items-center justify-between gap-3 pb-8">
+<div class="flex flex-wrap items-center justify-between gap-3 pb-5">
 	<nav
 		aria-label={t("catalog.category.label")}
-		class="min-w-0 flex-1 rounded-md corner-squircle bg-muted p-1.5"
+		class="min-w-0 flex-1"
 	>
 		<!--
 			Ряд категорий прокручивается по горизонтали: их число растет с
@@ -90,11 +90,15 @@ const viewClass =
 		-->
 		<ul
 			data-category-list
-			class="flex items-center gap-1 overflow-x-auto overflow-y-hidden scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent_0,black_var(--fade-start,0px),black_calc(100%-var(--fade-end,0px)),transparent_100%)] data-[fade-end=true]:[--fade-end:3rem] data-[fade-start=true]:[--fade-start:3rem] [&::-webkit-scrollbar]:hidden">
+			class="flex items-center gap-1.5 overflow-x-auto overflow-y-hidden scroll-smooth [scrollbar-width:none] [mask-image:linear-gradient(to_right,transparent_0,black_var(--fade-start,0px),black_calc(100%-var(--fade-end,0px)),transparent_100%)] data-[fade-end=true]:[--fade-end:3rem] data-[fade-start=true]:[--fade-start:3rem] [&::-webkit-scrollbar]:hidden">
 			{entries.map((entry) => (
 					<li data-category-item>
 						<a href={entry.href} class={tabClass} aria-current={entry.active ? "page" : undefined}>
-							<Icon name={entry.icon} class="size-4 shrink-0" aria-hidden="true" />
+							{entry.category ? (
+								<CategoryTile category={entry.category} size="sm" />
+							) : (
+								<Icon name="tabler:layout-grid" class="size-5 shrink-0 p-0.5" aria-hidden="true" />
+							)}
 							{entry.label}
 						</a>
 					</li>
@@ -110,7 +114,7 @@ const viewClass =
 			<li class="sm:hidden">
 				<Button
 					preset="outline"
-					radius="sm"
+					radius="full"
 					data-categories-open
 					aria-haspopup="dialog"
 					aria-controls="catalog-categories-dialog"
@@ -123,7 +127,7 @@ const viewClass =
 		</ul>
 	</nav>
 
-	<fieldset class="flex items-center gap-1 rounded-md corner-squircle bg-muted p-1.5">
+	<fieldset class="flex items-center gap-0.5 rounded-full bg-muted p-1">
 		<legend class="sr-only">{t("catalog.view.label")}</legend>
 
 		<button
@@ -173,7 +177,11 @@ const viewClass =
 		{entries.map((entry) => (
 				<li>
 					<a href={entry.href} class={dialogLinkClass} aria-current={entry.active ? "page" : undefined}>
-						<Icon name={entry.icon} class="size-4 shrink-0" aria-hidden="true" />
+						{entry.category ? (
+								<CategoryTile category={entry.category} size="sm" />
+							) : (
+								<Icon name="tabler:layout-grid" class="size-5 shrink-0 p-0.5" aria-hidden="true" />
+							)}
 						{entry.label}
 					</a>
 				</li>
@@ -199,7 +207,8 @@ function setupCategoryOverflow(list: HTMLElement) {
 		?.closest("li");
 	if (!moreItem || items.length === 0) return;
 
-	const GAP_PX = 8;
+	// Совпадает с `gap-1.5` у списка.
+	const GAP_PX = 6;
 
 	const recalc = () => {
 		for (const item of items) item.classList.remove("hidden");

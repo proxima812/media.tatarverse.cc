@@ -1,6 +1,8 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import CatalogCard from "@/components/Catalog/CatalogCard.astro";
+import type { LocaleCode } from "@/config/types";
+import { searchIndex } from "@/lib/catalog/glossary";
 
 interface Props {
 	cards: CollectionEntry<"cards">[];
@@ -14,6 +16,7 @@ const { cards, initial = 12, chunk = 12 } = Astro.props;
 
 /* Первую порцию рендерим сразу, остальные храним в template.
  * CatalogList сохраняет ссылки на все проекты в DOM. */
+const locale = (Astro.currentLocale ?? "ru") as LocaleCode;
 const head = cards.slice(0, initial);
 const rest = cards.slice(initial);
 
@@ -27,12 +30,14 @@ for (let i = 0; i < rest.length; i += chunk) {
 
 	<div
 		data-catalog-items
-		class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
+		class="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
 	>
 		{head.map((card) => (
 				<div
 					data-catalog-item
 					data-tags={card.data.tags.join(",")}
+					data-peoples={card.data.peoples.join(",")}
+					data-search={searchIndex(card, locale)}
 					class="flex [&[hidden]]:hidden"
 				>
 					<CatalogCard card={card} />
@@ -46,6 +51,8 @@ for (let i = 0; i < rest.length; i += chunk) {
 						<div
 							data-catalog-item
 							data-tags={card.data.tags.join(",")}
+							data-peoples={card.data.peoples.join(",")}
+							data-search={searchIndex(card, locale)}
 							class="flex [&[hidden]]:hidden"
 						>
 							<CatalogCard card={card} />

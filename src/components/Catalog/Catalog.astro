@@ -4,6 +4,9 @@ import CatalogGrid from "@/components/Catalog/CatalogGrid.astro";
 import CatalogList from "@/components/Catalog/CatalogList.astro";
 import CatalogTagFilter from "@/components/Catalog/CatalogTagFilter.astro";
 import CatalogToolbar from "@/components/Catalog/CatalogToolbar.astro";
+import PeopleSign from "@/components/Catalog/PeopleSign.astro";
+import SearchField from "@/components/ui/SearchField.astro";
+import { peopleLabel } from "@/lib/catalog/labels";
 import { getTagCounts } from "@/lib/catalog/categories";
 import { useTranslations } from "@/i18n";
 import type { Category } from "@/lib/taxonomy";
@@ -21,6 +24,14 @@ const { locale, cards, categories, activeCategory } = Astro.props;
 const t = useTranslations(locale);
 const tagCounts = getTagCounts(cards);
 
+const PEOPLES = ["tatar", "bashkir", "crimean-tatar"] as const;
+const peopleCounts = Object.fromEntries(
+	PEOPLES.map((people) => [
+		people,
+		cards.filter((card) => card.data.peoples.includes(people)).length,
+	]),
+);
+
 /*
  * Обе раскладки рендерятся в HTML, переключение - атрибутом `data-view`
  * на корне (Tailwind-варианты `group-data-[view=...]`). Так вид работает без
@@ -36,6 +47,32 @@ const tagCounts = getTagCounts(cards);
 		categories={categories}
 		activeCategory={activeCategory}
 	/>
+	<!-- Липкая панель под шапкой (`top-16` = 64px): поиск по тексту и народы.
+	     Оба условия складываются с тегами ниже - фильтр один, полей три. -->
+	<div
+		class="-mx-5 sticky top-16 z-20 mb-2 flex flex-wrap items-center gap-3 border-border border-y bg-background/90 px-5 py-3.5 backdrop-blur-md"
+	>
+		<SearchField
+			data-catalog-search
+			placeholder={t("catalog.search.placeholder")}
+			aria-label={t("catalog.search.placeholder")}
+			class="w-full sm:max-w-sm"
+		/>
+		<div role="group" aria-label={t("card.peoples")} class="flex flex-wrap gap-1.5">
+			{PEOPLES.map((people) => (
+					<button
+						type="button"
+						data-catalog-people={people}
+						aria-pressed="false"
+						class="inline-flex h-8 items-center gap-2 rounded-full pr-3 pl-1.5 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.96] aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:ring-transparent motion-reduce:active:scale-100"
+					>
+						<PeopleSign locale={locale} people={people} />
+						<span class="first-letter:uppercase">{peopleLabel(locale, people)}</span>
+						<span class="font-mono text-[11px] opacity-60">{peopleCounts[people]}</span>
+					</button>
+				))}
+		</div>
+	</div>
 	<CatalogTagFilter
 		locale={locale}
 		tagCounts={tagCounts}
@@ -53,12 +90,30 @@ const tagCounts = getTagCounts(cards);
 </section>
 
 <script>
+import { foldSearchText } from "@/lib/catalog/searchText";
 import type { Tag } from "@/lib/taxonomy";
 
 const VIEW_STORAGE_KEY = "catalog:view";
 
 function isView(value: string | null): value is "grid" | "list" {
 	return value === "grid" || value === "list";
+}
+
+/*
+ * Три условия фильтра складываются: теги приходят событием
+ * `catalog:filter` от `CatalogTagFilter`, текст и народы - из панели над
+ * ним. Состояние одно, на корне каталога, и каждое изменение любого из
+ * трех полей пересчитывает видимость целиком - так условия не могут
+ * разойтись между собой.
+ *
+ * Перед фильтрацией шлется `catalog:before-filter`: сетка по нему
+ * раскрывает все отложенные чанки, иначе совпадение из еще не
+ * подгруженной части каталога не нашлось бы.
+ */
+interface FilterState {
+	tags: Tag[];
+	query: string;
+	peoples: Set<string>;
 }
 
 function setupCatalog(root: HTMLElement) {
@@ -86,12 +141,21 @@ function setupCatalog(root: HTMLElement) {
 	const stored = localStorage.getItem(VIEW_STORAGE_KEY);
 	if (isView(stored) && stored !== root.dataset.view) applyView(stored);
 
-	root.addEventListener("catalog:filter", (event) => {
-		const selected = (event as CustomEvent<{ tags: Tag[] }>).detail.tags;
+	const state: FilterState = { tags: [], query: "", peoples: new Set() };
+
+	const applyFilter = () => {
+		const query = foldSearchText(state.query.trim());
 		const items = root.querySelectorAll<HTMLElement>("[data-catalog-item]");
+
 		for (const item of items) {
 			const tags = (item.dataset.tags ?? "").split(",").filter(Boolean);
-			item.hidden = !selected.every((tag) => tags.includes(tag));
+			const peoples = (item.dataset.peoples ?? "").split(",");
+			item.hidden = !(
+				state.tags.every((tag) => tags.includes(tag)) &&
+				(query === "" || (item.dataset.search ?? "").includes(query)) &&
+				(state.peoples.size === 0 ||
+					peoples.some((people) => state.peoples.has(people)))
+			);
 		}
 
 		const visible = root.querySelectorAll(
@@ -105,7 +169,37 @@ function setupCatalog(root: HTMLElement) {
 			"[data-catalog-filter-empty]",
 		);
 		if (empty) empty.hidden = visible > 0;
+	};
+
+	const refilter = () => {
+		root.dispatchEvent(new CustomEvent("catalog:before-filter"));
+		applyFilter();
+	};
+
+	root.addEventListener("catalog:filter", (event) => {
+		state.tags = (event as CustomEvent<{ tags: Tag[] }>).detail.tags;
+		applyFilter();
 	});
+
+	root
+		.querySelector<HTMLInputElement>("[data-catalog-search]")
+		?.addEventListener("input", (event) => {
+			state.query = (event.target as HTMLInputElement).value;
+			refilter();
+		});
+
+	for (const chip of root.querySelectorAll<HTMLButtonElement>(
+		"[data-catalog-people]",
+	)) {
+		chip.addEventListener("click", () => {
+			const people = chip.dataset.catalogPeople ?? "";
+			const on = !state.peoples.has(people);
+			if (on) state.peoples.add(people);
+			else state.peoples.delete(people);
+			chip.setAttribute("aria-pressed", String(on));
+			refilter();
+		});
+	}
 }
 
 for (const root of document.querySelectorAll<HTMLElement>("[data-catalog]")) {

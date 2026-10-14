@@ -1,42 +1,58 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { peopleLabel } from "@/lib/catalog/labels";
-import { categoryLabel, tagLabel } from "@/lib/taxonomy";
+import { Icon } from "astro-icon/components";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import PeopleSign from "@/components/Catalog/PeopleSign.astro";
+import TaxonomyChip from "@/components/Catalog/TaxonomyChip.astro";
+import type { LocaleCode } from "@/config/types";
+import { searchIndex } from "@/lib/catalog/glossary";
 
 interface Props {
 	card: CollectionEntry<"cards">;
 }
 
 const { card } = Astro.props;
-const { name, categories, tags, peoples } = card.data;
+const { name, description, logo, url, categories, tags, peoples } = card.data;
 
-const locale = Astro.currentLocale ?? "ru";
+const locale = (Astro.currentLocale ?? "ru") as LocaleCode;
+const [mainCategory] = categories;
+
+/** Домен вместо полного URL: в строке важен источник, а не путь. */
+const domain = new URL(url).hostname.replace(/^www\./, "");
 const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
 ---
 
+<!-- Строка списка в духе таблицы проектов Vercel: логотип, имя с доменом,
+     одна строка описания, категория, знаки народов и стрелка, которая
+     выезжает при наведении. На узком экране остаются логотип, имя и
+     стрелка - описание и метки уходят первыми. -->
 <a
 	href={href}
 	data-catalog-item
 	data-catalog-list-item
 	data-tags={tags.join(",")}
-	class="flex content-auto [contain-intrinsic-size:auto_4rem] items-center justify-between gap-4 border-border border-b px-4 py-5 transition hover:bg-muted/60 [&[hidden]]:hidden"
+	data-peoples={peoples.join(",")}
+	data-search={searchIndex(card, locale)}
+	class="group grid content-auto [contain-intrinsic-size:auto_4.5rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-border border-b px-4 py-3.5 transition-colors duration-150 hover:bg-subtle md:grid-cols-[auto_minmax(12rem,1fr)_minmax(0,1.6fr)_auto_auto] [&[hidden]]:hidden"
 >
-	<span class="min-w-0 truncate font-medium text-base text-foreground">
-		{name}
+	<CardLogo size="md" name={name} logo={logo} peoples={peoples} />
+	<span class="min-w-0">
+		<span class="block truncate font-semibold text-foreground text-sm tracking-tight">{name}</span>
+		<span class="block truncate font-mono text-faint text-xs">{domain}</span>
 	</span>
-
-	<span
-		class="flex shrink-0 items-center gap-3 text-muted-foreground text-xs uppercase tracking-wide"
-	>
-		<span
-			>{categories.map((category) => categoryLabel(locale, category)).join(", ")}</span
-		>
-		<span class="hidden md:inline"
-			>{tags.map((tag) => tagLabel(locale, tag)).join(", ")}</span
-		>
-		<span class="hidden sm:inline"
-			>{peoples.map((people) => peopleLabel(locale, people)).join(", ")}</span
-		>
+	<span class="hidden truncate text-muted-foreground text-sm md:block">{description}</span>
+	<span class="hidden items-center gap-2 md:flex">
+		{mainCategory && (
+			<TaxonomyChip locale={locale} kind="category" value={mainCategory} size="sm" />
+		)}
+		<span class="flex gap-1">
+			{peoples.map((people) => <PeopleSign locale={locale} people={people} />)}
+		</span>
 	</span>
+	<Icon
+		name="tabler:arrow-up-right"
+		class="size-4 text-faint transition duration-200 ease-snappy group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+		aria-hidden="true"
+	/>
 </a>

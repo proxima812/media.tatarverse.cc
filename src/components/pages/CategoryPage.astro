@@ -1,15 +1,15 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { Icon } from "astro-icon/components";
 import Catalog from "@/components/Catalog/Catalog.astro";
 import { cardsByCategory } from "@/lib/catalog/categories";
 import { sortByPubDate } from "@/lib/catalog/sort";
 import type { Category } from "@/lib/taxonomy";
-import { categoryIcon, categoryLabel } from "@/lib/taxonomy";
+import { categoryLabel } from "@/lib/taxonomy";
 import type { PageLocale } from "@/lib/routes/pageLocale";
 import Breadcrumbs from "@/components/layout/Breadcrumbs.astro";
-import { useTranslations } from "@/i18n";
+import CategoryTile from "@/components/ui/CategoryTile.astro";
+import { usePlural, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -22,6 +22,7 @@ interface Props {
 const { locale, category, cards, categories } = Astro.props;
 
 const t = useTranslations(locale);
+const plural = usePlural(locale);
 const filtered = sortByPubDate(cardsByCategory(cards, category));
 
 /** "Карточки по {категория} ({count})" - заголовок и `<title>` в одном месте. */
@@ -44,37 +45,28 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 		]}
 	/>
 
-	<div class="flex flex-wrap items-center justify-between gap-3">
-		<div class="flex flex-wrap items-center gap-x-6 gap-y-3">
-			<h1 class="font-bold text-3xl text-balance sm:text-4xl">
-				{t("catalog.byCategoryPrefix")}
-			</h1>
-			<div
-				class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-muted/60 text-muted-foreground"
-			>
-				<Icon
-					name={categoryIcon(category)}
-					class="size-4.5 text-muted-foreground"
-					aria-hidden="true"
-				/>
-				<span class=" text-muted-foreground"
-					>{categoryLabel(locale, category)}</span
+	<!-- Заголовок категории: иконка в тон категории и название крупно. Слова
+	     «Проекты в категории» остаются в `h1` строкой-ярлыком над названием -
+	     так заголовок для поисковика и скринридера по-прежнему полный. -->
+	<div class="flex flex-wrap items-end justify-between gap-4">
+		<div class="flex items-end gap-4">
+			<CategoryTile category={category} size="lg" class="mb-1.5" />
+			<h1 class="text-foreground">
+				<span class="mb-2 block font-medium font-mono text-faint text-xs uppercase tracking-wider">
+					{t("catalog.byCategoryPrefix")}
+				</span>
+				<span
+					class="block font-semibold text-[clamp(2.5rem,5.5vw,4.5rem)] text-balance leading-[0.98] tracking-[-0.05em]"
 				>
-			</div>
+					{categoryLabel(locale, category)}
+				</span>
+			</h1>
 		</div>
-		<div class="text-muted-foreground flex items-center space-x-2 font-medium">
-			<Icon
-				name="mdi:card-multiple-outline"
-				class="size-4.5"
-				aria-hidden="true"
-			/>
-			<span>{filtered.length}</span>
-		</div>
+		<p class="font-mono text-muted-foreground text-sm">
+			<span class="text-foreground">{filtered.length}</span>
+			{plural("stats.projects", filtered.length)}
+		</p>
 	</div>
-
-	<!-- Переключатель категорий рисуется и у пустого раздела: без него со
-	     страницы нового раздела некуда уйти, кроме как назад в браузере.
-	     Сетку заменяет строка о том, что здесь пока пусто. -->
 	<Catalog
 		locale={locale}
 		cards={filtered}

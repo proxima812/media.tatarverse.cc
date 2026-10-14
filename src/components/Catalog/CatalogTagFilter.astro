@@ -31,12 +31,13 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 <details
 	data-tag-filter
 	data-available-tags={tags.join(",")}
-	class="group mb-8 rounded-md corner-squircle border border-border bg-background"
+	class="group mb-8 border-border border-b"
 >
 	<summary
-		class="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md corner-squircle px-4 py-3 font-medium text-foreground transition hover:bg-muted/60 [&::-webkit-details-marker]:hidden"
+		class="flex cursor-pointer list-none items-center justify-between gap-4 py-3.5 font-medium text-foreground text-sm [&::-webkit-details-marker]:hidden"
 	>
 		<span class="flex items-center gap-2">
+			<Icon name="tabler:tags" class="size-4 text-muted-foreground" aria-hidden="true" />
 			{t("catalog.filter.label")}
 			<!--
 				Число тегов, а не карточек: справа в строке уже стоит счетчик
@@ -44,15 +45,15 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 				читалось как ошибка. Здесь оно постоянное - это размер словаря,
 				по которому фильтруют.
 			-->
-			<span class="font-normal text-muted-foreground text-sm">{tags.length}</span>
+			<span class="font-mono font-normal text-faint text-xs">{tags.length}</span>
 			<span
 				data-tag-filter-count
 				hidden
-				class="rounded-full bg-primary px-2 py-0.5 text-primary-foreground text-xs"
+				class="rounded-full bg-primary px-2 py-0.5 font-mono text-[11px] text-primary-foreground"
 			></span>
 		</span>
 		<span class="flex items-center gap-2 text-muted-foreground text-sm">
-			<output data-catalog-result-count>{cardCount}</output>
+			<output data-catalog-result-count class="font-mono text-xs">{cardCount}</output>
 			<!--
 			     Шеврон - единственный знак того, что блок раскрывается: у `summary`
 			     убран маркер (`list-none` и скрытый `::-webkit-details-marker`), а
@@ -61,21 +62,21 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 			     скрипта и без класса, который надо ставить на открытие.
 			-->
 			<Icon
-				name="mdi:chevron-down"
-				class="size-5 transition-transform duration-200 group-open:rotate-180"
+				name="tabler:chevron-down"
+				class="size-4 transition-transform duration-200 ease-snappy group-open:rotate-180"
 				aria-hidden="true"
 			/>
 		</span>
 	</summary>
 
-	<div class="border-border border-t px-4 py-5">
+	<div class="pt-2 pb-7">
 		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{groups.map(({ group, tags: values }) => (
 					<fieldset>
-						<legend class="mb-2 font-semibold text-sm text-foreground">
+						<legend class="mb-3 font-medium font-mono text-[11px] text-faint uppercase tracking-wider">
 							{tagGroupLabel(locale, group)}
 						</legend>
-						<div class="flex flex-wrap gap-2">
+						<div class="flex flex-wrap gap-1.5">
 							{values.map((value) => (
 									<label class="cursor-pointer">
 										<input
@@ -85,9 +86,9 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 											data-tag-filter-input
 											class="peer sr-only"
 										/>
-										<span class="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-muted-foreground text-sm transition peer-checked:bg-primary peer-checked:text-primary-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary hover:text-foreground peer-checked:hover:text-primary-foreground">
+										<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:ring-transparent peer-checked:hover:bg-primary/86 peer-checked:hover:text-primary-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground">
 											<span>{tagLabel(locale, value)}</span>
-											<span class="text-xs opacity-70">{tagCounts.get(value)}</span>
+											<span class="font-mono text-[11px] opacity-60">{tagCounts.get(value)}</span>
 										</span>
 									</label>
 								))}

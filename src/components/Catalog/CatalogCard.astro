@@ -1,107 +1,20 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getRelativeLocaleUrl } from "astro:i18n";
-import { Icon } from "astro-icon/components";
-import CardLogo from "@/components/Catalog/CardLogo.astro";
-import PeopleBadge from "@/components/Catalog/PeopleBadge.astro";
-import SaveButton from "@/components/Catalog/SaveButton.astro";
-import TaxonomyChip from "@/components/Catalog/TaxonomyChip.astro";
-import Button from "@/components/ui/Button.astro";
-import { useTranslations } from "@/i18n";
-import { meshGradient } from "@/lib/ui/meshGradient";
+import ProjectCover from "@/components/Catalog/ProjectCover.astro";
+import type { LocaleCode } from "@/config/types";
 
+/**
+ * Карточка каталога - та же обложка, что в рядах главной, плюс закладка.
+ * Одна карточка на весь сайт: раньше у каталога был свой многослойный
+ * корпус с фактами и тегами, и проект в сетке выглядел иначе, чем на
+ * главной. Факты и теги живут на странице проекта, куда ведет карточка.
+ */
 interface Props {
 	card: CollectionEntry<"cards">;
 }
 
 const { card } = Astro.props;
-const { name, facts, logo, url, categories, tags, peoples } = card.data;
-
-const locale = Astro.currentLocale ?? "ru";
-const t = useTranslations(locale);
-const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
-
-/** Домен вместо полного URL: на карточке важен источник, а не путь. */
-const domain = new URL(url).hostname.replace(/^www\./, "");
-
-const glow = meshGradient(name);
+const locale = (Astro.currentLocale ?? "ru") as LocaleCode;
 ---
 
-<article class="group relative flex w-full flex-col">
-	<div
-		class="-z-10 absolute inset-4 rounded-lg corner-squircle opacity-30 blur-2xl"
-		style={glow}
-		aria-hidden="true"
-	></div>
-
-	<div class="relative z-20 flex h-16 items-center gap-3 px-5">
-		<div
-			class="shrink-0 rounded-full corner-squircle bg-background ring-1 ring-border"
-		>
-			<CardLogo size="lg" name={name} logo={logo} peoples={peoples} />
-		</div>
-
-		<h2
-			class="flex min-w-0 text-sm flex-1 items-center rounded-md corner-squircle bg-background px-4 py-2 font-medium text-foreground ring-1 ring-border"
-		>
-			<span class="truncate">{name}</span>
-		</h2>
-
-		<SaveButton cardId={card.id} locale={locale} />
-	</div>
-
-	<div class="-mt-8 relative flex flex-1 flex-col">
-		<div
-			class="flex flex-1 flex-col gap-1.5 rounded-lg corner-squircle bg-background p-2.5 pt-9 shadow-body ring-1 ring-border"
-		>
-			<div
-				class="flex flex-1 flex-col gap-4 rounded-md corner-squircle bg-background px-5 pt-9 pb-6 shadow-plate ring-1 ring-border/55"
-			>
-				<div class="flex flex-wrap items-center gap-1.5">
-					{categories.map((category) => (
-							<TaxonomyChip locale={locale} kind="category" value={category} size="sm" />
-						))}
-
-					{tags.map((tag) => (
-							<TaxonomyChip locale={locale} kind="tag" value={tag} size="sm" />
-						))}
-
-					{peoples.map((people) => (
-							<PeopleBadge locale={locale} people={people} size="sm" />
-						))}
-				</div>
-
-				<ul class="space-y-2 text-muted-foreground text-sm">
-					{facts.map((fact) => (
-							<li class="flex gap-2.5">
-								<span
-									class="mt-2 h-1 w-1 shrink-0 rounded-full bg-border"
-									aria-hidden="true"
-								/>
-								{fact}
-							</li>
-						))}
-				</ul>
-			</div>
-			<div class="flex items-center justify-between gap-3 px-2.5 pt-1 pb-1.5">
-				<Button href={href} preset="solid" size="sm" radius="sm">
-					{t("card.more")}
-				</Button>
-
-				<a
-					href={url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs underline-offset-4 transition hover:text-foreground hover:underline"
-				>
-					<span class="truncate">{domain}</span>
-					<Icon
-						name="mdi:open-in-new"
-						class="size-3.5 shrink-0"
-						aria-hidden="true"
-					/>
-				</a>
-			</div>
-		</div>
-	</div>
-</article>
+<ProjectCover card={card} locale={locale} save />
