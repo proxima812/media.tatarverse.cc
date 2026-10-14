@@ -28,9 +28,17 @@ type Props = {
 	locale: LocaleCode;
 	size?: "sm" | "md";
 	href?: string | undefined;
+	class?: string | undefined;
 } & ({ kind: "category"; value: Category } | { kind: "tag"; value: Tag });
 
-const { locale, size = "md", href, kind, value } = Astro.props;
+const {
+	locale,
+	size = "md",
+	href,
+	class: className,
+	kind,
+	value,
+} = Astro.props;
 
 const padding = size === "sm" ? "px-2 py-0.5" : "px-2.5 py-1";
 
@@ -40,11 +48,13 @@ const chipClass =
 				"inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-background text-muted-foreground text-xs ring-1 ring-border-strong ring-inset",
 				padding,
 				href && "transition hover:bg-muted hover:text-foreground",
+				className,
 			)
 		: cn(
 				"inline-block whitespace-nowrap rounded-full bg-muted text-muted-foreground text-xs",
 				padding,
 				href && "transition hover:bg-border hover:text-foreground",
+				className,
 			);
 
 const Element = href ? "a" : "span";

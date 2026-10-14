@@ -51,7 +51,16 @@ export function prepareGlossary(
 		}));
 }
 
-function searchIndex(card: CollectionEntry<"cards">, locale: LocaleCode): string {
+/**
+ * Строка поиска карточки: название, описание и подписи таксономии в локали
+ * страницы, свернутые `searchHaystack`. Одна и та же для указателя на
+ * `/search` и для фильтров главной и каталога - иначе одно слово находило
+ * бы проект в одном месте и не находило в другом.
+ */
+export function searchIndex(
+	card: CollectionEntry<"cards">,
+	locale: LocaleCode,
+): string {
 	const { name, description, categories, tags, peoples } = card.data;
 
 	const parts = [

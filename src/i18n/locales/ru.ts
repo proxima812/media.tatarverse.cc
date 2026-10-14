@@ -124,4 +124,20 @@ export default {
 	"notFound.description":
 		"Страница не найдена. Возможно, она была удалена или перемещена.",
 	"notFound.heading": "Ошибка 404 - такой страницы не существует",
+	/* Главная «Журнал»: заголовок со знаками народов и ряды по категориям. */
+	"home.hero.lead": "Проекты на",
+	"home.hero.tatar": "татарском,",
+	"home.hero.bashkir": "башкирском",
+	"home.hero.and": "и",
+	"home.hero.crimean": "крымскотатарском",
+	"home.hero.sub":
+		"в одном каталоге: каналы, медиа, авторы, уроки и языковые технологии.",
+	"home.hero.all": "Смотреть каталог",
+	"home.rows.label": "Проекты по категориям",
+	"home.rows.search": "Найти проект, автора или тему",
+	"home.rows.people": "Народ",
+	"home.rows.all": "Все",
+	"home.rows.found": "из",
+	"home.rows.empty": "Ничего не нашлось.",
+	"home.rows.add": "Добавьте проект",
 } satisfies Dictionary;

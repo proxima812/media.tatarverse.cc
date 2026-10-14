@@ -1,18 +1,11 @@
 ---
 import { getCollection } from "astro:content";
-import authorPhoto from "@/assets/author.jpg";
 import { localizeCards } from "@/lib/catalog/localize";
-import MainTitle from "@/components/MainTitle.astro";
 import { homeContent } from "@/lib/home/content";
 import type { PageLocale } from "@/lib/routes/pageLocale";
+import CategoryRows from "@/components/home/CategoryRows.astro";
 import FAQ from "@/components/home/FAQ.astro";
-import Features from "@/components/home/Features.astro";
-import LogoMarquee from "@/components/home/LogoMarquee.astro";
-import LogoStack from "@/components/home/LogoStack.astro";
-import Quote from "@/components/home/Quote.astro";
-import SearchShowcase from "@/components/home/SearchShowcase.astro";
-import StatField from "@/components/home/StatField.astro";
-import StickyList from "@/components/home/StickyList.astro";
+import JournalHero from "@/components/home/JournalHero.astro";
 import { useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -35,16 +28,10 @@ const markdownURL = locale === "en" ? "/en.md" : "/index.md";
 	description={t("meta.description")}
 	markdownURL={markdownURL}
 >
-	<LogoStack />
-	<MainTitle locale={locale} />
-	<SearchShowcase locale={locale} />
-	<Features
-		heading={content.features.heading}
-		items={[...content.features.items]}
-	/>
-	<StatField locale={locale} cards={cards} />
-	<StickyList locale={locale} cards={cards} />
-	<Quote photo={authorPhoto} {...content.quote} />
-	<LogoMarquee locale={locale} cards={cards} />
+	<!-- Главная «Журнал»: заголовок, ряды проектов по категориям и FAQ.
+	     Больше ничего: каталог говорит сам за себя, а вопросы внизу
+	     отвечают тем, кто дочитал. -->
+	<JournalHero locale={locale} count={cards.length} />
+	<CategoryRows locale={locale} cards={cards} />
 	<FAQ title={content.faq.title} items={[...content.faq.items]} />
 </Layout>

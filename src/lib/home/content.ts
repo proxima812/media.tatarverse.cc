@@ -1,4 +1,3 @@
-import { config } from "main.config";
 import type { PageLocale } from "@/lib/routes/pageLocale";
 
 /**
@@ -12,52 +11,21 @@ import type { PageLocale } from "@/lib/routes/pageLocale";
  *
  * Дефолты пропов в самих компонентах остаются нейтральными дефолтами
  * стартера: главная передает свой контент явно, а не полагается на них.
+ *
+ * После перехода на «Журнал» из текстовых блоков главной остался только
+ * FAQ: заголовок и ряды берут строки из словаря, а блоки возможностей и
+ * цитата ушли вместе со своими компонентами.
  */
-
-interface HomeItem {
-	readonly title: string;
-	readonly description: string;
-}
-
 interface FaqItem {
 	readonly question: string;
 	readonly answer: string;
 }
 
 interface HomeContent {
-	readonly features: {
-		readonly heading: string;
-		readonly items: readonly HomeItem[];
-	};
 	readonly faq: { readonly title: string; readonly items: readonly FaqItem[] };
-	readonly quote: {
-		readonly quote: string;
-		readonly name: string;
-		readonly position: string;
-	};
 }
 
 const ru: HomeContent = {
-	features: {
-		heading: "Все в одном каталоге - это удобно",
-		items: [
-			{
-				title: "Находите за секунды",
-				description:
-					"Поиск по названию, описанию и тегам сужает каталог по мере ввода - а рядом весь список по алфавиту.",
-			},
-			{
-				title: "Сохраняйте понравившееся",
-				description:
-					"Отмечайте проекты сердечком - они собираются на отдельной странице и остаются в браузере без всякой регистрации.",
-			},
-			{
-				title: "Легко добавить проект",
-				description:
-					"На странице «Добавить проект» есть форма - заполните ее, и после модерации карточка появится в каталоге.",
-			},
-		],
-	},
 	faq: {
 		title: "Часто задаваемые вопросы",
 		items: [
@@ -103,35 +71,9 @@ const ru: HomeContent = {
 			},
 		],
 	},
-	/*
-	 * Русская цитата читается из `main.config.ts`: он остается единственным
-	 * файлом, который правят под новый проект. Перевод живет здесь, рядом с
-	 * остальным английским текстом главной.
-	 */
-	quote: config.site.quote,
 };
 
 const en: HomeContent = {
-	features: {
-		heading: "One catalog - three ways to use it.",
-		items: [
-			{
-				title: "Find it in seconds",
-				description:
-					"Search by name, description, and tags narrows the catalog as you type - with the full A-Z list right next to it.",
-			},
-			{
-				title: "Keep what you like",
-				description:
-					"Heart a project and it lands on your saved page - stored in the browser, no account needed.",
-			},
-			{
-				title: "Easy to add a project",
-				description:
-					'The "Add a project" page has a form - fill it in, and once it\'s reviewed the card appears in the catalog.',
-			},
-		],
-	},
 	faq: {
 		title: "Frequently asked questions",
 		items: [
@@ -176,16 +118,6 @@ const en: HomeContent = {
 					'The projects themselves - in the catalog the logos are used only to identify a project and do not imply partnership or endorsement. Details are on the "Sources" page.',
 			},
 		],
-	},
-	/*
-	 * Реальные слова автора проекта, а не маркетинговый текст: переведены
-	 * дословно, а не переписаны.
-	 */
-	quote: {
-		quote:
-			"I don't like searching for long. There are plenty of projects on Tatar, Bashkir and Crimean Tatar, but they are scattered across the web - you find half of them by accident. Here they are in one place, and what you need turns up right away.",
-		name: "Kamil M. I.",
-		position: "Developer, creator of the project",
 	},
 };
 

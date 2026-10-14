@@ -1,0 +1,234 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import PeopleSign from "@/components/Catalog/PeopleSign.astro";
+import ProjectCover from "@/components/Catalog/ProjectCover.astro";
+import CategoryTile from "@/components/ui/CategoryTile.astro";
+import SearchField from "@/components/ui/SearchField.astro";
+import type { LocaleCode } from "@/config/types";
+import { useTranslations } from "@/i18n";
+import { cardsByCategory } from "@/lib/catalog/categories";
+import { searchIndex } from "@/lib/catalog/glossary";
+import { peopleLabel } from "@/lib/catalog/labels";
+import { sortByPubDate } from "@/lib/catalog/sort";
+import { CATEGORY_VALUES, categoryLabel } from "@/lib/taxonomy";
+
+/**
+ * Журнальные ряды главной: по горизонтальной ленте на категорию, сверху -
+ * липкая панель с поиском и фильтром по народам.
+ *
+ * В покое каждая лента показывает первые `ROW_LIMIT` проектов, остальные
+ * лежат в HTML скрытыми: так первый экран не тянет 349 логотипов, а поиск
+ * все равно идет по всему каталогу. Как только введен запрос или выбран
+ * народ, лимит снимается и лента показывает все совпадения. Скрытые
+ * элементы - `display: none`, поэтому их `loading="lazy"`-картинки не
+ * грузятся, пока не понадобятся.
+ *
+ * Проект с двумя категориями стоит в обеих лентах - так он находится
+ * оттуда, откуда его ждут. Счетчик найденного считает уникальные id, а не
+ * элементы лент.
+ */
+interface Props {
+	locale: LocaleCode;
+	cards: CollectionEntry<"cards">[];
+}
+
+const ROW_LIMIT = 12;
+const PEOPLES = ["tatar", "bashkir", "crimean-tatar"] as const;
+
+const { locale, cards } = Astro.props;
+const t = useTranslations(locale);
+
+const rows = CATEGORY_VALUES.map((category) => ({
+	category,
+	cards: sortByPubDate(cardsByCategory(cards, category)),
+})).filter((row) => row.cards.length > 0);
+
+const total = cards.length;
+const peopleCounts = Object.fromEntries(
+	PEOPLES.map((people) => [
+		people,
+		cards.filter((card) => card.data.peoples.includes(people)).length,
+	]),
+);
+---
+
+<section data-rows class="flex flex-col" aria-label={t("home.rows.label")}>
+	<!-- Панель липнет под шапкой (`top-16` = 64px, высота шапки). Выходит
+	     на поля контейнера (`-mx-5 px-5`), чтобы линии сверху и снизу шли во
+	     всю колонку, а не обрывались у поля поиска. -->
+	<div
+		class="-mx-5 sticky top-16 z-20 flex flex-wrap items-center gap-3 border-border border-y bg-background/90 px-5 py-4 backdrop-blur-md"
+	>
+		<SearchField
+			data-rows-search
+			placeholder={t("home.rows.search")}
+			aria-label={t("home.rows.search")}
+			class="w-full sm:max-w-sm"
+		/>
+
+		<div role="group" aria-label={t("home.rows.people")} class="flex flex-wrap gap-1.5">
+			{PEOPLES.map((people) => (
+					<button
+						type="button"
+						data-rows-people={people}
+						aria-pressed="false"
+						class="inline-flex h-8 items-center gap-2 rounded-full pr-3 pl-1.5 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.96] aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:ring-transparent motion-reduce:active:scale-100"
+					>
+						<PeopleSign locale={locale} people={people} />
+						<span class="first-letter:uppercase">{peopleLabel(locale, people)}</span>
+						<span class="font-mono text-[11px] opacity-60">{peopleCounts[people]}</span>
+					</button>
+				))}
+		</div>
+
+		<p class="ms-auto font-mono text-faint text-xs tabular-nums">
+			<output data-rows-count>{total}</output>
+			{t("home.rows.found")}
+			{total}
+		</p>
+	</div>
+
+	{rows.map((row) => {
+		const headingId = `row-${row.category}`;
+		return (
+			<section data-row aria-labelledby={headingId} class="pt-10">
+				<div class="flex items-center gap-3">
+					<CategoryTile category={row.category} />
+					<h2
+						id={headingId}
+						class="font-semibold text-foreground text-xl tracking-[-0.035em] sm:text-2xl"
+					>
+						{categoryLabel(locale, row.category)}
+					</h2>
+					<a
+						href={getRelativeLocaleUrl(locale, `catalog/${row.category}`)}
+						class="group ms-auto inline-flex items-center gap-1.5 whitespace-nowrap text-muted-foreground text-sm transition-colors hover:text-foreground"
+					>
+						{t("home.rows.all")}
+						<span class="font-mono text-xs">{row.cards.length}</span>
+						<Icon
+							name="tabler:arrow-right"
+							class="size-4 transition-transform duration-200 ease-snappy group-hover:translate-x-0.5"
+							aria-hidden="true"
+						/>
+					</a>
+				</div>
+
+				<!-- Лента выходит на поля контейнера, чтобы карточка у края
+				     уходила за экран, а не обрывалась на поле: так видно, что
+				     ряд прокручивается. `scroll-px-5` возвращает точку
+				     прилипания на поле, иначе первая карточка прилипала бы к
+				     краю экрана. -->
+				<ul
+					data-row-scroller
+					class="-mx-5 mt-4 grid snap-x snap-mandatory auto-cols-[minmax(15rem,18rem)] grid-flow-col gap-4 overflow-x-auto overscroll-x-contain scroll-px-5 px-5 pb-3 [scrollbar-width:thin]"
+				>
+					{row.cards.map((card, index) => (
+						<li
+							data-row-item
+							data-id={card.id}
+							data-rank={index}
+							data-peoples={card.data.peoples.join(",")}
+							data-search={searchIndex(card, locale)}
+							hidden={index >= ROW_LIMIT}
+							class="flex snap-start"
+						>
+							<ProjectCover card={card} locale={locale} />
+						</li>
+					))}
+				</ul>
+			</section>
+		);
+	})}
+
+	<p data-rows-empty hidden class="py-20 text-center text-muted-foreground">
+		{t("home.rows.empty")}
+		<a
+			href={getRelativeLocaleUrl(locale, "add")}
+			class="font-medium text-foreground underline underline-offset-4"
+		>
+			{t("home.rows.add")}
+		</a>
+	</p>
+</section>
+
+<script>
+import { foldSearchText } from "@/lib/catalog/searchText";
+
+/** Тот же лимит, что во фронтматтере: сколько проектов в ленте без фильтра. */
+const ROW_LIMIT = 12;
+
+function isTyping(target: EventTarget | null): boolean {
+	return (
+		target instanceof HTMLElement &&
+		(target.isContentEditable ||
+			target.matches("input, textarea, select"))
+	);
+}
+
+function setupRows(root: HTMLElement) {
+	const input = root.querySelector<HTMLInputElement>("[data-rows-search]");
+	const chips = [
+		...root.querySelectorAll<HTMLButtonElement>("[data-rows-people]"),
+	];
+	const items = [...root.querySelectorAll<HTMLElement>("[data-row-item]")];
+	const rows = [...root.querySelectorAll<HTMLElement>("[data-row]")];
+	const count = root.querySelector<HTMLOutputElement>("[data-rows-count]");
+	const empty = root.querySelector<HTMLElement>("[data-rows-empty]");
+	const selected = new Set<string>();
+
+	const apply = () => {
+		const query = foldSearchText(input?.value.trim() ?? "");
+		const filtering = query !== "" || selected.size > 0;
+		const found = new Set<string>();
+
+		for (const item of items) {
+			const peoples = (item.dataset.peoples ?? "").split(",");
+			const match =
+				(query === "" || (item.dataset.search ?? "").includes(query)) &&
+				(selected.size === 0 || peoples.some((people) => selected.has(people)));
+
+			item.hidden = !(match && (filtering || Number(item.dataset.rank) < ROW_LIMIT));
+			if (match) found.add(item.dataset.id ?? "");
+		}
+
+		/* Ряд без совпадений прячется целиком, а прокрутка оставшихся
+		   возвращается в начало - иначе совпадение могло оказаться за
+		   краем ленты, прокрученной до фильтра. */
+		for (const row of rows) {
+			row.hidden = !row.querySelector("[data-row-item]:not([hidden])");
+			row.querySelector("[data-row-scroller]")?.scrollTo({ left: 0 });
+		}
+
+		if (count) count.value = String(found.size);
+		if (empty) empty.hidden = found.size > 0;
+	};
+
+	input?.addEventListener("input", apply);
+
+	for (const chip of chips) {
+		chip.addEventListener("click", () => {
+			const people = chip.dataset.rowsPeople ?? "";
+			const on = !selected.has(people);
+			if (on) selected.add(people);
+			else selected.delete(people);
+			chip.setAttribute("aria-pressed", String(on));
+			apply();
+		});
+	}
+
+	/* `/` ставит курсор в поиск с любого места страницы. Без анимации и без
+	   прокрутки-перелета: действие частое, а поле и так липкое. */
+	document.addEventListener("keydown", (event) => {
+		if (event.key !== "/" || isTyping(event.target) || !input) return;
+		event.preventDefault();
+		input.focus({ preventScroll: true });
+	});
+}
+
+for (const root of document.querySelectorAll<HTMLElement>("[data-rows]")) {
+	setupRows(root);
+}
+</script>

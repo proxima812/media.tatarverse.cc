@@ -1,0 +1,79 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import CardLogo from "@/components/Catalog/CardLogo.astro";
+import PeopleSign from "@/components/Catalog/PeopleSign.astro";
+import TaxonomyChip from "@/components/Catalog/TaxonomyChip.astro";
+import type { LocaleCode } from "@/config/types";
+import { meshGradient } from "@/lib/ui/meshGradient";
+
+/**
+ * Карточка-обложка для журнальных рядов главной. Обложка 16:10 - мэш-градиент
+ * из имени проекта с логотипом по центру: цвет на странице по-прежнему
+ * приносит контент, а не интерфейс. Под обложкой - название, две строки
+ * описания, домен и знаки народов.
+ *
+ * Ссылка одна - на название, но кликабельна вся карточка: `after:inset-0`
+ * растягивает зону нажатия на карточку целиком, а в дереве доступности
+ * остается одна ссылка с понятным именем, а не обертка из всего текста.
+ */
+interface Props {
+	card: CollectionEntry<"cards">;
+	locale: LocaleCode;
+}
+
+const { card, locale } = Astro.props;
+const { name, description, logo, url, categories, peoples } = card.data;
+const [mainCategory] = categories;
+const href = getRelativeLocaleUrl(locale, `projects/${card.id}`);
+
+/** Домен вместо полного URL: на карточке важен источник, а не путь. */
+const domain = new URL(url).hostname.replace(/^www\./, "");
+---
+
+<article class="group relative flex flex-col gap-3">
+	<div
+		class="relative aspect-[16/10] overflow-hidden rounded-md corner-squircle ring-1 ring-black/5 ring-inset"
+	>
+		<!-- Масштаб при наведении - только у фона под логотипом, на сильной
+		     ease-out и только там, где есть мышь и нет reduced motion. -->
+		<div
+			class="absolute inset-0 grid place-items-center transition-transform duration-500 ease-snappy motion-safe:group-hover:scale-[1.03]"
+			style={meshGradient(name)}
+		>
+			<div class="rounded-md corner-squircle shadow-lift">
+				<CardLogo size="lg" name={name} logo={logo} peoples={peoples} />
+			</div>
+		</div>
+		{mainCategory && (
+			<TaxonomyChip
+				locale={locale}
+				kind="category"
+				value={mainCategory}
+				size="sm"
+				class="absolute top-2.5 left-2.5"
+			/>
+		)}
+	</div>
+
+	<div class="flex flex-col gap-1.5">
+		<h3 class="font-semibold text-[15px] text-foreground leading-snug tracking-tight">
+			<a
+				href={href}
+				class="after:absolute after:inset-0 after:rounded-md focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-foreground focus-visible:after:outline-offset-4"
+			>
+				{name}
+			</a>
+		</h3>
+		<p class="line-clamp-2 text-muted-foreground text-sm leading-relaxed">
+			{description}
+		</p>
+	</div>
+
+	<div class="mt-auto flex items-center justify-between gap-3">
+		<span class="truncate font-mono text-faint text-xs">{domain}</span>
+		<span class="flex shrink-0 gap-1">
+			{peoples.map((people) => <PeopleSign locale={locale} people={people} />)}
+		</span>
+	</div>
+</article>

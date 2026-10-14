@@ -116,4 +116,20 @@ export default {
 	"notFound.description":
 		"This page doesn't exist. It may have been removed or moved.",
 	"notFound.heading": "404 - page not found",
+	/* "Journal" home: headline with people signs and rows by category. */
+	"home.hero.lead": "Projects in",
+	"home.hero.tatar": "Tatar,",
+	"home.hero.bashkir": "Bashkir",
+	"home.hero.and": "and",
+	"home.hero.crimean": "Crimean Tatar",
+	"home.hero.sub":
+		"in one catalog: channels, media, authors, lessons and language technology.",
+	"home.hero.all": "Browse the catalog",
+	"home.rows.label": "Projects by category",
+	"home.rows.search": "Find a project, author or topic",
+	"home.rows.people": "People",
+	"home.rows.all": "All",
+	"home.rows.found": "of",
+	"home.rows.empty": "Nothing found.",
+	"home.rows.add": "Add a project",
 } satisfies Dictionary;

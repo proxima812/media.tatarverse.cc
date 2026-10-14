@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @plugin "@toolwind/corner-shape";
-@import "@/styles/chroma-styles/chroma.css";
 /*
  * Семантические токены. Правило одно: цвета ходят парами
  * «поверхность + текст на ней», и в разметке используется пара целиком.
@@ -89,6 +88,30 @@
 	--ease-snappy: cubic-bezier(0.23, 1, 0.32, 1);
 	--ease-glide: cubic-bezier(0.77, 0, 0.175, 1);
 	--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+	/*
+	 * Вход первого экрана - редкое событие (раз за визит), поэтому здесь
+	 * движение позволено: заголовок поднимается на 10px, знаки народов
+	 * вырастают с 85%. Не с нуля: из ничего в реальном мире ничего не
+	 * появляется. Оба ключа без `to` - конечное состояние берется из стилей
+	 * элемента, и `both` держит начальный кадр на время задержки.
+	 */
+	--animate-rise: rise 0.7s var(--ease-snappy) both;
+	--animate-pop: pop 0.5s var(--ease-snappy) both;
+
+	@keyframes rise {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+	}
+
+	@keyframes pop {
+		from {
+			opacity: 0;
+			transform: scale(0.85);
+		}
+	}
 
 	/*
 	 * Две ступени глубины. Тень здесь не поднимает элемент над страницей, а
