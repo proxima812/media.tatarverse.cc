@@ -1,0 +1,1097 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>media.tatarverse - шесть вариантов дизайна</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+/* =============================== TOKENS =============================== */
+:root{
+  --font:"Inter",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-in-out:cubic-bezier(0.77,0,0.175,1);
+  --ease-drawer:cubic-bezier(0.32,0.72,0,1);
+}
+[data-theme=light]{color-scheme:light;
+  --bg:#fff;--bg-2:#fafafa;--surface:#fff;--surface-2:#f5f5f5;--surface-3:#ededed;
+  --line:#ebebeb;--line-2:#dedede;--text:#171717;--muted:#5f5f5f;--faint:#8f8f8f;
+  --btn:#171717;--btn-text:#fff;--sh:0 0 0 1px var(--line),0 1px 2px rgb(0 0 0 / .04);--sh-lg:0 0 0 1px var(--line-2),0 8px 24px rgb(0 0 0 / .08);
+  --blue:#0a72ef;--purple:#8e4ec6;--pink:#e5427f;--amber:#d58a00;--green:#1f9d55;--teal:#0e9488;--orange:#e5600f;
+  --glow:.45;
+}
+[data-theme=dark]{color-scheme:dark;
+  --bg:#0a0a0a;--bg-2:#000;--surface:#0f0f0f;--surface-2:#171717;--surface-3:#202020;
+  --line:#242424;--line-2:#333;--text:#ededed;--muted:#a1a1a1;--faint:#6b6b6b;
+  --btn:#ededed;--btn-text:#0a0a0a;--sh:0 0 0 1px var(--line);--sh-lg:0 0 0 1px var(--line-2),0 12px 32px rgb(0 0 0 / .5);
+  --blue:#3b9eff;--purple:#b48cf2;--pink:#f4669d;--amber:#ffb224;--green:#3dd68c;--teal:#2dd4bf;--orange:#ff8b3e;
+  --glow:.6;
+}
+
+/* =============================== BASE =============================== */
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html,body{height:100%;background:#000;overflow:hidden}
+body{font-family:var(--font);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+button,input{font:inherit;color:inherit;background:none;border:0;outline:none}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+svg.i{width:16px;height:16px;flex:none;display:inline-block}
+.mono{font-family:var(--mono)}
+
+/* =============================== DECK =============================== */
+.slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;background:var(--bg);color:var(--text);
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .35s var(--ease-out),transform .35s var(--ease-out),visibility 0s linear .35s,background-color .2s ease,color .2s ease}
+.slide.is-active{opacity:1;visibility:visible;transform:none;transition:opacity .35s var(--ease-out),transform .35s var(--ease-out),visibility 0s,background-color .2s ease,color .2s ease}
+.slide.is-before{transform:translateY(-10px)}
+.slide{padding-bottom:88px}
+.chrome{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;align-items:center;gap:2px;padding:4px;border-radius:999px;
+  background:rgb(20 20 20 / .82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 0 0 1px rgb(255 255 255 / .1),0 12px 32px rgb(0 0 0 / .4);color:#ededed;font-size:13px}
+.chrome button{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;transition:background-color .15s ease,transform .12s var(--ease-out)}
+.chrome button:active{transform:scale(.94)}
+@media (hover:hover) and (pointer:fine){.chrome button:hover{background:rgb(255 255 255 / .1)}}
+.chrome .count{padding:0 10px;white-space:nowrap;font-variant-numeric:tabular-nums;color:#a1a1a1}
+.chrome .count b{color:#fff;font-weight:600}
+.chrome .sep{width:1px;height:18px;background:rgb(255 255 255 / .12);margin:0 4px}
+.progress{position:fixed;top:0;left:0;right:0;height:2px;z-index:100}
+.progress i{display:block;height:100%;background:#ededed;transform-origin:0 50%;transform:scaleX(0);transition:transform .35s var(--ease-out)}
+
+/* info bar on variant slides */
+.vbar{position:sticky;top:0;z-index:40;height:40px;display:flex;align-items:center;gap:14px;padding:0 20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;text-transform:uppercase;
+  color:var(--muted);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.vbar b{color:var(--text);font-weight:600}
+.vbar .tags{display:flex;gap:6px;margin-left:auto;flex-wrap:nowrap;overflow:hidden}
+.vbar .tags span{height:22px;padding:0 8px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-2);display:inline-flex;align-items:center;white-space:nowrap;text-transform:none;letter-spacing:0}
+@media (max-width:900px){.vbar .tags{display:none}}
+
+/* =============================== SHARED UI =============================== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:8px;font-size:14px;font-weight:500;white-space:nowrap;
+  transition:background-color .15s ease,box-shadow .15s ease,color .15s ease,transform .12s var(--ease-out)}
+.btn:active{transform:scale(.97)}
+.btn-lg{height:44px;padding:0 20px;font-size:15px}
+.btn-sm{height:30px;padding:0 10px;font-size:13px}
+.pill{border-radius:999px}
+.btn-primary{background:var(--btn);color:var(--btn-text)}
+.btn-secondary{background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-2)}
+.btn-ghost{color:var(--muted)}
+@media (hover:hover) and (pointer:fine){
+  .btn-primary:hover{background:color-mix(in srgb,var(--btn) 86%,var(--bg))}
+  .btn-secondary:hover{background:var(--surface-2)}
+  .btn-ghost:hover{background:var(--surface-2);color:var(--text)}
+}
+.navlinks{display:flex;gap:2px}
+.navlinks a{height:32px;padding:0 10px;border-radius:6px;display:inline-flex;align-items:center;font-size:14px;color:var(--muted);transition:color .15s ease,background-color .15s ease}
+.navlinks a.on{color:var(--text)}
+@media (hover:hover) and (pointer:fine){.navlinks a:hover{color:var(--text);background:var(--surface-2)}}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.02em}
+.brand svg{width:22px;height:22px}
+
+.field{display:flex;align-items:center;gap:10px;height:40px;padding:0 10px 0 12px;border-radius:8px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2);color:var(--muted);
+  transition:box-shadow .15s ease}
+.field input{flex:1;min-width:0;color:var(--text);font-size:14px}
+.field input::placeholder{color:var(--faint)}
+.field:focus-within{box-shadow:inset 0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--blue) 22%,transparent)}
+.kbd{font-family:var(--mono);font-size:11px;height:20px;min-width:20px;padding:0 5px;border-radius:5px;display:inline-grid;place-items:center;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line-2);background:var(--bg)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 12px;border-radius:999px;font-size:13px;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line-2);white-space:nowrap;
+  transition:background-color .15s ease,color .15s ease,box-shadow .15s ease,transform .12s var(--ease-out)}
+.chip:active{transform:scale(.96)}
+.chip .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.chip[aria-pressed=true]{background:var(--text);color:var(--bg);box-shadow:none}
+.chip[aria-pressed=true] .n{color:color-mix(in srgb,var(--bg) 60%,transparent)}
+.chip[aria-pressed=true] .sign{background:var(--bg);color:var(--text)}
+@media (hover:hover) and (pointer:fine){.chip[aria-pressed=false]:hover{color:var(--text);background:var(--surface-2)}}
+
+.tile{--s:32px;width:var(--s);height:var(--s);border-radius:calc(var(--s)*.28);display:inline-grid;place-items:center;flex:none;
+  background:color-mix(in srgb,var(--c) 13%,transparent);color:var(--c);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 24%,transparent)}
+.tile svg{width:52%;height:52%}
+.badge{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;border-radius:999px;font-size:12px;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line-2);white-space:nowrap}
+.badge i{width:6px;height:6px;border-radius:50%;background:var(--c)}
+.sign{width:18px;height:18px;border-radius:50%;display:inline-grid;place-items:center;background:var(--text);color:var(--bg);flex:none}
+.sign svg{width:64%;height:64%}
+.signs{display:inline-flex;gap:3px}
+.logo{--s:40px;width:var(--s);height:var(--s);border-radius:calc(var(--s)*.26);display:inline-grid;place-items:center;flex:none;color:#fff;font-weight:650;font-size:calc(var(--s)*.34);letter-spacing:-.03em;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / .22),inset 0 0 0 1px rgb(0 0 0 / .08)}
+.dom{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clamp2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.empty{display:none;padding:48px 24px;text-align:center;color:var(--muted);font-size:14px}
+.is-empty .empty{display:block}
+.empty b{color:var(--text);font-weight:600}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 22%,transparent)}
+.ib{width:30px;height:30px;border-radius:7px;display:inline-grid;place-items:center;color:var(--muted);transition:background-color .15s ease,color .15s ease,transform .12s var(--ease-out)}
+.ib:active{transform:scale(.92)}
+.ib[aria-pressed=true]{color:var(--text)}
+.ib[aria-pressed=true] svg{fill:currentColor}
+@media (hover:hover) and (pointer:fine){.ib:hover{background:var(--surface-2);color:var(--text)}}
+
+/* =============================== COVER / NEUTRAL =============================== */
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.cover-hero{padding:88px 0 48px;position:relative}
+.cover-hero h1{font-size:clamp(44px,6.4vw,84px);font-weight:600;letter-spacing:-.055em;line-height:.98;max-width:13ch;margin-top:20px}
+.cover-hero p{font-size:18px;line-height:1.6;color:var(--muted);max-width:60ch;margin-top:22px}
+.refs{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+@media (max-width:900px){.vgrid{grid-template-columns:1fr}}
+.vcard{display:flex;flex-direction:column;gap:14px;padding:20px;text-align:left;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transition:background-color .15s ease}
+@media (hover:hover) and (pointer:fine){.vcard:hover{background:var(--surface-2)}.vcard:hover .go{opacity:1;transform:none}}
+.vcard .row{display:flex;align-items:center;justify-content:space-between}
+.vcard .go{opacity:0;transform:translate(-4px,4px);transition:opacity .2s ease,transform .2s var(--ease-out);color:var(--muted)}
+.vcard h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.vcard p{font-size:13.5px;line-height:1.5;color:var(--muted)}
+.vcard .src{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+
+/* mini previews */
+.mini{height:150px;border-radius:10px;overflow:hidden;position:relative;background:var(--bg);color:var(--text);box-shadow:0 0 0 1px var(--line);padding:10px;display:flex;flex-direction:column;gap:7px}
+.mini i{display:block;border-radius:3px;background:var(--line-2)}
+.mini .t{height:8px;background:var(--text);opacity:.85}
+.mini .s{height:5px}
+.mini .r{display:flex;gap:5px}
+.mini .cell{flex:1;height:30px;border-radius:4px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);position:relative}
+.mini .cell::after{content:"";position:absolute;left:5px;top:5px;width:7px;height:7px;border-radius:2px;background:var(--c,var(--blue))}
+.m1{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:18px 18px;align-items:center;justify-content:center}
+.m1::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 30% 0%,color-mix(in srgb,var(--blue) 40%,transparent),transparent 70%),radial-gradient(40% 50% at 70% 0%,color-mix(in srgb,var(--pink) 35%,transparent),transparent 70%)}
+.m2{flex-direction:row;background:var(--bg-2)}
+.m2 .side{width:30%;display:flex;flex-direction:column;gap:5px}
+.m2 .main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px;align-content:start}
+.m2 .main .cell{height:34px;background:var(--surface);box-shadow:0 0 0 1px var(--line)}
+.m3{align-items:center}
+.m3::before{content:"";position:absolute;inset:0;background:radial-gradient(45% 45% at 25% 10%,color-mix(in srgb,var(--blue) 18%,transparent),transparent 70%),radial-gradient(40% 40% at 75% 10%,color-mix(in srgb,var(--orange) 18%,transparent),transparent 70%)}
+.m4{background:var(--bg-2);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:5px}
+.m4 .cell{height:auto}
+.m4 .cell:first-child{grid-row:span 2}
+.m5{align-items:center}
+.m5 .sq{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;width:100%;margin-top:6px}
+.m5 .sq i{aspect-ratio:1;border-radius:6px}
+.m6 .r{gap:6px}
+.m6 .cov{flex:1;height:44px;border-radius:5px}
+
+/* =============================== SYSTEM SLIDE =============================== */
+.sys{display:grid;grid-template-columns:1.1fr .9fr;gap:1px;background:var(--line);box-shadow:0 0 0 1px var(--line)}
+@media (max-width:1000px){.sys{grid-template-columns:1fr}}
+.sys>div{background:var(--bg);padding:24px;display:grid;gap:16px;align-content:start}
+.sys h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.tscale{display:grid;gap:12px}
+.tscale>div{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-bottom:1px dashed var(--line);padding-bottom:10px}
+.tscale code{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.ramp{display:grid;grid-template-columns:repeat(10,1fr);border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.ramp i{height:44px;display:block}
+.ramp-l{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:6px}
+.accents{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.accents>div{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;box-shadow:inset 0 0 0 1px var(--line)}
+.accents b{font-size:13px;font-weight:600;display:block}
+.accents small{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.comp{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.note{font-size:13.5px;line-height:1.55;color:var(--muted)}
+.note b{color:var(--text);font-weight:600}
+
+/* =============================== V1  GEIST (vercel home) =============================== */
+.v1 .hdr{position:sticky;top:40px;z-index:30;height:64px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.v1 .hdr .in{max-width:1200px;margin:0 auto;height:100%;padding:0 24px;display:flex;align-items:center;gap:24px}
+.v1 .hdr .right{margin-left:auto;display:flex;gap:8px}
+.v1 .frame{max-width:1200px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+.v1 .frame>section{position:relative;border-bottom:1px solid var(--line)}
+.x{position:absolute;width:21px;height:21px;z-index:3;pointer-events:none}
+.x::before,.x::after{content:"";position:absolute;background:var(--faint)}
+.x::before{left:10px;top:0;width:1px;height:21px}.x::after{top:10px;left:0;height:1px;width:21px}
+.x.bl{left:-11px;bottom:-11px}.x.br{right:-11px;bottom:-11px}.x.tl{left:-11px;top:-11px}.x.tr{right:-11px;top:-11px}
+.v1-hero{padding:120px 24px 104px;text-align:center}
+.v1-hero .bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.v1-hero .bg::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;background-position:center -1px;
+  -webkit-mask-image:radial-gradient(ellipse 55% 60% at 50% 35%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse 55% 60% at 50% 35%,#000 20%,transparent 75%)}
+.v1-hero .bg::after{content:"";position:absolute;inset:-20% 0 auto;height:90%;opacity:var(--glow);
+  background:radial-gradient(32% 55% at 32% 0%,color-mix(in srgb,var(--blue) 55%,transparent),transparent 70%),radial-gradient(28% 50% at 68% 0%,color-mix(in srgb,var(--pink) 45%,transparent),transparent 70%),radial-gradient(24% 40% at 50% 8%,color-mix(in srgb,var(--amber) 35%,transparent),transparent 70%)}
+.v1-hero>*:not(.x):not(.bg){position:relative}
+.v1-hero .eb{display:inline-flex;align-items:center;gap:10px;height:30px;padding:0 12px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2);font-size:13px;color:var(--muted)}
+.v1-hero h1{font-size:clamp(42px,6.2vw,80px);font-weight:600;letter-spacing:-.055em;line-height:.98;max-width:14ch;margin:24px auto 0;text-wrap:balance}
+.v1-hero p{font-size:18px;line-height:1.6;color:var(--muted);max-width:54ch;margin:22px auto 34px;text-wrap:pretty}
+.v1-hero .cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.v1-hero .term{display:inline-flex;align-items:center;gap:10px;margin-top:28px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.v1-hero .term b{color:var(--text);font-weight:500}
+.v1-stats{display:grid;grid-template-columns:repeat(4,1fr)}
+.v1-stats>div{padding:28px 24px;border-right:1px solid var(--line)}
+.v1-stats>div:last-child{border-right:0}
+.v1-stats b{display:block;font-size:40px;font-weight:600;letter-spacing:-.05em;font-variant-numeric:tabular-nums;line-height:1}
+.v1-stats span{display:block;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:10px}
+@media (max-width:800px){.v1-stats{grid-template-columns:1fr 1fr}.v1-stats>div:nth-child(2){border-right:0}.v1-stats>div:nth-child(-n+2){border-bottom:1px solid var(--line)}}
+.sec-h{padding:56px 24px 28px;display:flex;align-items:end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.sec-h h2{font-size:clamp(28px,3vw,40px);font-weight:600;letter-spacing:-.045em;line-height:1.05;max-width:20ch}
+.sec-h p{font-size:15px;line-height:1.6;color:var(--muted);max-width:44ch}
+.cells{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+@media (max-width:1100px){.cells{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.cells{grid-template-columns:repeat(2,1fr)}}
+.cells>*{box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
+.ccat{padding:24px;display:grid;gap:14px;align-content:start;min-height:176px;position:relative;transition:background-color .15s ease;text-align:left}
+.ccat .cnt{position:absolute;top:24px;right:24px;font-family:var(--mono);font-size:12px;color:var(--faint)}
+.ccat h3{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.ccat p{font-size:13.5px;line-height:1.5;color:var(--muted)}
+.ccat.add{color:var(--muted);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px}
+@media (hover:hover) and (pointer:fine){.ccat:hover{background:var(--surface)}}
+.c1{background:var(--bg);padding:20px;display:flex;flex-direction:column;gap:14px;min-height:214px;position:relative;transition:background-color .15s ease;outline:none}
+.c1 .top{display:flex;align-items:flex-start;justify-content:space-between}
+.c1 .arr{color:var(--muted);opacity:0;transform:translate(-4px,4px);transition:opacity .2s ease,transform .2s var(--ease-out)}
+.c1 h3{font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.3}
+.c1 p{font-size:13.5px;line-height:1.5;color:var(--muted)}
+.c1 .ft{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px}
+@media (hover:hover) and (pointer:fine){.c1:hover{background:var(--surface)}.c1:hover .arr{opacity:1;transform:none}}
+.c1:focus-visible{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.v1-live .bar{padding:0 24px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.v1-live .bar .field{flex:1;min-width:260px;max-width:420px}
+.v1-live .cats{padding:0 24px 20px}
+.v1-cta{padding:88px 24px;text-align:center}
+.v1-cta h2{font-size:clamp(30px,3.6vw,48px);font-weight:600;letter-spacing:-.05em;line-height:1.02;max-width:18ch;margin:0 auto}
+.v1-cta p{color:var(--muted);font-size:16px;margin:16px auto 28px;max-width:48ch;line-height:1.6}
+.ftr{max-width:1200px;margin:0 auto;padding:32px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.ftr .mono{font-size:12px;color:var(--faint)}
+
+/* =============================== V2  CONSOLE (vercel dashboard) =============================== */
+.v2{background:var(--bg-2)}
+.v2 .top{height:64px;display:flex;align-items:center;gap:14px;padding:0 24px;background:var(--bg);position:sticky;top:40px;z-index:30}
+.v2 .crumb{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.v2 .crumb .sl{color:var(--line-2);font-size:20px;font-weight:300}
+.v2 .crumb .bdg{font-family:var(--mono);font-size:11px;height:20px;padding:0 6px;border-radius:999px;display:inline-grid;place-items:center;background:var(--surface-2);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.v2 .top .field{width:min(420px,40vw);margin-left:auto;height:36px}
+.v2 .tabs{display:flex;gap:2px;padding:0 16px;background:var(--bg);border-bottom:1px solid var(--line);position:sticky;top:104px;z-index:29}
+.v2 .tabs a{position:relative;height:44px;display:inline-flex;align-items:center;padding:0 10px;font-size:14px;color:var(--muted);transition:color .15s ease}
+.v2 .tabs a span{padding:6px 8px;border-radius:6px;transition:background-color .15s ease}
+.v2 .tabs a.on{color:var(--text)}
+.v2 .tabs a.on::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;background:var(--text);border-radius:2px}
+@media (hover:hover) and (pointer:fine){.v2 .tabs a:hover{color:var(--text)}.v2 .tabs a:hover span{background:var(--surface-2)}}
+.v2 .body{max-width:1280px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start}
+@media (max-width:900px){.v2 .body{grid-template-columns:1fr}.v2 .side{position:static!important}}
+.v2 .side{position:sticky;top:132px;display:grid;gap:24px}
+.v2 .grp h5{font-size:13px;font-weight:600;margin-bottom:6px;padding:0 8px}
+.v2 .opt{width:100%;display:flex;align-items:center;gap:10px;height:32px;padding:0 8px;border-radius:6px;font-size:14px;color:var(--muted);text-align:left;transition:background-color .15s ease,color .15s ease}
+.v2 .opt .n{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.v2 .opt .cb{width:16px;height:16px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--line-2);display:grid;place-items:center;background:var(--surface);transition:background-color .15s ease,box-shadow .15s ease}
+.v2 .opt .cb svg{width:12px;height:12px;opacity:0;transform:scale(.8);transition:opacity .15s ease,transform .15s var(--ease-out);color:var(--bg)}
+.v2 .opt[aria-pressed=true]{color:var(--text)}
+.v2 .opt[aria-pressed=true] .cb{background:var(--text);box-shadow:none}
+.v2 .opt[aria-pressed=true] .cb svg{opacity:1;transform:none}
+.v2 [data-cat] .opt[aria-pressed=true]{background:var(--surface-3)}
+.v2 .opt .tile{--s:20px;border-radius:5px}
+@media (hover:hover) and (pointer:fine){.v2 .opt:hover{background:var(--surface-2);color:var(--text)}}
+.v2 .tool{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.v2 .tool h2{font-size:20px;font-weight:600;letter-spacing:-.03em;margin-right:auto}
+.v2 .tool h2 span{font-family:var(--mono);font-size:13px;color:var(--faint);font-weight:400;margin-left:6px}
+.seg{display:inline-flex;padding:3px;border-radius:9px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2);gap:2px}
+.seg button{height:26px;padding:0 8px;border-radius:6px;display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);transition:background-color .15s ease,color .15s ease}
+.seg button[aria-pressed=true]{background:var(--surface-3);color:var(--text)}
+.c2grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.c2{background:var(--surface);border-radius:12px;box-shadow:var(--sh);padding:16px;display:grid;gap:12px;align-content:start;transition:box-shadow .15s ease;outline:none}
+.c2 .h{display:flex;align-items:center;gap:12px;min-width:0}
+.c2 .h>div{min-width:0}
+.c2 h3{font-size:14px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c2 p{font-size:13.5px;line-height:1.5;color:var(--muted)}
+.c2 .f{display:flex;align-items:center;gap:8px}
+.c2 .f .ib{margin-left:auto}
+@media (hover:hover) and (pointer:fine){.c2:hover{box-shadow:0 0 0 1px var(--line-2),0 4px 14px rgb(0 0 0 / .06)}}
+.c2:focus-visible{box-shadow:0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--blue) 22%,transparent)}
+.c2grid.is-list{grid-template-columns:1fr;gap:0;background:var(--surface);border-radius:12px;box-shadow:var(--sh);overflow:hidden}
+.c2grid.is-list .c2{border-radius:0;box-shadow:none;border-bottom:1px solid var(--line);grid-template-columns:minmax(220px,1fr) 1.6fr auto;align-items:center;gap:20px;padding:12px 16px}
+.c2grid.is-list .c2:last-child{border-bottom:0}
+.c2grid.is-list .c2 p{-webkit-line-clamp:1}
+@media (hover:hover) and (pointer:fine){.c2grid.is-list .c2:hover{background:var(--surface-2);box-shadow:none}}
+
+/* =============================== V3  SOFT (dub home) =============================== */
+.v3 .nav{max-width:1120px;margin:0 auto;height:68px;display:flex;align-items:center;gap:24px;padding:0 24px}
+.v3 .nav .navlinks{margin:0 auto}
+.v3 .nav .right{display:flex;gap:8px}
+.v3-hero{position:relative;padding:88px 24px 72px;text-align:center;overflow:hidden}
+.v3-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(to right,var(--line) 1px,transparent 1px),linear-gradient(to bottom,var(--line) 1px,transparent 1px);background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 0%,#000 30%,transparent 70%);mask-image:radial-gradient(ellipse 70% 70% at 50% 0%,#000 30%,transparent 70%);opacity:.7}
+.v3-hero::after{content:"";position:absolute;inset:0 0 auto;height:420px;opacity:var(--glow);
+  background:radial-gradient(30% 60% at 22% 0%,color-mix(in srgb,var(--blue) 30%,transparent),transparent 70%),radial-gradient(28% 55% at 50% 0%,color-mix(in srgb,var(--purple) 26%,transparent),transparent 70%),radial-gradient(30% 60% at 78% 0%,color-mix(in srgb,var(--orange) 26%,transparent),transparent 70%)}
+.v3-hero>*:not(.x){position:relative;z-index:1}
+.v3 .new{display:inline-flex;align-items:center;gap:10px;height:32px;padding:0 12px 0 4px;border-radius:999px;background:var(--surface);box-shadow:var(--sh);font-size:13px;color:var(--muted);transition:box-shadow .15s ease}
+.v3 .new b{height:24px;padding:0 9px;border-radius:999px;background:var(--text);color:var(--bg);font-size:12px;font-weight:600;display:inline-grid;place-items:center}
+.v3 .new svg{transition:transform .2s var(--ease-out)}
+@media (hover:hover) and (pointer:fine){.v3 .new:hover{box-shadow:var(--sh-lg)}.v3 .new:hover svg{transform:translateX(3px)}}
+.v3-hero h1{font-size:clamp(40px,6vw,72px);font-weight:600;letter-spacing:-.05em;line-height:1;max-width:15ch;margin:24px auto 0;text-wrap:balance}
+.grad{background:linear-gradient(90deg,var(--blue),var(--purple) 50%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent}
+.v3-hero p{font-size:18px;line-height:1.6;color:var(--muted);max-width:52ch;margin:20px auto 32px}
+.v3-hero .cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.proof{display:inline-flex;align-items:center;gap:12px;margin-top:32px;font-size:13px;color:var(--muted)}
+.proof .stack{display:flex}
+.proof .stack .logo{--s:26px;border-radius:50%;box-shadow:0 0 0 2px var(--bg);margin-left:-7px;font-size:9px}
+.proof .stack .logo:first-child{margin-left:0}
+.dash{border-top:1px dashed var(--line-2)}
+.marq{overflow:hidden;padding:22px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.marq .track{display:flex;gap:40px;width:max-content;animation:marq 50s linear infinite}
+.marq:hover .track{animation-play-state:paused}
+.marq .it{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600;letter-spacing:-.02em;color:var(--muted);white-space:nowrap}
+.marq .it .logo{--s:28px}
+@keyframes marq{to{transform:translateX(-50%)}}
+.v3 .sec{max-width:1120px;margin:0 auto;padding:80px 24px}
+.v3 .sec-c{text-align:center;max-width:640px;margin:0 auto 40px}
+.v3 .sec-c h2{font-size:clamp(28px,3.2vw,44px);font-weight:600;letter-spacing:-.045em;line-height:1.05}
+.v3 .sec-c p{color:var(--muted);font-size:16px;line-height:1.6;margin-top:14px}
+.feat3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:900px){.feat3{grid-template-columns:1fr}}
+.fcard{border-radius:16px;background:var(--surface);box-shadow:var(--sh);padding:24px;display:grid;gap:14px;align-content:start}
+.fcard h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.fcard p{font-size:14px;line-height:1.55;color:var(--muted)}
+.fcard .vis{height:120px;border-radius:12px;background:var(--bg-2);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;padding:16px;overflow:hidden}
+.c3grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.c3{border-radius:16px;background:var(--surface);box-shadow:var(--sh);padding:20px;display:flex;flex-direction:column;gap:12px;outline:none;transition:transform .2s var(--ease-out),box-shadow .2s ease}
+.c3 .h{display:flex;align-items:flex-start;justify-content:space-between}
+.c3 h3{font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.3}
+.c3 p{font-size:14px;line-height:1.5;color:var(--muted)}
+.c3 .f{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:12px;border-top:1px dashed var(--line-2)}
+@media (hover:hover) and (pointer:fine){.c3:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}}
+.c3:focus-visible{box-shadow:0 0 0 1px var(--text),0 0 0 4px color-mix(in srgb,var(--blue) 22%,transparent)}
+.v3 .ctl{display:grid;gap:12px;justify-items:center;margin-bottom:28px}
+.v3 .ctl .field{width:min(520px,100%);border-radius:999px;height:44px;padding:0 8px 0 16px}
+.v3 .ctl .chips{justify-content:center}
+.v3 .cbox{max-width:1072px;margin:0 auto 80px;border-radius:24px;background:var(--bg-2);box-shadow:var(--sh);padding:64px 24px;text-align:center;position:relative;overflow:hidden}
+.v3 .cbox::before{content:"";position:absolute;inset:0;background-image:radial-gradient(var(--line-2) 1px,transparent 1px);background-size:16px 16px;-webkit-mask-image:radial-gradient(ellipse at center,#000,transparent 70%);mask-image:radial-gradient(ellipse at center,#000,transparent 70%)}
+.v3 .cbox>*{position:relative}
+.v3 .cbox h2{font-size:clamp(28px,3vw,40px);font-weight:600;letter-spacing:-.045em}
+.v3 .cbox p{color:var(--muted);margin:12px auto 24px;max-width:46ch;line-height:1.6}
+
+/* =============================== V4  BENTO (dub features) =============================== */
+.v4{background:var(--bg-2)}
+.v4 .nav{max-width:1200px;margin:0 auto;height:64px;display:flex;align-items:center;gap:24px;padding:0 24px}
+.v4 .nav .right{margin-left:auto;display:flex;gap:8px}
+.v4-hero{max-width:1200px;margin:0 auto;padding:64px 24px 40px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:end}
+@media (max-width:900px){.v4-hero{grid-template-columns:1fr}}
+.v4-hero h1{font-size:clamp(40px,5.4vw,68px);font-weight:600;letter-spacing:-.055em;line-height:1}
+.v4-hero p{font-size:17px;line-height:1.6;color:var(--muted);margin:20px 0 28px;max-width:48ch}
+.recent{border-radius:16px;background:var(--surface);box-shadow:var(--sh);padding:8px}
+.recent .rh{display:flex;justify-content:space-between;padding:8px 10px 10px;font-size:13px;color:var(--muted)}
+.recent .rr{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;transition:background-color .15s ease}
+.recent .rr b{font-size:14px;font-weight:600;letter-spacing:-.01em;display:block}
+.recent .rr small{font-size:12.5px;color:var(--muted)}
+.recent .rr .t{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+@media (hover:hover) and (pointer:fine){.recent .rr:hover{background:var(--surface-2)}}
+.bento{max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+@media (max-width:900px){.bento{grid-template-columns:1fr}.bento>*{grid-column:auto!important;grid-row:auto!important}}
+.bx{border-radius:20px;background:var(--surface);box-shadow:var(--sh);padding:24px;display:flex;flex-direction:column;gap:14px;overflow:hidden;min-height:220px}
+.bx .hd{display:flex;align-items:center;gap:12px}
+.bx h3{font-size:16px;font-weight:600;letter-spacing:-.02em}
+.bx p{font-size:14px;line-height:1.55;color:var(--muted)}
+.bx .vis{margin-top:auto}
+.b1{grid-column:span 3;grid-row:span 2}
+.b2,.b3{grid-column:span 3}
+.b4,.b5,.b6{grid-column:span 2}
+.sres{border-radius:12px;background:var(--bg-2);box-shadow:inset 0 0 0 1px var(--line);padding:8px}
+.sres .q{display:flex;align-items:center;gap:10px;height:40px;padding:0 10px;border-radius:8px;background:var(--surface);box-shadow:var(--sh);font-size:14px}
+.sres .q .caret{width:1.5px;height:18px;background:var(--blue);animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.sres .rr{display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;font-size:14px}
+.sres .rr.on{background:var(--surface);box-shadow:var(--sh)}
+.sres .rr small{color:var(--muted);font-size:12.5px;display:block}
+.sres .rr .kbd{margin-left:auto}
+.pbar{display:grid;gap:12px}
+.pbar>div{display:grid;grid-template-columns:22px 130px 1fr 40px;align-items:center;gap:10px;font-size:13.5px}
+.pbar .tr{height:8px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+.pbar .fl{display:block;height:100%;border-radius:999px;background:var(--c);transform-origin:0 50%;transform:scaleX(0);transition:transform .9s var(--ease-out)}
+.is-active .pbar .fl{transform:scaleX(var(--v))}
+.pbar .num{font-family:var(--mono);font-size:12px;text-align:right;color:var(--muted)}
+.lang .smp{border-radius:12px;background:var(--bg-2);box-shadow:inset 0 0 0 1px var(--line);padding:14px;display:flex;gap:12px;align-items:flex-start}
+.lang .smp b{font-size:14.5px;font-weight:600;display:block;letter-spacing:-.01em}
+.lang .smp span{font-size:13px;color:var(--muted);line-height:1.5;display:block;margin-top:4px}
+.lang .txt{transition:opacity .15s ease}
+.lang .txt.fade{opacity:0}
+pre.code{font-family:var(--mono);font-size:12px;line-height:1.7;border-radius:12px;background:var(--bg-2);box-shadow:inset 0 0 0 1px var(--line);padding:12px 14px;overflow:hidden;color:var(--muted)}
+pre.code .k{color:var(--purple)}pre.code .s{color:var(--green)}pre.code .c{color:var(--faint)}
+.steps{display:grid;gap:10px}
+.steps>div{display:flex;align-items:center;gap:10px;font-size:14px}
+.steps .ok{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--green) 15%,transparent);color:var(--green)}
+.steps .ok svg{width:13px;height:13px}
+.steps .wait{width:22px;height:22px;border-radius:50%;border:1.5px dashed var(--line-2)}
+.cloud{display:flex;flex-wrap:wrap;gap:8px}
+.cloud .tile{--s:44px}
+.v4 .cat-h{max-width:1200px;margin:0 auto;padding:72px 24px 20px;display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.v4 .cat-h h2{font-size:clamp(28px,3vw,40px);font-weight:600;letter-spacing:-.045em}
+.v4 .live{max-width:1200px;margin:0 auto;padding:0 24px 40px}
+.v4 .ctl{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.v4 .ctl .field{flex:1;min-width:240px;max-width:380px;border-radius:999px}
+.sseg{position:relative;display:inline-flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:var(--sh);overflow-x:auto;max-width:100%}
+.sseg .ind{position:absolute;top:4px;left:0;height:calc(100% - 8px);width:1px;border-radius:999px;background:var(--text);transform-origin:0 0;transition:transform .28s var(--ease-out)}
+.sseg button{position:relative;z-index:1;height:30px;padding:0 12px;border-radius:999px;font-size:13px;color:var(--muted);white-space:nowrap;transition:color .2s ease}
+.sseg button[aria-pressed=true]{color:var(--bg)}
+.sseg .n{font-family:var(--mono);font-size:11px;opacity:.6;margin-left:5px}
+
+/* =============================== V5  GALLERY (mobbin) =============================== */
+.v5 .nav{height:64px;display:flex;align-items:center;gap:20px;padding:0 24px;position:sticky;top:40px;z-index:30;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.v5 .nav .mid{margin:0 auto;display:inline-flex;padding:3px;border-radius:999px;background:var(--surface-2);gap:2px}
+.v5 .nav .mid a{height:30px;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;font-size:13.5px;color:var(--muted);transition:color .15s ease,background-color .15s ease}
+.v5 .nav .mid a.on{background:var(--surface-3);color:var(--text);box-shadow:0 1px 2px rgb(0 0 0 / .2)}
+.v5 .nav .right{display:flex;gap:8px;align-items:center}
+.v5-hero{padding:64px 24px 28px;text-align:center}
+.v5-hero h1{font-size:clamp(36px,5vw,64px);font-weight:600;letter-spacing:-.05em;line-height:1.02;max-width:16ch;margin:0 auto;text-wrap:balance}
+.v5-hero p{color:var(--muted);font-size:17px;margin:16px auto 28px;max-width:50ch;line-height:1.6}
+.v5 .big{max-width:640px;margin:0 auto;height:56px;border-radius:999px;padding:0 10px 0 20px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line)}
+.v5 .big input{font-size:16px}
+.v5 .ppl{justify-content:center;margin-top:16px}
+.v5 .tabs{position:sticky;top:104px;z-index:29;background:var(--bg);border-bottom:1px solid var(--line);margin-top:28px}
+.v5 .tabs .in{position:relative;display:flex;gap:4px;padding:0 24px;overflow-x:auto;scrollbar-width:none}
+.v5 .tabs button{height:48px;padding:0 10px;font-size:14px;color:var(--muted);white-space:nowrap;display:inline-flex;align-items:center;gap:7px;transition:color .15s ease}
+.v5 .tabs button .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.v5 .tabs button[aria-pressed=true]{color:var(--text)}
+@media (hover:hover) and (pointer:fine){.v5 .tabs button:hover{color:var(--text)}}
+.v5 .tabs .ind{position:absolute;bottom:-1px;left:0;height:2px;width:1px;background:var(--text);transform-origin:0 0;transition:transform .28s var(--ease-out)}
+.c5grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:32px 20px;padding:32px 24px}
+.c5{display:flex;flex-direction:column;gap:10px;outline:none}
+.c5 .ic{position:relative;aspect-ratio:1;border-radius:24%;display:grid;place-items:center;color:#fff;font-size:30px;font-weight:650;letter-spacing:-.04em;
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / .2),inset 0 0 0 1px rgb(255 255 255 / .08),0 1px 2px rgb(0 0 0 / .3);transition:transform .2s var(--ease-out),box-shadow .2s ease}
+.c5 .sv{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;background:rgb(0 0 0 / .45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .15s ease,transform .12s var(--ease-out),background-color .15s ease}
+.c5 .sv:active{transform:scale(.9)}
+.c5 .sv[aria-pressed=true]{opacity:1;background:#fff;color:#000}
+.c5 .sv[aria-pressed=true] svg{fill:currentColor}
+.c5 h3{font-size:14px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.c5 span.k{font-size:13px;color:var(--muted)}
+@media (hover:hover) and (pointer:fine){.c5:hover .ic{transform:translateY(-3px);box-shadow:inset 0 1px 0 rgb(255 255 255 / .2),inset 0 0 0 1px rgb(255 255 255 / .08),0 10px 24px rgb(0 0 0 / .35)}.c5:hover .sv{opacity:1}}
+.c5:focus-visible .ic{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--blue)}
+
+/* =============================== V6  EDITORIAL (mobbin landing) =============================== */
+.v6 .nav{max-width:1240px;margin:0 auto;height:64px;display:flex;align-items:center;gap:24px;padding:0 24px}
+.v6 .nav .right{margin-left:auto;display:flex;gap:8px}
+.v6-hero{max-width:1240px;margin:0 auto;padding:72px 24px 36px}
+.v6-hero h1{font-size:clamp(44px,7.4vw,104px);font-weight:600;letter-spacing:-.06em;line-height:.96;max-width:15ch}
+.v6-hero h1 .is{display:inline-grid;place-items:center;width:.78em;height:.78em;border-radius:.2em;vertical-align:-.06em;margin:0 .06em;color:#fff;box-shadow:inset 0 1px 0 rgb(255 255 255 / .25)}
+.v6-hero h1 .is svg{width:62%;height:62%}
+.v6-hero h1 .m{color:var(--faint)}
+.v6-hero .sub{display:flex;gap:40px;align-items:end;justify-content:space-between;margin-top:32px;flex-wrap:wrap}
+.v6-hero p{font-size:18px;line-height:1.6;color:var(--muted);max-width:46ch}
+.v6 .live{max-width:1240px;margin:0 auto;padding:0 24px}
+.v6 .ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:sticky;top:40px;background:var(--bg);z-index:20}
+.v6 .ctl .field{flex:1;min-width:240px;max-width:360px;border-radius:999px}
+.row6{padding-top:40px}
+.row6 .rh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.row6 .rh h3{font-size:22px;font-weight:600;letter-spacing:-.035em}
+.row6 .rh a{margin-left:auto;font-size:14px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;transition:color .15s ease}
+@media (hover:hover) and (pointer:fine){.row6 .rh a:hover{color:var(--text)}}
+.row6 .sc{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,300px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;scrollbar-width:thin}
+.c6{scroll-snap-align:start;display:flex;flex-direction:column;gap:10px;outline:none}
+.c6 .cv{aspect-ratio:16/10;border-radius:16px;overflow:hidden;position:relative;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .06)}
+.c6 .cv>div{position:absolute;inset:0;display:grid;place-items:center;transition:transform .35s var(--ease-out)}
+.c6 .cv .logo{--s:64px;box-shadow:0 8px 24px rgb(0 0 0 / .18),inset 0 1px 0 rgb(255 255 255 / .25)}
+.c6 .cv .badge{position:absolute;left:10px;top:10px;background:rgb(255 255 255 / .85);color:#171717;box-shadow:none;backdrop-filter:blur(6px)}
+.c6 h3{font-size:15px;font-weight:600;letter-spacing:-.015em}
+.c6 p{font-size:13.5px;line-height:1.5;color:var(--muted)}
+.c6 .mt{display:flex;align-items:center;justify-content:space-between;gap:8px}
+@media (hover:hover) and (pointer:fine){.c6:hover .cv>div{transform:scale(1.03)}}
+.c6:focus-visible .cv{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--blue)}
+
+/* =============================== PROJECT PAGE =============================== */
+.pp .crumbs{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--faint);padding:20px 24px;border-bottom:1px solid var(--line)}
+.pp .crumbs a{color:var(--muted)}
+.pp .main{display:grid;grid-template-columns:1.45fr 1fr;border-bottom:1px solid var(--line)}
+@media (max-width:900px){.pp .main{grid-template-columns:1fr}}
+.pp .main>div{padding:40px 24px}
+.pp .main>div:first-child{border-right:1px solid var(--line)}
+.pp h1{font-size:clamp(34px,4.4vw,56px);font-weight:600;letter-spacing:-.05em;line-height:1;margin-top:24px}
+.pp .site-l{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:12px}
+.pp .lead{font-size:18px;line-height:1.6;color:var(--muted);margin-top:20px;max-width:52ch}
+.pp .acts{display:flex;gap:8px;margin-top:28px;flex-wrap:wrap}
+.pp h4{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:40px 0 14px}
+.facts{list-style:none;display:grid;gap:0;border-top:1px solid var(--line)}
+.facts li{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.55}
+.facts li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:.6em;flex:none}
+.meta{display:grid;gap:0}
+.meta>div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:center}
+.meta>div>span:first-child{color:var(--muted)}
+.meta .tags{display:flex;flex-wrap:wrap;gap:6px}
+.edit{display:flex;align-items:center;gap:12px;margin-top:24px;padding:14px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line);font-size:13.5px;color:var(--muted)}
+.edit b{color:var(--text);font-weight:600;display:block}
+
+/* =============================== MOTION / PERF / COMPARE =============================== */
+.panel3{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);box-shadow:0 0 0 1px var(--line)}
+@media (max-width:1000px){.panel3{grid-template-columns:1fr}}
+.panel3>div{background:var(--bg);padding:24px}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+.t th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:10px 12px 10px 0;border-bottom:1px solid var(--line)}
+.t td{padding:12px 12px 12px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5;color:var(--muted)}
+.t td:first-child{color:var(--text);font-weight:500}
+.t code,.note code{font-family:var(--mono);font-size:12px;color:var(--text);background:var(--surface-2);padding:1px 6px;border-radius:5px;box-shadow:inset 0 0 0 1px var(--line)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);box-shadow:0 0 0 1px var(--line);margin-bottom:20px}
+.kpis>div{background:var(--bg);padding:18px}
+.kpis b{display:block;font-size:30px;font-weight:600;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.kpis span{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+ul.ls{list-style:none;display:grid;gap:10px}
+ul.ls li{display:flex;gap:10px;font-size:14px;line-height:1.55;color:var(--muted)}
+ul.ls li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--faint);margin-top:.62em;flex:none}
+ul.ls b{color:var(--text);font-weight:600}
+.reco{border-radius:16px;box-shadow:inset 0 0 0 1px var(--line-2);padding:24px;position:relative;overflow:hidden}
+.reco::before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,var(--blue),var(--pink),transparent)}
+.reco h3{font-size:20px;font-weight:600;letter-spacing:-.03em}
+
+/* =============================== REDUCED MOTION =============================== */
+@media (prefers-reduced-motion:reduce){
+  .slide,.slide.is-active,.slide.is-before{transform:none!important;transition:opacity .2s ease,visibility 0s}
+  .marq .track{animation:none}
+  .sres .q .caret{animation:none}
+  .c1 .arr,.vcard .go{transform:none}
+  .c3,.c5 .ic,.c6 .cv>div{transition:box-shadow .15s ease!important;transform:none!important}
+  .pbar .fl{transition:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="s-tat" viewBox="0 0 150 150"><path d="M58.8988 2.76591C47.0776 5.87631 37.4341 11.475 28.5164 20.3915C21.2578 27.6492 12.2364 40.0908 15.3472 38.7429C26.961 33.6626 30.9013 32.5221 37.4341 32.2111C44.4853 31.9 44.6927 31.7964 45.6259 28.686C46.1444 27.0271 47.285 25.5756 48.1146 25.5756C50.1885 25.5756 58.6914 30.5522 58.6914 31.7964C58.6914 32.3148 60.869 33.0405 63.6687 33.3516C72.2753 34.5957 76.2157 35.9436 79.7413 38.9503C81.5041 40.6092 86.4814 43.6159 90.6292 45.6895C94.777 47.7631 98.4063 50.1478 98.7174 50.9772C99.6506 53.2582 96.9546 59.9974 94.9844 60.5158C93.8437 60.8268 93.3253 61.6563 93.6363 62.9004C93.9474 63.9372 93.6363 65.6998 92.9105 66.944C91.9772 68.8102 91.4588 68.9139 89.696 67.9808C86.1704 66.1145 79.1192 66.3219 75.9046 68.3955C65.1204 75.5494 57.8618 106.239 62.6318 125.109C63.0465 127.078 63.565 125.731 64.602 119.925C66.3648 109.557 71.9643 98.4627 78.8081 91.6198C81.7115 88.6131 90.5255 81.8739 98.1989 76.5862C122.36 60.2047 130.24 49.422 130.448 32.9368C130.448 28.686 129.929 27.0271 127.648 24.3314C120.597 15.7259 107.324 7.0168 95.1918 3.18063C92.4957 2.24751 84.926 1.41806 78.3933 1.10702C68.7497 0.795983 65.0167 1.10702 58.8988 2.76591Z" fill="currentColor"/><path d="M28.3228 43.7294C15.6721 48.1877 5.51008 59.9036 4.26575 71.4121C3.02142 83.0242 6.23594 98.991 12.0428 110.603C15.8795 118.276 24.3824 128.851 31.3299 134.45C38.4848 140.256 52.8983 147.513 59.5348 148.55L63.8899 149.276L60.2606 143.781C58.1868 140.774 55.2833 135.59 53.7279 132.272C52.1725 128.955 49.9949 125.844 48.8543 125.326C43.6696 122.941 33.0927 113.817 28.8413 108.115C17.746 93.0812 15.7758 78.6697 22.7233 63.5324C26.0415 56.4821 30.9152 50.9871 38.3812 46.1141L44.4991 42.1742H38.3812C35.0629 42.2779 30.5004 42.9 28.3228 43.7294Z" fill="currentColor"/><path d="M138.227 48.8175C133.975 62.1923 124.124 72.1456 101.312 86.2461C80.2616 99.2061 71.4476 110.404 70.307 125.23C69.7885 133.421 71.9661 142.233 75.9064 146.795C79.2247 150.735 80.7801 150.943 79.3284 147.106C78.7062 145.551 78.084 140.989 78.084 137.049C77.9803 131.036 78.3951 128.651 80.7801 123.986C84.6168 116.106 93.5345 107.915 104.837 101.798C127.028 89.9786 135.012 83.7578 140.612 74.1155C144.863 66.4432 145.589 59.704 142.789 50.4764C141.545 46.5366 140.404 43.2188 140.301 43.2188C140.093 43.2188 139.16 45.7071 138.227 48.8175Z" fill="currentColor"/><path d="M142.903 86.3313C138.133 92.8631 129.423 98.8766 113.35 107.067C105.781 110.903 97.6926 115.362 95.204 117.021C89.1897 121.168 85.0419 127.181 83.4865 133.92C82.4496 138.793 82.4496 140.141 84.005 144.289C86.1826 149.887 88.7749 150.509 88.7749 145.429C88.7749 140.245 90.434 136.512 94.7892 132.054C99.0406 127.596 102.981 125.315 112.832 121.583C129.112 115.465 139.585 107.482 143.629 98.2545C145.496 93.7963 147.777 81.4583 146.74 81.562C146.533 81.6657 144.77 83.7393 142.903 86.3313Z" fill="currentColor"/><path d="M126.613 123.758C123.814 125.21 117.696 127.802 113.133 129.46C102.141 133.504 98.4085 135.889 96.0235 140.762C93.0164 146.464 93.2238 148.123 96.8531 147.293C108.156 144.494 126.302 131.638 131.383 122.721C132.628 120.544 132.835 120.44 126.613 123.758Z" fill="currentColor"/></symbol>
+  <symbol id="s-bash" viewBox="0 0 150 150"><path d="M60.2931 1.20428C47.4178 4.14808 37.2951 9.23283 27.2612 17.8858C15.8066 27.6985 6.8383 42.2391 2.9313 57.4041C0.356233 67.3952 0.356233 83.1847 2.9313 93.0865C9.23577 117.083 26.3733 136.351 49.0161 144.915C55.2318 147.324 66.1536 149.732 70.5934 149.732H73.1684L72.9909 119.135L72.7245 88.6262L53.8999 88.3586C41.9125 88.2694 34.9864 88.4478 34.9864 88.983C34.9864 90.8564 30.9906 93.5326 28.238 93.5326C24.5086 93.5326 21.7559 91.124 21.1344 87.1989C20.424 82.7386 23.6206 78.9028 28.1492 78.9028C31.4346 78.9028 34.9864 81.2221 34.9864 83.4523C34.9864 84.3443 38.2719 84.612 51.68 84.612H68.2847L53.6335 75.8698C40.4917 67.9304 38.8046 67.2168 37.2063 68.2872C34.8976 69.8037 32.2338 69.7145 29.8363 68.0196C23.7982 63.8269 27.1724 54.2819 34.6313 54.2819C36.9399 54.2819 41.2021 59.2774 41.2021 62.0428C41.2909 64.3622 42.4452 65.2542 55.143 72.7475C62.8682 77.2971 69.2614 80.8653 69.3502 80.6869C69.5278 80.5085 65.7096 73.5504 61.0035 65.2542C52.8343 50.9813 52.2127 50.0892 49.6377 50C43.7772 49.8216 40.9357 41.9715 45.1979 37.7788C48.3945 34.4781 52.8343 34.7458 55.7646 38.314C58.4284 41.4362 58.606 42.6851 56.8301 46.0749C55.587 48.3943 55.8534 49.1079 64.1113 63.5593L72.7245 78.6351L72.9909 60.4371L73.1684 42.3283L70.5046 40.1873C68.4623 38.5816 67.8407 37.4219 67.8407 35.0134C67.8407 30.8207 68.9951 28.8582 72.2805 27.5201C74.4116 26.628 75.4771 26.628 77.6082 27.5201C82.8471 29.7502 83.7351 35.9054 79.3841 40.0089L76.7203 42.5067L76.8979 60.4371L77.1642 78.3675L85.6886 63.4701C93.8578 49.1971 94.1242 48.4835 92.9698 46.1641C89.418 38.9384 99.0967 32.0696 104.691 37.7788C109.042 42.0607 106.112 49.8216 100.162 50C97.676 50.0892 97.0544 50.8029 93.1474 57.7609C90.7499 61.9536 86.8429 68.8225 84.5343 72.926C82.1368 77.0294 80.3609 80.5085 80.4497 80.6869C80.6273 80.7761 87.0205 77.2078 94.6569 72.7475C107.532 65.2542 108.687 64.3622 108.687 62.0428C108.687 58.8314 113.038 54.2819 116.145 54.2819C119.697 54.2819 123.249 57.9393 123.249 61.686C123.249 67.2168 118.188 70.6066 113.038 68.5549C110.729 67.5736 109.663 68.0196 98.7415 74.4425C92.2595 78.1891 85.7774 82.025 84.2679 82.917C81.604 84.612 81.6928 84.612 97.8536 84.612H114.014L116.589 81.7574C121.207 76.5834 129.11 79.3488 129.11 86.1285C129.11 92.9973 121.562 95.8519 116.501 90.8564L113.837 88.1802H95.2785H76.7203V119.045V150L83.1135 149.286C99.6295 147.681 116.589 139.295 128.31 126.896C150.243 103.524 155.127 71.3202 141.097 42.0607C130.885 20.9188 112.061 5.84299 89.862 1.20428C82.3144 -0.401431 67.4855 -0.401431 60.2931 1.20428Z" fill="currentColor"/></symbol>
+  <symbol id="s-qrim" viewBox="0 0 150 150"><path d="M100.666 116.256H51.4765V99.8616H68.1608V50.8234H35.0799V99.8616H2.14285V83.18H18.971V34.2856H133.603V83.18H150V99.8616H117.207V50.8234H84.2697V99.8616H100.666V116.256Z" fill="currentColor"/></symbol>
+  <symbol id="brand" viewBox="0 0 24 24"><rect x="2" y="2" width="9" height="9" rx="2.5" fill="currentColor"/><rect x="13" y="2" width="9" height="9" rx="4.5" fill="currentColor" opacity=".55"/><rect x="2" y="13" width="9" height="9" rx="4.5" fill="currentColor" opacity=".55"/><rect x="13" y="13" width="9" height="9" rx="2.5" fill="currentColor"/></symbol>
+  <symbol id="i-newspaper" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18h-5M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></symbol>
+  <symbol id="i-languages" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6M4 14l6-6 2-3M2 5h12M7 2h1M22 22l-5-10-5 10M14 18h6"/></symbol>
+  <symbol id="i-tv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="15" x="2" y="7" rx="2"/><path d="m17 2-5 5-5-5"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.4 3.6a2 2 0 0 1 2.8 2.8L7 18.6l-4 1 1-4Z"/></symbol>
+  <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5M22 10v6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H16c3.1 0 5.6-2.5 5.6-5.6C21.6 6 17.3 2 12 2Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-ur" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2Z"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+</svg>
+
+<div class="progress"><i id="prog"></i></div>
+<main id="deck">
+
+<!-- ======================= 01 COVER ======================= -->
+<section class="slide" data-theme="dark" data-title="Обложка">
+  <div class="wrap">
+    <div class="cover-hero">
+      <div class="eyebrow">media.tatarverse.cc · редизайн v2 · октябрь 2026</div>
+      <h1>Шесть вариантов. Одна система.</h1>
+      <p>Минимализм в духе Vercel, Dub и Mobbin: Inter, тонкие линии, много воздуха и цвет только там, где он что-то значит - в иконках категорий и паре акцентов. Каждый вариант работает в темной и светлой теме: кнопка с солнцем внизу.</p>
+      <div class="refs"><span class="badge" style="--c:var(--text)"><i></i>vercel.com</span><span class="badge" style="--c:var(--blue)"><i></i>dub.co</span><span class="badge" style="--c:var(--pink)"><i></i>mobbin.com</span><span class="badge" style="--c:var(--amber)"><i></i>Inter + Geist Mono</span></div>
+    </div>
+    <div class="vgrid">
+      <button class="vcard" data-go="3"><div class="mini m1" data-theme="dark"><i class="t" style="width:46%;margin-top:30px"></i><i class="s" style="width:60%"></i><i class="s" style="width:30%;background:var(--text)"></i></div><div class="row"><span class="src">01 · по мотивам vercel.com</span><svg class="i go"><use href="#i-ur"/></svg></div><h3>Geist</h3><p>Темная главная: сетка-линейка, маркеры «+», ячейки вместо карточек, свечение в hero.</p></button>
+      <button class="vcard" data-go="4"><div class="mini m2" data-theme="light"><div class="side"><i class="s" style="width:70%"></i><i class="s"></i><i class="s" style="width:80%"></i><i class="s" style="width:60%"></i><i class="s" style="width:75%"></i></div><div class="main"><i class="cell" style="--c:var(--blue)"></i><i class="cell" style="--c:var(--purple)"></i><i class="cell" style="--c:var(--amber)"></i><i class="cell" style="--c:var(--pink)"></i></div></div><div class="row"><span class="src">02 · по мотивам vercel dashboard</span><svg class="i go"><use href="#i-ur"/></svg></div><h3>Консоль</h3><p>Каталог как приложение: фасеты в сайдбаре, сетка или список, вкладки.</p></button>
+      <button class="vcard" data-go="5"><div class="mini m3" data-theme="light"><i class="t" style="width:50%;margin-top:22px;position:relative"></i><i class="s" style="width:62%;position:relative"></i><div class="r" style="width:100%;margin-top:auto;position:relative"><i class="cell" style="--c:var(--blue)"></i><i class="cell" style="--c:var(--purple)"></i><i class="cell" style="--c:var(--orange)"></i></div></div><div class="row"><span class="src">03 · по мотивам dub.co</span><svg class="i go"><use href="#i-ur"/></svg></div><h3>Мягкий</h3><p>Светлая главная: мягкие пятна цвета, бегущая строка проектов, карточки с тенью.</p></button>
+      <button class="vcard" data-go="6"><div class="mini m4" data-theme="light"><i class="cell" style="--c:var(--blue)"></i><i class="cell" style="--c:var(--green)"></i><i class="cell" style="--c:var(--purple)"></i><i class="cell" style="--c:var(--amber)"></i><i class="cell" style="--c:var(--pink)"></i></div><div class="row"><span class="src">04 · по мотивам dub.co/features</span><svg class="i go"><use href="#i-ur"/></svg></div><h3>Бенто</h3><p>Возможности каталога плитками: поиск, народы, двуязычие, открытые данные.</p></button>
+      <button class="vcard" data-go="7"><div class="mini m5" data-theme="dark"><i class="s" style="width:60%;height:14px;border-radius:9px;margin-top:6px"></i><div class="sq"><i style="background:#3b82f6"></i><i style="background:#a855f7"></i><i style="background:#f59e0b"></i><i style="background:#ec4899"></i><i style="background:#14b8a6"></i><i style="background:#22c55e"></i><i style="background:#f97316"></i><i style="background:#6366f1"></i><i style="background:#0ea5e9"></i><i style="background:#e11d48"></i><i style="background:#84cc16"></i><i style="background:#8b5cf6"></i></div></div><div class="row"><span class="src">05 · по мотивам mobbin.com</span><svg class="i go"><use href="#i-ur"/></svg></div><h3>Галерея</h3><p>Поиск в центре и плотная сетка иконок проектов, как каталог приложений.</p></button>
+      <button class="vcard" data-go="8"><div class="mini m6" data-theme="light"><i class="t" style="width:80%;height:14px"></i><i class="t" style="width:55%;height:14px"></i><div class="r" style="margin-top:auto"><i class="cov" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)"></i><i class="cov" style="background:linear-gradient(135deg,#f59e0b,#ef4444)"></i><i class="cov" style="background:linear-gradient(135deg,#10b981,#0ea5e9)"></i></div></div><div class="row"><span class="src">06 · по мотивам mobbin landing</span><svg class="i go"><use href="#i-ur"/></svg></div><h3>Журнал</h3><p>Огромная типографика и горизонтальные ряды по категориям.</p></button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 02 SYSTEM ======================= -->
+<section class="slide" data-theme="dark" data-title="Система">
+  <div class="vbar"><b>Система</b><span>общая для всех шести вариантов</span><span class="tags"><span>Inter</span><span>Geist Mono</span><span>2 темы</span><span>7 акцентов</span></span></div>
+  <div class="wrap" style="padding-top:40px;padding-bottom:24px">
+    <div class="sec-h" style="padding:0 0 28px"><h2>Строгая основа, цвет как сигнал</h2><p>Нейтральная шкала серого, один шрифт, тонкие линии. Цвет получает только смысл: категория, состояние, один акцент в заголовке.</p></div>
+    <div class="sys">
+      <div>
+        <h4>Типографика · Inter</h4>
+        <div class="tscale">
+          <div><span style="font-size:56px;font-weight:600;letter-spacing:-.055em;line-height:1">Атлас</span><code>Display · 56-96 / 600 / -5.5%</code></div>
+          <div><span style="font-size:36px;font-weight:600;letter-spacing:-.045em;line-height:1.05">Категории проектов</span><code>H2 · 32-44 / 600 / -4.5%</code></div>
+          <div><span style="font-size:18px;font-weight:600;letter-spacing:-.02em">Газета «Авдет»</span><code>H3 · 15-20 / 600 / -2%</code></div>
+          <div><span style="font-size:15px;line-height:1.6;color:var(--muted)">Крымскотатарская газета, издающаяся с 1990 года.</span><code>Body · 14-18 / 400 / 1.6</code></div>
+          <div><span class="eyebrow">349 проектов · 3 народа</span><code>Label · Geist Mono 12 / caps</code></div>
+          <div><span style="font-size:22px;font-weight:500;letter-spacing:-.02em">Әә Өө Үү Җҗ Ңң Һһ · Ҙҙ Ҡҡ Ҫҫ Ғғ · Ğğ Ññ Öö Şş Çç</span><code>кириллица ext + латиница</code></div>
+        </div>
+        <h4 style="margin-top:8px">Компоненты</h4>
+        <div class="comp">
+          <button class="btn btn-primary">Добавить проект</button>
+          <button class="btn btn-secondary">Открыть каталог</button>
+          <button class="btn btn-ghost">GitHub</button>
+          <button class="btn btn-primary pill">Pill</button>
+        </div>
+        <div class="comp">
+          <label class="field" style="width:300px"><svg class="i"><use href="#i-search"/></svg><input placeholder="Найти проект"><span class="kbd">⌘K</span></label>
+          <span class="badge" style="--c:var(--blue)"><i></i>Медиа</span>
+          <button class="chip" aria-pressed="true">Татары <span class="n">215</span></button>
+          <button class="chip" aria-pressed="false">Башкиры <span class="n">66</span></button>
+        </div>
+      </div>
+      <div>
+        <h4>Нейтральная шкала · темная</h4>
+        <div><div class="ramp"><i style="background:#000"></i><i style="background:#0a0a0a"></i><i style="background:#0f0f0f"></i><i style="background:#171717"></i><i style="background:#202020"></i><i style="background:#242424"></i><i style="background:#333"></i><i style="background:#6b6b6b"></i><i style="background:#a1a1a1"></i><i style="background:#ededed"></i></div><div class="ramp-l"><span>#000</span><span>bg #0a0a0a</span><span>line #242424</span><span>muted #a1a1a1</span><span>#ededed</span></div></div>
+        <h4>Нейтральная шкала · светлая</h4>
+        <div><div class="ramp"><i style="background:#fff"></i><i style="background:#fafafa"></i><i style="background:#f5f5f5"></i><i style="background:#ededed"></i><i style="background:#ebebeb"></i><i style="background:#dedede"></i><i style="background:#8f8f8f"></i><i style="background:#5f5f5f"></i><i style="background:#3a3a3a"></i><i style="background:#171717"></i></div><div class="ramp-l"><span>bg #fff</span><span>line #ebebeb</span><span>muted #5f5f5f</span><span>#171717</span></div></div>
+        <h4>Акценты = категории</h4>
+        <div class="accents" id="accents"></div>
+        <p class="note">Цветная иконка в тонированном квадрате - главный «акцентный момент», как у Dub и Vercel. В темной теме оттенки светлее, чтобы держать контраст. <b>Кнопки и текст никогда не цветные</b>, кроме ссылок-действий.</p>
+        <h4>Радиусы и движение</h4>
+        <p class="note"><code>6</code> поля · <code>8</code> кнопки · <code>12</code> карточки · <code>16-24</code> крупные блоки · <code>999</code> чипы. Кривая <code>cubic-bezier(.23,1,.32,1)</code>, 120-280 мс.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 03 V1 GEIST ======================= -->
+<section class="slide v1" data-theme="dark" data-title="01 · Geist">
+  <div class="vbar"><b>01 / 06 · Geist</b><span>по мотивам vercel.com</span><span class="tags"><span>сетка-линейка</span><span>маркеры +</span><span>ячейки</span><span>свечение</span><span>темная по умолчанию</span></span></div>
+  <header class="hdr"><div class="in">
+    <span class="brand"><svg><use href="#brand"/></svg>media.tatarverse</span>
+    <nav class="navlinks"><a class="on">Каталог</a><a>Категории</a><a>Сохраненное</a><a>О проекте</a></nav>
+    <div class="right"><a class="btn btn-ghost btn-sm"><svg class="i"><use href="#i-code"/></svg>GitHub</a><a class="btn btn-primary btn-sm">Добавить проект</a></div>
+  </div></header>
+  <div class="frame">
+    <section class="v1-hero" data-x="bl br">
+      <div class="bg"></div>
+      <span class="eb"><span class="dot"></span>Обновлено 14 октября · +24 проекта</span>
+      <h1>Каталог проектов татар, башкир и крымских татар</h1>
+      <p>Каналы, медиа, авторы, уроки и языковые технологии - в одном месте, с фактами о каждом проекте и открытыми данными.</p>
+      <div class="cta"><a class="btn btn-primary btn-lg pill">Открыть каталог<svg class="i"><use href="#i-arrow"/></svg></a><a class="btn btn-secondary btn-lg pill">Добавить проект</a></div>
+      <div class="term"><span style="color:var(--faint)">▲</span><span>src/data/cards/<b>&lt;id&gt;.md</b></span><span style="color:var(--faint)">- одна карточка, один файл</span></div>
+    </section>
+    <section class="v1-stats" data-x="bl br"><div><b>349</b><span>проектов</span></div><div><b>3</b><span>народа</span></div><div><b>7</b><span>категорий</span></div><div><b>2</b><span>языка сайта</span></div></section>
+    <section data-x="bl br">
+      <div class="sec-h"><h2>Семь категорий. Один фильтр.</h2><p>Каждая категория со своим цветом и иконкой - так их проще узнавать в сетке, фильтрах и на странице проекта.</p></div>
+      <div class="cells" id="v1cats"></div>
+    </section>
+    <section class="v1-live" data-live="v1" data-x="bl br">
+      <div class="sec-h"><h2>Все проекты</h2><p class="mono" style="font-size:13px">показано <span data-count></span> из 18 · в макете реальные карточки</p></div>
+      <div class="bar"><label class="field"><svg class="i"><use href="#i-search"/></svg><input data-q placeholder="Найти проект, автора, тему" aria-label="Поиск"><span class="kbd">/</span></label><div class="chips" data-ppl data-cls="chip"></div></div>
+      <div class="cats"><div class="chips" data-cat data-cls="chip"></div></div>
+      <div class="cells" data-grid></div>
+      <div class="empty">Такого проекта пока нет. <b>Знаете его? Добавьте</b> - это займет пару минут.</div>
+    </section>
+    <section class="v1-cta" data-x="bl br">
+      <h2>Знаете проект, которого нет в каталоге?</h2>
+      <p>Отправьте форму или пул-реквест. Сборка сама проверит теги, перевод и ссылки.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn btn-primary btn-lg pill">Добавить проект</a><a class="btn btn-secondary btn-lg pill"><svg class="i"><use href="#i-code"/></svg>Открыть на GitHub</a></div>
+    </section>
+  </div>
+  <footer class="ftr"><span class="brand" style="font-size:14px"><svg><use href="#brand"/></svg>media.tatarverse</span><span>Каталог · Категории · Сохраненное · О проекте · Источники</span><span class="mono">MIT · CC BY 4.0 · 2026</span></footer>
+</section>
+
+<!-- ======================= 04 V2 CONSOLE ======================= -->
+<section class="slide v2" data-theme="light" data-title="02 · Консоль">
+  <div class="vbar"><b>02 / 06 · Консоль</b><span>по мотивам vercel dashboard</span><span class="tags"><span>фасеты в сайдбаре</span><span>сетка / список</span><span>счетчики</span><span>светлая по умолчанию</span></span></div>
+  <div data-live="v2">
+    <div class="top">
+      <div class="crumb"><span class="brand"><svg><use href="#brand"/></svg></span><span class="sl">/</span>media.tatarverse<span class="sl">/</span>Каталог<span class="bdg">349</span></div>
+      <label class="field"><svg class="i"><use href="#i-search"/></svg><input data-q placeholder="Поиск по названию, описанию, народу" aria-label="Поиск"><span class="kbd">⌘K</span></label>
+      <a class="btn btn-primary btn-sm"><svg class="i"><use href="#i-plus"/></svg>Добавить</a>
+    </div>
+    <nav class="tabs"><a><span>Обзор</span></a><a class="on"><span>Каталог</span></a><a><span>Категории</span></a><a><span>Сохраненное</span></a><a><span>Изменения</span></a><a><span>О проекте</span></a></nav>
+    <div class="body">
+      <aside class="side">
+        <div class="grp"><h5>Народ</h5><div data-ppl data-cls="opt" data-check="1"></div></div>
+        <div class="grp"><h5>Категория</h5><div data-cat data-cls="opt" data-icons="1"></div></div>
+        <div class="grp"><h5>Формат</h5>
+          <button class="opt" aria-pressed="false"><span class="cb"><svg><use href="#i-check"/></svg></span>Приложение</button>
+          <button class="opt" aria-pressed="false"><span class="cb"><svg><use href="#i-check"/></svg></span>Радио</button>
+          <button class="opt" aria-pressed="false"><span class="cb"><svg><use href="#i-check"/></svg></span>Telegram</button>
+          <button class="opt" aria-pressed="false"><span class="cb"><svg><use href="#i-check"/></svg></span>Open source</button>
+        </div>
+      </aside>
+      <main>
+        <div class="tool"><h2>Проекты<span data-count></span></h2>
+          <button class="btn btn-secondary btn-sm">Сначала новые<svg class="i"><use href="#i-down"/></svg></button>
+          <div class="seg" data-view><button aria-pressed="true" data-mode="grid" aria-label="Сетка"><svg class="i"><use href="#i-grid"/></svg></button><button aria-pressed="false" data-mode="list" aria-label="Список"><svg class="i"><use href="#i-list"/></svg></button></div>
+        </div>
+        <div class="c2grid" data-grid></div>
+        <div class="empty">Ничего не найдено. <b>Сбросьте фильтры</b> или добавьте проект.</div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 05 V3 SOFT ======================= -->
+<section class="slide v3" data-theme="light" data-title="03 · Мягкий">
+  <div class="vbar"><b>03 / 06 · Мягкий</b><span>по мотивам dub.co</span><span class="tags"><span>пятна цвета</span><span>бегущая строка</span><span>пунктир</span><span>градиент в слове</span></span></div>
+  <nav class="nav"><span class="brand"><svg><use href="#brand"/></svg>media.tatarverse</span><div class="navlinks"><a class="on">Каталог</a><a>Категории</a><a>Как добавить</a><a>О проекте</a></div><div class="right"><a class="btn btn-ghost btn-sm pill">GitHub</a><a class="btn btn-primary btn-sm pill">Добавить проект</a></div></nav>
+  <section class="v3-hero">
+    <a class="new"><b>Новое</b>24 проекта добавлены в октябре<svg class="i"><use href="#i-arrow"/></svg></a>
+    <h1>Все проекты на <span class="grad">родном языке</span> в одном каталоге</h1>
+    <p>349 каналов, медиа, авторов и языковых платформ татар, башкир и крымских татар. С фактами, а не рекламой.</p>
+    <div class="cta"><a class="btn btn-primary btn-lg pill">Смотреть каталог</a><a class="btn btn-secondary btn-lg pill">Добавить проект</a></div>
+    <div class="proof"><div class="stack" id="v3stack"></div><span>Открытые данные · MIT · CC BY 4.0</span></div>
+  </section>
+  <div class="dash"></div>
+  <div class="marq"><div class="track" id="v3marq"></div></div>
+  <div class="dash"></div>
+  <section class="sec">
+    <div class="sec-c"><h2>Как устроен каталог</h2><p>Три вещи, которые отличают его от списка ссылок.</p></div>
+    <div class="feat3">
+      <div class="fcard"><div class="vis"><label class="field" style="width:100%;height:36px;border-radius:999px"><svg class="i"><use href="#i-search"/></svg><input placeholder="уроки башкирского" tabindex="-1"><span class="kbd">/</span></label></div><span class="tile" style="--c:var(--blue)"><svg><use href="#i-search"/></svg></span><h3>Поиск и фильтры</h3><p>Народ, категория и теги комбинируются, а ссылкой на подборку можно поделиться.</p></div>
+      <div class="fcard"><div class="vis"><div class="chips"><span class="chip" aria-pressed="true">RU</span><span class="chip" aria-pressed="false">EN</span></div></div><span class="tile" style="--c:var(--purple)"><svg><use href="#i-languages"/></svg></span><h3>Два языка</h3><p>У каждой карточки есть перевод на английский, сборка не пропустит карточку без него.</p></div>
+      <div class="fcard"><div class="vis"><span class="mono" style="font-size:12.5px;color:var(--muted)">cards/<b style="color:var(--text)">avdet-media.md</b></span></div><span class="tile" style="--c:var(--green)"><svg><use href="#i-code"/></svg></span><h3>Открытые данные</h3><p>Одна карточка - один markdown-файл. Поправить может любой через GitHub.</p></div>
+    </div>
+  </section>
+  <section class="sec" style="padding-top:0" data-live="v3">
+    <div class="sec-c"><h2>Найдите свой проект</h2><p>Показано <span data-count></span> из 18 реальных карточек.</p></div>
+    <div class="ctl"><label class="field"><svg class="i"><use href="#i-search"/></svg><input data-q placeholder="Название, тема или народ" aria-label="Поиск"><span class="kbd">/</span></label><div class="chips" data-ppl data-cls="chip"></div><div class="chips" data-cat data-cls="chip" data-icons="1"></div></div>
+    <div class="c3grid" data-grid></div>
+    <div class="empty">Пока пусто. <b>Предложите проект</b> - модерация занимает пару дней.</div>
+  </section>
+  <div style="padding:0 24px"><div class="cbox"><h2>Ведете проект на родном языке?</h2><p>Добавьте его в каталог - это бесплатно и займет пару минут.</p><a class="btn btn-primary btn-lg pill">Добавить проект<svg class="i"><use href="#i-arrow"/></svg></a></div></div>
+</section>
+
+<!-- ======================= 06 V4 BENTO ======================= -->
+<section class="slide v4" data-theme="light" data-title="04 · Бенто">
+  <div class="vbar"><b>04 / 06 · Бенто</b><span>по мотивам dub.co/features</span><span class="tags"><span>плитки возможностей</span><span>живые мини-демо</span><span>сегмент с ползунком</span></span></div>
+  <nav class="nav"><span class="brand"><svg><use href="#brand"/></svg>media.tatarverse</span><div class="navlinks"><a class="on">Каталог</a><a>Категории</a><a>О проекте</a></div><div class="right"><a class="btn btn-primary btn-sm pill">Добавить проект</a></div></nav>
+  <section class="v4-hero">
+    <div><span class="eyebrow">Каталог · 349 проектов</span><h1 style="margin-top:16px">Все, что делают татары, башкиры и крымские татары</h1><p>Открытый каталог проектов с общей системой тегов. Растет вместе с сообществом.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-primary btn-lg pill">Открыть каталог</a><a class="btn btn-secondary btn-lg pill">Как добавить</a></div></div>
+    <div class="recent" id="v4recent"><div class="rh"><span>Недавно добавлены</span><span class="mono" style="font-size:11.5px">+24 за октябрь</span></div></div>
+  </section>
+  <div class="bento">
+    <div class="bx b1"><div class="hd"><span class="tile" style="--c:var(--blue)"><svg><use href="#i-search"/></svg></span><h3>Найти за секунду</h3></div><p>Поиск по названию, описанию, тегам и народу. Клавиша <span class="kbd">/</span> с любой страницы.</p>
+      <div class="vis sres"><div class="q"><svg class="i" style="color:var(--muted)"><use href="#i-search"/></svg>радио<span class="caret"></span><span class="kbd" style="margin-left:auto">esc</span></div><div id="v4res"></div></div></div>
+    <div class="bx b2"><div class="hd"><span class="tile" style="--c:var(--green)"><svg><use href="#i-users"/></svg></span><h3>Три народа на равных</h3></div><p>Проект может относиться к нескольким народам сразу.</p>
+      <div class="vis pbar"><div><span class="sign"><svg><use href="#s-tat"/></svg></span><span>Татары</span><span class="tr"><i class="fl" style="--c:var(--blue);--v:1"></i></span><span class="num">215</span></div><div><span class="sign"><svg><use href="#s-qrim"/></svg></span><span>Крымские татары</span><span class="tr"><i class="fl" style="--c:var(--amber);--v:.414"></i></span><span class="num">89</span></div><div><span class="sign"><svg><use href="#s-bash"/></svg></span><span>Башкиры</span><span class="tr"><i class="fl" style="--c:var(--green);--v:.307"></i></span><span class="num">66</span></div></div></div>
+    <div class="bx b3 lang"><div class="hd"><span class="tile" style="--c:var(--purple)"><svg><use href="#i-languages"/></svg></span><h3>Русский и английский</h3><div class="seg" style="margin-left:auto" id="langseg"><button aria-pressed="true" data-l="ru">RU</button><button aria-pressed="false" data-l="en">EN</button></div></div>
+      <div class="vis smp"><span class="logo" style="--s:40px;background:linear-gradient(135deg,#0ea5e9,#6366f1)">ATR</span><div class="txt" id="langtxt"><b>Телеканал ATR</b><span>Первый крымскотатарский телеканал о жизни, истории и культуре крымских татар.</span></div></div></div>
+    <div class="bx b4"><div class="hd"><span class="tile" style="--c:var(--pink)"><svg><use href="#i-code"/></svg></span><h3>Открытые данные</h3></div>
+<pre class="code vis"><span class="c">---</span>
+<span class="k">name</span>: <span class="s">"Газета «Авдет»"</span>
+<span class="k">categories</span>: [<span class="s">"media"</span>]
+<span class="k">peoples</span>: [<span class="s">"crimean-tatar"</span>]
+<span class="c">---</span></pre></div>
+    <div class="bx b5"><div class="hd"><span class="tile" style="--c:var(--amber)"><svg><use href="#i-plus"/></svg></span><h3>Добавить за 2 минуты</h3></div>
+      <div class="vis steps"><div><span class="ok"><svg><use href="#i-check"/></svg></span>Заполнить форму</div><div><span class="ok"><svg><use href="#i-check"/></svg></span>Черновик собирается сам</div><div><span class="wait"></span>Ревью и публикация</div></div></div>
+    <div class="bx b6"><div class="hd"><span class="tile" style="--c:var(--orange)"><svg><use href="#i-palette"/></svg></span><h3>Семь категорий</h3></div><p>У каждой свой цвет и иконка.</p><div class="vis cloud" id="v4cloud"></div></div>
+  </div>
+  <div class="cat-h"><h2>Каталог</h2><span class="mono" style="font-size:13px;color:var(--muted)">показано <span data-count-ext></span> из 18</span></div>
+  <div class="live" data-live="v4">
+    <div class="ctl"><label class="field"><svg class="i"><use href="#i-search"/></svg><input data-q placeholder="Поиск" aria-label="Поиск"><span class="kbd">/</span></label><div class="sseg" data-cat data-cls="" data-seg="1"><span class="ind"></span></div></div>
+    <div class="c3grid" data-grid></div>
+    <div class="empty">Ничего не нашлось. <b>Добавьте проект</b>.</div>
+  </div>
+</section>
+
+<!-- ======================= 07 V5 GALLERY ======================= -->
+<section class="slide v5" data-theme="dark" data-title="05 · Галерея">
+  <div class="vbar"><b>05 / 06 · Галерея</b><span>по мотивам mobbin.com</span><span class="tags"><span>поиск в центре</span><span>иконки проектов</span><span>вкладки с ползунком</span><span>темная по умолчанию</span></span></div>
+  <nav class="nav"><span class="brand"><svg><use href="#brand"/></svg>media.tatarverse</span><div class="mid"><a class="on">Проекты</a><a>Подборки</a><a>Сохраненное</a></div><div class="right"><button class="ib" aria-label="Тема"><svg class="i"><use href="#i-globe"/></svg></button><a class="btn btn-primary btn-sm pill">Добавить</a></div></nav>
+  <div data-live="v5">
+    <section class="v5-hero">
+      <h1>Откройте проекты на родном языке</h1>
+      <p>Каналы, медиа, уроки и языковые технологии татар, башкир и крымских татар.</p>
+      <label class="field big"><svg class="i" style="width:20px;height:20px"><use href="#i-search"/></svg><input data-q placeholder="Поиск среди 349 проектов" aria-label="Поиск"><span class="kbd">⌘K</span></label>
+      <div class="chips ppl" data-ppl data-cls="chip"></div>
+    </section>
+    <div class="tabs"><div class="in" data-cat data-cls="" data-tabs="1"><span class="ind"></span></div></div>
+    <div class="c5grid" data-grid></div>
+    <div class="empty">Ничего не нашлось. <b>Добавьте проект</b> в каталог.</div>
+  </div>
+</section>
+
+<!-- ======================= 08 V6 EDITORIAL ======================= -->
+<section class="slide v6" data-theme="light" data-title="06 · Журнал">
+  <div class="vbar"><b>06 / 06 · Журнал</b><span>по мотивам mobbin landing</span><span class="tags"><span>крупная типографика</span><span>знаки в заголовке</span><span>ряды по категориям</span></span></div>
+  <nav class="nav"><span class="brand"><svg><use href="#brand"/></svg>media.tatarverse</span><div class="navlinks" style="margin-left:24px"><a class="on">Каталог</a><a>Подборки</a><a>О проекте</a></div><div class="right"><a class="btn btn-secondary btn-sm pill">Войти через GitHub</a><a class="btn btn-primary btn-sm pill">Добавить проект</a></div></nav>
+  <section class="v6-hero">
+    <h1>Проекты на <span class="is" style="background:#2563eb"><svg><use href="#s-tat"/></svg></span>татарском, <span class="is" style="background:#16a34a"><svg><use href="#s-bash"/></svg></span>башкирском <span class="m">и</span> <span class="is" style="background:#d97706"><svg><use href="#s-qrim"/></svg></span>крымскотатарском</h1>
+    <div class="sub"><p>349 проектов в одном каталоге: от газет с 1990 года до open source переводчиков.</p><div style="display:flex;gap:10px"><a class="btn btn-primary btn-lg pill">Смотреть все</a></div></div>
+  </section>
+  <div class="live" data-live="v6">
+    <div class="ctl"><label class="field"><svg class="i"><use href="#i-search"/></svg><input data-q placeholder="Поиск" aria-label="Поиск"><span class="kbd">/</span></label><div class="chips" data-ppl data-cls="chip"></div><span class="mono" style="margin-left:auto;font-size:12px;color:var(--muted)"><span data-count></span> из 18</span></div>
+    <div data-grid></div>
+    <div class="empty">Пусто. <b>Добавьте проект</b>.</div>
+  </div>
+</section>
+
+<!-- ======================= 09 PROJECT PAGE ======================= -->
+<section class="slide v1 pp" data-theme="dark" data-title="Страница проекта">
+  <div class="vbar"><b>Страница проекта</b><span>в системе 01 · Geist</span><span class="tags"><span>для гостя из поиска</span><span>факты без нумерации</span><span>правка на GitHub</span></span></div>
+  <header class="hdr"><div class="in"><span class="brand"><svg><use href="#brand"/></svg>media.tatarverse</span><nav class="navlinks"><a class="on">Каталог</a><a>Категории</a><a>Сохраненное</a></nav><div class="right"><a class="btn btn-primary btn-sm">Добавить проект</a></div></div></header>
+  <div class="frame">
+    <div class="crumbs"><a>Каталог</a>/<a>Медиа</a>/<span style="color:var(--text)">Газета «Авдет»</span></div>
+    <section class="main" data-x="bl br">
+      <div>
+        <span class="logo" style="--s:72px;background:linear-gradient(135deg,oklch(.68 .15 250),oklch(.48 .17 290))">Ав</span>
+        <h1>Газета «Авдет»</h1>
+        <a class="site-l">avdet.org<svg class="i" style="width:14px;height:14px"><use href="#i-ur"/></svg></a>
+        <p class="lead">Крымскотатарская общественно-политическая и культурная газета, издающаяся с 1990 года.</p>
+        <div class="acts"><a class="btn btn-primary">Открыть сайт<svg class="i"><use href="#i-ur"/></svg></a><button class="btn btn-secondary" id="ppsave" aria-pressed="false"><svg class="i"><use href="#i-bookmark"/></svg><span>Сохранить</span></button><button class="btn btn-ghost"><svg class="i"><use href="#i-share"/></svg>Поделиться</button></div>
+        <h4>Факты</h4>
+        <ul class="facts">
+          <li>Издается с 15 июля 1990 года - первое независимое издание крымских татар после депортации</li>
+          <li>Двуязычная газета (крымскотатарский и русский языки)</li>
+          <li>После аннексии Крыма редакция подвергалась обыскам и лишилась офиса, сотрудники продолжили работу удаленно</li>
+        </ul>
+      </div>
+      <div>
+        <div class="meta">
+          <div><span>Категория</span><span><span class="badge" style="--c:var(--blue)"><i></i>Медиа</span></span></div>
+          <div><span>Народ</span><span style="display:flex;align-items:center;gap:8px"><span class="sign"><svg><use href="#s-qrim"/></svg></span>Крымские татары</span></div>
+          <div><span>Теги</span><span class="tags"><span class="badge">культура</span><span class="badge">политика</span><span class="badge">общество</span><span class="badge">газета</span></span></div>
+          <div><span>Сайт</span><span class="mono" style="font-size:13px">avdet.org</span></div>
+          <div><span>Добавлено</span><span>21 августа 2026</span></div>
+        </div>
+        <div class="edit"><span class="tile" style="--c:var(--green)"><svg><use href="#i-code"/></svg></span><div><b>Нашли неточность?</b>Поправьте <span class="mono" style="font-size:12px">avdet-media.md</span> на GitHub</div></div>
+      </div>
+    </section>
+    <section data-x="bl br"><div class="sec-h" style="padding-top:40px"><h2 style="font-size:24px">Похожие проекты</h2></div><div class="cells" id="ppsim"></div></section>
+  </div>
+</section>
+
+<!-- ======================= 10 MOTION + PERF ======================= -->
+<section class="slide" data-theme="dark" data-title="Движение и скорость">
+  <div class="vbar"><b>Движение и скорость</b><span>правила Emil Kowalski / animations.dev</span></div>
+  <div class="wrap" style="padding-top:40px">
+    <div class="sec-h" style="padding:0 0 28px"><h2>Анимация с назначением, страница без лишнего веса</h2><p>Все варианты используют одни правила: только transform и opacity, короткие длительности, ничего на частых действиях.</p></div>
+    <div class="panel3">
+      <div>
+        <table class="t"><thead><tr><th>Где</th><th>Решение</th></tr></thead><tbody>
+          <tr><td>Клавиша <code>/</code>, <code>⌘K</code></td><td>Без анимации: действие происходит сотни раз.</td></tr>
+          <tr><td>Нажатие кнопки, чипа</td><td><code>scale(.97)</code>, 120 мс, ease-out.</td></tr>
+          <tr><td>Hover ячейки и карточки</td><td>Фон или подъем на 2-3 px, стрелка выезжает на 4 px, 150-200 мс, только при <code>hover: hover</code>.</td></tr>
+          <tr><td>Результаты фильтра</td><td>Появление: opacity + 6 px, 220 мс, лесенка 35 мс, не больше 8 карточек.</td></tr>
+          <tr><td>Вкладки и сегменты</td><td>Ползунок едет через <code>translateX</code> + <code>scaleX</code>, 280 мс.</td></tr>
+          <tr><td>Переход на проект</td><td>Нативные View Transitions между страницами, общий логотип и заголовок.</td></tr>
+          <tr><td>Бегущая строка</td><td>CSS linear, пауза при наведении, выключена при reduced motion.</td></tr>
+        </tbody></table>
+        <p class="note" style="margin-top:16px">Токены: <code>--ease-out: cubic-bezier(0.23,1,0.32,1)</code> · <code>--ease-drawer: cubic-bezier(0.32,0.72,0,1)</code>. Никогда: <code>transition: all</code>, <code>scale(0)</code>, ease-in.</p>
+      </div>
+      <div>
+        <div class="kpis"><div><b>&lt; 1.8 s</b><span>LCP на телефоне</span></div><div><b>&lt; 0.02</b><span>CLS</span></div><div><b>&lt; 20 КБ</b><span>JS каталога, gzip</span></div><div><b>&lt; 100 КБ</b><span>шрифты</span></div></div>
+        <ul class="ls">
+          <li><span><b>Inter variable, один файл woff2</b> с сабсетом latin + cyrillic-ext, preload и <code>size-adjust</code> у запасного шрифта против скачка верстки.</span></li>
+          <li><span><b>Сетка рендерится на сборке</b>, фильтр только прячет карточки. <code>content-visibility: auto</code> для длинного списка.</span></li>
+          <li><span><b>Декор без картинок</b>: сетка, свечение и пунктир - CSS-градиенты, иконки - один SVG-спрайт.</span></li>
+          <li><span><b>Логотипы</b> через <code>astro:assets</code> в AVIF/WebP, 96 и 192 px, ленивая загрузка ниже первого экрана.</span></li>
+          <li><span><b>Темы</b> через CSS-переменные и <code>prefers-color-scheme</code>, без мигания: тема ставится до отрисовки.</span></li>
+        </ul>
+        <p class="note" style="margin-top:14px">Это целевые значения, а не замеры.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 11 COMPARE ======================= -->
+<section class="slide" data-theme="dark" data-title="Сравнение">
+  <div class="vbar"><b>Сравнение</b><span>что выбрать</span></div>
+  <div class="wrap" style="padding-top:40px">
+    <div class="sec-h" style="padding:0 0 24px"><h2>Шесть вариантов рядом</h2></div>
+    <table class="t">
+      <thead><tr><th>Вариант</th><th>Ориентир</th><th>Тема</th><th>Сильная сторона</th><th>Минус</th></tr></thead>
+      <tbody>
+        <tr><td>01 · Geist</td><td>vercel.com</td><td>темная</td><td>Самый «дорогой» и строгий вид, сильная главная</td><td>Ячейки без зазоров плотнее читаются на телефоне</td></tr>
+        <tr><td>02 · Консоль</td><td>vercel dashboard</td><td>светлая</td><td>Лучший UX фильтрации: все фасеты видны сразу, сетка или список</td><td>Это интерфейс, а не витрина: главной нужен другой экран</td></tr>
+        <tr><td>03 · Мягкий</td><td>dub.co</td><td>светлая</td><td>Дружелюбно, понятно новичку, бегущая строка показывает масштаб</td><td>Больше декора, меньше плотности</td></tr>
+        <tr><td>04 · Бенто</td><td>dub.co/features</td><td>светлая</td><td>Объясняет, как устроен каталог и как в него попасть</td><td>Плитки нужно поддерживать вместе с функциями</td></tr>
+        <tr><td>05 · Галерея</td><td>mobbin.com</td><td>темная</td><td>Быстрый просмотр, как магазин приложений, отлично на телефоне</td><td>Сильно зависит от качества логотипов</td></tr>
+        <tr><td>06 · Журнал</td><td>mobbin landing</td><td>светлая</td><td>Самая выразительная типографика, удобно «полистать»</td><td>Горизонтальные ряды хуже для поиска конкретного</td></tr>
+      </tbody>
+    </table>
+    <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px;margin-top:28px">
+      <div class="reco"><span class="eyebrow">Рекомендация</span><h3 style="margin-top:10px">01 Geist как система + 02 Консоль как каталог</h3><p class="note" style="margin-top:10px">Главная и страница проекта в стиле Geist: темная по умолчанию, линии, маркеры, цветные иконки категорий. Каталог - раскладка Консоли: фасеты слева, сетка или список, счетчики. На телефоне сетка переходит в плитки из 05 Галереи. Обе темы с первого дня.</p></div>
+      <div class="reco"><span class="eyebrow">Дальше</span><ul class="ls" style="margin-top:12px"><li>Вы выбираете вариант или сочетание.</li><li>План и спека в <code>docs/superpowers/plans/</code> отдельным коммитом.</li><li>Токены в <code>src/styles/tailwind.css</code>, обновленный <code>DESIGN.md</code>.</li><li>Порядок: тема и шапка → каталог → страница проекта → главная.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="chrome" aria-label="Навигация">
+  <button id="prev" aria-label="Назад"><svg class="i"><use href="#i-left"/></svg></button>
+  <span class="count"><b id="cur">1</b> / <span id="tot"></span> · <span id="ttl"></span></span>
+  <button id="next" aria-label="Вперед"><svg class="i"><use href="#i-right"/></svg></button>
+  <span class="sep"></span>
+  <button id="theme" aria-label="Сменить тему слайда"><svg class="i"><use href="#i-sun"/></svg></button>
+</nav>
+
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const EASE = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
+/* реальные карточки из src/data/cards */
+const CARDS = [
+  {name:'Газета «Авдет»',cats:['media'],p:['crimean-tatar'],dom:'avdet.org',m:'Ав',d:'Крымскотатарская общественно-политическая и культурная газета, издающаяся с 1990 года.'},
+  {name:'Азатлык Радиосы',cats:['media'],p:['tatar','bashkir'],dom:'azatliq.org',m:'Аз',d:'Татаро-башкирская служба Радио Свобода на татарском, башкирском и крымскотатарском.'},
+  {name:'Apertium Tatar',cats:['language'],p:['tatar'],dom:'github.com/apertium',m:'Ap',d:'Открытые морфологические данные татарского языка для машинного перевода Apertium.'},
+  {name:'Телеканал ATR',cats:['channel'],p:['crimean-tatar'],dom:'atr.ua',m:'ATR',d:'Первый крымскотатарский телеканал о жизни, истории и культуре крымских татар.'},
+  {name:'Журнал «Аҡбуҙат»',cats:['media'],p:['bashkir'],dom:'akbuzat-rb.ru',m:'Аҡ',d:'Детский литературно-художественный журнал на башкирском языке со сказками и стихами.'},
+  {name:'Учим татарский с Ак Буре',cats:['lessons'],p:['tatar'],dom:'apps.apple.com',m:'АБ',d:'Игровое мобильное приложение для изучения татарского языка для детей и взрослых.'},
+  {name:'15 daqqa',cats:['author','lessons'],p:['crimean-tatar'],dom:'instagram.com/15_daqqa',m:'15',d:'Блог педагога Эмине Шерфе о разговорном крымскотатарском языке и повседневных идиомах.'},
+  {name:'Проект башкирских шрифтов',cats:['graphics'],p:['bashkir'],dom:'fonts.bsfond.ru',m:'Aa',d:'Открытая библиотека из 30 бесплатных шрифтов, поддерживающих башкирский алфавит.'},
+  {name:'Alem-i Medeniye',cats:['language'],p:['crimean-tatar'],dom:'medeniye.org',m:'AM',d:'Один из старейших крымскотатарских интернет-порталов с онлайн-словарем и библиотекой.'},
+  {name:'ӘЙДӘ! Афиша',cats:['channel'],p:['tatar'],dom:'t.me/tatafisha',m:'Ә!',d:'Ежедневный дайджест татарских мероприятий Казани: концерты, лекции, выставки.'},
+  {name:'Adelya Abadeli',cats:['author'],p:['tatar'],dom:'instagram.com/adelya.abadeli',m:'AA',d:'Независимая татарская исполнительница, выпускает инди-этно-фолк-рок на татарском языке.'},
+  {name:'Башбатыр',cats:['lessons'],p:['bashkir'],dom:'play.google.com',m:'Бб',d:'Мультимедийное приложение-учебник для изучения башкирского языка как родного.'},
+  {name:'Радио «Ашкадар»',cats:['media'],p:['bashkir'],dom:'bash.news/ashkadar',m:'Аш',d:'Круглосуточный культурно-просветительский радиоканал на башкирском языке.'},
+  {name:'Australian Tatar-Bashkurt Association',cats:['community'],p:['tatar','bashkir'],dom:'australiantatars.com',m:'AU',d:'Ассоциация татар и башкир в Австралии, объединяющая общины Аделаиды и Сиднея.'},
+  {name:'DAMDAM',cats:['graphics'],p:['bashkir'],dom:'damdam.co',m:'DD',d:'Уфимский стритвир-бренд одежды с принтами на башкирском языке.'},
+  {name:'Алифба',cats:['lessons'],p:['tatar'],dom:'play.google.com',m:'Әл',d:'Детское приложение для изучения татарской азбуки и чтения.'},
+  {name:'Айваз Радиосы',cats:['author'],p:['tatar'],dom:'t.me/AivazRadiosi',m:'АР',d:'Личный канал музыканта и радиоведущего Айваза Садырова.'},
+  {name:'Башкирский театр имени Мажита Гафури',cats:['community'],p:['bashkir'],dom:'bashdram.ru',m:'БТ',d:'Главный драматический театр на башкирском языке в Уфе.'},
+];
+const CATS = {
+  media:{l:'Медиа',c:'blue',n:88,i:'i-newspaper',d:'Газеты, журналы, радио и порталы'},
+  language:{l:'Языковые проекты',c:'purple',n:80,i:'i-languages',d:'Словари, переводчики, корпуса'},
+  channel:{l:'Каналы',c:'pink',n:51,i:'i-tv',d:'Telegram, YouTube и телевидение'},
+  author:{l:'Авторы',c:'teal',n:49,i:'i-pen',d:'Блогеры, музыканты, писатели'},
+  lessons:{l:'Уроки',c:'amber',n:48,i:'i-cap',d:'Школы, приложения и курсы'},
+  community:{l:'Сообщества',c:'green',n:46,i:'i-users',d:'Диаспоры, театры, ассоциации'},
+  graphics:{l:'Графика',c:'orange',n:14,i:'i-palette',d:'Шрифты, иллюстрации, мерч'},
+};
+const PPL = {tatar:['Татары','s-tat'],bashkir:['Башкиры','s-bash'],'crimean-tatar':['Крымские татары','s-qrim']};
+const HEX = {blue:'#0a72ef',purple:'#8e4ec6',pink:'#e5427f',teal:'#0e9488',amber:'#d58a00',green:'#1f9d55',orange:'#e5600f'};
+
+const hue = s => [...s].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7)%360;
+const grad = s => {const h=hue(s);return `linear-gradient(135deg,oklch(0.70 0.15 ${h}),oklch(0.50 0.17 ${(h+45)%360}))`};
+const sign = p => `<span class="sign" title="${PPL[p][0]}"><svg><use href="#${PPL[p][1]}"/></svg></span>`;
+const signs = c => `<span class="signs">${c.p.map(sign).join('')}</span>`;
+const logo = (c,s) => `<span class="logo" style="--s:${s}px;background:${grad(c.name)}">${c.m}</span>`;
+const tile = (k,s=32) => `<span class="tile" style="--s:${s}px;--c:var(--${CATS[k].c})"><svg><use href="#${CATS[k].i}"/></svg></span>`;
+const badge = k => `<span class="badge" style="--c:var(--${CATS[k].c})"><i></i>${CATS[k].l}</span>`;
+const ico = (id,cls='i') => `<svg class="${cls}"><use href="#${id}"/></svg>`;
+
+/* ---------- шаблоны карточек ---------- */
+const T = {
+  v1:(c,i)=>`<article class="c1" tabindex="0" data-i="${i}"><div class="top">${logo(c,40)}${ico('i-ur','i arr')}</div><div><h3>${c.name}</h3><div class="dom">${c.dom}</div></div><p class="clamp2">${c.d}</p><div class="ft">${badge(c.cats[0])}${signs(c)}</div></article>`,
+  v2:(c,i)=>`<article class="c2" tabindex="0" data-i="${i}"><div class="h">${logo(c,32)}<div><h3>${c.name}</h3><div class="dom">${c.dom}</div></div></div><p class="clamp2">${c.d}</p><div class="f">${badge(c.cats[0])}${signs(c)}<button class="ib" aria-pressed="false" aria-label="Сохранить">${ico('i-bookmark')}</button></div></article>`,
+  v3:(c,i)=>`<article class="c3" tabindex="0" data-i="${i}"><div class="h">${logo(c,44)}${tile(c.cats[0],30)}</div><h3>${c.name}</h3><p class="clamp2">${c.d}</p><div class="f"><span class="dom">${c.dom}</span>${signs(c)}</div></article>`,
+  v5:(c,i)=>`<article class="c5" tabindex="0" data-i="${i}"><div class="ic" style="background:${grad(c.name)}">${c.m}<button class="sv" aria-pressed="false" aria-label="Сохранить">${ico('i-bookmark')}</button></div><div><h3>${c.name}</h3><span class="k">${CATS[c.cats[0]].l}</span></div></article>`,
+  v6:(c,i)=>`<article class="c6" tabindex="0" data-i="${i}"><div class="cv"><div style="background:radial-gradient(120% 90% at 30% 0%,oklch(0.88 0.07 ${hue(c.name)}),oklch(0.62 0.14 ${(hue(c.name)+30)%360}))">${logo(c,64)}</div>${badge(c.cats[0])}</div><h3>${c.name}</h3><p class="clamp2">${c.d}</p><div class="mt"><span class="dom">${c.dom}</span>${signs(c)}</div></article>`,
+};
+T.v4 = T.v3;
+
+/* ---------- контролы ---------- */
+function fillControls(root){
+  root.querySelectorAll('[data-ppl]').forEach(g=>{
+    const cls=g.dataset.cls, check=g.dataset.check;
+    g.insertAdjacentHTML('beforeend', Object.keys(PPL).map(p=>`<button class="${cls}" data-v="${p}" aria-pressed="false">${check?`<span class="cb">${ico('i-check')}</span>`:''}${sign(p)}<span>${PPL[p][0]}</span><span class="n"></span></button>`).join(''));
+  });
+  root.querySelectorAll('[data-cat]').forEach(g=>{
+    const cls=g.dataset.cls, icons=g.dataset.icons;
+    const all=`<button class="${cls}" data-v="" aria-pressed="true">${icons&&cls==='opt'?`<span class="tile" style="--s:20px;--c:var(--muted)">${ico('i-grid')}</span>`:''}<span>Все</span><span class="n"></span></button>`;
+    g.insertAdjacentHTML('beforeend', all + Object.keys(CATS).map(k=>`<button class="${cls}" data-v="${k}" aria-pressed="false">${icons?tile(k,cls==='opt'?20:18):''}<span>${CATS[k].l}</span><span class="n"></span></button>`).join(''));
+  });
+}
+
+/* ползунок для сегментов и вкладок: transform only */
+function moveInd(group){
+  const ind=group.querySelector('.ind'), b=group.querySelector('[aria-pressed=true]');
+  if(!ind||!b) return;
+  ind.style.transform=`translateX(${b.offsetLeft}px) scaleX(${b.offsetWidth})`;
+}
+
+function setupLive(root){
+  const v=root.dataset.live, grid=root.querySelector('[data-grid]');
+  fillControls(root);
+  if(v==='v6'){
+    grid.innerHTML = Object.keys(CATS).map(k=>{
+      const list=CARDS.map((c,i)=>[c,i]).filter(([c])=>c.cats[0]===k); if(!list.length) return '';
+      return `<section class="row6" data-row><div class="rh">${tile(k,32)}<h3>${CATS[k].l}</h3><a>Все ${CATS[k].n}${ico('i-arrow')}</a></div><div class="sc">${list.map(([c,i])=>T.v6(c,i)).join('')}</div></section>`;
+    }).join('');
+  } else grid.innerHTML = CARDS.map((c,i)=>T[v](c,i)).join('');
+  const items=[...grid.querySelectorAll('[data-i]')];
+  const st={q:'',ppl:new Set(),cat:''};
+  const match=(c,skip)=>{
+    const q=st.q.trim().toLowerCase();
+    if(q && !(c.name+' '+c.d+' '+c.dom+' '+c.cats.map(k=>CATS[k].l).join(' ')+' '+c.p.map(p=>PPL[p][0]).join(' ')).toLowerCase().includes(q)) return false;
+    if(skip!=='ppl' && st.ppl.size && !c.p.some(p=>st.ppl.has(p))) return false;
+    if(skip!=='cat' && st.cat && !c.cats.includes(st.cat)) return false;
+    return true;
+  };
+  function apply(anim){
+    let n=0,k=0;
+    items.forEach(el=>{
+      const c=CARDS[el.dataset.i], show=match(c), was=!el.hidden;
+      el.hidden=!show;
+      if(show){n++; if(anim&&!was&&!reduce&&k<8) el.animate([{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'none'}],{duration:220,delay:(k++)*35,easing:EASE,fill:'backwards'});}
+    });
+    root.querySelectorAll('[data-ppl] [data-v]').forEach(b=>b.querySelector('.n').textContent=CARDS.filter(c=>match(c,'ppl')&&c.p.includes(b.dataset.v)).length);
+    root.querySelectorAll('[data-cat] [data-v]').forEach(b=>{const s=b.querySelector('.n'); if(s) s.textContent=CARDS.filter(c=>match(c,'cat')&&(!b.dataset.v||c.cats.includes(b.dataset.v))).length});
+    root.querySelectorAll('[data-count]').forEach(e=>e.textContent=n);
+    root.closest('.slide').querySelectorAll('[data-count-ext]').forEach(e=>e.textContent=n);
+    grid.querySelectorAll('[data-row]').forEach(r=>r.hidden=!r.querySelector('[data-i]:not([hidden])'));
+    root.classList.toggle('is-empty',n===0);
+  }
+  root.querySelectorAll('[data-q]').forEach(inp=>inp.addEventListener('input',e=>{st.q=e.target.value;apply(true)}));
+  root.querySelectorAll('[data-ppl]').forEach(g=>g.addEventListener('click',e=>{
+    const b=e.target.closest('[data-v]'); if(!b) return;
+    const on=b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed',on);
+    on?st.ppl.add(b.dataset.v):st.ppl.delete(b.dataset.v); apply(true);
+  }));
+  root.querySelectorAll('[data-cat]').forEach(g=>g.addEventListener('click',e=>{
+    const b=e.target.closest('[data-v]'); if(!b) return;
+    g.querySelectorAll('[data-v]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    st.cat=b.dataset.v; moveInd(g); apply(true);
+  }));
+  grid.addEventListener('click',e=>{
+    const s=e.target.closest('.ib,.sv'); if(!s) return;
+    e.stopPropagation(); s.setAttribute('aria-pressed',s.getAttribute('aria-pressed')!=='true');
+  });
+  const view=root.querySelector('[data-view]');
+  if(view) view.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    view.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    grid.classList.toggle('is-list',b.dataset.mode==='list');
+    if(!reduce) [...grid.children].filter(x=>!x.hidden).slice(0,8).forEach((el,k)=>el.animate([{opacity:0},{opacity:1}],{duration:180,delay:k*25,easing:'ease',fill:'backwards'}));
+  });
+  apply(false);
+}
+document.querySelectorAll('[data-live]').forEach(setupLive);
+
+/* ---------- статичные блоки ---------- */
+document.getElementById('accents').innerHTML = Object.keys(CATS).map(k=>`<div>${tile(k,32)}<div><b>${CATS[k].l}</b><small>${CATS[k].c} · ${HEX[CATS[k].c]}</small></div></div>`).join('');
+document.getElementById('v1cats').innerHTML = Object.keys(CATS).map(k=>`<button class="ccat">${tile(k,36)}<span class="cnt">${CATS[k].n}</span><h3>${CATS[k].l}</h3><p>${CATS[k].d}</p></button>`).join('') + `<button class="ccat add">${ico('i-plus')}<span style="font-size:14px">Не нашли категорию?<br><span style="color:var(--text);font-weight:500">Предложить</span></span></button>`;
+document.getElementById('ppsim').innerHTML = [1,12,4].map(i=>T.v1(CARDS[i],i)).join('') + `<article class="c1" style="justify-content:center;color:var(--muted)">${ico('i-arrow')}<span style="font-size:14px">Все 88 проектов в категории <b style="color:var(--text);font-weight:500">Медиа</b></span></article>`;
+const marqItems = CARDS.map(c=>`<span class="it">${logo(c,28)}${c.name}</span>`).join('');
+document.getElementById('v3marq').innerHTML = marqItems + marqItems;
+document.getElementById('v3stack').innerHTML = CARDS.slice(0,6).map(c=>logo(c,26)).join('');
+document.getElementById('v4recent').insertAdjacentHTML('beforeend', [[6,'2 дня назад'],[7,'5 дней назад'],[14,'неделю назад'],[17,'неделю назад']].map(([i,t])=>`<div class="rr">${logo(CARDS[i],36)}<div><b>${CARDS[i].name}</b><small>${CATS[CARDS[i].cats[0]].l}</small></div><span class="t">${t}</span></div>`).join(''));
+document.getElementById('v4res').innerHTML = [[1,true],[12,false],[16,false]].map(([i,on])=>`<div class="rr${on?' on':''}">${logo(CARDS[i],32)}<div>${CARDS[i].name}<small>${CARDS[i].dom}</small></div>${on?'<span class="kbd">↵</span>':''}</div>`).join('');
+document.getElementById('v4cloud').innerHTML = Object.keys(CATS).map(k=>tile(k,44)).join('');
+
+/* RU / EN */
+const LANG = {ru:['Телеканал ATR','Первый крымскотатарский телеканал о жизни, истории и культуре крымских татар.'],en:['ATR TV Channel','The first Crimean Tatar TV channel covering the life, history and culture of Crimean Tatars.']};
+const langseg=document.getElementById('langseg'), langtxt=document.getElementById('langtxt');
+langseg.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b||b.getAttribute('aria-pressed')==='true') return;
+  langseg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  langtxt.classList.add('fade');
+  setTimeout(()=>{const [h,p]=LANG[b.dataset.l]; langtxt.innerHTML=`<b>${h}</b><span>${p}</span>`; langtxt.classList.remove('fade');}, reduce?0:150);
+});
+
+const pps=document.getElementById('ppsave');
+pps.addEventListener('click',()=>{const on=pps.getAttribute('aria-pressed')!=='true'; pps.setAttribute('aria-pressed',on); pps.querySelector('span').textContent=on?'Сохранено':'Сохранить'; pps.querySelector('svg').style.fill=on?'currentColor':'none';});
+
+/* маркеры + */
+document.querySelectorAll('[data-x]').forEach(s=>s.dataset.x.split(' ').forEach(p=>s.insertAdjacentHTML('beforeend',`<span class="x ${p}"></span>`)));
+
+/* ---------- навигация ---------- */
+const slides=[...document.querySelectorAll('.slide')];
+const prog=document.getElementById('prog');
+document.getElementById('tot').textContent=slides.length;
+let cur=-1;
+function go(n){
+  n=Math.max(0,Math.min(slides.length-1,n)); if(n===cur) return;
+  slides.forEach((s,i)=>{s.classList.toggle('is-active',i===n); s.classList.toggle('is-before',i<n);});
+  cur=n; slides[n].scrollTop=0;
+  document.getElementById('cur').textContent=n+1;
+  document.getElementById('ttl').textContent=slides[n].dataset.title;
+  prog.style.transform=`scaleX(${(n+1)/slides.length})`;
+  history.replaceState(null,'','#'+(n+1));
+  requestAnimationFrame(()=>slides[n].querySelectorAll('[data-seg],[data-tabs]').forEach(moveInd));
+}
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('next').onclick=()=>go(cur+1);
+document.getElementById('theme').onclick=()=>{const s=slides[cur]; s.dataset.theme=s.dataset.theme==='dark'?'light':'dark';};
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(+b.dataset.go-1)));
+addEventListener('resize',()=>slides[cur].querySelectorAll('[data-seg],[data-tabs]').forEach(moveInd));
+addEventListener('keydown',e=>{
+  const typing=e.target.matches('input,textarea');
+  if((e.key==='/'||(e.key==='k'&&(e.metaKey||e.ctrlKey)))&&!typing){const i=slides[cur].querySelector('[data-q]'); if(i){e.preventDefault(); i.focus();} return;}
+  if(typing){if(e.key==='Escape') e.target.blur(); return;}
+  if(['ArrowRight','PageDown'].includes(e.key)){e.preventDefault(); go(cur+1);}
+  if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault(); go(cur-1);}
+  if(e.key==='t') document.getElementById('theme').click();
+});
+document.fonts.ready.then(()=>slides[cur]&&slides[cur].querySelectorAll('[data-seg],[data-tabs]').forEach(moveInd));
+go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
