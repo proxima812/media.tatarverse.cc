@@ -1,0 +1,53 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Kbd from "@/components/ui/Kbd.astro";
+import StrokeIcon from "@/components/ui/StrokeIcon.astro";
+import { cn } from "cn";
+
+/**
+ * Поле поиска системы: пилюля с лупой и подсказкой клавиши. Все атрибуты,
+ * кроме `class` и `size`, уходят на сам `<input>` - так вызывающий
+ * компонент вешает свои `data-*` и `aria-label` туда, где их ищет скрипт.
+ *
+ * Фокус рисуется на обертке (`focus-within`): контур темнеет и появляется
+ * мягкий ореол. Системный outline у поля снят - иначе внутри пилюли
+ * появлялась бы вторая, прямоугольная рамка.
+ */
+type Props = Omit<HTMLAttributes<"input">, "class" | "size"> & {
+	class?: string;
+	size?: "md" | "lg";
+	/** Подсказка клавиши справа; `false` - без подсказки. */
+	hint?: string | false;
+};
+
+const { class: className, size = "md", hint = "/", ...inputProps } = Astro.props;
+
+const sizes = {
+	md: { box: "h-10 pl-4 pr-2", text: "text-sm", icon: 16 },
+	lg: { box: "h-14 pl-5 pr-3", text: "text-base", icon: 20 },
+} satisfies Record<
+	NonNullable<Props["size"]>,
+	{ box: string; text: string; icon: number }
+>;
+---
+
+<label
+	class={cn(
+		"flex items-center gap-2.5 rounded-full bg-background text-faint ring-1 ring-border-strong ring-inset transition-shadow duration-150 focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--color-tone-blue)_18%,transparent)] focus-within:ring-foreground",
+		sizes[size].box,
+		className,
+	)}
+>
+	<StrokeIcon name="magnify" size={sizes[size].icon} class="shrink-0" />
+	<input
+		type="search"
+		autocomplete="off"
+		spellcheck="false"
+		class={cn(
+			"min-w-0 flex-1 bg-transparent text-foreground placeholder:text-faint focus-visible:outline-none [&::-webkit-search-cancel-button]:hidden",
+			sizes[size].text,
+		)}
+		{...inputProps}
+	/>
+	{hint && <Kbd class="max-sm:hidden">{hint}</Kbd>}
+</label>

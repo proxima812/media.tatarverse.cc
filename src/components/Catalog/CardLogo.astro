@@ -40,10 +40,15 @@ const PEOPLE_ICONS = {
 
 const peopleIcon = peoples?.[0] ? PEOPLE_ICONS[peoples[0]] : undefined;
 
+/*
+ * Логотип - квадрат со сквирклом, как иконка приложения, а не круг: круг
+ * в системе занят знаками народов. Скругление растет вместе с размером и
+ * держит долю ~25-30% стороны на любой ступени.
+ */
 const sizeClasses = {
-	md: "w-10 h-10",
-	lg: "w-14 h-14",
-	xl: "w-24 h-24",
+	md: "size-10 rounded-sm",
+	lg: "size-14 rounded-md",
+	xl: "size-24 rounded-lg",
 } satisfies Record<NonNullable<Props["size"]>, string>;
 
 const pixels = {
@@ -67,11 +72,11 @@ const pixelSize = pixels[size];
 			loading={priority ? "eager" : "lazy"}
 			decoding="async"
 			fetchpriority={priority ? "high" : "auto"}
-			class={`rounded-full corner-squircle object-cover ${sizeClass}`}
+			class={`corner-squircle object-cover ring-1 ring-black/5 ring-inset ${sizeClass}`}
 		/>
 	) : (
 		<div
-			class={`relative rounded-full corner-squircle ${sizeClass}`}
+			class={`relative corner-squircle ${sizeClass}`}
 			style={meshGradient(name)}
 			aria-hidden="true"
 		>

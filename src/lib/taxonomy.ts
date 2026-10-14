@@ -6,8 +6,26 @@ interface Definition {
 	readonly labels: Readonly<Record<TaxonomyLocale, string>>;
 }
 
+/**
+ * Тон категории - один из семи хроматических токенов `--color-tone-*` в
+ * `tailwind.css`. Цвет в системе работает как сигнал, а не как декор: он
+ * красит только иконку категории в тонированном квадрате и точку бейджа,
+ * поэтому каждая категория узнается в сетке, фильтре и на странице проекта
+ * еще до того, как прочитана подпись.
+ */
+export type CategoryTone =
+	| "blue"
+	| "purple"
+	| "pink"
+	| "teal"
+	| "amber"
+	| "green"
+	| "orange"
+	| "indigo";
+
 interface CategoryDefinition extends Definition {
 	readonly icon: string;
+	readonly tone: CategoryTone;
 }
 
 interface TagDefinition extends Definition {
@@ -43,34 +61,45 @@ export const TAG_GROUP_VALUES = Object.keys(TAG_GROUP_LABELS) as [
 ];
 
 const CATEGORY_DEFINITIONS = {
-	channel: { labels: labels("Канал", "Channel"), icon: "mdi:broadcast" },
+	channel: {
+		labels: labels("Канал", "Channel"),
+		icon: "tabler:device-tv",
+		tone: "pink",
+	},
 	author: {
 		labels: labels("Автор", "Author"),
-		icon: "mdi:account-edit-outline",
+		icon: "tabler:pencil",
+		tone: "teal",
 	},
 	media: {
 		labels: labels("Медиа", "Media"),
-		icon: "mdi:newspaper-variant-outline",
+		icon: "tabler:news",
+		tone: "blue",
 	},
 	language: {
 		labels: labels("Языковой проект", "Language project"),
-		icon: "mdi:translate",
+		icon: "tabler:language",
+		tone: "purple",
 	},
 	lessons: {
 		labels: labels("Уроки", "Lessons"),
-		icon: "mdi:school-outline",
+		icon: "tabler:school",
+		tone: "amber",
 	},
 	graphics: {
 		labels: labels("Графика", "Graphics"),
-		icon: "mdi:palette-outline",
+		icon: "tabler:palette",
+		tone: "orange",
 	},
 	community: {
 		labels: labels("Сообщество", "Community"),
-		icon: "mdi:account-group-outline",
+		icon: "tabler:users",
+		tone: "green",
 	},
 	music: {
 		labels: labels("Музыка", "Music"),
-		icon: "mdi:music-note-outline",
+		icon: "tabler:music",
+		tone: "indigo",
 	},
 } satisfies Record<string, CategoryDefinition>;
 
@@ -258,4 +287,8 @@ export function tagGroupLabel(locale: LocaleCode, group: TagGroup): string {
  */
 export function categoryIcon(category: Category): string {
 	return CATEGORY_DEFINITIONS[category].icon;
+}
+
+export function categoryTone(category: Category): CategoryTone {
+	return CATEGORY_DEFINITIONS[category].tone;
 }

@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from "astro:content";
+import bashkirIcon from "@/assets/images/svg/bash.svg";
+import crimeanTatarIcon from "@/assets/images/svg/qrim.svg";
+import tatarIcon from "@/assets/images/svg/tat.svg";
+import { peopleLabel } from "@/lib/catalog/labels";
+import type { LocaleCode } from "@/config/types";
+import { cn } from "cn";
+
+type People = CollectionEntry<"cards">["data"]["peoples"][number];
+
+/**
+ * Знак народа в темном круге - без подписи. Используется там, где места на
+ * слово нет: подвал карточки, чип фильтра, строка заголовка. Имя народа
+ * остается в `title` и в `alt`-тексте для скринридера, поэтому знак не
+ * немой. Подписанный вариант - `PeopleBadge`.
+ */
+interface Props {
+	locale: LocaleCode;
+	people: People;
+	size?: "sm" | "md";
+	class?: string;
+}
+
+const PEOPLE_ICONS = {
+	tatar: tatarIcon,
+	bashkir: bashkirIcon,
+	"crimean-tatar": crimeanTatarIcon,
+} satisfies Record<People, ImageMetadata>;
+
+const { locale, people, size = "sm", class: className } = Astro.props;
+const label = peopleLabel(locale, people);
+const sizes = { sm: "size-4.5", md: "size-6" } as const;
+---
+
+<span
+	class={cn(
+		"inline-grid shrink-0 place-items-center rounded-full bg-sign",
+		sizes[size],
+		className,
+	)}
+	title={label}
+>
+	<img
+		src={PEOPLE_ICONS[people].src}
+		alt={label}
+		width={16}
+		height={16}
+		loading="lazy"
+		decoding="async"
+		class="size-[64%] object-contain"
+	/>
+</span>

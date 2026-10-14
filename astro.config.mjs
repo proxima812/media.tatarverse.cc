@@ -101,6 +101,18 @@ export default defineConfig({
 				"Noto Color Emoji",
 			],
 		},
+		// Geist Mono - второй и последний шрифт: цифры счетчиков, домены,
+		// ярлыки и клавиши. Только latin и только 400-600: кириллица в моно
+		// не набирается, поэтому лишний подсет был бы мертвым весом.
+		{
+			provider: fontProviders.fontsource(),
+			name: "Geist Mono",
+			cssVariable: "--font-geist-mono",
+			weights: ["400 600"],
+			styles: ["normal"],
+			subsets: ["latin"],
+			fallbacks: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+		},
 	],
 
 	// Логотипы карточек иногда приходят в виде SVG - растеризуем их наравне

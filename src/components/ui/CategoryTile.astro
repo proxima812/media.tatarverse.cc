@@ -1,0 +1,41 @@
+---
+import { Icon } from "astro-icon/components";
+import { type Category, categoryIcon, categoryTone } from "@/lib/taxonomy";
+import { TONE_CLASSES } from "@/lib/ui/tone";
+import { cn } from "cn";
+
+/**
+ * Иконка категории в тонированном квадрате - главный цветной акцент системы.
+ * Квадрат, а не круг: круг в каталоге уже занят знаками народов, и две
+ * круглые метки рядом читались бы как одна группа.
+ *
+ *   sm  20px - внутри чипов и пунктов списка
+ *   md  32px - заголовки рядов, карточки
+ *   lg  40px - заголовки страниц категорий
+ */
+interface Props {
+	category: Category;
+	size?: "sm" | "md" | "lg";
+	class?: string;
+}
+
+const { category, size = "md", class: className } = Astro.props;
+
+const sizes = {
+	sm: { box: "size-5 rounded-2xs", icon: "size-3" },
+	md: { box: "size-8 rounded-xs", icon: "size-4" },
+	lg: { box: "size-10 rounded-sm", icon: "size-5" },
+} satisfies Record<NonNullable<Props["size"]>, { box: string; icon: string }>;
+---
+
+<span
+	class={cn(
+		"inline-grid shrink-0 place-items-center ring-1 ring-inset",
+		TONE_CLASSES[categoryTone(category)].tile,
+		sizes[size].box,
+		className,
+	)}
+	aria-hidden="true"
+>
+	<Icon name={categoryIcon(category)} class={sizes[size].icon} />
+</span>

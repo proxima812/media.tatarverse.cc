@@ -1,0 +1,22 @@
+---
+import { cn } from "cn";
+
+/**
+ * Клавиша-подсказка. Только подсказка: само сочетание вешает скрипт
+ * компонента, которому оно нужно, - `Kbd` ничего не слушает.
+ */
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<kbd
+	class={cn(
+		"inline-grid h-5 min-w-5 shrink-0 place-items-center rounded-2xs bg-background px-1.5 font-mono font-normal text-[11px] text-muted-foreground ring-1 ring-border-strong ring-inset",
+		className,
+	)}
+>
+	<slot />
+</kbd>

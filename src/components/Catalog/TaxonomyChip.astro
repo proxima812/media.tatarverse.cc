@@ -1,12 +1,12 @@
 ---
-import { Icon } from "astro-icon/components";
 import {
 	type Category,
-	categoryIcon,
 	categoryLabel,
+	categoryTone,
 	type Tag,
 	tagLabel,
 } from "@/lib/taxonomy";
+import { TONE_CLASSES } from "@/lib/ui/tone";
 import type { LocaleCode } from "@/config/types";
 import { cn } from "cn";
 
@@ -18,6 +18,10 @@ import { cn } from "cn";
  * `href` делает чип ссылкой с hover; без него это просто `<span>`
  * (в карточке ссылкой служит сама карточка). `size="sm"` - плотный
  * вариант для карточки, тот же прием, что у `PeopleBadge`.
+ *
+ * Категория - контурная пилюля с точкой в тон категории; тег - тихая
+ * плашка с решеткой. Иконка категории в чип больше не входит: на 12px
+ * она превращалась в пятно, а цвет точки узнается и так.
  */
 
 type Props = {
@@ -33,14 +37,14 @@ const padding = size === "sm" ? "px-2 py-0.5" : "px-2.5 py-1";
 const chipClass =
 	kind === "category"
 		? cn(
-				"inline-flex items-center gap-1 rounded-full bg-primary/10 font-medium text-primary text-xs",
+				"inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-background text-muted-foreground text-xs ring-1 ring-border-strong ring-inset",
 				padding,
-				href && "transition hover:bg-primary/20",
+				href && "transition hover:bg-muted hover:text-foreground",
 			)
 		: cn(
-				"inline-block rounded-full bg-muted text-muted-foreground text-xs",
+				"inline-block whitespace-nowrap rounded-full bg-muted text-muted-foreground text-xs",
 				padding,
-				href && "transition hover:bg-muted/70 hover:text-foreground",
+				href && "transition hover:bg-border hover:text-foreground",
 			);
 
 const Element = href ? "a" : "span";
@@ -50,7 +54,10 @@ const Element = href ? "a" : "span";
 	{
 		kind === "category" ? (
 			<>
-				<Icon name={categoryIcon(value)} class="size-3.5" aria-hidden="true" />
+				<span
+					class={cn("size-1.5 shrink-0 rounded-full", TONE_CLASSES[categoryTone(value)].dot)}
+					aria-hidden="true"
+				/>
 				{categoryLabel(locale, value)}
 			</>
 		) : (
