@@ -1,5 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
 import { config } from "main.config";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
@@ -52,10 +51,10 @@ const jsonLd = {
 		{items.map((crumb, index) => (
 			<li class="flex items-center gap-1">
 				{index > 0 && (
-					<Icon name="mdi:chevron-right" class="size-4 opacity-60" aria-hidden="true" />
+					<span class="px-1 text-faint" aria-hidden="true">/</span>
 				)}
 				{crumb.href ? (
-					<a href={crumb.href} class="transition hover:text-foreground">
+					<a href={crumb.href} class="transition-colors hover:text-foreground">
 						{crumb.label}
 					</a>
 				) : (

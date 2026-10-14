@@ -38,16 +38,11 @@ const categoryHref = mainCategory
 	title={card.data.name}
 	description={card.data.description}
 >
-	<!--
-	     Слева кнопка «как отсюда уйти», справа крошки «где я». Гость из
-	     поиска видит оба ответа до того, как начнет читать карточку.
-	-->
 	<div class="flex flex-wrap items-center gap-3">
-		<Button href={catalogHref} preset="soft" size="sm">
-			<Icon name="mdi:arrow-left" class="size-4" aria-hidden="true" />
+		<Button href={catalogHref} preset="ghost" size="sm" class="-ml-3">
+			<Icon name="tabler:arrow-left" class="size-4" aria-hidden="true" />
 			{t("card.back")}
 		</Button>
-
 		<Breadcrumbs
 			locale={locale}
 			items={[
@@ -61,61 +56,42 @@ const categoryHref = mainCategory
 		/>
 	</div>
 
-	<!--
-	     Рассказ о проекте и выходы в каталог - разные вещи, поэтому они в
-	     разных колонках.
-	-->
-	<div class="grid gap-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-start">
+	<!-- Две колонки: слева проект (обложка, заголовок, описание, факты),
+	     справа узкая таблица свойств. Колонка свойств липнет под шапкой
+	     (`top-24` = шапка 64px + воздух), пока читаются факты. -->
+	<div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-16">
 		<CardDetail card={card} locale={locale} />
-
-		<!--
-		     Проект идет первым в разметке, а в левую колонку aside уезжает
-		     порядком: заголовки «Разделы», «Народы» и «Теги» - это h2, и до
-		     правки они стояли в документе перед h1 самого проекта. Гость из
-		     поиска слышал три служебные рубрики раньше, чем имя проекта.
-		     Визуально ничего не меняется: на узком экране выходы в каталог
-		     и так идут после рассказа, на широком - `lg:order-first`.
-		-->
-		<aside class="lg:order-first lg:sticky lg:top-24">
+		<aside class="lg:sticky lg:top-24">
 			<CardTaxonomy
 				locale={locale}
 				categories={card.data.categories}
 				tags={card.data.tags}
 				peoples={card.data.peoples}
-				class="rounded-xl corner-squircle bg-background p-6 shadow-body ring-1 ring-border/40"
 			/>
 		</aside>
 	</div>
 
 	{related.length > 0 && (
-			<section>
+			<section class="border-border border-t pt-12">
 				<div class="flex flex-wrap items-baseline justify-between gap-3">
-					<h2 class="font-bold text-2xl text-balance">{t("card.related")}</h2>
-
-					<!--
-					     Похожих ровно три, и без этой ссылки страница кончается
-					     тупиком: дальше идти некуда. Ссылка на категорию делает из
-					     конца страницы развилку.
-					-->
+					<h2 class="font-semibold text-2xl text-balance text-foreground tracking-[-0.035em] sm:text-3xl">
+						{t("card.related")}
+					</h2>
 					{mainCategory && categoryHref && (
 						<a
 							href={categoryHref}
-							class="text-muted-foreground text-sm underline underline-offset-4 transition hover:text-foreground"
+							class="group inline-flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground"
 						>
 							{t("card.allInCategory")} {categoryLabel(locale, mainCategory)}
+							<Icon
+								name="tabler:arrow-right"
+								class="size-4 transition-transform duration-200 ease-snappy group-hover:translate-x-0.5"
+								aria-hidden="true"
+							/>
 						</a>
 					)}
 				</div>
-
-				<!--
-				     `grid-cols-1` тут обязателен, а не «для порядка»: без него
-				     единственная колонка получает ширину `auto`, то есть
-				     min-content самой широкой карточки (446px), и на телефоне
-				     карточки уезжали за правый край. Незаметно это было
-				     только потому, что `overflow-x: clip` на `html` гасит
-				     горизонтальную прокрутку - вместе с ней гасился и симптом.
-				-->
-				<div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
+				<div class="mt-8 grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
 					{related.map((relatedCard) => (
 						<CatalogCard card={relatedCard} />
 					))}

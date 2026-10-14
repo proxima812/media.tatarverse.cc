@@ -8,7 +8,10 @@ import SaveButton from "@/components/Catalog/SaveButton.astro";
 import Button from "@/components/ui/Button.astro";
 import type { LocaleCode } from "@/config/types";
 import { useTranslations } from "@/i18n";
+import { categoryTone } from "@/lib/taxonomy";
 import { meshGradient } from "@/lib/ui/meshGradient";
+import { TONE_CLASSES } from "@/lib/ui/tone";
+import { cn } from "cn";
 
 interface Props {
 	card: CollectionEntry<"cards">;
@@ -16,7 +19,8 @@ interface Props {
 }
 
 const { card, locale } = Astro.props;
-const { name, description, facts, url, logo, peoples, pubDate } = card.data;
+const { name, description, facts, url, logo, peoples, pubDate, categories } =
+	card.data;
 const t = useTranslations(locale);
 
 /*
@@ -35,13 +39,21 @@ const dateLabel = new Intl.DateTimeFormat(locale, {
 const dateValue = pubDate.toISOString().slice(0, 10);
 
 /*
- * Ореол под логотипом - тот же детерминированный мэш по имени карточки, что
- * стоит под карточкой в каталоге. Своего цвета у интерфейса нет, весь он
- * приходит от проекта, и на странице одного проекта отсутствовал вовсе:
- * логотип лежал на бумаге без единого следа. Градиент берется по имени, а не
- * из логотипа, - тогда пятно у проекта одно и то же и в списке, и здесь.
+ * Обложка над заголовком - тот же детерминированный мэш по имени карточки,
+ * что на обложке в рядах и в сетке каталога, только шире. Гость из поиска,
+ * перешедший с карточки, узнает проект по тому же пятну цвета. Градиент
+ * берется по имени, а не из логотипа, - тогда он у проекта один везде.
  */
-const glow = meshGradient(name);
+const cover = meshGradient(name);
+
+/*
+ * Точки фактов - в тон основной категории: единственный цветной знак в
+ * тексте страницы, и он связывает факты с бейджем категории справа.
+ */
+const [mainCategory] = categories;
+const factDot = mainCategory
+	? TONE_CLASSES[categoryTone(mainCategory)].dot
+	: "bg-border-strong";
 
 /*
  * Правка ведется в файле той локали, которую человек читает: он видит
@@ -57,95 +69,68 @@ const editHref = config.site.repository
 	: undefined;
 ---
 
-<article
-	class="rounded-xl corner-squircle bg-background p-6 shadow-body ring-1 ring-border/40 sm:p-10"
-	data-pagefind-body
->
-	<div class="flex flex-col items-center gap-5 text-center">
-		<div class="relative">
-			<!--
-			     Ореол стоит соседом, а не `-z-10`, как в карточке каталога: там
-			     корпус прозрачный, а у этой статьи есть свой `bg-background`, и
-			     отрицательный z спрятал бы пятно под него.
-			-->
-			<div
-				class="pointer-events-none absolute -inset-4 rounded-full opacity-40 blur-2xl"
-				style={glow}
-				aria-hidden="true"
+<article class="flex flex-col" data-pagefind-body>
+	<div
+		class="relative grid aspect-[16/9] place-items-center overflow-hidden rounded-lg corner-squircle ring-1 ring-black/5 ring-inset sm:aspect-[21/9]"
+		style={cover}
+	>
+		<div class="rounded-lg corner-squircle shadow-lift">
+			<CardLogo name={name} logo={logo} peoples={peoples} size="xl" priority />
+		</div>
+	</div>
+
+	<h1
+		class="mt-8 font-semibold text-[clamp(2.25rem,4.6vw,3.75rem)] text-balance text-foreground leading-none tracking-[-0.05em]"
+	>
+		{name}
+	</h1>
+	<p class="mt-5 max-w-[56ch] text-lg text-muted-foreground leading-relaxed text-pretty">
+		{description}
+	</p>
+
+	<div class="mt-7 flex flex-wrap items-center gap-2">
+		<Button href={url} preset="solid" external>
+			{host}
+			<Icon name="tabler:arrow-up-right" class="size-4" aria-hidden="true" />
+		</Button>
+		<SaveButton cardId={card.id} locale={locale} size="md" withLabel />
+	</div>
+
+	<section class="mt-12">
+		<h2 class="mb-3 font-medium font-mono text-[11px] text-faint uppercase tracking-wider">
+			{t("card.facts")}
+		</h2>
+		<!-- Факты - независимые утверждения (см. CONTEXT.md), поэтому список
+		     без нумерации: строки на линиях, точка вместо номера. -->
+		<ul class="border-border border-t">
+			{facts.map((fact) => (
+				<li class="flex gap-3.5 border-border border-b py-3.5 text-[15px] text-foreground leading-relaxed">
+					<span
+						class={cn("mt-[0.6em] size-1.5 shrink-0 rounded-full", factDot)}
+						aria-hidden="true"
+					></span>
+					{fact}
+				</li>
+			))}
+		</ul>
+	</section>
+
+	<footer
+		class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-faint text-xs"
+	>
+		<span>
+			{t("card.added")} <time datetime={dateValue}>{dateLabel}</time>
+		</span>
+		{editHref && (
+			<a
+				href={editHref}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-1.5 underline-offset-4 transition-colors hover:text-foreground hover:underline"
 			>
-			</div>
-
-			<div class="relative rounded-full corner-squircle bg-background shadow-sm">
-				<CardLogo name={name} logo={logo} peoples={peoples} size="xl" priority />
-			</div>
-		</div>
-
-		<h1 class="font-bold text-3xl text-balance sm:text-4xl">{name}</h1>
-	</div>
-
-	<!--
-	     Ниже шапки текст выравнивается влево: описание и факты читают, а у
-	     центрированного текста нет левого края, за который цепляется глаз
-	     при переходе на следующую строку. Колонка одна на весь текст: ширина
-	     `max-w-2xl` была расписана по трем блокам отдельно, и каждый
-	     следующий блок приходилось помнить выровнять по предыдущему.
-	-->
-	<div class="mx-auto mt-8 flex w-full max-w-2xl flex-col gap-10">
-		<div class="flex flex-col gap-6">
-			<p class="text-lg text-muted-foreground">{description}</p>
-
-			<div class="flex flex-wrap items-center gap-3">
-				<Button href={url} preset="solid" external>
-					{host}
-					<Icon name="mdi:open-in-new" class="size-4" aria-hidden="true" />
-				</Button>
-
-				<SaveButton cardId={card.id} locale={locale} size="md" withLabel />
-			</div>
-		</div>
-
-		<section>
-			<h2 class="font-semibold text-lg">{t("card.facts")}</h2>
-
-			<!--
-			     Факты не нумеруются: это независимые утверждения о проекте, а не
-			     шаги и не рейтинг - цифры навязали бы им несуществующий порядок.
-			-->
-			<ul class="mt-4 grid gap-3">
-				{facts.map((fact) => (
-					<li class="flex gap-3 text-sm">
-						<span
-							class="mt-2 size-1.5 shrink-0 rounded-full bg-border"
-							aria-hidden="true"
-						></span>
-						{fact}
-					</li>
-				))}
-			</ul>
-		</section>
-
-		<!--
-		     Служебная подпись: дата и приглашение поправить. Гостю из поиска
-		     неоткуда узнать, что за карточками стоят живые люди, а данные могут
-		     устареть.
-		-->
-		<footer
-			class="flex flex-wrap items-center gap-x-3 gap-y-1 border-border/60 border-t pt-5 text-muted-foreground text-xs"
-		>
-			<span>
-				{t("card.added")} <time datetime={dateValue}>{dateLabel}</time>
-			</span>
-			{editHref && (
-				<a
-					href={editHref}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-flex items-center gap-1 underline underline-offset-4 transition hover:text-foreground"
-				>
-					<Icon name="mdi:pencil-outline" class="size-3.5" aria-hidden="true" />
-					{t("card.edit")}
-				</a>
-			)}
-		</footer>
-	</div>
+				<Icon name="tabler:pencil" class="size-3.5" aria-hidden="true" />
+				{t("card.edit")}
+			</a>
+		)}
+	</footer>
 </article>
