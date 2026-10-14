@@ -1,6 +1,5 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
-import FooterBrand from "@/components/layout/FooterBrand.astro";
 import FooterLinkGroup from "@/components/layout/FooterLinkGroup.astro";
 import Tooltip from "@/components/ui/Tooltip.astro";
 import type { LocaleCode } from "@/config/types";
@@ -130,7 +129,7 @@ const legalLinks = [
 /** Год - на билде, не в браузере: страница статическая, значение одно для всех. */
 const year = new Date().getFullYear();
 
-const linkClass = "text-primary-foreground/70 transition hover:text-primary-foreground";
+const linkClass = "text-muted-foreground transition hover:text-foreground";
 
 /*
  * Три колонки навигации, в каждой - одна-две группы «заголовок + список».
@@ -163,36 +162,38 @@ const columns = [
 ];
 ---
 
-<footer
-	class="mt-24 no-container overflow-hidden rounded-t-xl corner-squircle bg-primary pt-16 text-base text-primary-foreground sm:pt-20"
->
-	<div class="container mx-auto max-w-6xl px-5 sm:px-8">
+<!-- Подвал тихий: светлая подложка второго уровня и линия сверху вместо
+     черной плиты с огромной надписью. Он закрывает страницу, а не
+     соревнуется с ней - вся выразительность у заголовков выше. -->
+<footer class="mt-24 border-border border-t bg-subtle text-sm">
+	<div class="mx-auto max-w-7xl px-5 pt-14 pb-10">
 		<div
 			class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto] lg:gap-20"
 		>
-			<div class="max-w-sm space-y-5">
+			<div class="max-w-sm space-y-4">
 				<a
 					href={getRelativeLocaleUrl(locale, "")}
-					class="group relative inline-block"
-					aria-label="media.tatarverse"
+					class="group relative inline-flex items-center gap-2.5 font-semibold text-[15px] text-foreground tracking-tight"
 				>
 					<img
 						src="/media-tatarverse.svg"
 						alt=""
-						width="48"
-						height="48"
-						class="size-12 brightness-0 invert"
+						width="24"
+						height="24"
+						class="size-6"
 					/>
+					media.tatarverse
 					<Tooltip label={t("nav.home")} />
 				</a>
-				<p class="text-primary-foreground/60 text-sm">
+				<p class="text-muted-foreground leading-relaxed">
 					{t("meta.description")}
 				</p>
+				<p class="font-mono text-faint text-xs">MIT · CC BY 4.0</p>
 			</div>
 
 			{
 				columns.map((column) => (
-					<nav aria-label={column.label} class="lg:min-w-44">
+					<nav aria-label={column.label} class="lg:min-w-40">
 						{column.groups.map((group, index) => (
 							<FooterLinkGroup
 								heading={group.heading}
@@ -206,9 +207,9 @@ const columns = [
 		</div>
 
 		<div
-			class="mt-20 flex flex-col gap-2 border-primary-foreground/15 border-t pt-6 pb-12 text-primary-foreground/50 text-sm sm:flex-row sm:items-center sm:justify-between"
+			class="mt-14 flex flex-col gap-3 border-border border-t pt-6 text-muted-foreground sm:flex-row sm:items-center sm:justify-between"
 		>
-			<p>© {year} media.tatarverse</p>
+			<p class="font-mono text-faint text-xs">© {year} media.tatarverse</p>
 			<nav aria-label={t("footer.legal")}>
 				<ul class="flex flex-wrap gap-x-6 gap-y-2">
 					{
@@ -225,12 +226,3 @@ const columns = [
 		</div>
 	</div>
 </footer>
-
-<div class="no-container bg-primary">
-	<FooterBrand
-		text="Муэллиф"
-		color1="from-primary-foreground"
-		color2="to-primary-foreground/25"
-		fade="after:to-primary"
-	/>
-</div>

@@ -20,38 +20,36 @@ interface NavLink {
 	readonly href: string;
 	readonly label: string;
 	/**
-	 * Есть иконка - от `sm` пункт уезжает из строки ссылок в компактную
-	 * группу перед переключателем локали. В выпадающем меню на узком экране
-	 * порядок остается исходным, поэтому список тут один.
+	 * Знаковая ссылка - действие, а не раздел для чтения: в шапке она стоит
+	 * справа иконкой с тултипом, в мобильной панели - строкой с подписью.
 	 */
 	readonly icon?: string;
 	/**
-	 * Знаковая ссылка остается в шапке и на узком экране. Место там на одно
-	 * действие: рядом стоят название сайта и кнопка меню, и второй знак
-	 * съедает название. Остальные знаковые ссылки ниже `sm` живут в панели -
-	 * там у них есть подпись, а у сохраненного еще и счетчик.
+	 * Знаковая ссылка, которая остается в шапке и на узком экране. Место там
+	 * на одно действие: рядом название сайта и кнопка меню.
 	 */
 	readonly compact?: boolean;
 	/** Показывать на иконке число сохраненных проектов. */
 	readonly counter?: boolean;
 }
 
+const addHref = getRelativeLocaleUrl(locale, "add");
+
 const navLinks: readonly NavLink[] = [
 	{ href: getRelativeLocaleUrl(locale, "catalog"), label: t("nav.catalog") },
+	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
 	{
 		href: getRelativeLocaleUrl(locale, "search"),
 		label: t("nav.search"),
-		icon: "mdi:magnify",
+		icon: "tabler:search",
 		compact: true,
 	},
 	{
 		href: getRelativeLocaleUrl(locale, "saved"),
 		label: t("nav.saved"),
-		icon: "mdi:bookmark-multiple-outline",
+		icon: "tabler:bookmark",
 		counter: true,
 	},
-	{ href: getRelativeLocaleUrl(locale, "about"), label: t("nav.about") },
-	{ href: getRelativeLocaleUrl(locale, "add"), label: t("nav.add") },
 ];
 
 const textLinks = navLinks.filter((link) => !link.icon);
@@ -60,45 +58,37 @@ const iconLinks = navLinks.filter((link): link is NavLink & { icon: string } =>
 );
 
 /*
- * Текущий раздел отмечается `aria-current="page"`: классы под него в шапке и
- * в панели уже были, а самого атрибута не было - подсветки не существовало ни
- * для глаза, ни для скринридера. Сравнение идет по пути без префикса локали,
+ * Текущий раздел отмечается `aria-current="page"` - по нему подсвечивается
+ * пункт и в шапке, и в панели. Сравнение идет по пути без префикса локали,
  * поэтому `/catalog` и `/en/catalog` считаются одним разделом.
  */
 const isCurrent = (href: string) => stripLocalePrefix(href) === path;
 const currentAttr = (href: string) => (isCurrent(href) ? "page" : undefined);
 
 const navLinkClass =
-	"whitespace-nowrap text-sm font-medium text-muted-foreground transition hover:text-foreground aria-[current=page]:text-foreground";
+	"whitespace-nowrap rounded-xs px-2.5 py-1.5 text-muted-foreground text-sm transition-colors duration-150 hover:bg-muted hover:text-foreground aria-[current=page]:text-foreground";
 
 /*
- * Знаковая ссылка в шапке. 44px - минимальная тач-цель; `sm:h-9` возвращает
- * прежние 36px там, где ведет мышь, и там же у кнопки появляется подпись,
- * поэтому ширина считается по содержимому.
+ * Знаковая ссылка. 44px - минимальная тач-цель; от `sm` - 36px, там ведет
+ * мышь. Подпись живет в `sr-only` и в тултипе.
  */
 const iconLinkClass =
-	"group relative flex h-11 w-11 items-center justify-center gap-1.5 whitespace-nowrap rounded-full font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground active:bg-muted aria-[current=page]:bg-muted aria-[current=page]:text-foreground sm:h-9 sm:w-auto sm:px-3";
+	"group relative grid size-11 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground active:bg-muted aria-[current=page]:text-foreground sm:size-9";
 
 /*
- * Геометрия навбара живет в двух переменных, как в HeroUI: там весь навбар
- * считается от `--navbar-height`, и меню открывается ровно на остаток экрана
- * (`calc(100vh - var(--navbar-height))`). У нас шапка не прижата к верху, а
- * висит пилюлей, поэтому переменных две - высота и отступ сверху.
- *
- * Переменные ставятся инлайном на оба элемента: меню лежит рядом с шапкой, а
- * не внутри нее (у HeroUI оно вообще уходит в портал), и наследовать их ему
- * не от кого.
+ * Геометрия шапки - две переменные на шапке и на панели меню: высота строки
+ * и высота самой шапки, от которой панель отсчитывает свой верх. Панель
+ * лежит рядом с шапкой, а не внутри нее, поэтому переменные ставятся
+ * инлайном на оба элемента - наследовать их панели не от кого.
  */
-const NAVBAR_VARS = "--navbar-height:60px;--navbar-top:1rem;--navbar-gap:0.5rem";
+const NAVBAR_VARS = "--navbar-height:64px";
 
 /*
- * `active:bg-muted` - подсветка нажатия для пальца. У `html` стоит
- * `-webkit-tap-highlight-color: transparent`, то есть системного отклика на
- * тап нет, а `hover` на тач-экране не наступает: без `active` пункт меню
- * нажимался вообще без единого признака, что нажатие засчитано.
+ * `active:bg-muted` - подсветка нажатия для пальца: у `html` системный
+ * отклик на тап выключен, а `hover` на тач-экране не наступает.
  */
 const menuNavLinkClass =
-	"flex items-center gap-3 rounded-sm px-3 py-3 font-medium text-lg text-muted-foreground transition hover:bg-muted hover:text-foreground active:bg-muted aria-[current=page]:text-foreground";
+	"flex items-center gap-3 rounded-sm px-3 py-3 font-medium text-base text-muted-foreground transition-colors hover:bg-muted hover:text-foreground active:bg-muted aria-[current=page]:text-foreground";
 
 const localeOptions = locales.map((code) => ({
 	code,
@@ -109,63 +99,41 @@ const localeOptions = locales.map((code) => ({
 }));
 ---
 
-<!-- Ширина шапки зависит от экрана.
+<!-- Шапка во всю ширину, как у журнала: строка на линии, а не плавающая
+     пилюля. Липкая (`sticky`), поэтому не нужна распорка под ней - место в
+     потоке она занимает сама. Подложка полупрозрачная с размытием: при
+     прокрутке под ней видно содержимое, но текст ссылок читается.
 
-     От `sm` - по содержимому (`w-fit`), а не фиксированная: добавили или
-     переименовали пункт меню - пилюля подстроилась сама, и по краям не
-     остается пустоты. `max-w` держит ее в пределах экрана: если ссылки все же
-     не влезли, шапка упирается в границу, а прокручивает их `overflow-x-auto`
-     на внутренней обертке.
-
-     Ниже `sm` - во всю колонку (`w-full` до того же `max-w`). `w-fit` там
-     оставлял пилюлю в ~210px по центру: знак 24px, пара иконок и шеврон -
-     сайт без имени, а выпадающая панель шла во всю ширину и не совпадала с
-     ней ни одним краем. Теперь шапка и панель стоят на общих полях в 1rem
-     (`max-w-[calc(100%-2rem)]` против `inset-x-4`), а освободившееся место
-     занимает название сайта.
-
-     Центрирование - `inset-x-0` + `mx-auto`, а не `left-1/2` со сдвигом на
-     половину ширины. С `left: 50%` у элемента в потоке `fixed` остается
-     доступной только правая половина экрана, и ширина «по содержимому»
-     считается от нее: шапка выходила уже нужного и резала последние пункты
-     меню даже там, где места вокруг было в избытке. -->
+     Порядок слева направо: знак и имя, разделы, затем справа действия -
+     поиск, сохраненное, язык и единственная сплошная кнопка «Добавить
+     проект». Цель каталога - рост, поэтому добавление всегда на виду. -->
 <header
 	data-header
 	data-menu-open="false"
 	style={NAVBAR_VARS}
-	class="corner-squircle fixed inset-x-0 top-[var(--navbar-top)] z-50 mx-auto flex h-[var(--navbar-height)] w-full max-w-[calc(100%-2rem)] items-center justify-between gap-2 rounded-full border border-border bg-background/90 pr-2.5 pl-5 shadow-lg shadow-black/5 backdrop-blur-md sm:w-fit sm:gap-6 sm:px-8"
+	class="sticky top-0 z-50 border-border border-b bg-background/80 backdrop-blur-md"
 >
-	<!-- Ниже `sm` рядом со знаком стоит название: шапка там во всю ширину, и
-	     место под него есть, а без него сайт на телефоне не назван нигде -
-	     ни в шапке, ни в первом экране. От `sm` пилюля снова считается по
-	     содержимому, и название уступает место строке ссылок: знак опознает
-	     сайт сам, а подпись дает тултип.
-
-	     `min-w-0` + `truncate` - страховка на 320px (`min-w-80` у `body`):
-	     там название упирается в кнопки, и лучше ему обрезаться, чем
-	     вытолкнуть их за край пилюли. -->
-	<a
-		href={getRelativeLocaleUrl(locale, "")}
-		aria-label="media.tatarverse"
-		class="group relative flex min-w-0 shrink items-center gap-2.5 sm:shrink-0"
+	<div
+		class="mx-auto flex h-[var(--navbar-height)] max-w-7xl items-center gap-2 px-5 sm:gap-6"
 	>
-		<img
-			src="/media-tatarverse.svg"
-			alt=""
-			width="28"
-			height="28"
-			class="size-6 shrink-0"
+		<!-- `min-w-0` + `truncate` - страховка на 320px (`min-w-80` у `body`):
+		     там название упирается в кнопки, и лучше ему обрезаться, чем
+		     вытолкнуть их за край. -->
+		<a
+			href={getRelativeLocaleUrl(locale, "")}
+			class="flex min-w-0 shrink items-center gap-2.5 sm:shrink-0"
 		>
-		<span class="truncate font-semibold text-base text-foreground tracking-tight sm:hidden">media.tatarverse</span>
-		<Tooltip label={t("nav.home")} class="hidden sm:block" />
-	</a>
+			<img
+				src="/media-tatarverse.svg"
+				alt=""
+				width="24"
+				height="24"
+				class="size-6 shrink-0"
+			>
+			<span class="truncate font-semibold text-[15px] text-foreground tracking-tight">media.tatarverse</span>
+		</a>
 
-	<!-- ≥sm: ссылки в строке. На узком экране им не хватает места - там их
-	     прячет `data-menu-panel` ниже. Прокрутка нужна на промежуточных
-	     ширинах, где шапка уже уперлась в край экрана, а ссылки еще не
-	     ушли в бургер. -->
-	<div class="hidden min-w-0 items-center overflow-x-auto sm:flex">
-		<nav class="flex items-center gap-4 sm:gap-6">
+		<nav class="hidden items-center gap-0.5 sm:flex" aria-label={t("nav.menu")}>
 			{textLinks.map((link) => (
 					<a
 						href={link.href}
@@ -176,139 +144,102 @@ const localeOptions = locales.map((code) => ({
 					</a>
 				))}
 		</nav>
+
+		<div class="ms-auto flex shrink-0 items-center gap-1 sm:gap-2">
+			{iconLinks.map((link) => (
+					<a
+						href={link.href}
+						aria-current={currentAttr(link.href)}
+						class={cn(iconLinkClass, link.compact ? "grid" : "hidden sm:grid")}
+					>
+						<Icon name={link.icon} class="size-[1.125rem]" aria-hidden="true" />
+						<span class="sr-only">{link.label}</span>
+						<Tooltip label={link.label} class="hidden sm:block" />
+
+						{link.counter && (
+							<span
+								data-saved-count
+								hidden
+								class="-top-0.5 -right-0.5 absolute flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-mono font-semibold text-[10px] text-background leading-none ring-2 ring-background"
+							/>
+						)}
+					</a>
+				))}
+
+			<div
+				class="hidden shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5 sm:flex"
+			>
+				{localeOptions.map((option) => (
+						<a
+							href={option.href}
+							aria-current={option.code === locale ? "true" : undefined}
+							class={cn(
+								"group relative rounded-full px-2.5 py-1 font-medium font-mono text-[11px] transition-colors",
+								option.code === locale
+									? "bg-background text-foreground shadow-xs"
+									: "text-muted-foreground hover:text-foreground",
+							)}
+						>
+							{option.label}
+							<Tooltip label={option.title} class="mt-3" />
+						</a>
+					))}
+			</div>
+
+			<Button
+				href={addHref}
+				preset="solid"
+				size="sm"
+				aria-current={currentAttr(addHref)}
+				class="hidden sm:inline-flex"
+			>
+				{t("nav.add")}
+			</Button>
+
+			<Button
+				preset="ghost"
+				size="icon"
+				data-menu-button
+				data-open="false"
+				aria-expanded="false"
+				aria-controls="header-menu"
+				class="group size-11 sm:hidden"
+			>
+				<span class="sr-only">{t("nav.menu")}</span>
+				<!-- Шеврон, а не бургер: рядом стоит знак-действие, и второй
+				     такой же знак читался бы как еще одно действие. Поворот
+				     висит на `data-open` кнопки. -->
+				<StrokeIcon
+					name="chevron"
+					size={20}
+					class="transition-transform duration-200 ease-snappy group-data-[open=true]:rotate-180"
+				/>
+			</Button>
+		</div>
 	</div>
-
-	<!-- Поиск и сохраненное - действия, а не разделы для чтения, поэтому они
-	     стоят отдельной группой рядом с переключателем локали, а не в строке
-	     ссылок. Подпись теперь в самой кнопке: всплывающий тултип называл
-	     действие только тому, кто уже навел на знак, - остальным приходилось
-	     угадывать закладку по форме иконки.
-
-	     Группа лежит вне обертки с `overflow-x-auto`: прокрутка по горизонтали
-	     обрезает и по вертикали тоже, а счетчик выступает за край кнопки.
-
-	     `ms-auto` ниже `sm`: шапка там во всю ширину, и без него
-	     `justify-between` растащил бы знак, группу и кнопку меню на три
-	     равные доли. Автоотступ забирает весь свободный зазор себе, поэтому
-	     название остается слева, а действия собираются справа. От `sm` шапка
-	     снова по содержимому, свободного места нет, и отступ снимается. -->
-	<div class="ms-auto flex shrink-0 items-center gap-1 sm:ms-0">
-		{iconLinks.map((link) => (
-				<a
-					href={link.href}
-					aria-current={currentAttr(link.href)}
-					class={cn(
-						iconLinkClass,
-						link.compact ? "flex" : "hidden sm:flex",
-					)}
-				>
-					<Icon name={link.icon} class="size-5 shrink-0" aria-hidden="true" />
-					<!-- `sr-only`, а не `hidden`: на узком экране подпись не занимает
-					     места, но остается именем ссылки для скринридера. `hidden`
-					     убрал бы ее из дерева доступности, и кнопка осталась бы
-					     безымянной. -->
-					<span class="sr-only sm:not-sr-only">{link.label}</span>
-
-					{link.counter && (
-						<span
-							data-saved-count
-							hidden
-							class="-top-0.5 -right-0.5 absolute flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-semibold text-[10px] text-background leading-none ring-2 ring-background"
-						/>
-					)}
-				</a>
-			))}
-	</div>
-
-	<div
-		class="hidden shrink-0 items-center gap-0.5 rounded-full bg-muted p-1 sm:flex"
-	>
-		{localeOptions.map((option) => (
-				<a
-					href={option.href}
-					aria-current={option.code === locale ? "true" : undefined}
-					class={cn(
-						"group relative rounded-full px-3 py-1 font-semibold text-xs transition",
-						option.code === locale
-							? "bg-background text-foreground shadow-sm"
-							: "text-muted-foreground hover:text-foreground",
-					)}
-				>
-					{option.label}
-					<Tooltip label={option.title} class="mt-3.5" />
-				</a>
-			))}
-	</div>
-
-	<Button
-		preset="ghost"
-		size="icon"
-		data-menu-button
-		data-open="false"
-		aria-expanded="false"
-		aria-controls="header-menu"
-		class="group size-11 sm:hidden"
-	>
-		<span class="sr-only">{t("nav.menu")}</span>
-		<!-- Шеврон, а не бургер: рядом с ним стоит знак-действие, и второй
-		     такой же знак читался бы как еще одно действие. Стрелка называет
-		     не содержимое, а направление - панель раскрывается вниз.
-
-		     Поворот вешается на `data-open` кнопки - тем же приемом, что у
-		     HeroUI: там `NavbarMenuToggle` расставляет `data-open`,
-		     `data-pressed`, `data-hover`, и вся анимация знака висит на
-		     `group-data-[open=true]`, а не на классах, которые дописывает
-		     скрипт. `aria-expanded` рядом - для скринридера. -->
-		<StrokeIcon
-			name="chevron"
-			size={20}
-			class="transition-transform duration-200 group-data-[open=true]:rotate-180"
-		/>
-	</Button>
-
 </header>
 
 <!--
-	Меню - плавающий лист ровно по краям шапки (`inset-x-4` против ее
-	`max-w-[calc(100%-2rem)]`), а не полотно во всю ширину экрана. Полотно
-	занимало весь остаток вьюпорта под шапкой, а содержимого в нем - пять
-	ссылок и переключатель языка: две трети экрана оставались пустой заливкой,
-	и края не сходились с пилюлей. Лист берет высоту по содержимому и
-	оформлен как остальные поверхности системы: `rounded-lg` со сквирклом,
-	`ring`-подобная граница и та же плавающая тень, что у шапки.
+	Мобильная панель - лист во всю ширину прямо под шапкой. Лежит рядом с
+	шапкой, а не внутри: `backdrop-filter` шапки заводит контейнер для
+	`fixed`-потомков, и панель внутри считалась бы от нее.
 
-	Лежит рядом с шапкой, а не внутри: у HeroUI меню уходит в портал на
-	`document.body`, чтобы его не обрезал и не смещал контекст навбара. У нас
-	портала нет, но `fixed` внутри шапки с `backdrop-blur` считался бы от нее -
-	`backdrop-filter` заводит контейнер для `fixed`-потомков.
+	Раскрытие - `grid-template-rows` от `0fr` к `1fr`: высота у листа по
+	содержимому, а `height: auto` не анимируется. Внутренняя обертка обязана
+	иметь `min-h-0`, иначе трек в `0fr` не сожмет ее ниже min-content.
 
-	Раскрытие - `grid-template-rows` от `0fr` к `1fr`, а не высота от нуля к
-	вычисленной: у листа высота по содержимому, и посчитать ее в CSS нечем, а
-	`height: auto` не анимируется. Внутренняя обертка обязана иметь `min-h-0`,
-	иначе трек в `0fr` не сожмет ее ниже min-content. `overflow-hidden` висит
-	на самом листе: он обрезает содержимое, но не собственную тень - она
-	рисуется за границей блока и на нее `overflow` не действует.
-
-	`visibility` включена в список анимируемых свойств намеренно. Закрытое
-	меню недоступно с клавиатуры (`invisible` снимает его с фокуса), но без
-	перехода по `visibility` оно пропадало мгновенно и анимации закрытия никто
-	не видел: браузер держит `visible` до конца перехода, если один из концов
-	`visible`.
-
-	Длительности разные на вход и выход (300ms ease-out / 250ms ease-in) -
-	ровно те же числа, что в `navbar-menu-transitions.ts`.
+	`visibility` в списке переходов намеренно: закрытая панель недоступна с
+	клавиатуры, а без перехода она пропадала бы мгновенно и закрытия никто
+	бы не видел. Вход 300ms на сильной ease-out, выход быстрее - 200ms.
 -->
 <div
 	id="header-menu"
 	data-menu-panel
 	data-open="false"
 	style={NAVBAR_VARS}
-	class="corner-squircle invisible fixed inset-x-4 top-[calc(var(--navbar-top)+var(--navbar-height)+var(--navbar-gap))] z-40 grid max-h-[calc(100dvh-var(--navbar-top)-var(--navbar-height)-var(--navbar-gap)-1rem)] grid-rows-[0fr] overflow-hidden rounded-lg border border-border bg-background/95 opacity-0 shadow-lg shadow-black/5 backdrop-blur-md transition-[grid-template-rows,opacity,visibility] duration-[250ms] ease-in data-[open=true]:visible data-[open=true]:grid-rows-[1fr] data-[open=true]:opacity-100 data-[open=true]:duration-300 data-[open=true]:ease-out sm:hidden"
+	class="invisible fixed inset-x-0 top-[var(--navbar-height)] z-40 grid max-h-[calc(100dvh-var(--navbar-height))] grid-rows-[0fr] overflow-hidden border-border border-b bg-background/95 opacity-0 backdrop-blur-md transition-[grid-template-rows,opacity,visibility] duration-200 ease-snappy data-[open=true]:visible data-[open=true]:grid-rows-[1fr] data-[open=true]:opacity-100 data-[open=true]:duration-300 sm:hidden"
 >
-	<div class="min-h-0 overflow-y-auto overscroll-contain p-2">
-		<!-- Пункты без знаков: иконки есть только у двух из пяти, и колонка
-		     разъезжалась - у одних текст от края, у других от иконки. В меню
-		     HeroUI пункты тоже голый текст. -->
+	<div class="min-h-0 overflow-y-auto overscroll-contain px-3 py-3">
 		<nav class="flex flex-col" aria-label={t("nav.menu")}>
 			{navLinks.map((link) => (
 					<a
@@ -322,40 +253,37 @@ const localeOptions = locales.map((code) => ({
 							<span
 								data-saved-count
 								hidden
-								class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground px-1.5 font-semibold text-[11px] text-background leading-none"
+								class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-foreground px-1.5 font-mono font-semibold text-[11px] text-background leading-none"
 							/>
 						)}
 					</a>
 				))}
 		</nav>
 
-		<!-- Переключатель локали внизу списка: у HeroUI в подвале меню так же
-		     стоят переключатель темы и языка - вещи про сайт целиком, а не
-		     очередной раздел. Отделен линией, а не отступом: без нее пилюля
-		     читалась как шестой пункт списка. -->
-		<div class="mt-2 border-border border-t pt-2">
+		<div class="mt-3 grid gap-3 border-border border-t pt-3">
+			<Button href={addHref} preset="solid" size="lg" block>
+				{t("nav.add")}
+			</Button>
+
 			<div class="flex items-center gap-0.5 rounded-full bg-muted p-1">
 				{localeOptions.map((option) => (
 						<a
 							href={option.href}
 							aria-current={option.code === locale ? "true" : undefined}
 							class={cn(
-								"flex-1 rounded-full px-3 py-2.5 text-center font-semibold text-sm transition",
+								"flex-1 rounded-full px-3 py-2.5 text-center font-medium text-sm transition-colors",
 								option.code === locale
-									? "bg-background text-foreground shadow-sm"
+									? "bg-background text-foreground shadow-xs"
 									: "text-muted-foreground hover:text-foreground active:bg-background/60",
 							)}
 						>
-							{option.label}
+							{option.title}
 						</a>
 					))}
 			</div>
 		</div>
 	</div>
 </div>
-
-
-<div class="h-24" aria-hidden="true"></div>
 
 <script>
 /*

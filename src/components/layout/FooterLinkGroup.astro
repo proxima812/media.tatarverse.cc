@@ -24,12 +24,11 @@ interface Props {
 
 const { heading, links, class: className } = Astro.props;
 
-const linkClass =
-	"text-primary-foreground/70 transition hover:text-primary-foreground";
+const linkClass = "text-muted-foreground transition hover:text-foreground";
 
 /** Заголовок колонки: приглушен и разряжен, чтобы не спорить со ссылками. */
 const headingClass =
-	"mb-4 font-semibold text-primary-foreground/50 text-xs uppercase tracking-wider";
+	"mb-4 font-medium font-mono text-[11px] text-faint uppercase tracking-wider";
 
 /** Внешние ссылки уходят в новую вкладку; `mailto:` и свои пути - нет. */
 const isExternal = (href: string) => href.startsWith("http");
