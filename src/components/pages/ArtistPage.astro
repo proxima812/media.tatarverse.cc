@@ -151,7 +151,7 @@ const metaDescription = description ?? `${name} - ${t("meta.music.artist")}`;
 
 		<div class="flex flex-col gap-12">
 			<div>
-				<span class="mb-3 block font-medium font-mono text-faint text-xs uppercase tracking-wider">
+				<span class="mb-3 block font-medium text-muted-foreground text-base">
 					{t("music.pageTitle")}
 				</span>
 				<h1
@@ -169,7 +169,7 @@ const metaDescription = description ?? `${name} - ${t("meta.music.artist")}`;
 					<h2 class="font-semibold text-foreground text-xl tracking-[-0.035em] sm:text-2xl">
 						{t("music.popular")}
 						{artist.data.tracks.length > 0 && (
-							<span class="ms-1 font-mono font-normal text-faint text-sm">{artist.data.tracks.length}</span>
+							<span class="ms-1 font-normal text-faint text-sm tabular-nums">{artist.data.tracks.length}</span>
 						)}
 					</h2>
 					<p class="text-faint text-xs">{t("music.copy.hint")}</p>

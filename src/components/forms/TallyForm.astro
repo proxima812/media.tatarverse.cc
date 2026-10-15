@@ -20,10 +20,19 @@ const { formId, title, height = 1335 } = Astro.props;
 const src = `https://tally.so/embed/${formId}?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1`;
 ---
 
+<!--
+	Форма Tally рисуется только светлой: цвета задаются на стороне Tally, а
+	фон прозрачный (`transparentBackground`). На темной теме ее темный текст
+	ложился на темную страницу. Поэтому подложка формы светлая в обеих темах
+	(`bg-white` - намеренное исключение из токенов, как `destructive`), а
+	`color-scheme: light` у iframe не дает браузеру подмешать темную схему
+	в чужой документ.
+-->
 <div
-	class="not-prose rounded-lg corner-squircle border border-border bg-background p-4 shadow-lg shadow-black/5 sm:p-6"
+	class="not-prose rounded-lg corner-squircle border border-border bg-white p-4 shadow-lg shadow-black/5 sm:p-6 dark:border-transparent"
 >
 	<iframe
+		class="[color-scheme:light]"
 		data-tally-src={src}
 		loading="lazy"
 		width="100%"

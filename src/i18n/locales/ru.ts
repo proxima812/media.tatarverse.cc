@@ -137,6 +137,8 @@ export default {
 	"home.rows.search": "Найти проект, автора или тему",
 	"home.rows.people": "Народ",
 	"home.rows.all": "Все",
+	"home.rows.prev": "Прокрутить назад",
+	"home.rows.next": "Прокрутить вперед",
 	"home.rows.found": "из",
 	"home.rows.empty": "Ничего не нашлось.",
 	"home.rows.add": "Добавьте проект",

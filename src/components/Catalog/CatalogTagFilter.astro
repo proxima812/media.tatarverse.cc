@@ -45,15 +45,15 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 				читалось как ошибка. Здесь оно постоянное - это размер словаря,
 				по которому фильтруют.
 			-->
-			<span class="font-mono font-normal text-faint text-xs">{tags.length}</span>
+			<span class="font-normal text-faint text-xs tabular-nums">{tags.length}</span>
 			<span
 				data-tag-filter-count
 				hidden
-				class="rounded-full bg-primary px-2 py-0.5 font-mono text-[11px] text-primary-foreground"
+				class="rounded-full bg-primary px-2 py-0.5 text-[11px] text-primary-foreground tabular-nums"
 			></span>
 		</span>
 		<span class="flex items-center gap-2 text-muted-foreground text-sm">
-			<output data-catalog-result-count class="font-mono text-xs">{cardCount}</output>
+			<output data-catalog-result-count class="text-xs tabular-nums">{cardCount}</output>
 			<!--
 			     Шеврон - единственный знак того, что блок раскрывается: у `summary`
 			     убран маркер (`list-none` и скрытый `::-webkit-details-marker`), а
@@ -73,7 +73,7 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{groups.map(({ group, tags: values }) => (
 					<fieldset>
-						<legend class="mb-3 font-medium font-mono text-[11px] text-faint uppercase tracking-wider">
+						<legend class="mb-3 font-medium text-foreground text-sm">
 							{tagGroupLabel(locale, group)}
 						</legend>
 						<div class="flex flex-wrap gap-1.5">
@@ -86,9 +86,9 @@ const groups = TAG_GROUP_VALUES.map((group) => ({
 											data-tag-filter-input
 											class="peer sr-only"
 										/>
-										<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground peer-checked:bg-primary peer-checked:text-primary-foreground peer-checked:ring-transparent peer-checked:hover:bg-primary/86 peer-checked:hover:text-primary-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground">
+										<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground peer-checked:bg-muted peer-checked:font-medium peer-checked:text-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground">
 											<span>{tagLabel(locale, value)}</span>
-											<span class="font-mono text-[11px] opacity-60">{tagCounts.get(value)}</span>
+											<span class="text-[11px] opacity-60 tabular-nums">{tagCounts.get(value)}</span>
 										</span>
 									</label>
 								))}

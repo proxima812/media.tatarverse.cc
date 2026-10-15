@@ -34,8 +34,8 @@ const categories = getAllCategories(cards);
 		>
 			{t("catalog.pageTitle")}
 		</h1>
-		<p class="font-mono text-muted-foreground text-sm">
-			<span class="text-foreground">{cards.length}</span>
+		<p class="text-muted-foreground text-sm tabular-nums">
+			<span class="text-foreground">{cards.length}</span>{" "}
 			{plural("stats.projects", cards.length)}
 		</p>
 	</div>

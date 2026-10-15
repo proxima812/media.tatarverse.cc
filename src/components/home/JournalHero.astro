@@ -50,41 +50,47 @@ const signs = {
  * крупном кегле превращал бы его в почти острый угол.
  */
 const signClass =
-	"mx-[0.06em] inline-grid size-[0.78em] place-items-center rounded-[0.2em] align-[-0.06em] shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] motion-safe:animate-pop";
+	"me-[0.14em] inline-grid size-[0.8em] place-items-center rounded-[0.22em] align-[-0.08em] shadow-[inset_0_1px_0_rgb(255_255_255/0.25)] motion-safe:animate-pop";
 ---
 
-<section class="pt-4 sm:pt-8">
+<!--
+	Пробелы между словами и знаками стоят явным `{" "}`: Astro сжимает
+	пробельный текст между выражением и тегом, если в нем перенос строки,
+	и без них слова слипались («башкирскоми»).
+
+	Знак и его слово обернуты в `whitespace-nowrap`, чтобы знак не оставался
+	в конце строки отдельно от слова. Кегль ограничен так, что самое длинное
+	слово («крымскотатарском», около 11.7em со знаком) влезает в колонку и
+	на 390px, и на 1440px.
+-->
+<section class="pt-4 sm:pt-10">
 	<h1
-		class="max-w-[15ch] font-semibold text-[clamp(2.75rem,7.4vw,6.5rem)] text-foreground leading-[0.96] tracking-[-0.06em] motion-safe:animate-rise"
+		class="font-semibold text-[clamp(1.75rem,7vw,6rem)] text-balance text-foreground leading-[1.02] tracking-[-0.055em] motion-safe:animate-rise"
 	>
-		{t("home.hero.lead")}
-		<span class={cn(signClass, signs.tatar.tone, signs.tatar.delay)}>
-			<img src={signs.tatar.icon.src} alt="" width="64" height="64" class="size-[62%]" />
-		</span>{t("home.hero.tatar")}
-		<span class={cn(signClass, signs.bashkir.tone, signs.bashkir.delay)}>
-			<img src={signs.bashkir.icon.src} alt="" width="64" height="64" class="size-[62%]" />
-		</span>{t("home.hero.bashkir")}
-		<span class="text-faint">{t("home.hero.and")}</span>
-		<span
-			class={cn(signClass, signs["crimean-tatar"].tone, signs["crimean-tatar"].delay)}
+		{t("home.hero.lead")}{" "}
+		<span class="whitespace-nowrap"
+			><span class={cn(signClass, signs.tatar.tone, signs.tatar.delay)}
+				><img src={signs.tatar.icon.src} alt="" width="64" height="64" class="size-[62%]" /></span
+			>{t("home.hero.tatar")}</span
+		>{" "}
+		<span class="whitespace-nowrap"
+			><span class={cn(signClass, signs.bashkir.tone, signs.bashkir.delay)}
+				><img src={signs.bashkir.icon.src} alt="" width="64" height="64" class="size-[62%]" /></span
+			>{t("home.hero.bashkir")}</span
+		>{" "}
+		<span class="text-faint">{t("home.hero.and")}</span>{" "}
+		<span class="whitespace-nowrap"
+			><span class={cn(signClass, signs["crimean-tatar"].tone, signs["crimean-tatar"].delay)}
+				><img src={signs["crimean-tatar"].icon.src} alt="" width="64" height="64" class="size-[62%]" /></span
+			>{t("home.hero.crimean")}</span
 		>
-			<img
-				src={signs["crimean-tatar"].icon.src}
-				alt=""
-				width="64"
-				height="64"
-				class="size-[62%]"
-			/>
-		</span>{t("home.hero.crimean")}
 	</h1>
 
 	<div
-		class="mt-8 flex flex-wrap items-end justify-between gap-6 motion-safe:animate-rise motion-safe:[animation-delay:120ms]"
+		class="mt-10 flex flex-wrap items-end justify-between gap-6 motion-safe:animate-rise motion-safe:[animation-delay:120ms]"
 	>
 		<p class="max-w-[46ch] text-lg text-muted-foreground leading-relaxed text-pretty">
-			<span class="font-medium text-foreground">
-				{number.format(count)} {plural("stats.projects", count)}
-			</span>
+			<span class="font-medium text-foreground">{number.format(count)} {plural("stats.projects", count)}</span>{" "}
 			{t("home.hero.sub")}
 		</p>
 		<Button href={getRelativeLocaleUrl(locale, "catalog")} preset="solid" size="lg">

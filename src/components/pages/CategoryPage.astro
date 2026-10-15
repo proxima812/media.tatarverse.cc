@@ -52,7 +52,7 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 		<div class="flex items-end gap-4">
 			<CategoryTile category={category} size="lg" class="mb-1.5" />
 			<h1 class="text-foreground">
-				<span class="mb-2 block font-medium font-mono text-faint text-xs uppercase tracking-wider">
+				<span class="mb-2 block font-medium text-muted-foreground text-base">
 					{t("catalog.byCategoryPrefix")}
 				</span>
 				<span
@@ -62,8 +62,8 @@ const metaDescription = `${t("meta.category.description")} ${categoryLabel(local
 				</span>
 			</h1>
 		</div>
-		<p class="font-mono text-muted-foreground text-sm">
-			<span class="text-foreground">{filtered.length}</span>
+		<p class="text-muted-foreground text-sm tabular-nums">
+			<span class="text-foreground">{filtered.length}</span>{" "}
 			{plural("stats.projects", filtered.length)}
 		</p>
 	</div>

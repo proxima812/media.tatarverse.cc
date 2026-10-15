@@ -129,6 +129,8 @@ export default {
 	"home.rows.search": "Find a project, author or topic",
 	"home.rows.people": "People",
 	"home.rows.all": "All",
+	"home.rows.prev": "Scroll back",
+	"home.rows.next": "Scroll forward",
 	"home.rows.found": "of",
 	"home.rows.empty": "Nothing found.",
 	"home.rows.add": "Add a project",

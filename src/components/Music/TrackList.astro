@@ -33,7 +33,7 @@ const { name, tracks } = artist.data;
 					class="flex items-center gap-4 border-border border-b px-1 py-3 transition-colors duration-150 hover:bg-subtle"
 				>
 					<span
-						class="w-6 shrink-0 text-right font-mono text-faint text-xs tabular-nums"
+						class="w-6 shrink-0 text-right text-faint text-xs tabular-nums"
 						aria-hidden="true"
 					>
 						{index + 1}
@@ -53,7 +53,7 @@ const { name, tracks } = artist.data;
 							<p class="truncate font-medium text-foreground">{track.title}</p>
 						)}
 						{track.year !== undefined && (
-							<p class="font-mono text-faint text-xs">{track.year}</p>
+							<p class="text-faint text-xs tabular-nums">{track.year}</p>
 						)}
 					</div>
 

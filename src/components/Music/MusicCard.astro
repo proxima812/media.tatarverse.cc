@@ -46,7 +46,7 @@ const href = getRelativeLocaleUrl(locale, `catalog/music/${artist.id}`);
 		<div class="min-w-0">
 			<h2 class="truncate font-medium text-foreground tracking-[-0.01em]">{name}</h2>
 			{tracks.length > 0 && (
-				<p class="mt-0.5 font-mono text-faint text-xs">
+				<p class="mt-0.5 text-faint text-xs tabular-nums">
 					{tracks.length} {plural("music.tracks", tracks.length)}
 				</p>
 			)}

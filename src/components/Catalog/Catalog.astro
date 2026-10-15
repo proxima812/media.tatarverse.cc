@@ -64,11 +64,11 @@ const peopleCounts = Object.fromEntries(
 						type="button"
 						data-catalog-people={people}
 						aria-pressed="false"
-						class="inline-flex h-8 items-center gap-2 rounded-full pr-3 pl-1.5 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.96] aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:ring-transparent motion-reduce:active:scale-100"
+						class="inline-flex h-8 items-center gap-2 rounded-full pr-3 pl-1.5 text-[13px] text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.96] aria-pressed:bg-muted aria-pressed:font-medium aria-pressed:text-foreground motion-reduce:active:scale-100"
 					>
 						<PeopleSign locale={locale} people={people} />
 						<span class="first-letter:uppercase">{peopleLabel(locale, people)}</span>
-						<span class="font-mono text-[11px] opacity-60">{peopleCounts[people]}</span>
+						<span class="text-[11px] opacity-60 tabular-nums">{peopleCounts[people]}</span>
 					</button>
 				))}
 		</div>

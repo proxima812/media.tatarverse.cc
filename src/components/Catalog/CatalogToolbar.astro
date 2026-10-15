@@ -55,12 +55,13 @@ const entries = [
  * рисовалась на несколько px выше своего же layout-бокса.
  */
 /*
- * Категории - контурные чипы с иконкой в тон категории; активная залита
- * основным цветом. Цветной квадрат остается и на активном чипе: по нему
+ * Категории - контурные чипы с иконкой в тон категории; активная - на
+ * светло-серой подложке с полным цветом текста: черная заливка спорила с
+ * цветным квадратом и перетягивала взгляд с контента. Цветной квадрат остается и на активном чипе: по нему
  * категория узнается в шапке страницы, в рядах главной и здесь одинаково.
  */
 const tabClass =
-	"inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full pr-3.5 pl-2 text-muted-foreground text-sm ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.97] aria-[current=page]:bg-primary aria-[current=page]:text-primary-foreground aria-[current=page]:ring-transparent motion-reduce:active:scale-100";
+	"inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full pr-3.5 pl-2 text-muted-foreground text-sm ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.97] aria-[current=page]:bg-muted aria-[current=page]:font-medium aria-[current=page]:text-foreground aria-[current=page]:ring-border-strong motion-reduce:active:scale-100";
 
 /** Пункт того же списка тегов, но в диалоге - строкой на всю ширину. */
 const dialogLinkClass =
