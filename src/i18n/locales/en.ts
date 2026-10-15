@@ -17,6 +17,7 @@ export default {
 	"nav.about": "About",
 	"nav.add": "Add project",
 	"nav.saved": "Saved",
+	"theme.toggle": "Toggle theme",
 	"nav.menu": "Menu",
 	"locale.ru": "Русский",
 	"locale.en": "English",

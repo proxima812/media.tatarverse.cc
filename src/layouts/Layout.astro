@@ -109,6 +109,28 @@ const containerAttrs = {
 
 <html lang={htmlLang ?? currentLocale} class="scroll-smooth subpixel-antialiased">
 	<head>
+		<!--
+			Тема ставится до первой отрисовки, иначе темная страница мигала бы
+			белым. Скрипт инлайновый и синхронный, стоит первым в `<head>`.
+			Порядок: явный выбор посетителя из `localStorage`, иначе системная
+			настройка. Без JS атрибута нет - работает светлая тема из `:root`.
+			Ключ `theme` тот же, что пишет переключатель в шапке.
+		-->
+		<script is:inline>
+			(() => {
+				let theme = "light";
+				try {
+					const stored = localStorage.getItem("theme");
+					theme =
+						stored === "dark" || stored === "light"
+							? stored
+							: matchMedia("(prefers-color-scheme: dark)").matches
+								? "dark"
+								: "light";
+				} catch {}
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
 		<Font cssVariable="--font-inter" preload />
 		<Font cssVariable="--font-geist-mono" />
 		{

@@ -166,6 +166,22 @@ const localeOptions = locales.map((code) => ({
 					</a>
 				))}
 
+			<!-- Переключатель темы. Обе иконки в разметке, видимость решает
+			     вариант `dark:` по атрибуту на `<html>` - иконка верна с первого
+			     кадра, без ожидания скрипта. Показана тема, в которую переключит
+			     нажатие: луна на светлой, солнце на темной. -->
+			<button
+				type="button"
+				data-theme-toggle
+				aria-pressed="false"
+				class={cn(iconLinkClass, "cursor-pointer")}
+			>
+				<Icon name="tabler:moon" class="size-[1.125rem] dark:hidden" aria-hidden="true" />
+				<Icon name="tabler:sun" class="hidden size-[1.125rem] dark:block" aria-hidden="true" />
+				<span class="sr-only">{t("theme.toggle")}</span>
+				<Tooltip label={t("theme.toggle")} class="hidden sm:block" />
+			</button>
+
 			<div
 				class="hidden shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5 sm:flex"
 			>
@@ -398,5 +414,67 @@ function setupMenu(header: HTMLElement) {
 for (const header of document.querySelectorAll<HTMLElement>("[data-header]")) {
 	setupMenu(header);
 }
+
+/*
+ * Переключатель темы. Начальную тему уже поставил инлайн-скрипт в
+ * `Layout.astro`, здесь только смена и запоминание выбора.
+ *
+ * На время смены переходы выключаются: иначе каждый элемент с
+ * `transition-colors` перекрашивался бы со своей скоростью, и страница
+ * секунду переливалась бы пятнами. Смена темы - мгновенное действие, а не
+ * анимация. Принудительный reflow (`getComputedStyle`) применяет новые
+ * цвета до того, как переходы вернутся.
+ *
+ * Пока посетитель не выбрал тему сам, страница следует за системной: смена
+ * настройки ОС перекрашивает ее сразу, без перезагрузки.
+ */
+const THEME_KEY = "theme";
+type Theme = "light" | "dark";
+
+function currentTheme(): Theme {
+	return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+function applyTheme(theme: Theme) {
+	const freeze = document.createElement("style");
+	freeze.textContent = "*,*::before,*::after{transition:none!important}";
+	document.head.append(freeze);
+
+	document.documentElement.dataset.theme = theme;
+	for (const toggle of document.querySelectorAll("[data-theme-toggle]")) {
+		toggle.setAttribute("aria-pressed", String(theme === "dark"));
+	}
+
+	window.getComputedStyle(document.body).opacity;
+	freeze.remove();
+}
+
+function storedTheme(): Theme | null {
+	try {
+		const value = localStorage.getItem(THEME_KEY);
+		return value === "dark" || value === "light" ? value : null;
+	} catch {
+		return null;
+	}
+}
+
+for (const toggle of document.querySelectorAll("[data-theme-toggle]")) {
+	toggle.setAttribute("aria-pressed", String(currentTheme() === "dark"));
+	toggle.addEventListener("click", () => {
+		const next: Theme = currentTheme() === "dark" ? "light" : "dark";
+		applyTheme(next);
+		try {
+			localStorage.setItem(THEME_KEY, next);
+		} catch {
+			/* Приватный режим без хранилища: тема сменится до перезагрузки. */
+		}
+	});
+}
+
+window
+	.matchMedia("(prefers-color-scheme: dark)")
+	.addEventListener("change", (event) => {
+		if (storedTheme() === null) applyTheme(event.matches ? "dark" : "light");
+	});
 
 </script>
