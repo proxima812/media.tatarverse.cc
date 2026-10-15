@@ -4,7 +4,7 @@ import AlphabeticalCatalog from "@/components/search/AlphabeticalCatalog.astro";
 import SearchInput from "@/components/search/SearchInput.astro";
 import { localizeCards } from "@/lib/catalog/localize";
 import type { PageLocale } from "@/lib/routes/pageLocale";
-import { useTranslations } from "@/i18n";
+import { usePlural, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
 interface Props {
@@ -14,6 +14,7 @@ interface Props {
 const { locale } = Astro.props;
 
 const t = useTranslations(locale);
+const plural = usePlural(locale);
 const cards = await localizeCards(await getCollection("cards"), locale);
 ---
 
@@ -21,24 +22,24 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 	title={t("nav.search")}
 	description={t("meta.search.description")}
 >
-	<!-- Плашка с гигантскими буквами и пилюлей поиска поверх них - раскладка
-	     и размеры взяты с оригинала: панель 400px, буквы прижаты к центру,
-	     поле 727px по центру панели. Сами буквы разные у локалей и приезжают
-	     из словаря (`search.letters`). -->
-	<section
-		class="relative flex h-60 items-center justify-center overflow-hidden rounded-lg corner-squircle bg-foreground/[0.06] px-5 sm:h-100"
-	>
-		<h1 class="sr-only">{t("search.title")}</h1>
+	<!-- Шапка страницы в масштабе каталога: крупный заголовок слева,
+	     моноширинный счетчик справа, под ними большое поле. Указатель по
+	     алфавиту идет следом и сам служит выдачей. -->
+	<header class="flex flex-col gap-8">
+		<div class="flex flex-wrap items-end justify-between gap-4">
+			<h1
+				class="font-semibold text-[clamp(2.5rem,5.5vw,4.5rem)] text-balance text-foreground leading-[0.98] tracking-[-0.05em]"
+			>
+				{t("search.title")}
+			</h1>
+			<p class="font-mono text-muted-foreground text-sm">
+				<span class="text-foreground">{cards.length}</span>
+				{plural("stats.projects", cards.length)}
+			</p>
+		</div>
 
-		<span
-			aria-hidden="true"
-			class="pointer-events-none absolute select-none text-[140px] text-foreground leading-none tracking-[-0.6px] sm:text-[260px] lg:text-[388px]"
-		>
-			{t("search.letters")}
-		</span>
-
-		<SearchInput locale={locale} class="relative z-10" />
-	</section>
+		<SearchInput locale={locale} />
+	</header>
 
 	<AlphabeticalCatalog locale={locale} cards={cards} />
 </Layout>

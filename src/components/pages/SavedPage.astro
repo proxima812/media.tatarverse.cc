@@ -38,33 +38,37 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 	description={t("meta.saved.description")}
 	indexRobots={false}
 >
-	<div class="flex items-center justify-between">
-		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
+	<div class="flex flex-wrap items-end justify-between gap-4">
+		<h1
+			class="font-semibold text-[clamp(2.5rem,5.5vw,4.5rem)] text-balance text-foreground leading-[0.98] tracking-[-0.05em]"
+		>
 			{t("saved.title")}
 		</h1>
-		<div class="flex items-center space-x-2 font-medium text-muted-foreground">
-			<Icon
-				name="mdi:bookmark-multiple-outline"
-				class="size-5"
-				aria-hidden="true"
-			/>
-			<span data-saved-visible>0</span>
-		</div>
+		<p class="inline-flex items-center gap-2 font-mono text-muted-foreground text-sm">
+			<Icon name="tabler:bookmark" class="size-4" aria-hidden="true" />
+			<span data-saved-visible class="text-foreground">0</span>
+		</p>
 	</div>
 
+	<!-- Пустое состояние - на линиях, как остальные блоки, с той же иконкой
+	     в тонированном квадрате, что у категорий: страница пустая, но не
+	     выпадает из системы. -->
 	<div
 		data-saved-empty
-		class="mx-auto flex max-w-md flex-col items-center gap-4 py-24 text-center"
+		class="flex flex-col items-center gap-4 border-border border-y py-24 text-center"
 	>
-		<Icon
-			name="mdi:bookmark-outline"
-			class="size-10 text-muted-foreground"
-			aria-hidden="true"
-		/>
-		<h2 class="font-semibold text-lg">{t("saved.empty.title")}</h2>
-		<p class="text-muted-foreground text-sm">{t("saved.empty.description")}</p>
+		<span class="grid size-12 place-items-center rounded-md corner-squircle bg-tone-blue/12 text-tone-blue ring-1 ring-tone-blue/24 ring-inset">
+			<Icon name="tabler:bookmark" class="size-6" aria-hidden="true" />
+		</span>
+		<h2 class="font-semibold text-foreground text-xl tracking-[-0.035em]">
+			{t("saved.empty.title")}
+		</h2>
+		<p class="max-w-sm text-muted-foreground text-sm text-pretty">
+			{t("saved.empty.description")}
+		</p>
 		<Button href={getRelativeLocaleUrl(locale, "catalog")} preset="solid">
 			{t("saved.empty.cta")}
+			<Icon name="tabler:arrow-right" class="size-4" aria-hidden="true" />
 		</Button>
 	</div>
 
@@ -75,7 +79,7 @@ const cards = await localizeCards(await getCollection("cards"), locale);
 		его `display: none` из UA-стилей, и несохраненные проекты остались бы
 		на экране.
 	-->
-	<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 		{cards.map((card) => (
 				<div data-saved-item={card.id} hidden class="flex [&[hidden]]:hidden">
 					<CatalogCard card={card} />

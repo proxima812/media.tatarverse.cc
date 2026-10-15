@@ -31,7 +31,7 @@ export function initAlphabeticalCatalog() {
 	);
 
 	/** Линия отсчета для активной буквы - сразу под фиксированной шапкой. */
-	const HEADER_OFFSET = 160;
+	const HEADER_OFFSET = 120;
 
 	const rail = document.querySelector<HTMLElement>("[data-glossary-rail]");
 	let current = "";

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
 import CardLogo from "@/components/Catalog/CardLogo.astro";
 import { prepareGlossary } from "@/lib/catalog/glossary";
 import type { LocaleCode } from "@/config/types";
@@ -21,16 +22,18 @@ const groups = prepareGlossary(cards, locale);
 	<div class="relative">
 		<h2 class="sr-only">{t("search.browse")}</h2>
 
+		<!-- На узком экране указатель - лента букв под шапкой (`top-16` =
+		     высота шапки 64px), на широком - рельс справа. -->
 		<nav
 			aria-label={t("search.index")}
-			class="-mx-5 sticky top-24 z-30 mb-8 bg-background/85 px-5 py-2 backdrop-blur-md lg:hidden"
+			class="-mx-5 sticky top-16 z-30 mb-6 border-border border-b bg-background/90 px-5 py-2 backdrop-blur-md lg:hidden"
 		>
-			<ul class="flex items-center gap-0.5 overflow-x-auto">
+			<ul class="flex items-center gap-0.5 overflow-x-auto [scrollbar-width:none]">
 				{groups.map(({ letter, anchor }) => (
 						<li data-glossary-jump={letter}>
 							<a
 								href={`#${anchor}`}
-								class="flex size-8 shrink-0 items-center justify-center rounded-full font-medium text-muted-foreground text-sm transition hover:bg-muted hover:text-foreground"
+								class="flex size-8 shrink-0 items-center justify-center rounded-full font-mono text-muted-foreground text-xs transition-colors hover:bg-muted hover:text-foreground"
 							>
 								{letter}
 							</a>
@@ -39,42 +42,52 @@ const groups = prepareGlossary(cards, locale);
 			</ul>
 		</nav>
 
-		<div class="mx-auto flex w-full max-w-[727px] flex-col gap-12">
+		<!-- Буква - заголовок группы слева, проекты - строки на линиях справа.
+		     Строка повторяет `CatalogRow` в облегченном виде: логотип, имя,
+		     описание в одну строку и стрелка, которая сдвигается на наведении. -->
+		<div class="flex w-full flex-col lg:pr-16">
 			{groups.map(({ letter, anchor, cards }) => (
 					<section
 						id={anchor}
 						data-glossary-section={letter}
 						aria-labelledby={`${anchor}-title`}
-						class="scroll-mt-32 grid gap-x-0 gap-y-6 pb-8 [&[hidden]]:hidden sm:grid-cols-[150px_minmax(0,1fr)] sm:gap-y-0"
+						class="grid scroll-mt-32 gap-x-8 gap-y-2 border-border border-t py-8 [&[hidden]]:hidden sm:grid-cols-[8rem_minmax(0,1fr)]"
 					>
 						<h3
 							id={`${anchor}-title`}
-							class="font-medium text-5xl text-foreground leading-none tracking-tight sm:text-[62px] sm:leading-[66px]"
+							class="font-semibold text-5xl text-foreground leading-none tracking-[-0.05em] sm:sticky sm:top-24 sm:self-start sm:text-6xl"
 						>
 							{letter}
 						</h3>
 
-						<ul class="flex flex-col gap-12">
+						<ul class="flex flex-col">
 							{cards.map(({ card, search, searchName }) => (
 									<li
 										data-glossary-item
 										data-search={search}
 										data-search-name={searchName}
+										class="border-border border-b last:border-b-0"
 									>
 										<a
 											href={getRelativeLocaleUrl(locale, `projects/${card.id}`)}
-											class="group block"
+											class="group -mx-3 flex items-center gap-4 rounded-sm px-3 py-3 transition-colors duration-150 hover:bg-subtle focus-visible:outline-2 focus-visible:outline-foreground"
 										>
-											<div class="flex items-center gap-3">
-												<div class="shrink-0"><CardLogo size="md" name={card.data.name} logo={card.data.logo} peoples={card.data.peoples} /></div>
+											<div class="shrink-0"><CardLogo size="md" name={card.data.name} logo={card.data.logo} peoples={card.data.peoples} /></div>
 
-												<h4 class="min-w-0 font-medium text-2xl text-foreground leading-tight tracking-tight transition group-hover:text-primary sm:text-[32px] sm:leading-9">
+											<div class="min-w-0 flex-1">
+												<h4 class="truncate font-medium text-foreground tracking-[-0.01em]">
 													{card.data.name}
 												</h4>
+												<p class="mt-0.5 line-clamp-1 text-muted-foreground text-sm">
+													{card.data.description}
+												</p>
 											</div>
-											<p class="mt-4 line-clamp-2 font-light text-base text-foreground/80 leading-relaxed sm:text-lg sm:leading-[26px]">
-												{card.data.description}
-											</p>
+
+											<Icon
+												name="tabler:arrow-right"
+												class="size-4 shrink-0 text-faint transition duration-200 ease-snappy group-hover:translate-x-0.5 group-hover:text-foreground"
+												aria-hidden="true"
+											/>
 										</a>
 									</li>
 								))}
@@ -86,25 +99,25 @@ const groups = prepareGlossary(cards, locale);
 		<p
 			data-glossary-empty
 			hidden
-			class="mx-auto w-full max-w-[727px] py-16 text-center text-lg text-muted-foreground"
+			class="border-border border-t py-20 text-center text-muted-foreground"
 		>
 			{t("search.empty")}
 		</p>
 
 		<nav
 			aria-label={t("search.index")}
-			class="pointer-events-none absolute inset-y-0 right-0 hidden w-14 lg:block"
+			class="pointer-events-none absolute inset-y-0 right-0 hidden w-10 lg:block"
 		>
 			<ul
 				data-glossary-rail
-				class="pointer-events-auto sticky top-32 flex max-h-[calc(100vh-12rem)] flex-col overflow-y-auto pl-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+				class="pointer-events-auto sticky top-24 flex max-h-[calc(100vh-8rem)] flex-col items-end overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
 			>
 				{groups.map(({ letter, anchor }) => (
 						<li data-glossary-jump={letter}>
 							<a
 								href={`#${anchor}`}
 								data-glossary-rail-link={letter}
-								class="flex h-8 w-6 items-center border-transparent border-r font-medium text-base text-muted-foreground/70 transition aria-[current=true]:border-foreground aria-[current=true]:text-foreground hover:text-foreground"
+								class="flex h-7 w-7 items-center justify-center rounded-full font-mono text-faint text-xs transition-colors aria-[current=true]:bg-primary aria-[current=true]:text-primary-foreground hover:text-foreground"
 							>
 								{letter}
 							</a>

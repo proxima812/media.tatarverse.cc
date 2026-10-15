@@ -23,17 +23,17 @@ const { name, tracks } = artist.data;
 ---
 
 {tracks.length === 0 ? (
-		<p class="rounded-lg corner-squircle bg-muted/50 px-6 py-10 text-center text-muted-foreground">
+		<p class="border-border border-y py-12 text-center text-muted-foreground">
 			{t("music.tracks.empty")}
 		</p>
 	) : (
-		<ol class="flex flex-col gap-1" data-track-list>
+		<ol class="flex flex-col border-border border-t" data-track-list>
 			{tracks.map((track, index) => (
 				<li
-					class="flex items-center gap-4 rounded-md corner-squircle px-4 py-3 transition hover:bg-muted/60"
+					class="flex items-center gap-4 border-border border-b px-1 py-3 transition-colors duration-150 hover:bg-subtle"
 				>
 					<span
-						class="w-5 shrink-0 text-right font-medium text-muted-foreground text-sm tabular-nums"
+						class="w-6 shrink-0 text-right font-mono text-faint text-xs tabular-nums"
 						aria-hidden="true"
 					>
 						{index + 1}
@@ -53,7 +53,7 @@ const { name, tracks } = artist.data;
 							<p class="truncate font-medium text-foreground">{track.title}</p>
 						)}
 						{track.year !== undefined && (
-							<p class="text-muted-foreground text-xs">{track.year}</p>
+							<p class="font-mono text-faint text-xs">{track.year}</p>
 						)}
 					</div>
 
@@ -66,16 +66,16 @@ const { name, tracks } = artist.data;
 					<button
 						type="button"
 						data-copy={trackClipboardText(name, track)}
-						class="group/copy inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition hover:bg-muted/70 hover:text-foreground focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 data-[copied]:bg-primary/10 data-[copied]:text-primary"
+						class="group/copy inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground ring-1 ring-border-strong ring-inset transition duration-150 ease-snappy hover:bg-muted hover:text-foreground active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-foreground focus-visible:outline-offset-2 data-[copied]:bg-tone-green/12 data-[copied]:text-tone-green data-[copied]:ring-tone-green/24 motion-reduce:active:scale-100"
 						aria-label={`${t("music.copy")}: ${track.title}`}
 					>
 						<Icon
-							name="mdi:content-copy"
+							name="tabler:copy"
 							class="size-4 group-data-[copied]/copy:hidden"
 							aria-hidden="true"
 						/>
 						<Icon
-							name="mdi:check"
+							name="tabler:check"
 							class="hidden size-4 group-data-[copied]/copy:block"
 							aria-hidden="true"
 						/>

@@ -22,38 +22,39 @@ const href = getRelativeLocaleUrl(locale, `catalog/music/${artist.id}`);
  * только кадр и имя. Поэтому вся карточка - одна ссылка, а не корпус с
  * двумя действиями внутри: кликать больше не во что.
  *
- * Имя лежит поверх кадра на градиентной подложке, а не под ним: так в сетке
- * из тридцати карточек ряды остаются одной высоты независимо от длины имени.
+ * Имя стоит под кадром одной строкой (`truncate`), как подпись у обложек
+ * проектов: ряды в сетке остаются одной высоты при любой длине имени, а
+ * кадр не закрыт градиентом.
  */
 ---
 
 <a
 	href={href}
-	class="group relative block overflow-hidden rounded-lg corner-squircle bg-muted shadow-body ring-1 ring-border/40 transition hover:ring-border focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+	class="group flex flex-col gap-3 rounded-md focus-visible:outline-2 focus-visible:outline-foreground focus-visible:outline-offset-4"
 >
-	<div class="aspect-[3/4] w-full overflow-hidden">
+	<div
+		class="aspect-[3/4] w-full overflow-hidden rounded-md corner-squircle bg-muted ring-1 ring-black/5 ring-inset"
+	>
 		<ArtistPhoto
 			name={name}
 			photo={photo}
-			class="transition duration-500 group-hover:scale-105"
+			class="transition-transform duration-300 ease-snappy motion-safe:group-hover:scale-[1.03]"
 		/>
 	</div>
 
-	<div
-		class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/80 via-black/45 to-transparent p-4 pt-12"
-	>
+	<div class="flex items-start justify-between gap-3">
 		<div class="min-w-0">
-			<h2 class="truncate font-medium text-white">{name}</h2>
+			<h2 class="truncate font-medium text-foreground tracking-[-0.01em]">{name}</h2>
 			{tracks.length > 0 && (
-				<p class="mt-0.5 text-white/70 text-xs">
+				<p class="mt-0.5 font-mono text-faint text-xs">
 					{tracks.length} {plural("music.tracks", tracks.length)}
 				</p>
 			)}
 		</div>
 
 		<Icon
-			name="mdi:arrow-top-right"
-			class="size-5 shrink-0 text-white/70 transition group-hover:text-white"
+			name="tabler:arrow-up-right"
+			class="mt-0.5 size-4 shrink-0 text-faint transition duration-200 ease-snappy group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
 			aria-hidden="true"
 		/>
 	</div>

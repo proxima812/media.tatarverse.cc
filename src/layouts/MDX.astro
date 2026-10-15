@@ -18,19 +18,25 @@ const dateFormat = new Intl.DateTimeFormat(locale, { dateStyle: "long" });
 ---
 
 <Layout title={title} description={description}>
-	<article class="mx-auto max-w-[640px]">
-		<h1 class="font-bold text-3xl text-balance sm:text-4xl">
-			{title}
-		</h1>
-		<p class="mt-2 text-muted-foreground text-sm">
-			{t("legal.updated")}{" "}
-			<time datetime={updatedDate.toISOString()}>
-				{dateFormat.format(updatedDate)}
-			</time>
-		</p>
+	<!-- Текстовая страница: заголовок в масштабе каталога, дата пересмотра
+	     моноширинной подписью, под линией колонка чтения шириной в 65 знаков. -->
+	<article class="mx-auto w-full max-w-[680px]">
+		<header class="border-border border-b pb-8">
+			<h1
+				class="font-semibold text-[clamp(2.25rem,5vw,3.5rem)] text-balance text-foreground leading-[1] tracking-[-0.05em]"
+			>
+				{title}
+			</h1>
+			<p class="mt-4 font-mono text-faint text-xs">
+				{t("legal.updated")}{" "}
+				<time datetime={updatedDate.toISOString()}>
+					{dateFormat.format(updatedDate)}
+				</time>
+			</p>
+		</header>
 
 		<div
-			class="prose prose-neutral mt-8 max-w-none prose-headings:text-balance prose-p:text-pretty"
+			class="prose prose-neutral mt-10 max-w-none prose-headings:font-semibold prose-headings:text-balance prose-headings:text-foreground prose-headings:tracking-[-0.03em] prose-p:text-pretty prose-p:text-muted-foreground prose-li:text-muted-foreground prose-strong:text-foreground prose-a:font-medium prose-a:text-foreground prose-a:underline-offset-4 prose-a:decoration-border-strong hover:prose-a:decoration-foreground"
 		>
 			<slot />
 		</div>

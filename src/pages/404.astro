@@ -1,4 +1,7 @@
 ---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "astro-icon/components";
+import Button from "@/components/ui/Button.astro";
 import { defaultLocale, useTranslations } from "@/i18n";
 import Layout from "@/layouts/Layout.astro";
 
@@ -11,5 +14,24 @@ const t = useTranslations(defaultLocale);
 	indexRobots={false}
 	alternates={false}
 >
-	<h1 class="text-4xl text-center font-bold">{t("notFound.heading")}</h1>
+	<!-- Код ошибки - моноширинным ярлыком над заголовком, как подписи в
+	     остальной системе; сам заголовок в масштабе страниц каталога. -->
+	<section class="flex flex-col items-start gap-6 border-border border-b py-16 sm:py-24">
+		<span class="font-medium font-mono text-faint text-xs uppercase tracking-wider">404</span>
+		<h1
+			class="max-w-3xl font-semibold text-[clamp(2.25rem,5vw,4rem)] text-balance text-foreground leading-[1] tracking-[-0.05em]"
+		>
+			{t("notFound.heading")}
+		</h1>
+		<p class="max-w-xl text-lg text-muted-foreground text-pretty">{t("notFound.description")}</p>
+		<div class="flex flex-wrap gap-2">
+			<Button href={getRelativeLocaleUrl(defaultLocale, "")} preset="solid">
+				<Icon name="tabler:arrow-left" class="size-4" aria-hidden="true" />
+				{t("nav.home")}
+			</Button>
+			<Button href={getRelativeLocaleUrl(defaultLocale, "catalog")} preset="outline">
+				{t("nav.catalog")}
+			</Button>
+		</div>
+	</section>
 </Layout>

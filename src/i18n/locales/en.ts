@@ -41,7 +41,6 @@ export default {
 	"catalog.view.list": "List view",
 	"catalog.search.placeholder": "Search projects",
 	/** Декоративные буквы на плашке поиска - у каждой локали свои. */
-	"search.letters": "Aa",
 	"search.title": "Every project in the catalog",
 	"search.clear": "Clear search",
 	"search.empty": "Nothing matched - try another word.",
@@ -115,7 +114,7 @@ export default {
 	"notFound.title": "404 - page not found",
 	"notFound.description":
 		"This page doesn't exist. It may have been removed or moved.",
-	"notFound.heading": "404 - page not found",
+	"notFound.heading": "This page does not exist",
 	/* "Journal" home: headline with people signs and rows by category. */
 	"home.hero.lead": "Projects in",
 	"home.hero.tatar": "Tatar,",

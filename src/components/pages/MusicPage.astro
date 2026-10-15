@@ -4,6 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { Icon } from "astro-icon/components";
 import MusicCard from "@/components/Music/MusicCard.astro";
 import CatalogToolbar from "@/components/Catalog/CatalogToolbar.astro";
+import CategoryTile from "@/components/ui/CategoryTile.astro";
 import { getAllCategories } from "@/lib/catalog/categories";
 import { localizeArtists, sortByName } from "@/lib/music/artists";
 import type { PageLocale } from "@/lib/routes/pageLocale";
@@ -45,17 +46,24 @@ const catalogHref = getRelativeLocaleUrl(locale, "catalog");
 		]}
 	/>
 
-	<div class="flex flex-wrap items-center justify-between gap-3">
-		<div>
-			<h1 class="font-bold text-primary text-3xl text-balance sm:text-4xl">
-				{t("music.pageTitle")}
-			</h1>
-			<p class="mt-2 max-w-2xl text-muted-foreground">{t("music.lead")}</p>
+	<!-- Заголовок в масштабе страницы категории: иконка музыки в ее тоне,
+	     название крупно, лид под ним, моноширинный счетчик артистов справа. -->
+	<div class="flex flex-wrap items-end justify-between gap-4">
+		<div class="flex flex-col gap-4">
+			<div class="flex items-end gap-4">
+				<CategoryTile category="music" size="lg" class="mb-1.5" />
+				<h1
+					class="font-semibold text-[clamp(2.5rem,5.5vw,4.5rem)] text-balance text-foreground leading-[0.98] tracking-[-0.05em]"
+				>
+					{t("music.pageTitle")}
+				</h1>
+			</div>
+			<p class="max-w-2xl text-lg text-muted-foreground text-pretty">{t("music.lead")}</p>
 		</div>
-		<div class="flex items-center space-x-2 font-medium text-muted-foreground">
-			<Icon name="mdi:music-note-outline" class="size-4.5" aria-hidden="true" />
-			<span>{artists.length}</span>
-		</div>
+		<p class="inline-flex items-center gap-2 font-mono text-muted-foreground text-sm">
+			<Icon name="tabler:music" class="size-4" aria-hidden="true" />
+			<span class="text-foreground">{artists.length}</span>
+		</p>
 	</div>
 
 	<CatalogToolbar
@@ -65,7 +73,7 @@ const catalogHref = getRelativeLocaleUrl(locale, "catalog");
 	/>
 
 	<div
-		class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+		class="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
 	>
 		{artists.map((artist) => (
 			<MusicCard artist={artist} locale={locale} />
